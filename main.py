@@ -11,6 +11,7 @@ import items
 import variables
 import tweepy
 import pyttsx3
+import addresses
 
 
 logging.basicConfig(
@@ -689,11 +690,12 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
                 f'Holders: {x7dholders}\n\n'
                 f'To mint X7D.\n\n'
-                '1. Send ETH to the Lending Pool Contract:\n'
+                '1. Send ETH (Not Swap) to the Lending Pool Contract:\n'
                 f'`{items.lpreserveca}`\n'
-                '2. You will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
-                'note:\n'
-                'do not interact directly with the X7D contract\n\n'
+                '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
+                f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
+                'Note:\n'
+                'Do not interact directly with the X7D contract  \n\n'
                 f'{quote}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
@@ -910,11 +912,13 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         caption=f'*X7 Finance Lending Pool:*\n\n'
                 f'{poolamount[:4]}ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
                 f'To contribute to the Lending Pool.\n\n'
-                '1. Send ETH to the Lending Pool Contract:\n'
+                '1. Send ETH (Not Swap) to the Lending Pool Contract:\n'
                 f'`{items.lpreserveca}`\n'
-                '2. You will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
-                'note:\n'
-                f'do not interact directly with the X7D contract\n\n{quote}',
+                '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
+                f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
+                'Note:\n'
+                'Do not interact directly with the X7D contract  \n\n'
+                f'{quote}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text='Lending Pool Reserve Contract',
@@ -1104,7 +1108,7 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     ext = " ".join(context.args)
-    last5 = [entry[-5:] for entry in variables.entries]
+    last5 = [entry[-5:] for entry in addresses.entries]
     then = variables.giveawaytime
     now = datetime.now()
     duration = then - now
@@ -1122,7 +1126,8 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if ext == "":
             await update.message.reply_photo(
                 photo=open((random.choice(items.logos)), 'rb'),
-                caption=f'X7 Finance Giveaway ends:\n\n{then} (UTC)\n\n'
+                caption=f'*{variables.giveawaytitle}*\n\n'
+                        f'X7 Finance Giveaway ends:\n\n{then} (UTC)\n\n'
                         f'%d days, %d hours, %d minutes and %d seconds\n\n'
                         f'{variables.giveawayinfo}'
                         f'\n\n{quote}'
@@ -1147,22 +1152,27 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             f'value at the time of this draw.\n\n'
                             f'Trust no one, trust code. Long live Defi!\n\n{quote}',
                     parse_mode="Markdown")
+            else:
+                await update.message.reply_text(f'{variables.modsonly}')
         if ext == "count":
-            client = tweepy.Client(keys.bearer)
-            auth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
-            auth.set_access_token(keys.access, keys.accesssecret)
-            api = tweepy.API(auth)
-            tweetid = variables.tweetid
-            response = client.get_retweeters(tweetid)
-            status = api.get_status(tweetid)
-            retweet_count = status.retweet_count
-            await update.message.reply_photo(
+            chat_admins = await update.effective_chat.get_administrators()
+            if update.effective_user in (admin.user for admin in chat_admins):
+                client = tweepy.Client(keys.bearer)
+                auth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
+                auth.set_access_token(keys.access, keys.accesssecret)
+                api = tweepy.API(auth)
+                tweetid = variables.tweetid
+                response = client.get_retweeters(tweetid)
+                status = api.get_status(tweetid)
+                retweet_count = status.retweet_count
+                await update.message.reply_photo(
                     photo=open((random.choice(items.logos)), 'rb'),
                     caption=f'*{variables.giveawaytitle}*\n\n{variables.tweetlink}\n\n'
                             f'Retweeted {retweet_count} times, by the following members:')
-            await update.message.reply_text('\n'.join(str(p) for p in response.data))
-        else:
-            await update.message.reply_text(f'{variables.modsonly}')
+                await update.message.reply_text('\n'.join(str(p) for p in response.data))
+            else:
+                await update.message.reply_text(f'{variables.modsonly}')
+
 
 
 async def joke_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1368,19 +1378,19 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
                 f'X7102:      ${cgconstellationprice["x7102"]["usd"]}\n'
                 f'24 Hour Change: {round(cgconstellationprice["x7102"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7102mc)}\n'
-                f'CA: `{items.x7101ca}\n\n`'
+                f'CA: `{items.x7102ca}\n\n`'
                 f'X7103:      ${cgconstellationprice["x7103"]["usd"]}\n'
                 f'24 Hour Change: {round(cgconstellationprice["x7103"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7103mc)}\n'
-                f'CA: `{items.x7101ca}\n\n`'
+                f'CA: `{items.x7103ca}\n\n`'
                 f'X7104:      ${cgconstellationprice["x7104"]["usd"]}\n'
                 f'24 Hour Change: {round(cgconstellationprice["x7104"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7104mc)}\n'
-                f'CA: `{items.x7101ca}\n\n`'
+                f'CA: `{items.x7104ca}\n\n`'
                 f'X7105:      ${cgconstellationprice["x7105"]["usd"]}\n'
                 f'24 Hour Change: {round(cgconstellationprice["x7105"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7105mc)}\n'
-                f'CA: `{items.x7101ca}\n\n`'
+                f'CA: `{items.x7105ca}\n\n`'
                 f'Combined Market Cap: ${"{:0,.0f}".format(constmc)}\n\n'
                 f'{quote}', parse_mode="Markdown")
 
@@ -1394,19 +1404,18 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if loantype == "":
         await update.message.reply_text(
             '*X7 Finance Loan Terms*\n\n'
+            'Loan terms are defined by standalone smart contracts that provide the following:\n\n'
+            '1. Loan origination fee\n'
+            '2. Loan retention premium fee schedule\n'
+            '3. Principal repayment condition/maximum loan duration\n'
+            '4. Liquidation conditions and Reward\n'
+            '5. Loan duration\n\n'
             'The lending process delegates the loan terms to standalone smart contracts (see whitepaper below for more'
             ' details). These loan terms contracts must be deployed, and then “added” or “removed” from the Lending '
             'Pool as “available” loan terms for new loans. The DAO will be able to add or remove these term '
             'contracts.\n\nLoan term contracts may be created by any interested third party, enabling a market '
             'process by which new loan terms may be invented, provided they implement the proper interface.\n\n'
-            'The reference implementations that will be active at launch will have the following terms:\n\n'
-            f'🌟 *{items.ill001name}*\n'
-            f'{items.ill001terms}\n\n '
-            f'🌟 *{items.ill002name}*\n'
-            f'{items.ill002terms}\n\n '
-            f'🌟 *{items.ill003name}*\n'
-            f'{items.ill003terms}\n\n'
-            f'use `/loans contractnumber` for more details\n\n'
+            f'use `/loans ill001 - ill003` for more details on individual loan contrats\n\n'
             f'{quote}',
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup(

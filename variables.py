@@ -8,17 +8,26 @@ twittertime = 6
 # AUTO MESSAGE
 automessage = "**X7 Finance Twitter Raid**\n\nClick the link below and like and RT everything you see!"
 automessagelink = "https://twitter.com/search?q=%23x7finance&src=typed_query"
+
 # SPACES                Y   M   D   H   M  S
 spacestime = datetime(2023, 2, 3, 19, 00, 00)
 spaceslink = "https://twitter.com/i/spaces/1YqKDojbAoQxV"
 
 
 # GIVEAWAY               Y   M   D   H   M  S
-giveawaytime = datetime(2022, 12, 26, 22, 30, 00)
-giveawaytitle = ""
-giveawayinfo = ""
+giveawaytime = datetime(2023, 3, 10, 20, 30, 00)
+snapshot1 = datetime(2023, 2, 9, 20, 30, 00)
+snapshot2 = datetime(2023, 3, 9, 20, 30, 00)
+giveawaytitle = "X7 Finance 20,000 X7R Giveaway!"
+giveawayinfo = "To get your name in the draw for the 20,000 X7R Giveaway, Simply mint and hold 0.1 X7D for 30 " \
+               "days!\n\n" \
+               "For every 0.1 X7D minted you will receive 1 entry!\n\n" \
+               f"A Snapshot of minters will be taken at {snapshot1} (UTC) and again at {snapshot2} (UTC)\n\n" \
+               f"The Diamond hands that have held for the entire duration will be in the draw! The more you mint," \
+               " the better your chance!\n\n" \
+               f"The draw will be made at {giveawaytime} (UTC)\n\nCredit: Defi Dipper!"
 entryupdate = "07/01/23 17:40 UTC"
-entries = [""]
+
 tweetid = 1618166216706646018
 tweetlink = "https://twitter.com/X7_Finance/status/1617660521431576576?s=20&t=pJLH-p73Qcjwz7dRuE5MCw"
 
