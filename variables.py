@@ -26,7 +26,7 @@ giveawayinfo = "To get your name in the draw for the 20,000 X7R Giveaway, Simply
                f"The Diamond hands that have held for the entire duration will be in the draw! The more you mint," \
                " the better your chance!\n\n" \
                f"The draw will be made at {giveawaytime} (UTC)\n\nCredit: Defi Dipper!"
-entryupdate = "07/01/23 17:40 UTC"
+
 
 tweetid = 1618166216706646018
 tweetlink = "https://twitter.com/X7_Finance/status/1617660521431576576?s=20&t=pJLH-p73Qcjwz7dRuE5MCw"

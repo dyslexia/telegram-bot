@@ -178,7 +178,8 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cgx7rprice = (cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
                                include_24hr_vol='true', include_last_updated_at="true"))
     x7rprice = (cgx7rprice["x7r"]["usd"])
-    treasuryurl = items.ethbalanceapi + items.devmulti + ',' + items.commulti + ',' + items.pioneerca + '&tag=latest' + keys.ether
+    treasuryurl = \
+        items.ethbalanceapi + items.devmulti + ',' + items.commulti + ',' + items.pioneerca + '&tag=latest' + keys.ether
     treasuryresponse = requests.get(treasuryurl)
     treasurydata = treasuryresponse.json()
     dev = float(treasurydata["result"][0]["balance"])
@@ -1136,7 +1137,7 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_photo(
                 photo=open((random.choice(items.logos)), 'rb'),
                 caption=f'The following addresses are in the draw (last 5 digits only):\n\n{last5}\n\n'
-                        f'Last Updated {variables.entryupdate}\n\n{quote}',
+                        f'Last Updated {addresses.entryupdate}\n\n{quote}',
                 parse_mode="Markdown")
         if ext == "run":
             chat_admins = await update.effective_chat.get_administrators()
@@ -1144,12 +1145,8 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await update.message.reply_photo(
                     photo=open((random.choice(items.logos)), 'rb'),
                     caption=f'*{variables.giveawaytitle}*\n\n'
-                            f'The winners of the {variables.giveawaytitle} are: (last 5 digits only)\n\n'
-                            f'First Prize $750:         {random.choice(last5)}\n'
-                            f'Second Prize $500:   {random.choice(last5)}\n'
-                            f'Third Prize $250:       {random.choice(last5)}\n\n'
-                            f'Congratulations to all winners, Winnings will be paid in X7R at its token '
-                            f'value at the time of this draw.\n\n'
+                            f'The winner of the {variables.giveawaytitle} is:\n\n'
+                            f'{random.choice(last5)} (last 5 digits only)\n'
                             f'Trust no one, trust code. Long live Defi!\n\n{quote}',
                     parse_mode="Markdown")
             else:
@@ -1172,7 +1169,6 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await update.message.reply_text('\n'.join(str(p) for p in response.data))
             else:
                 await update.message.reply_text(f'{variables.modsonly}')
-
 
 
 async def joke_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1573,7 +1569,7 @@ async def auto_message(context: ContextTypes.DEFAULT_TYPE) -> None:
                                                      f"{random.choice(items.twitterresp)}\n\n{job.data}")
 
 
-async def show_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) ->None:
+async def show_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     chat_admins = await update.effective_chat.get_administrators()
     job_names = [job.name for job in context.job_queue.jobs()]
     if update.effective_user in (admin.user for admin in chat_admins):
@@ -1658,6 +1654,7 @@ async def everyone_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                     '@shillingtonlevy @SlumdOg_shillionaire2022 @Zaratustra @WoxieX @CallMeLandlord '
                                     '@gazuga @Gavalars\n\n'
                                     'MODS ASSEMBLE!')
+
 
 async def error(update, context):
     print(f'Update {update} caused error: {context.error}')
