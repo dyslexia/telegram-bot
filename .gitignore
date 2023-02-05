@@ -3,4 +3,5 @@ _pycache_/
 Lib/
 Scripts/
 keys.py
+addresses.py
 pyvenv.cfg
