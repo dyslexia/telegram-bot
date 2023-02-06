@@ -1490,9 +1490,9 @@ async def discount_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     engine = pyttsx3.init()
-    engine.save_to_file(" ".join(context.args), 'voicenote.mp3')
+    engine.save_to_file(" ".join(context.args), 'media/voicenote.mp3')
     engine.runAndWait()
-    await update.message.reply_audio(audio=open('voicenote.mp3', 'rb'))
+    await update.message.reply_audio(audio=open('media/voicenote.mp3', 'rb'))
 
 
 async def announcements_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
