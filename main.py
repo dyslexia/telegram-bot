@@ -1535,6 +1535,30 @@ async def voting_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='X7 Finance Whitepaper', url='https://x7.finance/whitepaper')], ]))
 
 
+async def snapshot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    quoteresponse = requests.get(items.quoteapi)
+    quotedata = quoteresponse.json()
+    quoteraw = (random.choice(quotedata))
+    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+    await update.message.reply_text(
+        f'*X7 Finance Snapshot Information*\n\nThe rollout of the Ecosystem Contracts on BNB Smart Chain, Polygon ' 
+        f'(MATIC), Arbitrum, and Optimism has begun.\n\n' 
+        f'In order to deploy the X7 ecosystem more than 30 contracts need to be deployed from unique deployer ' 
+        f'addresses per chain. After being deployed many require careful initial configuration. We are moving through' 
+        f' a very long checklist and will be double checking these deployments very carefully. Each contract should ' 
+        f'have the exact same address on all 5 chains. We expect this may take 1-2 days to fully complete, but do ' 
+        f'enjoy watching the on chain progress.\n\nWe will go live with Xchange, borrowing, lending, revenue ' 
+        f'splitting, and profit splitting on other chains as soon as we can in concert with the full release on ' 
+        f'Ethereum.\n\nThe tokens however will not go live until we have built up a sufficient amount of initial ' 
+        f'liquidity for the tokens on any particular chain.\n\nWhen the tokens do go live all X7 token holders on ' 
+        f'Ethereum will be airdropped vested tokens and/or be given an opportunity to take a cash payout for their ' 
+        f'share of tokens. We will set prices and payouts to ensure that there will be no incentive to exit an ' 
+        f'Ethereum X7 Token position in order to gain an "early" L1 or L2 ecosystem X7 token position. On the ' 
+        f'contrary, the more tokens held on Ethereum, the greater the reward will be when the tokens and ecosystem ' 
+        f'are released on other chains.\n\nThese airdrop snapshots will occur just prior to the token launch\n\n'
+        f'{quote}', parse_mode='Markdown')
+
+
 # HARD AUTO MESSAGES
 async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
@@ -1718,6 +1742,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('say', say_command))
     application.add_handler(CommandHandler('everyone', everyone_command))
     application.add_handler(CommandHandler('voting', voting_command))
+    application.add_handler(CommandHandler(['snapshot', 'rollout', 'multichain', 'airdrop'], snapshot_command))
     application.add_handler(CommandHandler(['discount', 'dsc', 'dac'], discount_command))
     application.add_handler(CommandHandler(['admin_commands', 'admin', 'admincommands'], admincommands_command))
     application.job_queue.run_repeating(
