@@ -129,27 +129,109 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    await update.message.reply_video(
-        video=open(items.nftlogo, 'rb'),
-        caption=f'*X7 Finance NFT Information (ETH)*\n\n*Ecosystem Maxi*\n{items.ecoprice}\n'
-                f'> 25% discount on x7100 tax\n'
-                f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n{items.liqprice}\n'
-                f'> 50 % discount on x7100tax\n> 25 % discount on X7R tax\n'
-                f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.dexprice}\n'
-                f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                f'*Borrowing Maxi*\n{items.borrowprice}\n> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
-                f'*Magister*\n50 ETH\n> 25% discount on x7100 tax\n'
-                f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n*Pioneer*\n'
-                f' > 6% of profits that come into the X7 Treasury Splitter are now being allocated to the reward '
-                f'pool. Each X7 Pioneer NFT grants you a proportional share of this pool\n\n{quote}',
-        parse_mode='Markdown',
-        reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.ethertoken}{items.ecoca}')],
-            [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.ethertoken}{items.liqca}')],
-            [InlineKeyboardButton(text='DEX Maxi', url=f'{items.ethertoken}{items.dexca}')],
-            [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.ethertoken}{items.borrowca}')],
-            [InlineKeyboardButton(text='Magister', url=f'{items.ethertoken}{items.magisterca}')],
-            [InlineKeyboardButton(text='Pioneer', url=f'{items.ethertoken}{items.pioneerca}')], ]))
+    chain = " ".join(context.args)
+    if chain == "":
+        await update.message.reply_video(
+            video=open(items.nftlogo, 'rb'),
+            caption=f'*X7 Finance NFT Information (ETH)*\n\n*Ecosystem Maxi*\n{items.ecopriceeth}\n'
+                    f'> 25% discount on x7100 tax\n'
+                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n{items.liqpriceeth}\n'
+                    f'> 50 % discount on x7100tax\n> 25 % discount on X7R tax\n'
+                    f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.dexpriceeth}\n'
+                    f'> LP Fee Discounts while trading on X7 DEX\n\n'
+                    f'*Borrowing Maxi*\n{items.borrowpriceeth}\n> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
+                    f'*Magister*\n{items.magisterpriceeth}\n> 25% discount on x7100 tax\n'
+                    f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n*Pioneer*\n'
+                    f' > 6% of profits that come into the X7 Treasury Splitter are now being allocated to the reward '
+                    f'pool. Each X7 Pioneer NFT grants you a proportional share of this pool\n\n{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.ethertoken}{items.ecoca}')],
+                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.ethertoken}{items.liqca}')],
+                [InlineKeyboardButton(text='DEX Maxi', url=f'{items.ethertoken}{items.dexca}')],
+                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.ethertoken}{items.borrowca}')],
+                [InlineKeyboardButton(text='Magister', url=f'{items.ethertoken}{items.magisterca}')],
+                [InlineKeyboardButton(text='Pioneer', url=f'{items.ethertoken}{items.pioneerca}')], ]))
+    if chain == "bsc":
+        await update.message.reply_video(
+            video=open(items.nftlogo, 'rb'),
+            caption=f'*X7 Finance NFT Information (BSC)*\n\n*Ecosystem Maxi*\n{items.ecopricebsc}\n'
+                    f'> 25% discount on x7100 tax\n'
+                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n{items.liqpricebsc}\n'
+                    f'> 50 % discount on x7100tax\n> 25 % discount on X7R tax\n'
+                    f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.dexpricebsc}\n'
+                    f'> LP Fee Discounts while trading on X7 DEX\n\n'
+                    f'*Borrowing Maxi*\n{items.borrowpricebsc}\n> Fee discounts for borrowing funds for ILO on X7 '
+                    f'DEX\n\n'
+                    f'*Magister*\n{items.magisterpricebsc}\n> 25% discount on x7100 tax\n'
+                    f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.bsctoken}{items.ecoca}')],
+                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.bsctoken}{items.liqca}')],
+                [InlineKeyboardButton(text='DEX Maxi', url=f'{items.bsctoken}{items.dexca}')],
+                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.bsctoken}{items.borrowca}')],
+                [InlineKeyboardButton(text='Magister', url=f'{items.bsctoken}{items.magisterca}')],]))
+    if chain == "arbitrum":
+        await update.message.reply_video(
+            video=open(items.nftlogo, 'rb'),
+            caption=f'*X7 Finance NFT Information (ARBITRUM)*\n\n*Ecosystem Maxi*\n{items.ecopricearb}\n'
+                    f'> 25% discount on x7100 tax\n'
+                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n{items.ecopricearb}\n'
+                    f'> 50 % discount on x7100tax\n> 25 % discount on X7R tax\n'
+                    f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.ecopricearb}\n'
+                    f'> LP Fee Discounts while trading on X7 DEX\n\n'
+                    f'*Borrowing Maxi*\n{items.ecopricearb}\n> Fee discounts for borrowing funds for ILO on X7 '
+                    f'DEX\n\n'
+                    f'*Magister*\n{items.ecopricearb}\n> 25% discount on x7100 tax\n'
+                    f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.arbtoken}{items.ecoca}')],
+                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.arbtoken}{items.liqca}')],
+                [InlineKeyboardButton(text='DEX Maxi', url=f'{items.arbtoken}{items.dexca}')],
+                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.arbtoken}{items.borrowca}')],
+                [InlineKeyboardButton(text='Magister', url=f'{items.arbtoken}{items.magisterca}')], ]))
+    if chain == "polygon":
+        await update.message.reply_video(
+            video=open(items.nftlogo, 'rb'),
+            caption=f'*X7 Finance NFT Information (POLYGON)*\n\n*Ecosystem Maxi*\n{items.ecopricepoly}\n'
+                    f'> 25% discount on x7100 tax\n'
+                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n{items.ecopricepoly}\n'
+                    f'> 50 % discount on x7100tax\n> 25 % discount on X7R tax\n'
+                    f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.ecopricepoly}\n'
+                    f'> LP Fee Discounts while trading on X7 DEX\n\n'
+                    f'*Borrowing Maxi*\n{items.ecopricepoly}\n> Fee discounts for borrowing funds for ILO on X7 '
+                    f'DEX\n\n'
+                    f'*Magister*\n{items.ecopricepoly}\n> 25% discount on x7100 tax\n'
+                    f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.polytoken}{items.ecoca}')],
+                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.polytoken}{items.liqca}')],
+                [InlineKeyboardButton(text='DEX Maxi', url=f'{items.polytoken}{items.dexca}')],
+                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.polytoken}{items.borrowca}')],
+                [InlineKeyboardButton(text='Magister', url=f'{items.polytoken}{items.magisterca}')], ]))
+    if chain == "optimism":
+        await update.message.reply_video(
+            video=open(items.nftlogo, 'rb'),
+            caption=f'*X7 Finance NFT Information (OPTIMISM)*\n\n*Ecosystem Maxi*\n{items.ecopriceopti}\n'
+                    f'> 25% discount on x7100 tax\n'
+                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n{items.ecopriceopti}\n'
+                    f'> 50 % discount on x7100tax\n> 25 % discount on X7R tax\n'
+                    f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.ecopriceopti}\n'
+                    f'> LP Fee Discounts while trading on X7 DEX\n\n'
+                    f'*Borrowing Maxi*\n{items.ecopriceopti}\n> Fee discounts for borrowing funds for ILO on X7 '
+                    f'DEX\n\n'
+                    f'*Magister*\n{items.ecopriceopti}\n> 25% discount on x7100 tax\n'
+                    f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.optitoken}{items.ecoca}')],
+                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.optitoken}{items.liqca}')],
+                [InlineKeyboardButton(text='DEX Maxi', url=f'{items.optitoken}{items.dexca}')],
+                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.optitoken}{items.borrowca}')],
+                [InlineKeyboardButton(text='Magister', url=f'{items.optitoken}{items.magisterca}')], ]))
 
 
 async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -492,7 +574,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "bsc":
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Smart Contracts (POLYGON)*\nFor tokens use `/tokenname` or `/nft`\n\n{quote}',
+            caption=f'*X7 Finance Smart Contracts (BSC)*\nFor tokens use `/tokenname` or `/nft`\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher', url=f'{items.cadir}')],
@@ -520,7 +602,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "optimism":
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Smart Contracts (POLYGON)*\nFor tokens use `/tokenname` or `/nft`\n\n{quote}',
+            caption=f'*X7 Finance Smart Contracts (OPTIMISM)*\nFor tokens use `/tokenname` or `/nft`\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher', url=f'{items.cadir}')],

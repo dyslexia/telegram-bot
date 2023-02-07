@@ -86,9 +86,6 @@ devmultiopti = '0xBC534678E9ab8Bf1009fE6Ca4De8B02C091c9ca8'
 commultiopti = '0xc8804440275c0B60a081e832bb027DDaAE4A2daa'
 
 
-
-
-
 # URLS
 xchangebuy = 'https://app.x7.finance/#/swap?outputCurrency='
 ethertoken = 'https://etherscan.io/token/'
@@ -171,11 +168,40 @@ ill002ca = "0x740019a6b3a9cf3bd193986a560b05726143b217"
 
 
 # NFTs
-ecoprice = '0.1 ETH - 500 Supply'
-liqprice = '0.5ETH - 250 Supply'
-dexprice = '0.5 ETH - 150 Supply'
-borrowprice = '1 ETH - 100 Supply'
-magisterprice = '50 Eth'
+# ETH
+ecopriceeth = '0.1 ETH - 500 Supply'
+liqpriceeth = '0.5ETH - 250 Supply'
+dexpriceeth = '0.5 ETH - 150 Supply'
+borrowpriceeth = '1 ETH - 100 Supply'
+magisterpriceeth = '50 Eth'
+
+# ARB
+ecopricearb = '0.1 ETH - 500 Supply'
+liqpricearb = '0.5ETH - 250 Supply'
+dexpricearb = '0.5 ETH - 150 Supply'
+borrowpricearb = '1 ETH - 100 Supply'
+magisterpricearb = '50 Eth'
+
+# OPTI
+ecopriceopti = '0.1 ETH - 500 Supply'
+liqpriceopti = '0.5ETH - 250 Supply'
+dexpriceopti = '0.5 ETH - 150 Supply'
+borrowpriceopti = '1 ETH - 100 Supply'
+magisterpriceopti = '50 Eth'
+
+# BSC
+ecopricebsc = '0.1 ETH - 500 Supply'
+liqpricebsc = '0.5ETH - 250 Supply'
+dexpricebsc = '0.5 ETH - 150 Supply'
+borrowpricebsc = '1 ETH - 100 Supply'
+magisterpricebsc = '50 Eth'
+
+# POLY
+ecopricepoly = '0.1 ETH - 500 Supply'
+liqpricepoly = '0.5ETH - 250 Supply'
+dexpricepoly = '0.5 ETH - 150 Supply'
+borrowpricepoly = '1 ETH - 100 Supply'
+magisterpricepoly = '50 Eth'
 
 # LINKS
 website = 'https://x7.finance'
