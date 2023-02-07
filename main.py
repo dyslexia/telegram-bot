@@ -131,7 +131,8 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     await update.message.reply_video(
         video=open(items.nftlogo, 'rb'),
-        caption=f'*X7 Finance NFT Information*\n\n*Ecosystem Maxi*\n{items.ecoprice}\n> 25% discount on x7100 tax\n'
+        caption=f'*X7 Finance NFT Information (ETH)*\n\n*Ecosystem Maxi*\n{items.ecoprice}\n'
+                f'> 25% discount on x7100 tax\n'
                 f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n{items.liqprice}\n'
                 f'> 50 % discount on x7100tax\n> 25 % discount on X7R tax\n'
                 f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.dexprice}\n'
@@ -158,7 +159,7 @@ async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     await update.message.reply_photo(
         photo=open(items.opensealogo, 'rb'),
-        caption=f'*X7 Finance Opensea Links*\n\n{quote}',
+        caption=f'*X7 Finance Opensea Links (ETH)*\n\n{quote}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton(text='Ecosystem Maxi', url='https://opensea.io/collection/x7-ecosystem-maxi')],
@@ -179,7 +180,8 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                include_24hr_vol='true', include_last_updated_at="true"))
     x7rprice = (cgx7rprice["x7r"]["usd"])
     treasuryurl = \
-        items.ethbalanceapi + items.devmulti + ',' + items.commulti + ',' + items.pioneerca + '&tag=latest' + keys.ether
+        items.ethbalanceapi + items.devmultieth + ',' + items.commultieth + ',' + items.pioneerca + '&tag=latest' \
+        + keys.ether
     treasuryresponse = requests.get(treasuryurl)
     treasurydata = treasuryresponse.json()
     dev = float(treasurydata["result"][0]["balance"])
@@ -195,12 +197,12 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     devdollar = float(devamount) * float(ethvalue) / 1 ** 18
     comdollar = float(comamount) * float(ethvalue) / 1 ** 18
     pioneerdollar = float(pioneeramount) * float(ethvalue) / 1 ** 18
-    comx7rurl = items.tokenbalanceapi + items.x7rca + '&address=' + items.commulti + '&tag=latest' + keys.ether
+    comx7rurl = items.tokenbalanceapi + items.x7rca + '&address=' + items.commultieth + '&tag=latest' + keys.ether
     comx7rresponse = requests.get(comx7rurl)
     comx7rdata = comx7rresponse.json()
     comx7r = int(comx7rdata["result"][:-18])
     comx7rprice = comx7r * x7rprice
-    comx7durl = items.tokenbalanceapi + items.x7dca + '&address=' + items.commulti + '&tag=latest' + keys.ether
+    comx7durl = items.tokenbalanceapi + items.x7dca + '&address=' + items.commultieth + '&tag=latest' + keys.ether
     comx7dresponse = requests.get(comx7durl)
     comx7ddata = comx7dresponse.json()
     comx7d = int(comx7ddata["result"][:-18])
@@ -209,7 +211,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     comtotal = comx7rprice + comdollar + comx7ddollar
     await update.message.reply_photo(
         photo=open((random.choice(items.logos)), 'rb'),
-        caption='*X7 Finance Treasury*\n\n'
+        caption='*X7 Finance Treasury (ETH)*\n\n'
                 f'Pioneer Pool:\n{pioneeramount[:4]}ETH (${"{:0,.0f}".format(pioneerdollar)})\n\n'
                 f'Developer Wallet:\n{devamount[:4]}ETH (${"{:0,.0f}".format(devdollar)})\n\n'
                 f'Community Wallet:\n{comamount[:4]}ETH (${"{:0,.0f}".format(comdollar)})\n'
@@ -219,8 +221,9 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton(text='Treasury Splitter Contract', url=f'{items.etheraddress}{items.tsplitterca}')],
-            [InlineKeyboardButton(text='Developer Multisig Wallet', url=f'{items.etheraddress}{items.devmulti}')],
-            [InlineKeyboardButton(text='Community Multisig Wallet', url=f'{items.etheraddress}{items.commulti}')], ]))
+            [InlineKeyboardButton(text='Developer Multisig Wallet', url=f'{items.etheraddress}{items.devmultieth}')],
+            [InlineKeyboardButton(text='Community Multisig Wallet', url=f'{items.etheraddress}{items.commultieth}')],
+        ]))
 
 
 async def website_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -269,7 +272,7 @@ async def chart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     await update.message.reply_photo(
         photo=open((random.choice(items.logos)), 'rb'),
-        caption='*X7 Finance Chart Links*\n\nUse `/x7tokenname` for all other details\n'
+        caption='*X7 Finance Chart Links (ETH)*\n\nUse `/x7tokenname` for all other details\n'
                 f'For constellations use `/constellations`\n\n{quote}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
@@ -284,7 +287,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     await update.message.reply_photo(
         photo=open((random.choice(items.logos)), 'rb'),
-        caption=f'*X7 Finance Smart Contracts*\nFor tokens use `/tokenname` or `/nft`\n\n{quote}',
+        caption=f'*X7 Finance Smart Contracts (ETH)*\nFor tokens use `/tokenname` or `/nft`\n\n{quote}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher', url=f'{items.cadir}')],
@@ -352,19 +355,19 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(items.x7rlogo, 'rb'),
             caption=f'{amountraw} will currently buy:\n\n{"{:0,.0f}".format(amount)} '
-                    f'X7R Tokens (Before Tax)\n\n{quote}',
+                    f'X7R (ETH) Tokens (Before Tax)\n\n{quote}',
             parse_mode='Markdown')
     if amountraw:
         amount = round(float(amountraw) * float(x7rprice), 2)
         await update.message.reply_photo(
             photo=open(items.x7rlogo, 'rb'),
-            caption=f'{amountraw} X7R Currently Costs:\n\n${"{:0,.0f}".format(amount)}'
+            caption=f'{amountraw} X7R (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}'
                     f'\n\n{quote}',
             parse_mode='Markdown')
     if not amountraw:
         await update.message.reply_photo(
             photo=open(items.x7rlogo, 'rb'),
-            caption=f'*X7R Info*\n\n'
+            caption=f'*X7R Info (ETH)*\n\n'
                     f'X7R Price: ${cgx7rprice["x7r"]["usd"]}\n'
                     f'24 Hour Change: {round(cgx7rprice["x7r"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7rprice*items.supply)}\n'
@@ -407,13 +410,13 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(items.x7daologo, 'rb'),
             caption=f'{amountraw} Will currently buy:\n\n{"{:0,.0f}".format(amount)}'
-                    f' X7DAO Tokens (Before Tax)\n\n{quote}',
+                    f' X7DAO (ETH) Tokens (Before Tax)\n\n{quote}',
             parse_mode='Markdown')
     if amountraw == "500000":
         amount = round(float(amountraw) * float(daoprice), 2)
         await update.message.reply_photo(
             photo=open(items.x7daologo, 'rb'),
-            caption=f'{amountraw} X7DAO Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n'
+            caption=f'{amountraw} X7DAO (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n'
                     f'Holding {amountraw} X7DAO Tokens'
                     f' will earn you the right to make proposals on X7 DAO dApp\n\n{quote}',
             parse_mode='Markdown')
@@ -422,12 +425,12 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         amount = round(float(amountraw)*float(daoprice), 2)
         await update.message.reply_photo(
             photo=open(items.x7daologo, 'rb'),
-            caption=f'{amountraw} X7DAO Currently Costs:\n\n${amount}\n\n{quote}',
+            caption=f'{amountraw} X7DAO (ETH) Currently Costs:\n\n${amount}\n\n{quote}',
             parse_mode='Markdown')
     if not amountraw:
         await update.message.reply_photo(
             photo=open(items.x7daologo, 'rb'),
-            caption=f'*X7DAO Info*\n\n'
+            caption=f'*X7DAO (ETH) Info*\n\n'
             f'X7DAO Price: ${cgx7daoprice["x7dao"]["usd"]}\n'
             f'24 Hour Change: {round(cgx7daoprice["x7dao"]["usd_24h_change"],1)}%\n'
             f'Market Cap:  ${"{:0,.0f}".format(daoprice*items.supply)}\n'
@@ -462,17 +465,17 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(items.x7101logo, 'rb'),
             caption=f'{amountraw} Will currently buy:\n\n{"{:0,.0f}".format(amount)}' 
-                    f' X7101 Tokens (Before Tax)\n\n{quote}', parse_mode='Markdown')
+                    f' X7101 (ETH) Tokens (Before Tax)\n\n{quote}', parse_mode='Markdown')
     if amountraw:
         amount = round(float(amountraw)*float(x7101price), 2)
         await update.message.reply_photo(
             photo=open(items.x7101logo, 'rb'),
-            caption=f'{amountraw} X7101 Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
+            caption=f'{amountraw} X7101 (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
             parse_mode='Markdown')
     if not amountraw:
         await update.message.reply_photo(
             photo=open(items.x7101logo, 'rb'),
-            caption=f'*X7101 Info*\n\n'
+            caption=f'*X7101 (ETH) Info*\n\n'
             f'X7101 Price: ${cgx7101price["x7101"]["usd"]}\n'
             f'24 Hour Change: ${"{:0,.0f}".format(cgx7101price["x7101"]["usd_24h_change"], 1)}%\n'
             f'Market Cap:  ${"{:0,.0f}".format(x7101price*items.supply)}\n'
@@ -506,18 +509,18 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(items.x7102logo, 'rb'),
             caption=f'{amountraw} Will currently buy:\n\n{"{:0,.0f}".format(amount)}'
-                    f' X7102 Tokens (Before Tax)\n\n{quote}',
+                    f' X7102 (ETH) Tokens (Before Tax)\n\n{quote}',
             parse_mode='Markdown')
     if amountraw:
         amount = round(float(amountraw) * float(x7102price), 2)
         await update.message.reply_photo(
             photo=open(items.x7102logo, 'rb'),
-            caption=f'{amountraw} X7102 Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
+            caption=f'{amountraw} X7102 (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
             parse_mode='Markdown')
     if not amountraw:
         await update.message.reply_photo(
             photo=open(items.x7102logo, 'rb'),
-            caption=f'*X7102 Info*\n\n'
+            caption=f'*X7102 (ETH) Info*\n\n'
                     f'X7102 Price: ${cgx7102price["x7102"]["usd"]}\n'
                     f'24 Hour Change: {round(cgx7102price["x7102"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7102price*items.supply)}\n'
@@ -551,18 +554,18 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(items.x7103logo, 'rb'),
             caption=f'{amountraw} Will currently buy:\n\n{"{:0,.0f}".format(amount)}'
-                    f' X7103 Tokens (Before Tax)\n\n{quote}',
+                    f' X7103 (ETH) Tokens (Before Tax)\n\n{quote}',
             parse_mode='Markdown')
     if amountraw:
         amount = round(float(amountraw) * float(x7103price), 2)
         await update.message.reply_photo(
             photo=open(items.x7103logo, 'rb'),
-            caption=f'{amountraw} X7103 Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
+            caption=f'{amountraw} X7103 (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
             parse_mode='Markdown')
     if not amountraw:
         await update.message.reply_photo(
             photo=open(items.x7103logo, 'rb'),
-            caption=f'*X7103 Info*\n\n'
+            caption=f'*X7103 (ETH) Info*\n\n'
                     f'X7103 Price: ${cgx7103price["x7103"]["usd"]}\n'
                     f'24 Hour Change: {round(cgx7103price["x7103"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7103price*items.supply)}\n'
@@ -596,18 +599,18 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(items.x7104logo, 'rb'),
             caption=f'{amountraw} Will currently buy:\n\n{"{:0,.0f}".format(amount)}'
-                    f' X7104 Tokens (Before Tax)\n\n{quote}',
+                    f' X7104 (ETH) Tokens (Before Tax)\n\n{quote}',
             parse_mode='Markdown')
     if amountraw:
         amount = round(float(amountraw) * float(x7104price), 2)
         await update.message.reply_photo(
             photo=open(items.x7104logo, 'rb'),
-            caption=f'{amountraw} X7104 Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
+            caption=f'{amountraw} X7104 (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
             parse_mode='Markdown')
     if not amountraw:
         await update.message.reply_photo(
             photo=open(items.x7104logo, 'rb'),
-            caption=f'*X7104 Info*\n\n'
+            caption=f'*X7104 (ETH) Info*\n\n'
                     f'X7104 Price: ${cgx7104price["x7104"]["usd"]}\n'
                     f'24 Hour Change: {round(cgx7104price["x7104"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7104price*items.supply)}\n'
@@ -641,18 +644,18 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(items.x7105logo, 'rb'),
             caption=f'{amountraw} Will currently buy:\n\n{"{:0,.0f}".format(amount)}'
-                    f' X7105 Tokens (Before Tax)\n\n{quote}',
+                    f' X7105 (ETH) Tokens (Before Tax)\n\n{quote}',
             parse_mode='Markdown')
     if amountraw:
         amount = round(float(amountraw) * float(x7105price), 2)
         await update.message.reply_photo(
             photo=open(items.x7105logo, 'rb'),
-            caption=f'{amountraw} X7105 Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
+            caption=f'{amountraw} X7105 (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
             parse_mode='Markdown')
     if not amountraw:
         await update.message.reply_photo(
             photo=open(items.x7105logo, 'rb'),
-            caption=f'*X7105 Info*\n\n'
+            caption=f'*X7105 (ETH) Info*\n\n'
                     f'X7105 Price: ${cgx7105price["x7105"]["usd"]}\n'
                     f'24 Hour Change: {round(cgx7105price["x7105"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7105price*items.supply)}\n'
@@ -687,7 +690,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7ddollar = float(x7damount) * float(ethvalue) / 1 ** 18
     await update.message.reply_photo(
         photo=open((random.choice(items.logos)), 'rb'),
-        caption=f'*X7D Info*\n\n'
+        caption=f'*X7D (ETH) Info*\n\n'
                 f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
                 f'Holders: {x7dholders}\n\n'
                 f'To receive X7D.\n\n'
@@ -696,7 +699,8 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
                 f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
                 'Note:\n'
-                'Do not interact directly with the X7D contract  \n\n'
+                'Do not interact directly with the X7D contract\n'
+                'Do not send from a CEX\n\n'
                 f'{quote}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
@@ -732,7 +736,7 @@ async def buyevenly_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     await update.message.reply_text(
-        '*Buy All X7 Finance Constellation Tokens Evenly*\n\n'
+        '*Buy All X7 Finance Constellation Tokens Evenly (ETH)*\n\n'
         'Simply connect to https://dapp.x7community.space/ via metamask mobile or desktop and navigate to '
         '\'Buy X7 Constellation tokens equally\' and enter your desired Eth amount\n\n'
         'Alternatively you can interact with the follow contract and follow the steps '
@@ -850,7 +854,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     result = round(((burndata["result"] / items.supply) * 100), 6)
     await update.message.reply_photo(
         photo=open(items.x7rlogo, 'rb'),
-        caption=f'\n\nX7R Tokens Burned:\n\n'
+        caption=f'\n\nX7R (ETH) Tokens Burned:\n\n'
                 f'{"{:,}".format(burndata["result"])}\n'
                 f'{result}% of Supply\n\n'
                 f'[Etherscan]({items.ethertoken}{items.x7rca}?a={items.dead})\n\n{quote}',
@@ -910,7 +914,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pooldollar = float(poolamount) * float(ethvalue) / 1 ** 18
     await update.message.reply_photo(
         photo=open((random.choice(items.logos)), 'rb'),
-        caption=f'*X7 Finance Lending Pool:*\n\n'
+        caption=f'*X7 Finance Lending Pool Info (ETH)*\n\n'
                 f'{poolamount[:4]}ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
                 f'To contribute to the Lending Pool.\n\n'
                 '1. Send ETH (Not Swap) to the Lending Pool Contract:\n'
@@ -1044,7 +1048,7 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7105price = (cgx7105price["x7105"]["usd"]) * items.supply
     await update.message.reply_photo(
         photo=open((random.choice(items.logos)), 'rb'),
-        caption=f'*X7 Finance Market Cap Info*\n\n'
+        caption=f'*X7 Finance Market Cap Info (ETH)*\n\n'
                 f'X7R:           ${"{:0,.0f}".format(x7rprice)}\n'
                 f'X7DAO:      ${"{:0,.0f}".format(x7daoprice)}\n'     
                 f'X7101:       ${"{:0,.0f}".format(x7101price)}\n'
@@ -1220,7 +1224,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if search == "":
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Token Price Info*\n\n'
+            caption=f'*X7 Finance Token Price Info (ETH)*\n\n'
                     f'Use `/x7tokenname` for all other details\n'
                     f'For constellations use `/constellations`\n\n'
                     f'X7R:      ${cgtogetherprice["x7r"]["usd"]}\n'
@@ -1288,7 +1292,7 @@ async def holders_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7daoholders = x7daoholdersdata["holdersCount"]
     await update.message.reply_photo(
         photo=open((random.choice(items.logos)), 'rb'),
-        caption=f'*X7 Finance Token Holders*\n\n'
+        caption=f'*X7 Finance Token Holders (ETH)*\n\n'
                 f'X7R Holders: {x7rholders}\n'
                 f'X7DAO Holders: {x7daoholders}\n\n'
                 f'{quote}',
@@ -1365,7 +1369,7 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
     constmc = x7101mc + x7102mc + x7103mc + x7104mc + x7105mc
     await update.message.reply_video(
         video=open(items.constellationlogo, 'rb'),
-        caption=f'*X7 Finance Constellation Token Prices*\n\n'
+        caption=f'*X7 Finance Constellation Token Prices (ETH)*\n\n'
                 f'For more info use `/x7tokenname`\n\n'
                 f'X7101:      ${cgconstellationprice["x7101"]["usd"]}\n'
                 f'24 Hour Change: {round(cgconstellationprice["x7101"]["usd_24h_change"], 1)}%\n'

@@ -45,12 +45,14 @@ timelockca = '0x7000F4Cddca46FB77196466C3833Be4E89ab810C'
 esplitterca = '0x70001BA1BA4d85739E7B6A7C646B8aba5ed6c888'
 xchangedis = '0x7de8ab0dd777561ce98b7ef413f6fd564e89c1da'
 lendingdis = '0x74001e463b3c7dc95d96a1fdbe621678c24d47da'
-devmulti = '0x5CF4288Bf373BBe17f76948E39Baf33B9f6ac2e0'
-commulti = '0x7063E83dF5349833A21f744398fD39D42fbC00f8'
 routerca = '0x7DE8063E9fB43321d2100e8Ddae5167F56A50060'
 discountrouterca = '0x7de802dfc36dac738ddf2681dbfb37b30bb80060'
 lpca = '0x740015c39da5d148fca25a467399d00bce10c001'
 factoryca = '0x7de800467aFcE442019884f51A4A1B9143a34fAc'
+
+# WALLETS
+devmultieth = '0x5CF4288Bf373BBe17f76948E39Baf33B9f6ac2e0'
+commultieth = '0x7063E83dF5349833A21f744398fD39D42fbC00f8'
 
 # URLS
 xchangebuy = 'https://app.x7.finance/#/swap?outputCurrency='
