@@ -1089,22 +1089,76 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chain = " ".join(context.args)
     quoteresponse = requests.get(items.quoteapi)
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    burnurl = items.tokenbalanceapieth + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.ether
-    burnresponse = requests.get(burnurl)
-    burndata = burnresponse.json()
-    burndata["result"] = int(burndata["result"][:-18])
-    result = round(((burndata["result"] / items.supply) * 100), 6)
-    await update.message.reply_photo(
-        photo=open(items.x7rlogo, 'rb'),
-        caption=f'\n\nX7R (ETH) Tokens Burned:\n\n'
-                f'{"{:,}".format(burndata["result"])}\n'
-                f'{result}% of Supply\n\n'
-                f'[Etherscan]({items.ethertoken}{items.x7rca}?a={items.dead})\n\n{quote}',
-        parse_mode="markdown")
+    if chain == "":
+        burnurl = items.tokenbalanceapieth + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.ether
+        burnresponse = requests.get(burnurl)
+        burndata = burnresponse.json()
+        burndata["result"] = int(burndata["result"][:-18])
+        result = round(((burndata["result"] / items.supply) * 100), 6)
+        await update.message.reply_photo(
+            photo=open(items.x7rlogo, 'rb'),
+            caption=f'\n\nX7R (ETH) Tokens Burned:\n\n'
+                    f'{"{:,}".format(burndata["result"])}\n'
+                    f'{result}% of Supply\n\n'
+                    f'[Etherscan]({items.ethertoken}{items.x7rca}?a={items.dead})\n\n{quote}',
+            parse_mode="markdown")
+    if chain == "bsc":
+        burnurl = items.tokenbalanceapibsc + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.bsc
+        burnresponse = requests.get(burnurl)
+        burndata = burnresponse.json()
+        burndata["result"] = int(burndata["result"][:-18])
+        result = round(((burndata["result"] / items.supply) * 100), 6)
+        await update.message.reply_photo(
+            photo=open(items.x7rlogo, 'rb'),
+            caption=f'\n\nX7R (BSC) Tokens Burned:\n\n'
+                    f'{"{:,}".format(burndata["result"])}\n'
+                    f'{result}% of Supply\n\n'
+                    f'[BSCscan]({items.ethertoken}{items.x7rca}?a={items.dead})\n\n{quote}',
+            parse_mode="markdown")
+    if chain == "polygon":
+        burnurl = items.tokenbalanceapipoly + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.poly
+        burnresponse = requests.get(burnurl)
+        burndata = burnresponse.json()
+        burndata["result"] = int(burndata["result"][:-18])
+        result = round(((burndata["result"] / items.supply) * 100), 6)
+        await update.message.reply_photo(
+            photo=open(items.x7rlogo, 'rb'),
+            caption=f'\n\nX7R (POLYGON) Tokens Burned:\n\n'
+                    f'{"{:,}".format(burndata["result"])}\n'
+                    f'{result}% of Supply\n\n'
+                    f'[Polygonscan]({items.polytoken}{items.x7rca}?a={items.dead})\n\n{quote}',
+            parse_mode="markdown")
+    if chain == "arbitrum":
+        burnurl = items.tokenbalanceapibsc + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.arb
+        burnresponse = requests.get(burnurl)
+        burndata = burnresponse.json()
+        burndata["result"] = int(burndata["result"][:-18])
+        result = round(((burndata["result"] / items.supply) * 100), 6)
+        await update.message.reply_photo(
+            photo=open(items.x7rlogo, 'rb'),
+            caption=f'\n\nX7R (ARBITRUM) Tokens Burned:\n\n'
+                    f'{"{:,}".format(burndata["result"])}\n'
+                    f'{result}% of Supply\n\n'
+                    f'[Arbiscan]({items.arbtoken}{items.x7rca}?a={items.dead})\n\n{quote}',
+            parse_mode="markdown")
+    if chain == "optimism":
+        burnurl = items.tokenbalanceapibsc + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.opti
+        burnresponse = requests.get(burnurl)
+        burndata = burnresponse.json()
+        burndata["result"] = int(burndata["result"][:-18])
+        result = round(((burndata["result"] / items.supply) * 100), 6)
+        await update.message.reply_photo(
+            photo=open(items.x7rlogo, 'rb'),
+            caption=f'\n\nX7R (OPTIMISM) Tokens Burned:\n\n'
+                    f'{"{:,}".format(burndata["result"])}\n'
+                    f'{result}% of Supply\n\n'
+                    f'[Optimism.Etherscan]({items.optitoken}{items.x7rca}?a={items.dead})\n\n{quote}',
+            parse_mode="markdown")
 
 
 async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
