@@ -227,6 +227,7 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Mint Here', url='https://x7.finance/x/nft/mint')],
                 [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.optitoken}{items.ecoca}')],
                 [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.optitoken}{items.liqca}')],
                 [InlineKeyboardButton(text='DEX Maxi', url=f'{items.optitoken}{items.dexca}')],
