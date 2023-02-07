@@ -2,13 +2,32 @@ main_id = '-1001780235511'
 test_id = '-1001867816945'
 
 # API
+#ETH
+ethpriceapi = 'https://api.etherscan.io/api?module=stats&action=ethprice&'
+tokenbalanceapieth = 'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
+ethbalanceapieth = 'https://api.etherscan.io/api?module=account&action=balancemulti&address='
+
+#BSC
+bnbpriceapi = 'https://api.bscscan.com/api?module=stats&action=bnbprice&'
+tokenbalanceapibsc = 'https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress='
+bnbbalanceapi = 'https://api.bscscan.com/api?module=account&action=balancemulti&address='
+
+#POLY
+maticpriceapi = 'https://api.polygonscan.com/api?module=stats&action=maticprice&'
+tokenbalanceapipoly = 'https://api.polygonscan.com/api?module=account&action=tokenbalance&contractaddress='
+maticbalanceapi = 'https://api.polygonscan.com/api?module=account&action=balancemulti&address='
+
+#ARB
+tokenbalanceapiarb = 'https://api.arbiscan.io/api?module=account&action=tokenbalance&contractaddress='
+ethbalanceapiarb = 'https://api.arbiscan.io/api?module=account&action=balancemulti&address='
+
+#OPTI
+tokenbalanceapiopti = 'https://api-optimistic.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
+ethbalanceapiopti = 'https://api-optimistic.etherscan.io/api?module=account&action=balancemulti&address='
+
+holdersapi = 'https://api.ethplorer.io/getTokenInfo/'
 osapi = "https://api.opensea.io/api/v1/collection/"
 quoteapi = 'https://type.fit/api/quotes'
-holdersapi = 'https://api.ethplorer.io/getTokenInfo/'
-ethpriceapi = 'https://api.etherscan.io/api?module=stats&action=ethprice&'
-ethblockapi = 'https://api.etherscan.io/api?module=proxy&action=eth_blockNumber'
-tokenbalanceapi = 'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
-ethbalanceapi = 'https://api.etherscan.io/api?module=account&action=balancemulti&address='
 fearapi = 'https://api.alternative.me/fng/?limit=0'
 ethgasapi = 'https://api.etherscan.io/api?module=gastracker&action=gasoracle'
 todayapi = 'http://history.muffinlabs.com/date/'
@@ -54,20 +73,44 @@ factoryca = '0x7de800467aFcE442019884f51A4A1B9143a34fAc'
 devmultieth = '0x5CF4288Bf373BBe17f76948E39Baf33B9f6ac2e0'
 commultieth = '0x7063E83dF5349833A21f744398fD39D42fbC00f8'
 
+devmultibsc = '0x90Deb623F32CB5319E99418c98faf52651f8B45E'
+commultibsc = '0xCFbdBe32e60be5B35973a0F13E8dA2892c320f02'
+
+devmultipoly = '0x793444C1aC56BBaa74ae6c4b5d929FFE59304934'
+commultipoly = '0x3B4313E1a8A9beFCf34491a20F0991f22b4f1461'
+
+devmultiarb = '0xCeb944684a9c6bAE0d0c4628078c5B3F8432D75b'
+commultiarb = '0x8b8122Cc806615D50287b5c7CF6636033E38f0Dc'
+
+devmultiopti = '0xBC534678E9ab8Bf1009fE6Ca4De8B02C091c9ca8'
+commultiopti = '0xc8804440275c0B60a081e832bb027DDaAE4A2daa'
+
+
+
+
+
 # URLS
 xchangebuy = 'https://app.x7.finance/#/swap?outputCurrency='
 ethertoken = 'https://etherscan.io/token/'
 etheraddress = 'https://etherscan.io/address/'
-dextools = 'https://www.dextools.io/app/ether/pair-explorer/'
+bsctoken = 'https://bscscan.io/token/'
+bscaddress = 'https://bscscan.com/address/'
+polytoken = 'https://polygonscan.com/token/'
+polyaddress = 'https://polygonscan.com/address/'
+arbtoken = 'https://arbiscan.io/token/'
+arbaddress = 'https://arbiscan.io/address/'
+optitoken = 'https://optimistic.etherscan.io/token/'
+optiaddress = 'https://optimistic.etherscan.io/address/'
+dextoolseth = 'https://www.dextools.io/app/ether/pair-explorer/'
 
 # PAIRS
-x7rpair = '0x6139240a5907e4ce74673257c320ea366c521aea'
-x7daopair = '0x75311ee016c82e7770e4aca73a0d142f96ddb969'
-x7101pair = '0x75311ee016c82e7770e4aca73a0d142f96ddb969'
-x7102pair = '0x49c838c60170c36e90cfa6021a57f2268dda3254'
-x7103pair = '0xcecf54edc42c5c9f6ee10cb1efcc23e49f7d5a5d'
-x7104pair = '0x7d0d7c088233cbc08ee2400b96d10bf24c40e93a'
-x7105pair = '0x6d9d1b6b4d53f090639ae8d9e9c83b796da694ee'
+x7rpaireth = '0x6139240a5907e4ce74673257c320ea366c521aea'
+x7daopaireth = '0x75311ee016c82e7770e4aca73a0d142f96ddb969'
+x7101paireth = '0x75311ee016c82e7770e4aca73a0d142f96ddb969'
+x7102paireth = '0x49c838c60170c36e90cfa6021a57f2268dda3254'
+x7103paireth = '0xcecf54edc42c5c9f6ee10cb1efcc23e49f7d5a5d'
+x7104paireth = '0x7d0d7c088233cbc08ee2400b96d10bf24c40e93a'
+x7105paireth = '0x6d9d1b6b4d53f090639ae8d9e9c83b796da694ee'
 
 # LOANS
 ill001name = 'X7 Initial Liquidity Loan Term (001) - X7ILL001'
