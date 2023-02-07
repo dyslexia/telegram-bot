@@ -214,18 +214,21 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption='*X7 Finance Treasury (ETH)*\n'
-                'use `/treasury [chainname]` for other chains\n\n'
-                f'Pioneer Pool:\n{pioneeramount[:4]}ETH (${"{:0,.0f}".format(pioneerdollar)})\n\n'
-                f'Developer Wallet:\n{devamount[:4]}ETH (${"{:0,.0f}".format(devdollar)})\n\n'
-                f'Community Wallet:\n{comamount[:4]}ETH (${"{:0,.0f}".format(comdollar)})\n'
-                f'{comx7d} X7D (${"{:0,.0f}".format(comx7dprice)})\n'
-                f'{comx7r} X7R (${"{:0,.0f}".format(comx7rprice)})\n'
-                f'Total: (${"{:0,.0f}".format(comtotal)})\n\n{quote}',
+                    'use `/treasury [chainname]` for other chains\n\n'
+                    f'Pioneer Pool:\n{pioneeramount[:4]}ETH (${"{:0,.0f}".format(pioneerdollar)})\n\n'
+                    f'Developer Wallet:\n{devamount[:4]}ETH (${"{:0,.0f}".format(devdollar)})\n\n'
+                    f'Community Wallet:\n{comamount[:4]}ETH (${"{:0,.0f}".format(comdollar)})\n'
+                    f'{comx7d} X7D (${"{:0,.0f}".format(comx7dprice)})\n'
+                    f'{comx7r} X7R (${"{:0,.0f}".format(comx7rprice)})\n'
+                    f'Total: (${"{:0,.0f}".format(comtotal)})\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Treasury Splitter Contract', url=f'{items.etheraddress}{items.tsplitterca}')],
-                [InlineKeyboardButton(text='Developer Multisig Wallet', url=f'{items.etheraddress}{items.devmultieth}')],
-                [InlineKeyboardButton(text='Community Multisig Wallet', url=f'{items.etheraddress}{items.commultieth}')],
+                [InlineKeyboardButton(
+                    text='Treasury Splitter Contract', url=f'{items.etheraddress}{items.tsplitterca}')],
+                [InlineKeyboardButton(
+                    text='Developer Multisig Wallet', url=f'{items.etheraddress}{items.devmultieth}')],
+                [InlineKeyboardButton(
+                    text='Community Multisig Wallet', url=f'{items.etheraddress}{items.commultieth}')],
             ]))
     if chain == "bsc":
         treasuryurl = items.bnbbalanceapi + items.devmultibsc + ',' + items.commultibsc + '&tag=latest' + keys.bsc
@@ -312,7 +315,8 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       url=f'{items.polyaddress}{items.commultipoly}')],
             ]))
     if chain == "opti":
-        treasuryurl = items.ethbalanceapiopti + items.devmultiopti + ',' + items.commultiopti + '&tag=latest' + keys.opti
+        treasuryurl = items.ethbalanceapiopti + items.devmultiopti + ',' + items.commultiopti + '&tag=latest' +\
+                      keys.opti
         treasuryresponse = requests.get(treasuryurl)
         treasurydata = treasuryresponse.json()
         dev = float(treasurydata["result"][0]["balance"])
@@ -1031,7 +1035,8 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         pooldollar = float(poolamount) * float(ethvalue) / 1 ** 18
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Lending Pool Info (ETH)*\n\n'
+            caption=f'*X7 Finance Lending Pool Info (ETH)*\n'
+                    f'For other chains use `/pool [chainname]`\n\n'
                     f'{poolamount[:4]}ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
                     f'To contribute to the Lending Pool.\n\n'
                     '1. Send ETH (Not Swap) to the Lending Pool Contract:\n'
@@ -1044,8 +1049,9 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='Lending Pool Reserve Contract',
-                                    url=f'{items.etheraddress}{items.lpreserveca}')],
-                [InlineKeyboardButton(text='X7 Deposit Contract', url=f'{items.etheraddress}{items.x7dca}#code')], ]))
+                                       url=f'{items.etheraddress}{items.lpreserveca}')],
+                 [InlineKeyboardButton(text='X7 Deposit Contract',
+                                       url=f'{items.etheraddress}{items.x7dca}#code')], ]))
     if chain == "bsc":
         bscurl = items.bnbpriceapi + keys.bsc
         bscresponse = requests.get(bscurl)
@@ -1059,35 +1065,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         pooldollar = float(poolamount) * float(bscvalue) / 1 ** 18
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Lending Pool Info (ETH)*\n\n'
-                    f'{poolamount[:4]}ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
-                    f'To contribute to the Lending Pool.\n\n'
-                    '1. Send ETH (Not Swap) to the Lending Pool Contract:\n'
-                    f'`{items.lpreserveca}`\n'
-                    '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
-                    f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
-                    'Note:\n'
-                    'Do not interact directly with the X7D contract  \n\n'
-                    f'{quote}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='Lending Pool Reserve Contract',
-                                    url=f'{items.bscaddress}{items.lpreserveca}')],
-                [InlineKeyboardButton(text='X7 Deposit Contract', url=f'{items.bscaddress}{items.x7dca}#code')], ]))
-    if chain == "bsc":
-        ethurl = items.bnbpriceapi + keys.bsc
-        ethresponse = requests.get(ethurl)
-        ethdata = ethresponse.json()
-        ethvalue = float(ethdata["result"]["ethusd"])
-        poolurl = items.bnbbalanceapi + items.lpreserveca + '&tag=latest' + keys.bsc
-        poolresponse = requests.get(poolurl)
-        pooldata = poolresponse.json()
-        dev = float(pooldata["result"][0]["balance"])
-        poolamount = str(dev / 10 ** 18)
-        pooldollar = float(poolamount) * float(ethvalue) / 1 ** 18
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Lending Pool Info (BNB)*\n\n'
+            caption=f'*X7 Finance Lending Pool Info (BSC)*\n\n'
                     f'{poolamount[:4]}BNB (${"{:0,.0f}".format(pooldollar)})\n\n'
                     f'To contribute to the Lending Pool.\n\n'
                     '1. Send BNB (Not Swap) to the Lending Pool Contract:\n'
@@ -1100,8 +1078,97 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='Lending Pool Reserve Contract',
-                                    url=f'{items.optiaddress}{items.lpreserveca}')],
-                [InlineKeyboardButton(text='X7 Deposit Contract', url=f'{items.optiaddress}{items.x7dca}#code')], ]))
+                                       url=f'{items.bscaddress}{items.lpreserveca}')],
+                 [InlineKeyboardButton(text='X7 Deposit Contract',
+                                       url=f'{items.bscaddress}{items.x7dca}#code')], ]))
+    if chain == "arb":
+        ethurl = items.ethpriceapi + keys.ether
+        ethresponse = requests.get(ethurl)
+        ethdata = ethresponse.json()
+        ethvalue = float(ethdata["result"]["ethusd"])
+        poolurl = items.ethbalanceapiarb + items.lpreserveca + '&tag=latest' + keys.arb
+        poolresponse = requests.get(poolurl)
+        pooldata = poolresponse.json()
+        dev = float(pooldata["result"][0]["balance"])
+        poolamount = str(dev / 10 ** 18)
+        pooldollar = float(poolamount) * float(ethvalue) / 1 ** 18
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption=f'*X7 Finance Lending Pool Info (ARB)*\n\n'
+                    f'{poolamount[:4]}ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
+                    f'To contribute to the Lending Pool.\n\n'
+                    '1. Send ETH (Not Swap) to the Lending Pool Contract:\n'
+                    f'`{items.lpreserveca}`\n'
+                    '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
+                    f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
+                    'Note:\n'
+                    'Do not interact directly with the X7D contract  \n\n'
+                    f'{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='Lending Pool Reserve Contract',
+                                       url=f'{items.arbaddress}{items.lpreserveca}')],
+                 [InlineKeyboardButton(text='X7 Deposit Contract',
+                                       url=f'{items.arbaddress}{items.x7dca}#code')], ]))
+    if chain == "opti":
+        ethurl = items.ethpriceapi + keys.ether
+        ethresponse = requests.get(ethurl)
+        ethdata = ethresponse.json()
+        ethvalue = float(ethdata["result"]["ethusd"])
+        poolurl = items.ethbalanceapiopti + items.lpreserveca + '&tag=latest' + keys.opti
+        poolresponse = requests.get(poolurl)
+        pooldata = poolresponse.json()
+        pool = float(pooldata["result"][0]["balance"])
+        poolamount = str(pool / 10 ** 18)
+        pooldollar = float(poolamount) * float(ethvalue) / 1 ** 18
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption=f'*X7 Finance Lending Pool Info (OPTIMISM)*\n\n'
+                    f'{poolamount[:4]}ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
+                    f'To contribute to the Lending Pool.\n\n'
+                    '1. Send ETH (Not Swap) to the Lending Pool Contract:\n'
+                    f'`{items.lpreserveca}`\n'
+                    '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
+                    f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
+                    'Note:\n'
+                    'Do not interact directly with the X7D contract  \n\n'
+                    f'{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='Lending Pool Reserve Contract',
+                                       url=f'{items.optiaddress}{items.lpreserveca}')],
+                 [InlineKeyboardButton(text='X7 Deposit Contract',
+                                       url=f'{items.optiaddress}{items.x7dca}#code')], ]))
+    if chain == "poly":
+        ethurl = items.maticpriceapi + keys.poly
+        ethresponse = requests.get(ethurl)
+        ethdata = ethresponse.json()
+        ethvalue = float(ethdata["result"]["maticusd"])
+        poolurl = items.maticbalanceapi + items.lpreserveca + '&tag=latest' + keys.poly
+        poolresponse = requests.get(poolurl)
+        pooldata = poolresponse.json()
+        pool = float(pooldata["result"][0]["balance"])
+        poolamount = str(pool / 10 ** 18)
+        pooldollar = float(poolamount) * float(ethvalue) / 1 ** 18
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption=f'*X7 Finance Lending Pool Info (POLYGON)*\n\n'
+                    f'{poolamount[:4]}MATIC (${"{:0,.0f}".format(pooldollar)})\n\n'
+                    f'To contribute to the Lending Pool.\n\n'
+                    '1. Send MATIC (Not Swap) to the Lending Pool Contract:\n'
+                    f'`{items.lpreserveca}`\n'
+                    '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
+                    f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:MATIC\n\n'
+                    'Note:\n'
+                    'Do not interact directly with the X7D contract  \n\n'
+                    f'{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='Lending Pool Reserve Contract',
+                                       url=f'{items.polyaddress}{items.lpreserveca}')],
+                 [InlineKeyboardButton(text='X7 Deposit Contract',
+                                       url=f'{items.polyaddress}{items.x7dca}#code')], ]))
+
 
 async def listings_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteresponse = requests.get(items.quoteapi)
