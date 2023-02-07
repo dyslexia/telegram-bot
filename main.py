@@ -1015,7 +1015,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'Holders: {x7dholders}\n\n'
                     f'To receive X7D:\n\n'
-                    '1. Send ETH (Not Swap) to the Lending Pool Contract:\n'
+                    '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpreserveca}`\n\n'
                     '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
                     f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
@@ -1046,7 +1046,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7D (BSC) Info*\n\n'
                     f'Supply: {x7damount[:4]}BNB (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'To receive X7D:\n\n'
-                    '1. Send BNB (Not Swap) to the Lending Pool Contract:\n'
+                    '1. Send BNB (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpreserveca}`\n\n'
                     '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
                     f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:BNB\n\n'
@@ -1077,7 +1077,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7D (POLY) Info*\n\n'
                     f'Supply: {x7damount[:4]}MATIC (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'To receive X7D.\n\n'
-                    '1. Send MATIC (Not Swap) to the Lending Pool Contract:\n'
+                    '1. Send MATIC (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpreserveca}`\n\n'
                     '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
                     f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:MATIC\n\n'
@@ -1108,7 +1108,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7D (OPTIMISM) Info*\n\n'
                     f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'To receive X7D.\n\n'
-                    '1. Send ETH (Not Swap) to the Lending Pool Contract:\n'
+                    '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpreserveca}`\n\n'
                     '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
                     f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
@@ -1139,7 +1139,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7D (ARBITRUM) Info*\n\n'
                     f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'To receive X7D.\n\n'
-                    '1. Send ETH (Not Swap) to the Lending Pool Contract:\n'
+                    '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpreserveca}`\n\n'
                     '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
                     f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
@@ -1419,7 +1419,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 #                    f'For other chains use `/pool [chainname]`\n\n'
                     f'{poolamount[:4]}ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
                     f'To contribute to the Lending Pool.\n\n'
-                    '1. Send ETH (Not Swap) to the Lending Pool Contract:\n'
+                    '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpreserveca}`\n\n'
                     '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
                     f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
@@ -1448,7 +1448,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7 Finance Lending Pool Info (BSC)*\n\n'
                     f'{poolamount[:4]}BNB (${"{:0,.0f}".format(pooldollar)})\n\n'
                     f'To contribute to the Lending Pool.\n\n'
-                    '1. Send BNB (Not Swap) to the Lending Pool Contract:\n'
+                    '1. Send BNB (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpreserveca}`\n\n'
                     '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
                     f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:BNB\n\n'
@@ -1477,7 +1477,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7 Finance Lending Pool Info (ARB)*\n\n'
                     f'{poolamount[:4]}ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
                     f'To contribute to the Lending Pool.\n\n'
-                    '1. Send ETH (Not Swap) to the Lending Pool Contract:\n'
+                    '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpreserveca}`\n\n'
                     '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
                     f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
@@ -1506,7 +1506,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7 Finance Lending Pool Info (OPTIMISM)*\n\n'
                     f'{poolamount[:4]}ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
                     f'To contribute to the Lending Pool.\n\n'
-                    '1. Send ETH (Not Swap) to the Lending Pool Contract:\n'
+                    '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpreserveca}`\n\n'
                     '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
                     f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
@@ -1535,7 +1535,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7 Finance Lending Pool Info (POLYGON)*\n\n'
                     f'{poolamount[:4]}MATIC (${"{:0,.0f}".format(pooldollar)})\n\n'
                     f'To contribute to the Lending Pool.\n\n'
-                    '1. Send MATIC (Not Swap) to the Lending Pool Contract:\n'
+                    '1. Send MATIC (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpreserveca}`\n\n'
                     '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
                     f'`{items.x7dca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:MATIC\n\n'
@@ -2042,7 +2042,12 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{items.ill001terms}\n\n',
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text=f'{items.ill001name}', url=f'{items.etheraddress}{items.ill001ca}')], ]))
+                [[InlineKeyboardButton(text=f'Ethereum', url=f'{items.etheraddress}{items.ill001ca}')],
+                 [InlineKeyboardButton(text=f'BSC', url=f'{items.bscaddress}{items.ill001ca}')],
+                 [InlineKeyboardButton(text=f'Polygon', url=f'{items.polyaddress}{items.ill001ca}')],
+                 [InlineKeyboardButton(text=f'Arbitrum', url=f'{items.arbaddress}{items.ill001ca}')],
+                 [InlineKeyboardButton(text=f'Optimism', url=f'{items.etheraddress}{items.ill001ca}')],
+            ]))
     if loantype == "ill002":
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
@@ -2050,7 +2055,12 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{items.ill002terms}\n\n',
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text=f'{items.ill002name}', url=f'{items.etheraddress}{items.ill002ca}')], ]))
+                [[InlineKeyboardButton(text=f'Ethereum', url=f'{items.etheraddress}{items.ill002ca}')],
+                 [InlineKeyboardButton(text=f'BSC', url=f'{items.bscaddress}{items.ill002ca}')],
+                 [InlineKeyboardButton(text=f'Polygon', url=f'{items.polyaddress}{items.ill002ca}')],
+                 [InlineKeyboardButton(text=f'Arbitrum', url=f'{items.arbaddress}{items.ill002ca}')],
+                 [InlineKeyboardButton(text=f'Optimism', url=f'{items.etheraddress}{items.ill002ca}')],
+                 ]))
     if loantype == "ill003":
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
@@ -2058,7 +2068,12 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{items.ill003terms}\n\n',
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text=f'{items.ill003name}', url=f'{items.etheraddress}{items.ill003ca}')], ]))
+                [[InlineKeyboardButton(text=f'Ethereum', url=f'{items.etheraddress}{items.ill003ca}')],
+                 [InlineKeyboardButton(text=f'BSC', url=f'{items.bscaddress}{items.ill003ca}')],
+                 [InlineKeyboardButton(text=f'Polygon', url=f'{items.polyaddress}{items.ill003ca}')],
+                 [InlineKeyboardButton(text=f'Arbitrum', url=f'{items.arbaddress}{items.ill003ca}')],
+                 [InlineKeyboardButton(text=f'Optimism', url=f'{items.etheraddress}{items.ill003ca}')],
+                 ]))
 
 
 async def twitter_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
