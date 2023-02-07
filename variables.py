@@ -4,6 +4,7 @@ from datetime import datetime
 # AUTO TIMES HOURS
 wptime = 1
 twittertime = 6
+airdroptime = 1800
 
 # AUTO MESSAGE
 automessage = "**X7 Finance Twitter Raid**\n\nClick the link below and like and RT everything you see!"
