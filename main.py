@@ -133,19 +133,24 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "":
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
-            caption=f'*X7 Finance NFT Information (ETH)*\n\n*Ecosystem Maxi*\n{items.ecopriceeth}\n'
-                    f'> 25% discount on x7100 tax\n'
-                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n{items.liqpriceeth}\n'
-                    f'> 50 % discount on x7100tax\n> 25 % discount on X7R tax\n'
-                    f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.dexpriceeth}\n'
+            caption=f'*X7 Finance NFT Information (ETH)*\nFor other chains use `/nft [chainname]`\n\n'
+                    f'*Ecosystem Maxi*\n{items.ecopriceeth}\n'
+                    f'> 25% discount on X7100 tax\n'
+                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
+                    f'Liquidity Maxi*\n{items.liqpriceeth}\n'
+                    f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
+                    f'> 15 % discount on X7DAO tax\n\n'
+                    f'*Dex Maxi*\n{items.dexpriceeth}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{items.borrowpriceeth}\n> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
-                    f'*Magister*\n{items.magisterpriceeth}\n> 25% discount on x7100 tax\n'
+                    f'*Borrowing Maxi*\n{items.borrowpriceeth}\n'
+                    f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
+                    f'*Magister*\n{items.magisterpriceeth}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n*Pioneer*\n'
                     f' > 6% of profits that come into the X7 Treasury Splitter are now being allocated to the reward '
                     f'pool. Each X7 Pioneer NFT grants you a proportional share of this pool\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Mint Here', url='https://x7.finance/x/nft/mint')],
                 [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.ethertoken}{items.ecoca}')],
                 [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.ethertoken}{items.liqca}')],
                 [InlineKeyboardButton(text='DEX Maxi', url=f'{items.ethertoken}{items.dexca}')],
@@ -156,37 +161,39 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (BSC)*\n\n*Ecosystem Maxi*\n{items.ecopricebsc}\n'
-                    f'> 25% discount on x7100 tax\n'
+                    f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n{items.liqpricebsc}\n'
-                    f'> 50 % discount on x7100tax\n> 25 % discount on X7R tax\n'
+                    f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.dexpricebsc}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
                     f'*Borrowing Maxi*\n{items.borrowpricebsc}\n> Fee discounts for borrowing funds for ILO on X7 '
                     f'DEX\n\n'
-                    f'*Magister*\n{items.magisterpricebsc}\n> 25% discount on x7100 tax\n'
+                    f'*Magister*\n{items.magisterpricebsc}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Mint Here', url='https://x7.finance/x/nft/mint')],
                 [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.bsctoken}{items.ecoca}')],
                 [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.bsctoken}{items.liqca}')],
                 [InlineKeyboardButton(text='DEX Maxi', url=f'{items.bsctoken}{items.dexca}')],
                 [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.bsctoken}{items.borrowca}')],
-                [InlineKeyboardButton(text='Magister', url=f'{items.bsctoken}{items.magisterca}')],]))
+                [InlineKeyboardButton(text='Magister', url=f'{items.bsctoken}{items.magisterca}')], ]))
     if chain == "arbitrum":
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (ARBITRUM)*\n\n*Ecosystem Maxi*\n{items.ecopricearb}\n'
-                    f'> 25% discount on x7100 tax\n'
+                    f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n{items.ecopricearb}\n'
-                    f'> 50 % discount on x7100tax\n> 25 % discount on X7R tax\n'
+                    f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.ecopricearb}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
                     f'*Borrowing Maxi*\n{items.ecopricearb}\n> Fee discounts for borrowing funds for ILO on X7 '
                     f'DEX\n\n'
-                    f'*Magister*\n{items.ecopricearb}\n> 25% discount on x7100 tax\n'
+                    f'*Magister*\n{items.ecopricearb}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Mint Here', url='https://x7.finance/x/nft/mint')],
                 [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.arbtoken}{items.ecoca}')],
                 [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.arbtoken}{items.liqca}')],
                 [InlineKeyboardButton(text='DEX Maxi', url=f'{items.arbtoken}{items.dexca}')],
@@ -196,17 +203,20 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (POLYGON)*\n\n*Ecosystem Maxi*\n{items.ecopricepoly}\n'
-                    f'> 25% discount on x7100 tax\n'
-                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n{items.ecopricepoly}\n'
-                    f'> 50 % discount on x7100tax\n> 25 % discount on X7R tax\n'
-                    f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.ecopricepoly}\n'
+                    f'> 25% discount on X7100 tax\n'
+                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n'
+                    f'*Liquidity Maxi*\n{items.ecopricepoly}\n'
+                    f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
+                    f'> 15 % discount on X7DAO tax\n\n'
+                    f'*Dex Maxi*\n{items.ecopricepoly}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
                     f'*Borrowing Maxi*\n{items.ecopricepoly}\n> Fee discounts for borrowing funds for ILO on X7 '
                     f'DEX\n\n'
-                    f'*Magister*\n{items.ecopricepoly}\n> 25% discount on x7100 tax\n'
+                    f'*Magister*\n{items.ecopricepoly}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Mint Here', url='https://x7.finance/x/nft/mint')],
                 [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.polytoken}{items.ecoca}')],
                 [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.polytoken}{items.liqca}')],
                 [InlineKeyboardButton(text='DEX Maxi', url=f'{items.polytoken}{items.dexca}')],
@@ -216,14 +226,16 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (OPTIMISM)*\n\n*Ecosystem Maxi*\n{items.ecopriceopti}\n'
-                    f'> 25% discount on x7100 tax\n'
-                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n{items.ecopriceopti}\n'
-                    f'> 50 % discount on x7100tax\n> 25 % discount on X7R tax\n'
-                    f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.ecopriceopti}\n'
+                    f'> 25% discount on X7100 tax\n'
+                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n'
+                    f'*Liquidity Maxi*\n{items.ecopriceopti}\n'
+                    f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
+                    f'> 15 % discount on X7DAO tax\n\n'
+                    f'*Dex Maxi*\n{items.ecopriceopti}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
                     f'*Borrowing Maxi*\n{items.ecopriceopti}\n> Fee discounts for borrowing funds for ILO on X7 '
                     f'DEX\n\n'
-                    f'*Magister*\n{items.ecopriceopti}\n> 25% discount on x7100 tax\n'
+                    f'*Magister*\n{items.ecopriceopti}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -313,6 +325,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(
                     text='Community Multisig Wallet', url=f'{items.etheraddress}{items.commultieth}')],
             ]))
+
     if chain == "bsc":
         treasuryurl = items.bnbbalanceapi + items.devmultibsc + ',' + items.commultibsc + '&tag=latest' + keys.bsc
         treasuryresponse = requests.get(treasuryurl)
@@ -341,7 +354,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Community Multisig Wallet',
                                       url=f'{items.bscaddress}{items.commultibsc}')],
             ]))
-    if chain == "arb":
+    if chain == "arbitrum":
         treasuryurl = items.ethbalanceapiarb + items.devmultiarb + ',' + items.commultiarb + '&tag=latest' + keys.arb
         treasuryresponse = requests.get(treasuryurl)
         treasurydata = treasuryresponse.json()
@@ -369,7 +382,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Community Multisig Wallet',
                                       url=f'{items.arbaddress}{items.commultiarb}')],
             ]))
-    if chain == "poly":
+    if chain == "polygon":
         treasuryurl = items.maticbalanceapi + items.devmultipoly + ',' + items.commultipoly + '&tag=latest' + keys.poly
         treasuryresponse = requests.get(treasuryurl)
         treasurydata = treasuryresponse.json()
@@ -397,7 +410,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Community Multisig Wallet',
                                       url=f'{items.polyaddress}{items.commultipoly}')],
             ]))
-    if chain == "opti":
+    if chain == "optimism":
         treasuryurl = items.ethbalanceapiopti + items.devmultiopti + ',' + items.commultiopti + '&tag=latest' +\
                       keys.opti
         treasuryresponse = requests.get(treasuryurl)
@@ -491,13 +504,14 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "":
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Smart Contracts (ETH)*\nFor tokens use `/tokenname` or `/nft`\n\n{quote}',
+            caption=f'*X7 Finance Smart Contracts (ETH)*\nFor other chains use `/smart [chainname]`\n'
+                    f'For tokens use `/tokenname` or `/nft`\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher', url=f'{items.cadir}')],
                 [InlineKeyboardButton(text='X7100 Liquidity Hub', url=f'{items.etheraddress}{items.consliqca}')],
                 [InlineKeyboardButton(text='X7R Liquidity Hub', url=f'{items.etheraddress}{items.rliqhubca}')],
-                [InlineKeyboardButton(text='X7DAO Liquidity Hub', url=f'{items.etheraddress}{items.daodaca}')],
+                [InlineKeyboardButton(text='X7DAO Liquidity Hub', url=f'{items.etheraddress}{items.daoliqhubca}')],
                 [InlineKeyboardButton(text='X7 Token Burner', url=f'{items.etheraddress}{items.burnerca}')],
                 [InlineKeyboardButton(text='X7100 Discount Authority', url=f'{items.etheraddress}{items.consdaca}')],
                 [InlineKeyboardButton(text='X7R Discount Authority', url=f'{items.etheraddress}{items.rdaca}')],
@@ -512,7 +526,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       url=f'{items.etheraddress}{items.lendingdis}')],
                 [InlineKeyboardButton(text='X7 Xchange Router', url=f'{items.etheraddress}{items.routerca}')],
                 [InlineKeyboardButton(text='X7 Xchange Router with Discounts',
-                                  url=f'{items.etheraddress}{items.discountrouterca}')],
+                                      url=f'{items.etheraddress}{items.discountrouterca}')],
                 [InlineKeyboardButton(text='X7 Lending Pool Contract', url=f'{items.etheraddress}{items.lpca}')],
                 [InlineKeyboardButton(text='X7 Xchange Factory', url=f'{items.etheraddress}{items.factoryca}')],
             ]))
@@ -525,7 +539,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher', url=f'{items.cadir}')],
                 [InlineKeyboardButton(text='X7100 Liquidity Hub', url=f'{items.arbaddress}{items.consliqca}')],
                 [InlineKeyboardButton(text='X7R Liquidity Hub', url=f'{items.arbaddress}{items.rliqhubca}')],
-                [InlineKeyboardButton(text='X7DAO Liquidity Hub', url=f'{items.arbaddress}{items.daodaca}')],
+                [InlineKeyboardButton(text='X7DAO Liquidity Hub', url=f'{items.arbaddress}{items.daoliqhubca}')],
                 [InlineKeyboardButton(text='X7 Token Burner', url=f'{items.arbaddress}{items.burnerca}')],
                 [InlineKeyboardButton(text='X7100 Discount Authority', url=f'{items.arbaddress}{items.consdaca}')],
                 [InlineKeyboardButton(text='X7R Discount Authority', url=f'{items.arbaddress}{items.rdaca}')],
@@ -540,7 +554,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       url=f'{items.arbaddress}{items.lendingdis}')],
                 [InlineKeyboardButton(text='X7 Xchange Router', url=f'{items.arbaddress}{items.routerca}')],
                 [InlineKeyboardButton(text='X7 Xchange Router with Discounts',
-                                  url=f'{items.arbaddress}{items.discountrouterca}')],
+                                      url=f'{items.arbaddress}{items.discountrouterca}')],
                 [InlineKeyboardButton(text='X7 Lending Pool Contract', url=f'{items.arbaddress}{items.lpca}')],
                 [InlineKeyboardButton(text='X7 Xchange Factory', url=f'{items.arbaddress}{items.factoryca}')],
             ]))
@@ -553,7 +567,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher', url=f'{items.cadir}')],
                 [InlineKeyboardButton(text='X7100 Liquidity Hub', url=f'{items.polyaddress}{items.consliqca}')],
                 [InlineKeyboardButton(text='X7R Liquidity Hub', url=f'{items.polyaddress}{items.rliqhubca}')],
-                [InlineKeyboardButton(text='X7DAO Liquidity Hub', url=f'{items.polyaddress}{items.daodaca}')],
+                [InlineKeyboardButton(text='X7DAO Liquidity Hub', url=f'{items.polyaddress}{items.daoliqhubca}')],
                 [InlineKeyboardButton(text='X7 Token Burner', url=f'{items.polyaddress}{items.burnerca}')],
                 [InlineKeyboardButton(text='X7100 Discount Authority', url=f'{items.polyaddress}{items.consdaca}')],
                 [InlineKeyboardButton(text='X7R Discount Authority', url=f'{items.polyaddress}{items.rdaca}')],
@@ -568,7 +582,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       url=f'{items.polyaddress}{items.lendingdis}')],
                 [InlineKeyboardButton(text='X7 Xchange Router', url=f'{items.polyaddress}{items.routerca}')],
                 [InlineKeyboardButton(text='X7 Xchange Router with Discounts',
-                                  url=f'{items.arbaddress}{items.discountrouterca}')],
+                                      url=f'{items.arbaddress}{items.discountrouterca}')],
                 [InlineKeyboardButton(text='X7 Lending Pool Contract', url=f'{items.polyaddress}{items.lpca}')],
                 [InlineKeyboardButton(text='X7 Xchange Factory', url=f'{items.polyaddress}{items.factoryca}')],
             ]))
@@ -581,7 +595,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher', url=f'{items.cadir}')],
                 [InlineKeyboardButton(text='X7100 Liquidity Hub', url=f'{items.bscaddress}{items.consliqca}')],
                 [InlineKeyboardButton(text='X7R Liquidity Hub', url=f'{items.bscaddress}{items.rliqhubca}')],
-                [InlineKeyboardButton(text='X7DAO Liquidity Hub', url=f'{items.bscaddress}{items.daodaca}')],
+                [InlineKeyboardButton(text='X7DAO Liquidity Hub', url=f'{items.bscaddress}{items.daoliqhubca}')],
                 [InlineKeyboardButton(text='X7 Token Burner', url=f'{items.bscaddress}{items.burnerca}')],
                 [InlineKeyboardButton(text='X7100 Discount Authority', url=f'{items.bscaddress}{items.consdaca}')],
                 [InlineKeyboardButton(text='X7R Discount Authority', url=f'{items.bscaddress}{items.rdaca}')],
@@ -596,7 +610,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       url=f'{items.bscaddress}{items.lendingdis}')],
                 [InlineKeyboardButton(text='X7 Xchange Router', url=f'{items.bscaddress}{items.routerca}')],
                 [InlineKeyboardButton(text='X7 Xchange Router with Discounts',
-                                  url=f'{items.bscaddress}{items.discountrouterca}')],
+                                      url=f'{items.bscaddress}{items.discountrouterca}')],
                 [InlineKeyboardButton(text='X7 Lending Pool Contract', url=f'{items.bscaddress}{items.lpca}')],
                 [InlineKeyboardButton(text='X7 Xchange Factory', url=f'{items.bscaddress}{items.factoryca}')],
             ]))
@@ -609,7 +623,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher', url=f'{items.cadir}')],
                 [InlineKeyboardButton(text='X7100 Liquidity Hub', url=f'{items.optiaddress}{items.consliqca}')],
                 [InlineKeyboardButton(text='X7R Liquidity Hub', url=f'{items.optiaddress}{items.rliqhubca}')],
-                [InlineKeyboardButton(text='X7DAO Liquidity Hub', url=f'{items.optiaddress}{items.daodaca}')],
+                [InlineKeyboardButton(text='X7DAO Liquidity Hub', url=f'{items.optiaddress}{items.daoliqhubca}')],
                 [InlineKeyboardButton(text='X7 Token Burner', url=f'{items.optiaddress}{items.burnerca}')],
                 [InlineKeyboardButton(text='X7100 Discount Authority', url=f'{items.optiaddress}{items.consdaca}')],
                 [InlineKeyboardButton(text='X7R Discount Authority', url=f'{items.optiaddress}{items.rdaca}')],
@@ -624,7 +638,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       url=f'{items.optiaddress}{items.lendingdis}')],
                 [InlineKeyboardButton(text='X7 Xchange Router', url=f'{items.optiaddress}{items.routerca}')],
                 [InlineKeyboardButton(text='X7 Xchange Router with Discounts',
-                                  url=f'{items.optiaddress}{items.discountrouterca}')],
+                                      url=f'{items.optiaddress}{items.discountrouterca}')],
                 [InlineKeyboardButton(text='X7 Lending Pool Contract', url=f'{items.optiaddress}{items.lpca}')],
                 [InlineKeyboardButton(text='X7 Xchange Factory', url=f'{items.optiaddress}{items.factoryca}')],
             ]))
@@ -1011,7 +1025,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7D (ETH) Info*\n\n'
-#                    f'For other chains use `/x7d [chainname]`'
+                    f'For other chains use `/x7d [chainname]`'
                     f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'Holders: {x7dholders}\n\n'
                     f'To receive X7D:\n\n'
@@ -1182,8 +1196,8 @@ async def buyevenly_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     await update.message.reply_text(
         '*Buy All X7 Finance Constellation Tokens Evenly (ETH)*\n\n'
-        'Simply connect to https://dapp.x7community.space/ via metamask mobile or desktop and navigate to '
-        '\'Buy X7 Constellation tokens equally\' and enter your desired Eth amount\n\n'
+        'Simply connect to https://dapp.x7community.space/constellation via metamask mobile or desktop'
+        ' and enter your desired Eth amount\n\n'
         'Alternatively you can interact with the follow contract and follow the steps '
         'below:\n\n'
         '1. Head over to the Buy Evenly contract:\nhttps://etherscan.io/address/0x0419074afe1a137dfa6afd5b6af5'
@@ -1416,7 +1430,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Lending Pool Info (ETH)*\n\n'
-#                    f'For other chains use `/pool [chainname]`\n\n'
+                    f'For other chains use `/pool [chainname]`\n\n'
                     f'{poolamount[:4]}ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
                     f'To contribute to the Lending Pool.\n\n'
                     '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
@@ -2046,8 +2060,8 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  [InlineKeyboardButton(text=f'BSC', url=f'{items.bscaddress}{items.ill001ca}')],
                  [InlineKeyboardButton(text=f'Polygon', url=f'{items.polyaddress}{items.ill001ca}')],
                  [InlineKeyboardButton(text=f'Arbitrum', url=f'{items.arbaddress}{items.ill001ca}')],
-                 [InlineKeyboardButton(text=f'Optimism', url=f'{items.etheraddress}{items.ill001ca}')],
-            ]))
+                 [InlineKeyboardButton(text=f'Optimism', url=f'{items.optiaddress}{items.ill001ca}')],
+                 ]))
     if loantype == "ill002":
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
@@ -2059,7 +2073,7 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  [InlineKeyboardButton(text=f'BSC', url=f'{items.bscaddress}{items.ill002ca}')],
                  [InlineKeyboardButton(text=f'Polygon', url=f'{items.polyaddress}{items.ill002ca}')],
                  [InlineKeyboardButton(text=f'Arbitrum', url=f'{items.arbaddress}{items.ill002ca}')],
-                 [InlineKeyboardButton(text=f'Optimism', url=f'{items.etheraddress}{items.ill002ca}')],
+                 [InlineKeyboardButton(text=f'Optimism', url=f'{items.optiaddress}{items.ill002ca}')],
                  ]))
     if loantype == "ill003":
         await update.message.reply_photo(
@@ -2072,7 +2086,7 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  [InlineKeyboardButton(text=f'BSC', url=f'{items.bscaddress}{items.ill003ca}')],
                  [InlineKeyboardButton(text=f'Polygon', url=f'{items.polyaddress}{items.ill003ca}')],
                  [InlineKeyboardButton(text=f'Arbitrum', url=f'{items.arbaddress}{items.ill003ca}')],
-                 [InlineKeyboardButton(text=f'Optimism', url=f'{items.etheraddress}{items.ill003ca}')],
+                 [InlineKeyboardButton(text=f'Optimism', url=f'{items.optiaddress}{items.ill003ca}')],
                  ]))
 
 
@@ -2192,6 +2206,149 @@ async def snapshot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'are released on other chains.\n\nThese airdrop snapshots will occur just prior to the token launch\n\n'
         f'{quote}', parse_mode='Markdown')
 
+
+async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chain = " ".join(context.args)
+    quoteresponse = requests.get(items.quoteapi)
+    quotedata = quoteresponse.json()
+    quoteraw = (random.choice(quotedata))
+    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+    if chain == "bsc":
+        bscliqurl = \
+            items.bnbbalanceapi + items.daoliq + ',' + items.x7rliq + ',' + items.consliq + '&tag=latest' \
+            + keys.bsc
+        bscresponse = requests.get(bscliqurl)
+        bscdata = bscresponse.json()
+        x7daobsc = float(bscdata["result"][0]["balance"])
+        x7daobscamount = str(x7daobsc / 10 ** 18)
+        x7rbsc = float(bscdata["result"][1]["balance"])
+        x7rbscamount = str(x7rbsc / 10 ** 18)
+        x7rconsbsc = float(bscdata["result"][2]["balance"])
+        x7rconsbscamount = str(x7rconsbsc / 10 ** 18)
+        ethurl = items.ethpriceapi + keys.ether
+        ethresponse = requests.get(ethurl)
+        ethdata = ethresponse.json()
+        ethvalue = float(ethdata["result"]["ethusd"])
+        x7daobscdollar = float(x7daobscamount) * float(ethvalue) / 1 ** 18
+        x7rbscdollar = float(x7rbscamount) * float(ethvalue) / 1 ** 18
+        x7rconsbscdollar = float(x7rconsbscamount) * float(ethvalue) / 1 ** 18
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption='*X7 Finance Initial Liquidity (BSC)*\n\n'
+                    f'X7R:\n{x7rbscamount[:4]}BNB (${"{:0,.0f}".format(x7rbscdollar)})\n\n'
+                    f'X7DAO:\n{x7daobsc[:4]}BNB (${"{:0,.0f}".format(x7daobscdollar)})\n\n'
+                    f'X7100:\n{x7rconsbsc[:4]}BNB (${"{:0,.0f}".format(x7rconsbscdollar)})\n\n{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='X7R Initial Liquidity',
+                                      url=f'{items.bscaddress}{items.x7rliq}')],
+                [InlineKeyboardButton(text='X7DAO Initial Liquidity',
+                                      url=f'{items.bscaddress}{items.daoliq}')],
+                [InlineKeyboardButton(text='X7101 Initial Liquidity',
+                                      url=f'{items.bscaddress}{items.consliq}')],
+            ]))
+    if chain == "arbitrum":
+        bscliqurl = \
+            items.ethbalanceapiarb + items.daoliq + ',' + items.x7rliq + ',' + items.consliq + '&tag=latest' \
+            + keys.arb
+        bscresponse = requests.get(bscliqurl)
+        bscdata = bscresponse.json()
+        x7daobsc = float(bscdata["result"][0]["balance"])
+        x7daobscamount = str(x7daobsc / 10 ** 18)
+        x7rbsc = float(bscdata["result"][1]["balance"])
+        x7rbscamount = str(x7rbsc / 10 ** 18)
+        x7rconsbsc = float(bscdata["result"][2]["balance"])
+        x7rconsbscamount = str(x7rconsbsc / 10 ** 18)
+        ethurl = items.ethpriceapi + keys.ether
+        ethresponse = requests.get(ethurl)
+        ethdata = ethresponse.json()
+        ethvalue = float(ethdata["result"]["ethusd"])
+        x7daobscdollar = float(x7daobscamount) * float(ethvalue) / 1 ** 18
+        x7rbscdollar = float(x7rbscamount) * float(ethvalue) / 1 ** 18
+        x7rconsbscdollar = float(x7rconsbscamount) * float(ethvalue) / 1 ** 18
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption='*X7 Finance Initial Liquidity (ARBITRUM)*\n\n'
+                    f'X7R:\n{x7rbscamount[:4]}ETH (${"{:0,.0f}".format(x7rbscdollar)})\n\n'
+                    f'X7DAO:\n{x7daobsc[:4]}ETH (${"{:0,.0f}".format(x7daobscdollar)})\n\n'
+                    f'X7100:\n{x7rconsbsc[:4]}ETH (${"{:0,.0f}".format(x7rconsbscdollar)})\n\n{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='X7R Initial Liquidity',
+                                      url=f'{items.arbaddress}{items.x7rliq}')],
+                [InlineKeyboardButton(text='X7DAO Initial Liquidity',
+                                      url=f'{items.arbaddress}{items.daoliq}')],
+                [InlineKeyboardButton(text='X7101 Initial Liquidity',
+                                      url=f'{items.arbaddress}{items.consliq}')],
+            ]))
+    if chain == "optimism":
+        bscliqurl = \
+            items.ethbalanceapiarb + items.daoliq + ',' + items.x7rliq + ',' + items.consliq + '&tag=latest' \
+            + keys.arb
+        bscresponse = requests.get(bscliqurl)
+        bscdata = bscresponse.json()
+        x7daobsc = float(bscdata["result"][0]["balance"])
+        x7daobscamount = str(x7daobsc / 10 ** 18)
+        x7rbsc = float(bscdata["result"][1]["balance"])
+        x7rbscamount = str(x7rbsc / 10 ** 18)
+        x7rconsbsc = float(bscdata["result"][2]["balance"])
+        x7rconsbscamount = str(x7rconsbsc / 10 ** 18)
+        ethurl = items.ethpriceapi + keys.ether
+        ethresponse = requests.get(ethurl)
+        ethdata = ethresponse.json()
+        ethvalue = float(ethdata["result"]["ethusd"])
+        x7daobscdollar = float(x7daobscamount) * float(ethvalue) / 1 ** 18
+        x7rbscdollar = float(x7rbscamount) * float(ethvalue) / 1 ** 18
+        x7rconsbscdollar = float(x7rconsbscamount) * float(ethvalue) / 1 ** 18
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption='*X7 Finance Initial Liquidity (OPTIMISM)*\n\n'
+                    f'X7R:\n{x7rbscamount[:4]}ETH (${"{:0,.0f}".format(x7rbscdollar)})\n\n'
+                    f'X7DAO:\n{x7daobsc[:4]}ETH (${"{:0,.0f}".format(x7daobscdollar)})\n\n'
+                    f'X7100:\n{x7rconsbsc[:4]}ETH (${"{:0,.0f}".format(x7rconsbscdollar)})\n\n{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='X7R Initial Liquidity',
+                                      url=f'{items.optiaddress}{items.x7rliq}')],
+                [InlineKeyboardButton(text='X7DAO Initial Liquidity',
+                                      url=f'{items.optiaddress}{items.daoliq}')],
+                [InlineKeyboardButton(text='X7101 Initial Liquidity',
+                                      url=f'{items.optiaddress}{items.consliq}')],
+            ]))
+    if chain == "polygon":
+        bscliqurl = \
+            items.maticbalanceapi + items.daoliq + ',' + items.x7rliq + ',' + items.consliq + '&tag=latest' \
+            + keys.poly
+        bscresponse = requests.get(bscliqurl)
+        bscdata = bscresponse.json()
+        x7daobsc = float(bscdata["result"][0]["balance"])
+        x7daobscamount = str(x7daobsc / 10 ** 18)
+        x7rbsc = float(bscdata["result"][1]["balance"])
+        x7rbscamount = str(x7rbsc / 10 ** 18)
+        x7rconsbsc = float(bscdata["result"][2]["balance"])
+        x7rconsbscamount = str(x7rconsbsc / 10 ** 18)
+        ethurl = items.maticpriceapi + keys.poly
+        ethresponse = requests.get(ethurl)
+        ethdata = ethresponse.json()
+        ethvalue = float(ethdata["result"]["maticusd"])
+        x7daobscdollar = float(x7daobscamount) * float(ethvalue) / 1 ** 18
+        x7rbscdollar = float(x7rbscamount) * float(ethvalue) / 1 ** 18
+        x7rconsbscdollar = float(x7rconsbscamount) * float(ethvalue) / 1 ** 18
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption='*X7 Finance Initial Liquidity (POLYGON)*\n\n'
+                    f'X7R:\n{x7rbscamount[:4]}MATIC (${"{:0,.0f}".format(x7rbscdollar)})\n\n'
+                    f'X7DAO:\n{x7daobsc[:4]}MATIC (${"{:0,.0f}".format(x7daobscdollar)})\n\n'
+                    f'X7100:\n{x7rconsbsc[:4]}MATIC (${"{:0,.0f}".format(x7rconsbscdollar)})\n\n{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='X7R Initial Liquidity',
+                                      url=f'{items.polyaddress}{items.x7rliq}')],
+                [InlineKeyboardButton(text='X7DAO Initial Liquidity',
+                                      url=f'{items.polyaddress}{items.daoliq}')],
+                [InlineKeyboardButton(text='X7101 Initial Liquidity',
+                                      url=f'{items.polyaddress}{items.consliq}')],
+            ]))
 
 # HARD AUTO MESSAGES
 async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -2391,6 +2548,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('twitter', twitter_command))
     application.add_handler(CommandHandler('announcements', announcements_command))
     application.add_handler(CommandHandler('say', say_command))
+    application.add_handler(CommandHandler('liquidity', liquidity_command))
     application.add_handler(CommandHandler('everyone', everyone_command))
     application.add_handler(CommandHandler('voting', voting_command))
     application.add_handler(CommandHandler(['snapshot', 'rollout', 'multichain', 'airdrop'], snapshot_command))
