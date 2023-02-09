@@ -62,8 +62,8 @@ rdaca = '0x712bC6ddcd97A776B2482531058C629456B93eda'
 daodaca = '0x7da05D75f51056f3B83b43F397668Cf6A5051cDa'
 timelockca = '0x7000F4Cddca46FB77196466C3833Be4E89ab810C'
 esplitterca = '0x70001BA1BA4d85739E7B6A7C646B8aba5ed6c888'
-xchangedis = '0x7de8ab0dd777561ce98b7ef413f6fd564e89c1da'
-lendingdis = '0x74001e463b3c7dc95d96a1fdbe621678c24d47da'
+xchangedisca = '0x7de8ab0dd777561ce98b7ef413f6fd564e89c1da'
+lendingdisca = '0x74001e463b3c7dc95d96a1fdbe621678c24d47da'
 routerca = '0x7DE8063E9fB43321d2100e8Ddae5167F56A50060'
 discountrouterca = '0x7de802dfc36dac738ddf2681dbfb37b30bb80060'
 lpca = '0x740015c39da5d148fca25a467399d00bce10c001'
@@ -104,8 +104,13 @@ arbaddress = 'https://arbiscan.io/address/'
 optitoken = 'https://optimistic.etherscan.io/token/'
 optiaddress = 'https://optimistic.etherscan.io/address/'
 dextoolseth = 'https://www.dextools.io/app/ether/pair-explorer/'
+dextoolsbsc = 'https://www.dextools.io/app/bnb/pair-explorer/'
+dextoolspoly = 'https://www.dextools.io/app/polygon/pair-explorer/'
+dextoolsarb = 'https://www.dextools.io/app/arbitrum/pair-explorer/'
+dextoolsopti = 'https://www.dextools.io/app/optimism/pair-explorer/'
 
 # PAIRS
+# ETH
 x7rpaireth = '0x6139240a5907e4ce74673257c320ea366c521aea'
 x7daopaireth = '0x75311ee016c82e7770e4aca73a0d142f96ddb969'
 x7101paireth = '0x75311ee016c82e7770e4aca73a0d142f96ddb969'
@@ -113,6 +118,42 @@ x7102paireth = '0x49c838c60170c36e90cfa6021a57f2268dda3254'
 x7103paireth = '0xcecf54edc42c5c9f6ee10cb1efcc23e49f7d5a5d'
 x7104paireth = '0x7d0d7c088233cbc08ee2400b96d10bf24c40e93a'
 x7105paireth = '0x6d9d1b6b4d53f090639ae8d9e9c83b796da694ee'
+
+# BSC
+x7rpairbsc = ''
+x7daopairbsc = ''
+x7101pairbsc = ''
+x7102pairbsc = ''
+x7103pairbsc = ''
+x7104pairbsc = ''
+x7105pairbsc = ''
+
+# ARB
+x7rpairarb = ''
+x7daopairarb = ''
+x7101pairarb = ''
+x7102pairarb = ''
+x7103pairarb = ''
+x7104pairarb = ''
+x7105pairarb = ''
+
+# OPTI
+x7rpairopti = ''
+x7daopairopti = ''
+x7101pairopti = ''
+x7102pairopti = ''
+x7103pairopti = ''
+x7104pairopti = ''
+x7105pairopti = ''
+
+# POLY
+x7rpairpoly = ''
+x7daopairpoly = ''
+x7101pairpoly = ''
+x7102pairpoly = ''
+x7103pairpoly = ''
+x7104pairpoly = ''
+x7105pairpoly = ''
 
 # LOANS
 ill001name = 'X7 Initial Liquidity Loan Term (001) - X7ILL001'
