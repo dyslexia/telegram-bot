@@ -4,7 +4,7 @@ from datetime import datetime
 # AUTO TIMES HOURS
 wptime = 1
 twittertime = 6
-airdroptime = 1800
+airdroptime = 1
 
 # AUTO MESSAGE
 automessage = "**X7 Finance Twitter Raid**\n\nClick the link below and like and RT everything you see!"
@@ -20,13 +20,13 @@ giveawaytime = datetime(2023, 3, 10, 20, 30, 00)
 snapshot1 = datetime(2023, 2, 9, 20, 30, 00)
 snapshot2 = datetime(2023, 3, 9, 20, 30, 00)
 giveawaytitle = "X7 Finance 20,000 X7R Giveaway!"
-giveawayinfo = "To get your name in the draw for the 20,000 X7R Giveaway, Simply mint and hold 0.1 X7D for 30 " \
-               "days!\n\n" \
-               "For every 0.1 X7D minted you will receive 1 entry!\n\n" \
-               f"A Snapshot of minters will be taken at {snapshot1} (UTC) and again at {snapshot2} (UTC)\n\n" \
-               f"The Diamond hands that have held for the entire duration will be in the draw! The more you mint," \
-               " the better your chance!\n\n" \
-               f"The draw will be made at {giveawaytime} (UTC)\n\nCredit: Defi Dipper!"
+giveawayinfo = "For every 0.1 X7D minted,1 entry into the draw was generated!\n\n" \
+               f"A Snapshot of minters was taken at {snapshot1} (UTC) and a second will be at {snapshot2} (UTC)\n\n" \
+               f"The Diamond hands that have held for the entire duration will be in the draw! The more minted," \
+               " the better the chance!\n\n" \
+               "Any withdrawals will be deducted from the entries at the second snapshot.\n\n" \
+               f"The draw will be made at {giveawaytime} (UTC)\n\nCredit: Defi Dipper!\n\nUse `/giveaway entries`" \
+               f" to see last 5 of every address in the draw"
 
 
 tweetid = 1618166216706646018

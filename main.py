@@ -554,7 +554,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "":
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Smart Contracts (ETH)*\nUse `/smart [chain-name] or other chains\n\n{quote}',
+            caption=f'*X7 Finance Smart Contracts (ETH)*\nUse `/smart [chain-name]` or other chains\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher', url=f'{items.cadir}')],
@@ -582,7 +582,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "arbitrum":
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Smart Contracts (ETH)*\nUse `/smart [chain-name] or other chains\n\n{quote}',
+            caption=f'*X7 Finance Smart Contracts (ETH)*\nUse `/smart [chain-name]` or other chains\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher', url=f'{items.cadir}')],
@@ -610,7 +610,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "polygon":
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Smart Contracts (ETH)*\nUse `/smart [chain-name] or other chains\n\n{quote}',
+            caption=f'*X7 Finance Smart Contracts (ETH)*\nUse `/smart [chain-name]` or other chains\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher', url=f'{items.cadir}')],
@@ -638,7 +638,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "bsc":
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Smart Contracts (ETH)*\nUse `/smart [chain-name] or other chains\n\n{quote}',
+            caption=f'*X7 Finance Smart Contracts (ETH)*\nUse `/smart [chain-name]` or other chains\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher', url=f'{items.cadir}')],
@@ -666,7 +666,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "optimism":
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Smart Contracts (ETH)*\nUse `/smart [chain-name] or other chains\n\n{quote}',
+            caption=f'*X7 Finance Smart Contracts (ETH)*\nUse `/smart [chain-name]` or other chains\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher', url=f'{items.cadir}')],
@@ -1407,7 +1407,8 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if ext == "entries":
             await update.message.reply_photo(
                 photo=open((random.choice(items.logos)), 'rb'),
-                caption=f'The following addresses are in the draw (last 5 digits only):\n\n{last5}\n\n'
+                caption=f'The following addresses are in the draw, weighted by minted amount'
+                        f' (last 5 digits only):\n\n{last5}\n\n'
                         f'{quote}',
                 parse_mode="Markdown")
         if ext == "run":
@@ -1422,7 +1423,7 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     parse_mode="Markdown")
             else:
                 await update.message.reply_text(f'{variables.modsonly}')
-        if ext == "count":
+        if ext == "countsss":
             chat_admins = await update.effective_chat.get_administrators()
             if update.effective_user in (admin.user for admin in chat_admins):
                 client = tweepy.Client(keys.bearer)
@@ -1690,12 +1691,8 @@ async def snapshot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     await update.message.reply_text(
         f'*X7 Finance Snapshot Information*\n\nThe rollout of the Ecosystem Contracts on BNB Smart Chain, Polygon ' 
-        f'(MATIC), Arbitrum, and Optimism has begun.\n\n' 
-        f'In order to deploy the X7 ecosystem more than 30 contracts need to be deployed from unique deployer ' 
-        f'addresses per chain. After being deployed many require careful initial configuration. We are moving through' 
-        f' a very long checklist and will be double checking these deployments very carefully. Each contract should ' 
-        f'have the exact same address on all 5 chains. We expect this may take 1-2 days to fully complete, but do ' 
-        f'enjoy watching the on chain progress.\n\nWe will go live with Xchange, borrowing, lending, revenue ' 
+        f'(MATIC), Arbitrum, and Optimism has begun.\n\n'
+        f'We will go live with Xchange, borrowing, lending, revenue ' 
         f'splitting, and profit splitting on other chains as soon as we can in concert with the full release on ' 
         f'Ethereum.\n\nThe tokens however will not go live until we have built up a sufficient amount of initial ' 
         f'liquidity for the tokens on any particular chain.\n\nWhen the tokens do go live all X7 token holders on ' 
@@ -2052,7 +2049,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f'Contract Address:\n`{items.x7daoca}`\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Arbiscan', url=f'{items.polytoken}{items.x7daoca}')],
+                [InlineKeyboardButton(text='Polygonscan', url=f'{items.polytoken}{items.x7daoca}')],
                 [InlineKeyboardButton(text='Chart', url=f'{items.dextoolspoly}{items.x7daopairpoly}')],
                 [InlineKeyboardButton(text='Buy', url=f'{items.xchangebuy}{items.x7daoca}')], ]))
 
@@ -2395,6 +2392,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Chart', url=f'{items.dextoolsopti}{items.x7104pairopti}')],
                 [InlineKeyboardButton(text='Buy', url=f'{items.xchangebuy}{items.x7104ca}')], ]))
 
+
 async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteresponse = requests.get(items.quoteapi)
     quotedata = quoteresponse.json()
@@ -2498,7 +2496,6 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{items.optitoken}{items.x7105ca}')],
                 [InlineKeyboardButton(text='Chart', url=f'{items.dextoolsopti}{items.x7105pairopti}')],
                 [InlineKeyboardButton(text='Buy', url=f'{items.xchangebuy}{items.x7105ca}')], ]))
-
 
 
 async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2888,7 +2885,7 @@ if __name__ == '__main__':
         name=str('Twitter Message'),
         data=variables.twittertime*60*60)
     application.job_queue.run_repeating(
-        airdrop_message, variables.airdroptime,
+        airdrop_message, variables.airdroptime*60*60,
         chat_id=items.main_id,
         name=str('Airdrop Message'),
         data=variables.airdroptime)
