@@ -271,7 +271,8 @@ supply = 100000000
 
 # MEDIA
 logos = [r'media\logo1.png', r'media\logo2.png', r'media\logo3.png', r'media\logo4.png', r'media\logo4.png',
-         r'media\logo5.png', r'media\logo6.png', r'media\logo7.png', r'media\logo8.png', r'media\logo9.png']
+         r'media\logo5.png', r'media\logo6.png', r'media\logo7.png', r'media\logo8.png', r'media\logo9.png',
+         r'media\logo10.png']
 x7rlogo = r'media\X7R_LOGO_black_back_200_x_200_px.png'
 x7daologo = r'media\X7_DAO_LOGO_black_back_200_x_200_px.png'
 x7101logo = r'media\X7101_LOGO_black_back_200_x_200_px.png'
@@ -279,6 +280,7 @@ x7102logo = r'media\X7102_LOGO_black_back_200_x_200_px.png'
 x7103logo = r'media\X7103_LOGO_black_back_200_x_200_px.png'
 x7104logo = r'media\X7104_LOGO_black_back_200_x_200_px.png'
 x7105logo = r'media\X7105_LOGO_black_back_200_x_200_px.png'
+x7dlogo = r'media\X7D_LOGO_black_back_200_x_200_px.png'
 pioneerlogo = r'C:media\pioneer.png'
 constellationlogo = r'media\constellation.mp4'
 ebblogo = r'media\photo_2023-01-11_10-38-43.jpg'

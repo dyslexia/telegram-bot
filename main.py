@@ -128,7 +128,7 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    chain = " ".join(context.args)
+    chain = " ".join(context.args).lower()
     if chain == "":
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
@@ -269,7 +269,7 @@ async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chain = " ".join(context.args)
+    chain = " ".join(context.args).lower()
     quoteresponse = requests.get(items.quoteapi)
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
@@ -487,7 +487,7 @@ async def chart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    chain = " ".join(context.args)
+    chain = " ".join(context.args).lower()
     if chain == "":
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
@@ -550,7 +550,7 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    chain = " ".join(context.args)
+    chain = " ".join(context.args).lower()
     if chain == "":
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
@@ -711,7 +711,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    chain = " ".join(context.args)
+    chain = " ".join(context.args).lower()
     if chain == "":
         x7dholdersurl = items.holdersapi + items.x7dca + keys.holders
         x7dholdersresponse = requests.get(x7dholdersurl)
@@ -728,7 +728,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7damount = str(damount / 10 ** 18)
         x7ddollar = float(x7damount) * float(ethvalue) / 1 ** 18
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open(items.x7dlogo, 'rb'),
             caption=f'*X7D (ETH) Info*\n'
                     f'For other chains use `/x7d [chainname]`\n\n'
                     f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
@@ -761,7 +761,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7damount = str(damount / 10 ** 18)
         x7ddollar = float(x7damount) * float(ethvalue) / 1 ** 18
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open(items.x7dlogo, 'rb'),
             caption=f'*X7D (BSC) Info*\n\n'
                     f'Supply: {x7damount[:4]}BNB (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'To receive X7D:\n\n'
@@ -792,7 +792,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7damount = str(damount / 10 ** 18)
         x7ddollar = float(x7damount) * float(ethvalue) / 1 ** 18
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open(items.x7dlogo, 'rb'),
             caption=f'*X7D (POLY) Info*\n\n'
                     f'Supply: {x7damount[:4]}MATIC (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'To receive X7D.\n\n'
@@ -823,7 +823,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7damount = str(damount / 10 ** 18)
         x7ddollar = float(x7damount) * float(ethvalue) / 1 ** 18
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open(items.x7dlogo, 'rb'),
             caption=f'*X7D (OPTIMISM) Info*\n\n'
                     f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'To receive X7D.\n\n'
@@ -854,7 +854,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7damount = str(damount / 10 ** 18)
         x7ddollar = float(x7damount) * float(ethvalue) / 1 ** 18
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open(items.x7dlogo, 'rb'),
             caption=f'*X7D (ARBITRUM) Info*\n\n'
                     f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'To receive X7D.\n\n'
@@ -1007,7 +1007,7 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chain = " ".join(context.args)
+    chain = " ".join(context.args).lower()
     quoteresponse = requests.get(items.quoteapi)
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
@@ -1116,7 +1116,7 @@ async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chain = " ".join(context.args)
+    chain = " ".join(context.args).lower()
     quoteresponse = requests.get(items.quoteapi)
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
@@ -1526,7 +1526,7 @@ async def quote_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    loantype = " ".join(context.args)
+    loantype = " ".join(context.args).lower()
     quoteresponse = requests.get(items.quoteapi)
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
@@ -1705,7 +1705,7 @@ async def snapshot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chain = " ".join(context.args)
+    chain = " ".join(context.args).lower()
     quoteresponse = requests.get(items.quoteapi)
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
@@ -1859,7 +1859,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    chain = " ".join(context.args)
+    chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
     cg = CoinGeckoAPI()
     cgx7rprice = (cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
@@ -1959,7 +1959,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    chain = " ".join(context.args)
+    chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
     cg = CoinGeckoAPI()
     cgx7daoprice = (cg.get_price(ids='x7dao', vs_currencies='usd', include_24hr_change='true',
@@ -2059,8 +2059,8 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    chain = " ".join(context.args)
-    dollar =  chain.startswith("$")
+    chain = " ".join(context.args).lower()
+    dollar = chain.startswith("$")
     cg = CoinGeckoAPI()
     cgx7101price = (cg.get_price(ids='x7101', vs_currencies='usd', include_24hr_change='true',
                                  include_24hr_vol='true', include_last_updated_at="true"))
@@ -2143,7 +2143,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    chain = " ".join(context.args)
+    chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
     cg = CoinGeckoAPI()
     cgx7102price = (cg.get_price(ids='x7102', vs_currencies='usd', include_24hr_change='true',
@@ -2228,7 +2228,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    chain = " ".join(context.args)
+    chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
     cg = CoinGeckoAPI()
     cgx7103price = (cg.get_price(ids='x7103', vs_currencies='usd', include_24hr_change='true',
@@ -2313,7 +2313,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    chain = " ".join(context.args)
+    chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
     cg = CoinGeckoAPI()
     cgx7104price = (cg.get_price(ids='x7104', vs_currencies='usd', include_24hr_change='true',
@@ -2398,7 +2398,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    chain = " ".join(context.args)
+    chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
     cg = CoinGeckoAPI()
     cgx7105price = (cg.get_price(ids='x7105', vs_currencies='usd', include_24hr_change='true',
