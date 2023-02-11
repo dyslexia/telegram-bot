@@ -17,7 +17,7 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 logger = logging.getLogger(__name__)
-print('Bot Restarted, remember to set /raid')
+print('Bot Restarted')
 
 
 # COMMANDS
@@ -886,7 +886,8 @@ async def media_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text='X7 Official Images', url='https://imgur.com/a/WEszZTa')],
-             [InlineKeyboardButton(text='X7 Official Token Logos', url='https://t.me/X7announcements/58')],
+             [InlineKeyboardButton(text='X7 Official Token Logos Pack 1', url='https://t.me/X7announcements/58')],
+             [InlineKeyboardButton(text='X7 Official Token Logos Pack 2', url='https://t.me/X7announcements/141')],
              [InlineKeyboardButton(text='X7 TG Sticker Pack 1', url='https://t.me/addstickers/x7financestickers')],
              [InlineKeyboardButton(text='X7 TG Sticker Pack 2', url='https://t.me/addstickers/X7finance')],
              [InlineKeyboardButton(text='X7 TG Sticker Pack 3', url='https://t.me/addstickers/x7financ')],
@@ -1135,7 +1136,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Lending Pool Info (ETH)*\nUse `/pool [chain-name]` for other chains\n\n'
-                    f'{poolamount[:4]}ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
+                    f'{poolamount[:4]} ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
                     f'{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
@@ -1157,7 +1158,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Lending Pool Info (BSC)*\nUse `/pool [chain-name]` for other chains\n\n'
-                    f'{poolamount[:4]}BNB (${"{:0,.0f}".format(pooldollar)})\n\n'
+                    f'{poolamount[:4]} BNB (${"{:0,.0f}".format(pooldollar)})\n\n'
                     f'{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
@@ -1179,7 +1180,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Lending Pool Info (ARB)*\nUse `/pool [chain-name]` for other chains\n\n'
-                    f'{poolamount[:4]}ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
+                    f'{poolamount[:4]} ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
                     f'{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
@@ -1201,7 +1202,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Lending Pool Info (OPTIMISM)*\nUse `/pool [chain-name]` for other chains\n\n'
-                    f'{poolamount[:4]}ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
+                    f'{poolamount[:4]} ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
                     f'{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
@@ -1223,7 +1224,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Lending Pool Info (POLYGON)*\nUse `/pool [chain-name]` for other chains\n\n'
-                    f'{poolamount[:4]}MATIC (${"{:0,.0f}".format(pooldollar)})\n\n'
+                    f'{poolamount[:4]} MATIC (${"{:0,.0f}".format(pooldollar)})\n\n'
                     f'{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
@@ -1689,6 +1690,7 @@ async def snapshot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+    await update.message.reply_sticker(sticker=items.chains)
     await update.message.reply_text(
         f'*X7 Finance Snapshot Information*\n\nThe rollout of the Ecosystem Contracts on BNB Smart Chain, Polygon ' 
         f'(MATIC), Arbitrum, and Optimism has begun.\n\n'
@@ -1737,9 +1739,9 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption='*X7 Finance Initial Liquidity (BSC)*\nUse /liquidity [chian-name] for other chains\n\n'
-                    f'X7R:\n{x7ramount}BNB (${"{:0,.0f}".format(x7rdollar)})\n\n'
-                    f'X7DAO:\n{x7dao}BNB (${"{:0,.0f}".format(x7daodollar)})\n\n'
-                    f'X7100:\n{x7cons}BNB (${"{:0,.0f}".format(x7consdollar)})\n\n{quote}',
+                    f'X7R:\n{x7ramount} BNB (${"{:0,.0f}".format(x7rdollar)})\n\n'
+                    f'X7DAO:\n{x7dao} BNB (${"{:0,.0f}".format(x7daodollar)})\n\n'
+                    f'X7100:\n{x7cons} BNB (${"{:0,.0f}".format(x7consdollar)})\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='X7R Initial Liquidity',
@@ -1771,9 +1773,9 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption='*X7 Finance Initial Liquidity (ARBITRUM)*\n\n'
-                    f'X7R:\n{x7ramount}ETH (${"{:0,.0f}".format(x7rdollar)})\n\n'
-                    f'X7DAO:\n{x7dao}ETH (${"{:0,.0f}".format(x7daodollar)})\n\n'
-                    f'X7100:\n{x7cons}ETH (${"{:0,.0f}".format(x7consdollar)})\n\n{quote}',
+                    f'X7R:\n{x7ramount} ETH (${"{:0,.0f}".format(x7rdollar)})\n\n'
+                    f'X7DAO:\n{x7dao} ETH (${"{:0,.0f}".format(x7daodollar)})\n\n'
+                    f'X7100:\n{x7cons} ETH (${"{:0,.0f}".format(x7consdollar)})\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='X7R Initial Liquidity',
@@ -1805,9 +1807,9 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption='*X7 Finance Initial Liquidity (OPTIMISM)*\n\n'
-                    f'X7R:\n{x7ramount}ETH (${"{:0,.0f}".format(x7rdollar)})\n\n'
-                    f'X7DAO:\n{x7dao}ETH (${"{:0,.0f}".format(x7daodollar)})\n\n'
-                    f'X7100:\n{x7cons}ETH (${"{:0,.0f}".format(x7consdollar)})\n\n{quote}',
+                    f'X7R:\n{x7ramount} ETH (${"{:0,.0f}".format(x7rdollar)})\n\n'
+                    f'X7DAO:\n{x7dao} ETH (${"{:0,.0f}".format(x7daodollar)})\n\n'
+                    f'X7100:\n{x7cons} ETH (${"{:0,.0f}".format(x7consdollar)})\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='X7R Initial Liquidity',
@@ -1839,9 +1841,9 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption='*X7 Finance Initial Liquidity (POLYGON)*\n\n'
-                    f'X7R:\n{x7ramount}MATIC (${"{:0,.0f}".format(x7rdollar)})\n\n'
-                    f'X7DAO:\n{x7dao}MATIC (${"{:0,.0f}".format(x7daodollar)})\n\n'
-                    f'X7100:\n{x7cons}MATIC (${"{:0,.0f}".format(x7consdollar)})\n\n{quote}',
+                    f'X7R:\n{x7ramount} MATIC (${"{:0,.0f}".format(x7rdollar)})\n\n'
+                    f'X7DAO:\n{x7dao} MATIC (${"{:0,.0f}".format(x7daodollar)})\n\n'
+                    f'X7100:\n{x7cons} MATIC (${"{:0,.0f}".format(x7consdollar)})\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='X7R Initial Liquidity',
@@ -2070,7 +2072,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7101holdersdata = x7101holdersresponse.json()
     x7101holders = x7101holdersdata["holdersCount"]
     if dollar:
-        amount = round(float( chain[1:]) / float(x7101price), 2)
+        amount = round(float(chain[1:]) / float(x7101price), 2)
         await update.message.reply_photo(
             photo=open(items.x7101logo, 'rb'),
             caption=f'{chain} Will currently buy:\n\n{"{:0,.0f}".format(amount)}' 
@@ -2688,30 +2690,13 @@ async def twitter_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    await context.bot.send_photo(
+    await context.bot.send_sticker(chat_id=job.chat.id, sticker=items.twittersticker)
+    await context.bot.send_text(
         chat_id=job.chat_id,
-        photo=open((random.choice(items.logos)), 'rb'),
         caption=f'{variables.automessage}\n\n{quote}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text='Twitter Raid!', url=f'{variables.automessagelink}')], ]))
-
-
-async def airdrop_message(context: ContextTypes.DEFAULT_TYPE) -> None:
-    job = context.job
-    quoteresponse = requests.get(items.quoteapi)
-    quotedata = quoteresponse.json()
-    quoteraw = (random.choice(quotedata))
-    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    await context.bot.send_photo(
-        chat_id=job.chat_id,
-        photo=open((random.choice(items.logos)), 'rb'),
-        caption=f'ALL INVESTORS BETWEEN NOW AND THE SNAPSHOT WILL BE AIRDROPPED TOKENS FROM THE X7 ECOSYSTEM ON THE '
-                f'FOLLOWING CHAINS ONCE THE TOKENS GO LIVE:\n\n⭐️ ARBITRUM\n\n⭐️ POLYGON\n\n⭐️ OPTIMISM\n\n⭐️ '
-                f'BINANCE SMART CHAIN\n\nHow do '
-                f'you get the airdrop? Simply buy and hold any X7 ecosystem token on ETH!\n\nTHERE IS NO SET DATE FOR '
-                f'THE SNAPSHOT- IT COULD BE TOMORROW OR IN A WEEK. SEIZE THE OPPORTUNITY WHILE YOU CAN!! ☄️\n\n{quote}',
-        parse_mode='Markdown')
 
 
 # AUTO MESSAGES
@@ -2725,7 +2710,7 @@ async def show_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     chat_admins = await update.effective_chat.get_administrators()
     job_names = [job.name for job in context.job_queue.jobs()]
     if update.effective_user in (admin.user for admin in chat_admins):
-        await update.message.reply_text(f'X7 Finance Auto Messages set:\n\n{job_names[3:]}\n\nUse /stop_auto "name" '
+        await update.message.reply_text(f'X7 Finance Auto Messages set:\n\n{job_names}\n\nUse /stop_auto "name" '
                                         f'to stop')
     else:
         await update.message.reply_text(f'{variables.modsonly}')
@@ -2884,10 +2869,5 @@ if __name__ == '__main__':
         chat_id=items.main_id,
         name=str('Twitter Message'),
         data=variables.twittertime*60*60)
-    application.job_queue.run_repeating(
-        airdrop_message, variables.airdroptime*60*60,
-        chat_id=items.main_id,
-        name=str('Airdrop Message'),
-        data=variables.airdroptime)
 
     application.run_polling()

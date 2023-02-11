@@ -2,26 +2,26 @@ main_id = '-1001780235511'
 test_id = '-1001867816945'
 
 # API
-#ETH
+# ETH
 ethpriceapi = 'https://api.etherscan.io/api?module=stats&action=ethprice&'
 tokenbalanceapieth = 'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
 ethbalanceapieth = 'https://api.etherscan.io/api?module=account&action=balancemulti&address='
 
-#BSC
+# BSC
 bnbpriceapi = 'https://api.bscscan.com/api?module=stats&action=bnbprice&'
 tokenbalanceapibsc = 'https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress='
 bnbbalanceapi = 'https://api.bscscan.com/api?module=account&action=balancemulti&address='
 
-#POLY
+# POLY
 maticpriceapi = 'https://api.polygonscan.com/api?module=stats&action=maticprice&'
 tokenbalanceapipoly = 'https://api.polygonscan.com/api?module=account&action=tokenbalance&contractaddress='
 maticbalanceapi = 'https://api.polygonscan.com/api?module=account&action=balancemulti&address='
 
-#ARB
+# ARB
 tokenbalanceapiarb = 'https://api.arbiscan.io/api?module=account&action=tokenbalance&contractaddress='
 ethbalanceapiarb = 'https://api.arbiscan.io/api?module=account&action=balancemulti&address='
 
-#OPTI
+# OPTI
 tokenbalanceapiopti = 'https://api-optimistic.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
 ethbalanceapiopti = 'https://api-optimistic.etherscan.io/api?module=account&action=balancemulti&address='
 
@@ -296,6 +296,8 @@ smashed = 'CAACAgQAAxkBAAEb8-1jwFB-tznpCjitxMeEwBILewPlKgAC_w8AAmImeFEsfFj5FXaTS
 wagmi = 'CAACAgQAAxkBAAEb8_FjwFCk9FJjHSGdCnce1ZH7j6K3EQACxw4AAnWQeVEr1ddRXYlhJy0E'
 slapped = 'CAACAgQAAxkBAAEb8_NjwFDCsQty5_9GX3SbSV6ahU8ZLwAClg4AAua7eVGpQ1Ca9nCzgC0E'
 swap = 'CAACAgQAAxkBAAEHHOljtGK7xrzmlC9qN7AmgKoBhAJLXwACDQ4AAqKzeVFIjNSV7JEj4S0E'
+twittersticker = 'CAACAgQAAxkBAAEHrclj52kCC979YY_5-gABEcCAl1XXYD0AArgOAAJdngABU3ZS7IcNZTCTLgQ'
+chains = 'CAACAgQAAxkBAAEHreBj521n_bltFEecQcvESwiRiNbI0AACBBAAAhZeAAFTqemxnCjIxMwuBA'
 
 # REPLIES
 twitterresp = ["Raid!", "LFG", "Send it!", "Twitter raid!", "Like and Retweet!", "GO GO GO!", "X7 Force!",
