@@ -114,10 +114,8 @@ async def links_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Community Dashboard', url=f'{items.dashboard}')],
             [InlineKeyboardButton(text='Linktree', url=f'{items.linktree}')],
             [InlineKeyboardButton(text='Medium', url=f'{items.medium}')],
-            [InlineKeyboardButton(text='Dune', url=f'{items.dune}')],
             [InlineKeyboardButton(text='Twitter', url=f'{items.twitter}')],
             [InlineKeyboardButton(text='Discord', url=f'{items.discord}')],
-            [InlineKeyboardButton(text='Genesis', url=f'{items.genesis}')],
             [InlineKeyboardButton(text='Reddit', url=f'{items.reddit}')],
             [InlineKeyboardButton(text='Youtube', url=f'{items.youtube}')],
             [InlineKeyboardButton(text='Github', url=f'{items.github}')], ]))
@@ -1133,6 +1131,61 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         pool = float(pooldata["result"][0]["balance"])
         poolamount = str(pool / 10 ** 18)
         pooldollar = float(poolamount) * float(ethvalue) / 1 ** 18
+        arbpoolurl = items.ethbalanceapiarb + items.lpreserveca + '&tag=latest' + keys.arb
+        arbpoolresponse = requests.get(arbpoolurl)
+        arbpooldata = arbpoolresponse.json()
+        arbpool = float(arbpooldata["result"][0]["balance"])
+        arbpoolamount = str(arbpool / 10 ** 18)
+        arbpooldollar = float(arbpoolamount) * float(ethvalue) / 1 ** 18
+        bscurl = items.bnbpriceapi + keys.bsc
+        bscresponse = requests.get(bscurl)
+        bscdata = bscresponse.json()
+        bscvalue = float(bscdata["result"]["ethusd"])
+        bscpoolurl = items.bnbbalanceapi + items.lpreserveca + '&tag=latest' + keys.bsc
+        bscpoolresponse = requests.get(bscpoolurl)
+        bscpooldata = bscpoolresponse.json()
+        bscpool = float(bscpooldata["result"][0]["balance"])
+        bscpoolamount = str(bscpool / 10 ** 18)
+        bscpooldollar = float(bscpoolamount) * float(bscvalue) / 1 ** 18
+        optipoolurl = items.ethbalanceapiopti + items.lpreserveca + '&tag=latest' + keys.opti
+        optipoolresponse = requests.get(optipoolurl)
+        optipooldata = optipoolresponse.json()
+        optipool = float(optipooldata["result"][0]["balance"])
+        optipoolamount = str(optipool / 10 ** 18)
+        optipooldollar = float(optipoolamount) * float(ethvalue) / 1 ** 18
+        polyurl = items.maticpriceapi + keys.poly
+        polyresponse = requests.get(polyurl)
+        polydata = polyresponse.json()
+        polyvalue = float(polydata["result"]["maticusd"])
+        polypoolurl = items.maticbalanceapi + items.lpreserveca + '&tag=latest' + keys.poly
+        polypoolresponse = requests.get(polypoolurl)
+        polypooldata = polypoolresponse.json()
+        polypool = float(polypooldata["result"][0]["balance"])
+        polypoolamount = str(polypool / 10 ** 18)
+        polypooldollar = float(polypoolamount) * float(polyvalue) / 1 ** 18
+        totaldollar = polypooldollar + bscpooldollar + optipooldollar + arbpooldollar + pooldollar
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption=f'*X7 Finance Lending Pool Info *\nUse `/pool [chain-name]` for individual contracts\n\n'
+                    f'ETH: {poolamount[:5]} ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
+                    f'ARB: {arbpoolamount[:4]} ETH (${"{:0,.0f}".format(arbpooldollar)})\n\n'
+                    f'OPTI: {optipoolamount[:5]} ETH (${"{:0,.0f}".format(optipooldollar)})\n\n'
+                    f'BSC: {bscpoolamount[:4]} BNB (${"{:0,.0f}".format(bscpooldollar)})\n\n'
+                    f'POLY: {polypoolamount[:4]} MATIC (${"{:0,.0f}".format(polypooldollar)})\n\n'
+                    f'TOTAL: ${"{:0,.0f}".format(totaldollar)}\n\n'
+                    f'{quote}', parse_mode='Markdown')
+
+    if chain == "eth":
+        ethurl = items.ethpriceapi + keys.ether
+        ethresponse = requests.get(ethurl)
+        ethdata = ethresponse.json()
+        ethvalue = float(ethdata["result"]["ethusd"])
+        poolurl = items.ethbalanceapieth + items.lpreserveca + '&tag=latest' + keys.ether
+        poolresponse = requests.get(poolurl)
+        pooldata = poolresponse.json()
+        pool = float(pooldata["result"][0]["balance"])
+        poolamount = str(pool / 10 ** 18)
+        pooldollar = float(poolamount) * float(ethvalue) / 1 ** 18
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Lending Pool Info (ETH)*\nUse `/pool [chain-name]` for other chains\n\n'
@@ -1149,16 +1202,16 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         bscresponse = requests.get(bscurl)
         bscdata = bscresponse.json()
         bscvalue = float(bscdata["result"]["ethusd"])
-        poolurl = items.bnbbalanceapi + items.lpreserveca + '&tag=latest' + keys.bsc
-        poolresponse = requests.get(poolurl)
-        pooldata = poolresponse.json()
-        pool = float(pooldata["result"][0]["balance"])
-        poolamount = str(pool / 10 ** 18)
-        pooldollar = float(poolamount) * float(bscvalue) / 1 ** 18
+        bscpoolurl = items.bnbbalanceapi + items.lpreserveca + '&tag=latest' + keys.bsc
+        bscpoolresponse = requests.get(bscpoolurl)
+        bscpooldata = bscpoolresponse.json()
+        bscpool = float(bscpooldata["result"][0]["balance"])
+        bscpoolamount = str(bscpool / 10 ** 18)
+        bscpooldollar = float(bscpoolamount) * float(bscvalue) / 1 ** 18
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Lending Pool Info (BSC)*\nUse `/pool [chain-name]` for other chains\n\n'
-                    f'{poolamount[:4]} BNB (${"{:0,.0f}".format(pooldollar)})\n\n'
+                    f'{bscpoolamount[:4]} BNB (${"{:0,.0f}".format(bscpooldollar)})\n\n'
                     f'{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
@@ -1171,16 +1224,16 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ethresponse = requests.get(ethurl)
         ethdata = ethresponse.json()
         ethvalue = float(ethdata["result"]["ethusd"])
-        poolurl = items.ethbalanceapiarb + items.lpreserveca + '&tag=latest' + keys.arb
-        poolresponse = requests.get(poolurl)
-        pooldata = poolresponse.json()
-        dev = float(pooldata["result"][0]["balance"])
-        poolamount = str(dev / 10 ** 18)
-        pooldollar = float(poolamount) * float(ethvalue) / 1 ** 18
+        arbpoolurl = items.ethbalanceapiarb + items.lpreserveca + '&tag=latest' + keys.arb
+        arbpoolresponse = requests.get(arbpoolurl)
+        arbpooldata = arbpoolresponse.json()
+        arbpool = float(arbpooldata["result"][0]["balance"])
+        arbpoolamount = str(arbpool / 10 ** 18)
+        arbpooldollar = float(arbpoolamount) * float(ethvalue) / 1 ** 18
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Lending Pool Info (ARB)*\nUse `/pool [chain-name]` for other chains\n\n'
-                    f'{poolamount[:4]} ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
+                    f'{arbpoolamount[:4]} ETH (${"{:0,.0f}".format(arbpooldollar)})\n\n'
                     f'{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
@@ -1193,16 +1246,16 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ethresponse = requests.get(ethurl)
         ethdata = ethresponse.json()
         ethvalue = float(ethdata["result"]["ethusd"])
-        poolurl = items.ethbalanceapiopti + items.lpreserveca + '&tag=latest' + keys.opti
-        poolresponse = requests.get(poolurl)
-        pooldata = poolresponse.json()
-        pool = float(pooldata["result"][0]["balance"])
-        poolamount = str(pool / 10 ** 18)
-        pooldollar = float(poolamount) * float(ethvalue) / 1 ** 18
+        optipoolurl = items.ethbalanceapiopti + items.lpreserveca + '&tag=latest' + keys.opti
+        optipoolresponse = requests.get(optipoolurl)
+        optipooldata = optipoolresponse.json()
+        optipool = float(optipooldata["result"][0]["balance"])
+        optipoolamount = str(optipool / 10 ** 18)
+        optipooldollar = float(optipoolamount) * float(ethvalue) / 1 ** 18
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Lending Pool Info (OPTIMISM)*\nUse `/pool [chain-name]` for other chains\n\n'
-                    f'{poolamount[:4]} ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
+                    f'{optipoolamount[:4]} ETH (${"{:0,.0f}".format(optipooldollar)})\n\n'
                     f'{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
@@ -1211,20 +1264,20 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  [InlineKeyboardButton(text='X7 Deposit Contract',
                                        url=f'{items.optiaddress}{items.x7dca}#code')], ]))
     if chain == "polygon" or chain == "poly":
-        ethurl = items.maticpriceapi + keys.poly
-        ethresponse = requests.get(ethurl)
-        ethdata = ethresponse.json()
-        ethvalue = float(ethdata["result"]["maticusd"])
-        poolurl = items.maticbalanceapi + items.lpreserveca + '&tag=latest' + keys.poly
-        poolresponse = requests.get(poolurl)
-        pooldata = poolresponse.json()
-        pool = float(pooldata["result"][0]["balance"])
-        poolamount = str(pool / 10 ** 18)
-        pooldollar = float(poolamount) * float(ethvalue) / 1 ** 18
+        polyurl = items.maticpriceapi + keys.poly
+        polyresponse = requests.get(polyurl)
+        polydata = polyresponse.json()
+        polyvalue = float(polydata["result"]["maticusd"])
+        polypoolurl = items.maticbalanceapi + items.lpreserveca + '&tag=latest' + keys.poly
+        polypoolresponse = requests.get(polypoolurl)
+        polypooldata = polypoolresponse.json()
+        polypool = float(polypooldata["result"][0]["balance"])
+        polypoolamount = str(polypool / 10 ** 18)
+        polypooldollar = float(polypoolamount) * float(polyvalue) / 1 ** 18
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Lending Pool Info (POLYGON)*\nUse `/pool [chain-name]` for other chains\n\n'
-                    f'{poolamount[:4]} MATIC (${"{:0,.0f}".format(pooldollar)})\n\n'
+                    f'{polypoolamount[:4]} MATIC (${"{:0,.0f}".format(polypooldollar)})\n\n'
                     f'{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
@@ -1351,7 +1404,7 @@ async def roadmap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'3.8. V1 XchangeRouter ✅\n'
         f'3.9. V1 XchangeOmniRouter, ✅\n'
         f'4. Lender dApp 🔄\n'
-        f'5. X7D minting 🔄\n'
+        f'5. X7D minting ✅\n'
         f'6. X7D staking 🔄\n'
         f'7. X7D dApp 🔄\n'
         f'8. Governance contracts 🔄\n'
@@ -2702,8 +2755,7 @@ async def twitter_message(context: ContextTypes.DEFAULT_TYPE) -> None:
 # AUTO MESSAGES
 async def auto_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
-    await context.bot.send_message(job.chat_id, text=f"X7 Finance\n\n"
-                                                     f"{random.choice(items.twitterresp)}\n\n{job.data}")
+    await context.bot.send_message(job.chat_id, text=f"{job.data}")
 
 
 async def show_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
