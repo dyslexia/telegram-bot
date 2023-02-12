@@ -1120,11 +1120,11 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+    ethurl = items.ethpriceapi + keys.ether
+    ethresponse = requests.get(ethurl)
+    ethdata = ethresponse.json()
+    ethvalue = float(ethdata["result"]["ethusd"])
     if chain == "":
-        ethurl = items.ethpriceapi + keys.ether
-        ethresponse = requests.get(ethurl)
-        ethdata = ethresponse.json()
-        ethvalue = float(ethdata["result"]["ethusd"])
         poolurl = items.ethbalanceapieth + items.lpreserveca + '&tag=latest' + keys.ether
         poolresponse = requests.get(poolurl)
         pooldata = poolresponse.json()
@@ -1176,10 +1176,6 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{quote}', parse_mode='Markdown')
 
     if chain == "eth":
-        ethurl = items.ethpriceapi + keys.ether
-        ethresponse = requests.get(ethurl)
-        ethdata = ethresponse.json()
-        ethvalue = float(ethdata["result"]["ethusd"])
         poolurl = items.ethbalanceapieth + items.lpreserveca + '&tag=latest' + keys.ether
         poolresponse = requests.get(poolurl)
         pooldata = poolresponse.json()
@@ -1220,10 +1216,6 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  [InlineKeyboardButton(text='X7 Deposit Contract',
                                        url=f'{items.bscaddress}{items.x7dca}#code')], ]))
     if chain == "arbitrum" or chain == "arb":
-        ethurl = items.ethpriceapi + keys.ether
-        ethresponse = requests.get(ethurl)
-        ethdata = ethresponse.json()
-        ethvalue = float(ethdata["result"]["ethusd"])
         arbpoolurl = items.ethbalanceapiarb + items.lpreserveca + '&tag=latest' + keys.arb
         arbpoolresponse = requests.get(arbpoolurl)
         arbpooldata = arbpoolresponse.json()
@@ -1242,10 +1234,6 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  [InlineKeyboardButton(text='X7 Deposit Contract',
                                        url=f'{items.arbaddress}{items.x7dca}#code')], ]))
     if chain == "optimism" or chain == "opti":
-        ethurl = items.ethpriceapi + keys.ether
-        ethresponse = requests.get(ethurl)
-        ethdata = ethresponse.json()
-        ethvalue = float(ethdata["result"]["ethusd"])
         optipoolurl = items.ethbalanceapiopti + items.lpreserveca + '&tag=latest' + keys.opti
         optipoolresponse = requests.get(optipoolurl)
         optipooldata = optipoolresponse.json()
