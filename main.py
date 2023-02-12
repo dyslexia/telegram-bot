@@ -1363,11 +1363,13 @@ async def spaces_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'X7 Finance Twitter space\n\nPlease check back for more details'
             f'\n\n{quote}', parse_mode="Markdown")
     else:
-        await update.message.reply_text(text=f'Next X7 Finance Twitter space is:\n\n{then} (UTC)\n\n'
-                                        f'%d days, %d hours, %d minutes and %d seconds\n\n'
-                                        f'[Click here]({variables.spaceslink}) to set a reminder!'
-                                        f'\n\n{quote}'
-                                        % (days[0], hours[0], minutes[0], seconds[0]), parse_mode="Markdown")
+        await update.message.reply_sticker(sticker=items.twittersticker)
+        await update.message.reply_text(
+            text=f'Next X7 Finance Twitter space is:\n\n{then} (UTC)\n\n'
+                 f'%d days, %d hours, %d minutes and %d seconds\n\n'
+                 f'[Click here]({variables.spaceslink}) to set a reminder!'
+                 f'\n\n{quote}'
+                 % (days[0], hours[0], minutes[0], seconds[0]), parse_mode="Markdown")
 
 
 async def roadmap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
