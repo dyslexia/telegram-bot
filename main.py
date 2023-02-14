@@ -1899,6 +1899,51 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ]))
 
 
+async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chain = " ".join(context.args).lower()
+    quoteresponse = requests.get(items.quoteapi)
+    quotedata = quoteresponse.json()
+    quoteraw = (random.choice(quotedata))
+    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+    gasurl = items.ethgasapi + keys.ether
+    gasresponse = requests.get(gasurl)
+    gasdata = gasresponse.json()
+    if chain == "":
+        await update.message.reply_photo(
+        photo=open((random.choice(items.logos)), 'rb'),
+        caption=f'*Eth Gas Prices:*\n\n'
+                f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
+                f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
+                f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
+                f'{quote}',
+        parse_mode='Markdown')
+    if chain == "bsc":
+        gasurl = items.bscgasapi + keys.bsc
+        gasresponse = requests.get(gasurl)
+        gasdata = gasresponse.json()
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption=f'*BSC Gas Prices:*\n\n'
+                    f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
+                    f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
+                    f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
+                    f'{quote}',
+            parse_mode='Markdown')
+    if chain == "polygon" or chain == "poly":
+        gasurl = items.polygasapi + keys.poly
+        gasresponse = requests.get(gasurl)
+        gasdata = gasresponse.json()
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption=f'*POLYGON Gas Prices:*\n\n'
+                    f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
+                    f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
+                    f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
+                    f'{quote}',
+            parse_mode='Markdown')
+
+
+
 # CG COMMANDS
 async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteresponse = requests.get(items.quoteapi)
@@ -2902,6 +2947,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('liquidity', liquidity_command))
     application.add_handler(CommandHandler('everyone', everyone_command))
     application.add_handler(CommandHandler('voting', voting_command))
+    application.add_handler(CommandHandler('gas', gas_command))
     application.add_handler(CommandHandler(['snapshot', 'rollout', 'multichain', 'airdrop'], snapshot_command))
     application.add_handler(CommandHandler(['discount', 'dsc', 'dac'], discount_command))
     application.add_handler(CommandHandler(['admin_commands', 'admin', 'admincommands'], admincommands_command))

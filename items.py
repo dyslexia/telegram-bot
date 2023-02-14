@@ -6,16 +6,19 @@ test_id = '-1001867816945'
 ethpriceapi = 'https://api.etherscan.io/api?module=stats&action=ethprice&'
 tokenbalanceapieth = 'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
 ethbalanceapieth = 'https://api.etherscan.io/api?module=account&action=balancemulti&address='
+ethgasapi = 'https://api.etherscan.io/api?module=gastracker&action=gasoracle'
 
 # BSC
 bnbpriceapi = 'https://api.bscscan.com/api?module=stats&action=bnbprice&'
 tokenbalanceapibsc = 'https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress='
 bnbbalanceapi = 'https://api.bscscan.com/api?module=account&action=balancemulti&address='
+bscgasapi = 'https://api.bscscan.com/api?module=gastracker&action=gasoracle'
 
 # POLY
 maticpriceapi = 'https://api.polygonscan.com/api?module=stats&action=maticprice&'
 tokenbalanceapipoly = 'https://api.polygonscan.com/api?module=account&action=tokenbalance&contractaddress='
 maticbalanceapi = 'https://api.polygonscan.com/api?module=account&action=balancemulti&address='
+polygasapi = 'https://api.polygonscan.com/api?module=gastracker&action=gasoracle'
 
 # ARB
 tokenbalanceapiarb = 'https://api.arbiscan.io/api?module=account&action=tokenbalance&contractaddress='
@@ -29,7 +32,7 @@ holdersapi = 'https://api.ethplorer.io/getTokenInfo/'
 osapi = "https://api.opensea.io/api/v1/collection/"
 quoteapi = 'https://type.fit/api/quotes'
 fearapi = 'https://api.alternative.me/fng/?limit=0'
-ethgasapi = 'https://api.etherscan.io/api?module=gastracker&action=gasoracle'
+
 todayapi = 'http://history.muffinlabs.com/date/'
 jokeapi = 'https://v2.jokeapi.dev/joke/Any?safe-mode'
 
@@ -251,7 +254,7 @@ magisterpricepoly = '45000 Eth'
 
 # LINKS
 website = 'https://x7.finance'
-dashboard = 'https://x7community.space/'
+dashboard = 'https://www.x7finance.org/dashboard'
 linktree = 'https://linktr.ee/X7_Finance'
 medium = 'https://medium.com/@X7Finance'
 dune = 'https://dune.com/0xawesomedata/x7r'
