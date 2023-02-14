@@ -11,8 +11,8 @@ automessage = "**X7 Finance Twitter Raid**\n\nClick the link below and like and 
 automessagelink = "https://twitter.com/search?q=%23x7finance&src=typed_query"
 
 # SPACES                Y   M   D   H   M  S
-spacestime = datetime(2023, 2, 12, 19, 00, 00)
-spaceslink = "https://twitter.com/i/spaces/1jMJgLZNRLMxL?s=20"
+spacestime = datetime(2023, 2, 14, 20, 00, 00)
+spaceslink = "https://twitter.com/i/spaces/1djxXlZpVzkxZ?s=20"
 
 
 # GIVEAWAY               Y   M   D   H   M  S
@@ -28,12 +28,11 @@ giveawayinfo = "For every 0.1 X7D minted,1 entry into the draw was generated!\n\
                f"The draw will be made at {giveawaytime} (UTC)\n\nCredit: Defi Dipper!\n\nUse `/giveaway entries`" \
                f" to see last 5 of every address in the draw"
 
-
-tweetid = 1618166216706646018
-tweetlink = "https://twitter.com/X7_Finance/status/1617660521431576576?s=20&t=pJLH-p73Qcjwz7dRuE5MCw"
+# TWITTER
+tweetid = 1625541579074158607
+tweetlink = "https://twitter.com/X7_Finance/status/1625541579074158607?s=20&t=h25BT4ivN34G70MIZCrHVQ"
 
 # COMMANDS
-
 modsonly = "You do not have permission from the X7 Mods to do this. #trustnoone"
 
 commands = f'Available @X7Finance_bot Commands:\n\n/about - Welcome to X7 Finance\n' \

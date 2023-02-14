@@ -236,18 +236,18 @@ borrowpriceopti = '1 ETH - 100 Supply'
 magisterpriceopti = '50 Eth'
 
 # BSC
-ecopricebsc = '0.1 ETH - 500 Supply'
-liqpricebsc = '0.5ETH - 250 Supply'
-dexpricebsc = '0.5 ETH - 150 Supply'
-borrowpricebsc = '1 ETH - 100 Supply'
-magisterpricebsc = '50 Eth'
+ecopricebsc = '0.5 BNB - 500 Supply'
+liqpricebsc = '2.5 BNB - 250 Supply'
+dexpricebsc = '2.5 BNB - 150 Supply'
+borrowpricebsc = '5 BNB - 100 Supply'
+magisterpricebsc = '150 BNB'
 
 # POLY
-ecopricepoly = '0.1 ETH - 500 Supply'
-liqpricepoly = '0.5ETH - 250 Supply'
-dexpricepoly = '0.5 ETH - 150 Supply'
-borrowpricepoly = '1 ETH - 100 Supply'
-magisterpricepoly = '50 Eth'
+ecopricepoly = '130 MATIC - 500 Supply'
+liqpricepoly = '650 MATIC - 250 Supply'
+dexpricepoly = '650 MATIC - 150 Supply'
+borrowpricepoly = '1300 MATIC - 100 Supply'
+magisterpricepoly = '45000 Eth'
 
 # LINKS
 website = 'https://x7.finance'

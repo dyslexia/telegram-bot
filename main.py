@@ -176,19 +176,19 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='DEX Maxi', url=f'{items.bsctoken}{items.dexca}')],
                 [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.bsctoken}{items.borrowca}')],
                 [InlineKeyboardButton(text='Magister', url=f'{items.bsctoken}{items.magisterca}')], ]))
-    if chain == "arbitrum":
+    if chain == "arbitrum" or chain == "arb":
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (ARBITRUM)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{items.ecopricearb}\n'
                     f'> 25% discount on X7100 tax\n'
-                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n{items.ecopricearb}\n'
+                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n{items.liqpricearb}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
-                    f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.ecopricearb}\n'
+                    f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.dexpricearb}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{items.ecopricearb}\n> Fee discounts for borrowing funds for ILO on X7 '
+                    f'*Borrowing Maxi*\n{items.borrowpricearb}\n> Fee discounts for borrowing funds for ILO on X7 '
                     f'DEX\n\n'
-                    f'*Magister*\n{items.ecopricearb}\n> 25% discount on X7100 tax\n'
+                    f'*Magister*\n{items.magisterpricearb}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -198,21 +198,21 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='DEX Maxi', url=f'{items.arbtoken}{items.dexca}')],
                 [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.arbtoken}{items.borrowca}')],
                 [InlineKeyboardButton(text='Magister', url=f'{items.arbtoken}{items.magisterca}')], ]))
-    if chain == "polygon":
+    if chain == "polygon" or chain == "poly":
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (POLYGON)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{items.ecopricepoly}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n'
-                    f'*Liquidity Maxi*\n{items.ecopricepoly}\n'
+                    f'*Liquidity Maxi*\n{items.liqpricepoly}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
-                    f'*Dex Maxi*\n{items.ecopricepoly}\n'
+                    f'*Dex Maxi*\n{items.dexpricepoly}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{items.ecopricepoly}\n> Fee discounts for borrowing funds for ILO on X7 '
+                    f'*Borrowing Maxi*\n{items.borrowpricepoly}\n> Fee discounts for borrowing funds for ILO on X7 '
                     f'DEX\n\n'
-                    f'*Magister*\n{items.ecopricepoly}\n> 25% discount on X7100 tax\n'
+                    f'*Magister*\n{items.magisterpricepoly}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -222,21 +222,21 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='DEX Maxi', url=f'{items.polytoken}{items.dexca}')],
                 [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.polytoken}{items.borrowca}')],
                 [InlineKeyboardButton(text='Magister', url=f'{items.polytoken}{items.magisterca}')], ]))
-    if chain == "optimism":
+    if chain == "optimism" or chain == "opti":
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (OPTIMISM)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{items.ecopriceopti}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n'
-                    f'*Liquidity Maxi*\n{items.ecopriceopti}\n'
+                    f'*Liquidity Maxi*\n{items.liqpriceopti}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
-                    f'*Dex Maxi*\n{items.ecopriceopti}\n'
+                    f'*Dex Maxi*\n{items.dexpriceopti}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{items.ecopriceopti}\n> Fee discounts for borrowing funds for ILO on X7 '
+                    f'*Borrowing Maxi*\n{items.borrowpriceopti}\n> Fee discounts for borrowing funds for ILO on X7 '
                     f'DEX\n\n'
-                    f'*Magister*\n{items.ecopriceopti}\n> 25% discount on X7100 tax\n'
+                    f'*Magister*\n{items.magisterpriceopti}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -1467,24 +1467,6 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     parse_mode="Markdown")
             else:
                 await update.message.reply_text(f'{variables.modsonly}')
-        if ext == "countsss":
-            chat_admins = await update.effective_chat.get_administrators()
-            if update.effective_user in (admin.user for admin in chat_admins):
-                client = tweepy.Client(keys.bearer)
-                auth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
-                auth.set_access_token(keys.access, keys.accesssecret)
-                api = tweepy.API(auth)
-                tweetid = variables.tweetid
-                response = client.get_retweeters(tweetid)
-                status = api.get_status(tweetid)
-                retweet_count = status.retweet_count
-                await update.message.reply_photo(
-                    photo=open((random.choice(items.logos)), 'rb'),
-                    caption=f'*{variables.giveawaytitle}*\n\n{variables.tweetlink}\n\n'
-                            f'Retweeted {retweet_count} times, by the following members:')
-                await update.message.reply_text('\n'.join(str(p) for p in response.data))
-            else:
-                await update.message.reply_text(f'{variables.modsonly}')
 
 
 async def joke_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1636,17 +1618,36 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def twitter_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    ext = " ".join(context.args)
     auth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
     auth.set_access_token(keys.access, keys.accesssecret)
     username = '@x7_finance'
     client = tweepy.API(auth)
     tweet = client.user_timeline(screen_name=username, count=1)
-    await update.message.reply_text(f'*Latest X7 Finance Tweet*\n\n{tweet[0].text}\n\n'
-                                    f'{random.choice(items.twitterresp)}',
-                                    parse_mode='Markdown',
-                                    reply_markup=InlineKeyboardMarkup(
-                                        [[InlineKeyboardButton(text='X7 Finance Twitter',
-                                                               url='https://twitter.com/x7_finance')], ]))
+    if ext == "":
+        await update.message.reply_text(f'Latest X7 Finance Tweet\n\n{tweet[0].text}\n\n'
+                                        f'https://twitter.com/X7_Finance/status/{tweet[0].id}\n\n'
+                                        f'{random.choice(items.twitterresp)}',
+                                        reply_markup=InlineKeyboardMarkup(
+                                            [[InlineKeyboardButton(text='X7 Finance Twitter',
+                                                                   url='https://twitter.com/x7_finance')], ]))
+    if ext == "count":
+        chat_admins = await update.effective_chat.get_administrators()
+        if update.effective_user in (admin.user for admin in chat_admins):
+            client = tweepy.Client(keys.bearer)
+            auth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
+            auth.set_access_token(keys.access, keys.accesssecret)
+            api = tweepy.API(auth)
+            response = client.get_retweeters(variables.tweetid)
+            status = api.get_status(variables.tweetid)
+            retweet_count = status.retweet_count
+            await update.message.reply_photo(
+                photo=open((random.choice(items.logos)), 'rb'),
+                caption=f'X7 Finance Twitter\n\n{variables.tweetlink}\n\n'
+                        f'Retweeted {retweet_count} times, by the following members:')
+            await update.message.reply_text('\n'.join(str(p) for p in response.data))
+        else:
+            await update.message.reply_text(f'{variables.modsonly}')
 
 
 async def discount_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2745,7 +2746,10 @@ async def twitter_message(context: ContextTypes.DEFAULT_TYPE) -> None:
 # AUTO MESSAGES
 async def auto_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
-    await context.bot.send_message(job.chat_id, text=f"{job.data}")
+    await context.bot.send_photo(
+        job.chat_id,
+        photo=open((random.choice(items.logos)), 'rb'),
+        caption=f"{job.data}")
 
 
 async def show_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
