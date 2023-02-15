@@ -1625,26 +1625,26 @@ async def twitter_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     client = tweepy.API(auth)
     tweet = client.user_timeline(screen_name=username, count=1)
     if ext == "":
-        await update.message.reply_text(f'Latest X7 Finance Tweet\n\n{tweet[0].text}\n\n'
-                                        f'https://twitter.com/X7_Finance/status/{tweet[0].id}\n\n'
-                                        f'{random.choice(items.twitterresp)}',
-                                        reply_markup=InlineKeyboardMarkup(
-                                            [[InlineKeyboardButton(text='X7 Finance Twitter',
-                                                                   url='https://twitter.com/x7_finance')], ]))
+        await update.message.reply_sticker(sticker=items.twittersticker)
+        await update.message.reply_text(
+            f'Latest X7 Finance Tweet\n\n{tweet[0].text}\n\n'
+            f'https://twitter.com/X7_Finance/status/{tweet[0].id}\n\n'
+            f'{random.choice(items.twitterresp)}')
     if ext == "count":
         chat_admins = await update.effective_chat.get_administrators()
         if update.effective_user in (admin.user for admin in chat_admins):
-            client = tweepy.Client(keys.bearer)
-            auth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
-            auth.set_access_token(keys.access, keys.accesssecret)
-            api = tweepy.API(auth)
-            response = client.get_retweeters(variables.tweetid)
-            status = api.get_status(variables.tweetid)
+            rtclient = tweepy.Client(keys.bearer)
+            rtauth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
+            rtauth.set_access_token(keys.access, keys.accesssecret)
+            api = tweepy.API(rtauth)
+            response = rtclient.get_retweeters(tweet[0].id)
+            status = api.get_status(tweet[0].id)
             retweet_count = status.retweet_count
-            await update.message.reply_photo(
-                photo=open((random.choice(items.logos)), 'rb'),
-                caption=f'X7 Finance Twitter\n\n{variables.tweetlink}\n\n'
-                        f'Retweeted {retweet_count} times, by the following members:')
+            await update.message.reply_sticker(sticker=items.twittersticker)
+            await update.message.reply_text(
+                f'Latest X7 Finance Tweet\n\n{tweet[0].text}\n\n'
+                f'https://twitter.com/X7_Finance/status/{tweet[0].id}\n\n'
+                f'Retweeted {retweet_count} times, by the following members:')
             await update.message.reply_text('\n'.join(str(p) for p in response.data))
         else:
             await update.message.reply_text(f'{variables.modsonly}')
@@ -1795,7 +1795,7 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='X7100 Initial Liquidity',
                                       url=f'{items.bscaddress}{items.consliq}')],
             ]))
-    if chain == "arbitrum":
+    if chain == "arbitrum" or chain == "arb":
         liqurl = \
             items.ethbalanceapiarb + items.daoliq + ',' + items.x7rliq + ',' + items.consliq + '&tag=latest' \
             + keys.arb
@@ -1829,7 +1829,7 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='X7100 Initial Liquidity',
                                       url=f'{items.arbaddress}{items.consliq}')],
             ]))
-    if chain == "optimism":
+    if chain == "optimism" or chain == "opti":
         liqurl = \
             items.ethbalanceapiarb + items.daoliq + ',' + items.x7rliq + ',' + items.consliq + '&tag=latest' \
             + keys.arb
@@ -1863,7 +1863,7 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='X7100 Initial Liquidity',
                                       url=f'{items.optiaddress}{items.consliq}')],
             ]))
-    if chain == "polygon":
+    if chain == "polygon" or chain == "poly":
         liqurl = \
             items.maticbalanceapi + items.daoliq + ',' + items.x7rliq + ',' + items.consliq + '&tag=latest' \
             + keys.poly
@@ -1910,13 +1910,13 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     gasdata = gasresponse.json()
     if chain == "":
         await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
-        caption=f'*Eth Gas Prices:*\n\n'
-                f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
-                f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
-                f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
-                f'{quote}',
-        parse_mode='Markdown')
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption=f'*Eth Gas Prices:*\n\n'
+                    f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
+                    f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
+                    f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
+                    f'{quote}',
+            parse_mode='Markdown')
     if chain == "bsc":
         gasurl = items.bscgasapi + keys.bsc
         gasresponse = requests.get(gasurl)
@@ -1941,7 +1941,6 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
                     f'{quote}',
             parse_mode='Markdown')
-
 
 
 # CG COMMANDS
