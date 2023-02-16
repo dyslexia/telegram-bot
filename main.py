@@ -303,9 +303,8 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     comx7dresponse = requests.get(comx7durl)
     comx7ddata = comx7dresponse.json()
     comx7d = int(comx7ddata["result"][:-18])
-    comx7ddollar = float(comamount) * float(ethvalue) / 1 ** 18
     comx7dprice = comx7d * ethvalue
-    comtotal = comx7rprice + comdollar + comx7ddollar
+    comtotal = comx7rprice + comdollar + comx7dprice
     if chain == "":
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
@@ -325,7 +324,6 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(
                     text='Community Multisig Wallet', url=f'{items.etheraddress}{items.commultieth}')],
             ]))
-
     if chain == "bsc":
         treasuryurl = items.bnbbalanceapi + items.devmultibsc + ',' + items.commultibsc + '&tag=latest' + keys.bsc
         treasuryresponse = requests.get(treasuryurl)
@@ -1640,12 +1638,12 @@ async def twitter_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             response = rtclient.get_retweeters(tweet[0].id)
             status = api.get_status(tweet[0].id)
             retweet_count = status.retweet_count
+            count = '\n'.join(str(p) for p in response.data)
             await update.message.reply_sticker(sticker=items.twittersticker)
             await update.message.reply_text(
                 f'Latest X7 Finance Tweet\n\n{tweet[0].text}\n\n'
                 f'https://twitter.com/X7_Finance/status/{tweet[0].id}\n\n'
-                f'Retweeted {retweet_count} times, by the following members:')
-            await update.message.reply_text('\n'.join(str(p) for p in response.data))
+                f'Retweeted {retweet_count} times, by the following members:\n\n{count}')
         else:
             await update.message.reply_text(f'{variables.modsonly}')
 
@@ -1942,6 +1940,31 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{quote}',
             parse_mode='Markdown')
 
+
+async def count_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    tweet = " ".join(context.args)
+    if tweet == "":
+        await update.message.reply_text(
+            f'Please follow command with tweet link')
+    if tweet is not "":
+        chat_admins = await update.effective_chat.get_administrators()
+        if update.effective_user in (admin.user for admin in chat_admins):
+            start = tweet.index('status/')
+            end = tweet.index('?', start + 1)
+            id = tweet[start + 7:end]
+            rtclient = tweepy.Client(keys.bearer)
+            rtauth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
+            rtauth.set_access_token(keys.access, keys.accesssecret)
+            api = tweepy.API(rtauth)
+            response = rtclient.get_retweeters(id)
+            status = api.get_status(id)
+            retweet_count = status.retweet_count
+            count = '\n'.join(str(p) for p in response.data)
+            await update.message.reply_sticker(sticker=items.twittersticker)
+            await update.message.reply_text(
+                f'Retweeted {retweet_count} times, by the following members:\n\n {count}')
+        else:
+            await update.message.reply_text(f'{variables.modsonly}')
 
 # CG COMMANDS
 async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2760,6 +2783,8 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
                 f'{quote}', parse_mode="Markdown")
 
 
+
+
 # HARD AUTO MESSAGES
 async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
@@ -2817,9 +2842,9 @@ async def auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         if due < 0:
             await update.effective_message.reply_text("Sorry we can not go back to future!")
             return
-        context.job_queue.run_repeating(auto_message, due*60, chat_id=chat_id, name=name, data=message)
+        context.job_queue.run_repeating(auto_message, due*60*60, chat_id=chat_id, name=name, data=message)
         await update.effective_message.reply_text(f"X7 Finance Auto Message: '{name}'\n\nSet every {due} "
-                                                  f"minutes\n\n{message}\n\nby {user}")
+                                                  f"Hours\n\n{message}\n\nby {user}")
     else:
         await update.message.reply_text(f'{variables.modsonly}')
 
@@ -2935,6 +2960,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('holders', holders_command))
     application.add_handler(CommandHandler(['fg', 'feargreed'], fg_command))
     application.add_handler(CommandHandler('x7d', x7d_command))
+    application.add_handler(CommandHandler('count', count_command))
     application.add_handler(CommandHandler(['constellations', 'constellation', 'quints'], constellations_command))
     application.add_handler(CommandHandler(['loans', 'borrow'], loans_command))
     application.add_handler(CommandHandler('start_auto', auto_command))
