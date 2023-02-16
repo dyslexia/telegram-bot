@@ -1942,29 +1942,50 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def count_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    tweet = " ".join(context.args)
-    if tweet == "":
+    tweet = context.args[0]
+    chat_admins = await update.effective_chat.get_administrators()
+    if update.effective_user in (admin.user for admin in chat_admins):
+        start = tweet.index('status/')
+        end = tweet.index('?', start + 1)
+        tweetid = tweet[start + 7:end]
+        rtclient = tweepy.Client(keys.bearer)
+        rtauth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
+        rtauth.set_access_token(keys.access, keys.accesssecret)
+        api = tweepy.API(rtauth)
+        response = rtclient.get_retweeters(tweetid)
+        status = api.get_status(tweetid)
+        retweet_count = status.retweet_count
+        count = '\n'.join(str(p) for p in response.data)
+        await update.message.reply_sticker(sticker=items.twittersticker)
         await update.message.reply_text(
-            f'Please follow command with tweet link')
-    if tweet is not "":
-        chat_admins = await update.effective_chat.get_administrators()
-        if update.effective_user in (admin.user for admin in chat_admins):
-            start = tweet.index('status/')
-            end = tweet.index('?', start + 1)
-            id = tweet[start + 7:end]
-            rtclient = tweepy.Client(keys.bearer)
-            rtauth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
-            rtauth.set_access_token(keys.access, keys.accesssecret)
-            api = tweepy.API(rtauth)
-            response = rtclient.get_retweeters(id)
-            status = api.get_status(id)
-            retweet_count = status.retweet_count
-            count = '\n'.join(str(p) for p in response.data)
-            await update.message.reply_sticker(sticker=items.twittersticker)
-            await update.message.reply_text(
-                f'Retweeted {retweet_count} times, by the following members:\n\n {count}')
-        else:
-            await update.message.reply_text(f'{variables.modsonly}')
+            f'Retweeted {retweet_count} times, by the following members:\n\n{count}')
+    else:
+        await update.message.reply_text(f'{variables.modsonly}')
+
+
+async def draw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    tweet = context.args[0]
+    chat_admins = await update.effective_chat.get_administrators()
+    if update.effective_user in (admin.user for admin in chat_admins):
+        start = tweet.index('status/')
+        end = tweet.index('?', start + 1)
+        tweetid = tweet[start + 7:end]
+        rtclient = tweepy.Client(keys.bearer)
+        rtauth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
+        rtauth.set_access_token(keys.access, keys.accesssecret)
+        api = tweepy.API(rtauth)
+        response = rtclient.get_retweeters(tweetid)
+        status = api.get_status(tweetid)
+        retweet_count = status.retweet_count
+        count = '\n'.join(str(p) for p in response.data)
+        await update.message.reply_sticker(sticker=items.twittersticker)
+        await update.message.reply_text(
+            f'Retweeted {retweet_count} times, by the following members:\n\n{count}')
+        await update.message.reply_text(f'The Retweet winner is....\n\n{random.choice(response.data)}\n\n'
+                                        f'Congratulations, Please DM @X7_Finance to verify your account')
+    else:
+        await update.message.reply_text(f'{variables.modsonly}')
+
 
 # CG COMMANDS
 async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2783,8 +2804,6 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
                 f'{quote}', parse_mode="Markdown")
 
 
-
-
 # HARD AUTO MESSAGES
 async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
@@ -2863,12 +2882,24 @@ async def stop_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) 
 
 
 # GENERAL MESSAGES
-async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = str(update.effective_message.text).lower()
     print(f'{update.effective_message.from_user.username} says "{message}" in: '
           f'{update.effective_message.chat.title}')
+    if "rob the bank" in message:
+        await update.message.reply_text(f'`Rob The Bank (an outstanding community member and marketer)`\n\n'
+                                        f'`-X7Devs`', parse_mode='Markdown')
     if "trust no one, trust code" in message:
         await update.message.reply_text('Long live Defi!')
+    if "gavalar" in message:
+        await update.message.reply_text('`Gavalar - GFX God!`',
+                                        parse_mode="markdown")
+    if "dallas" in message:
+        await update.message.reply_text('`Dallas - Casino Cowboy!`',
+                                        parse_mode="markdown")
+    if "mark renton" in message:
+        await update.message.reply_text('`Mark Renton - Chooo Choooo!`',
+                                        parse_mode="markdown")
     if "patience" in message:
         await update.message.reply_text('`Patience is bitter, but its fruit is sweet.\n\n- Aristotle`',
                                         parse_mode="markdown")
@@ -2916,7 +2947,7 @@ async def error(update, context):
 if __name__ == '__main__':
     application = ApplicationBuilder().token(keys.token).build()
     job_queue = application.job_queue
-    application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), echo))
+    application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
     application.add_handler(CommandHandler('links', links_command))
     application.add_handler(CommandHandler(['ca', 'contract', 'contracts'], ca_command))
@@ -2961,6 +2992,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler(['fg', 'feargreed'], fg_command))
     application.add_handler(CommandHandler('x7d', x7d_command))
     application.add_handler(CommandHandler('count', count_command))
+    application.add_handler(CommandHandler('draw', draw_command))
     application.add_handler(CommandHandler(['constellations', 'constellation', 'quints'], constellations_command))
     application.add_handler(CommandHandler(['loans', 'borrow'], loans_command))
     application.add_handler(CommandHandler('start_auto', auto_command))
