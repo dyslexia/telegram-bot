@@ -4,6 +4,7 @@ from telegram import *
 import keys
 from pycoingecko import CoinGeckoAPI
 from datetime import datetime, timedelta
+import pytz
 import wikipediaapi
 import random
 import requests
@@ -1987,6 +1988,31 @@ async def draw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f'{variables.modsonly}')
 
 
+async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    westcoastraw = pytz.timezone("America/Los_Angeles")
+    westcoast = datetime.now(westcoastraw)
+    westcoasttime = westcoast.strftime("%H:%M:%S")
+    eastcoastraw = pytz.timezone("America/New_York")
+    eastcoast = datetime.now(eastcoastraw)
+    eastcoasttime = eastcoast.strftime("%H:%M:%S")
+    londonraw = pytz.timezone("Europe/London")
+    london = datetime.now(londonraw)
+    londontime = london.strftime("%H:%M:%S")
+    berlinraw = pytz.timezone("Europe/Berlin")
+    berlin = datetime.now(berlinraw)
+    berlintime = berlin.strftime("%H:%M:%S")
+    tokyoraw = pytz.timezone("Asia/Tokyo")
+    tokyo = datetime.now(tokyoraw)
+    tokyotime = tokyo.strftime("%H:%M:%S")
+    await update.message.reply_text(f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n\n'
+                                    f'PST: {westcoasttime}\n'
+                                    f'EST: {eastcoasttime}\n'
+                                    f'UK: {londontime}\n'
+                                    f'EU: {berlintime}\n'
+                                    f'Tokyo: {tokyotime}\n'
+                                    , parse_mode="Markdown")
+
+
 # CG COMMANDS
 async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteresponse = requests.get(items.quoteapi)
@@ -2889,17 +2915,6 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if "rob the bank" in message:
         await update.message.reply_text(f'`Rob The Bank (an outstanding community member and marketer)`\n\n'
                                         f'`-X7Devs`', parse_mode='Markdown')
-    if "trust no one, trust code" in message:
-        await update.message.reply_text('Long live Defi!')
-    if "gavalar" in message:
-        await update.message.reply_text('`Gavalar - GFX God!`',
-                                        parse_mode="markdown")
-    if "dallas" in message:
-        await update.message.reply_text('`Dallas - Casino Cowboy!`',
-                                        parse_mode="markdown")
-    if "mark renton" in message:
-        await update.message.reply_text('`Mark Renton - Chooo Choooo!`',
-                                        parse_mode="markdown")
     if "patience" in message:
         await update.message.reply_text('`Patience is bitter, but its fruit is sweet.\n\n- Aristotle`',
                                         parse_mode="markdown")
@@ -2984,6 +2999,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('giveaway', giveaway_command))
     application.add_handler(CommandHandler(['mcap', 'marketcap'], mcap_command))
     application.add_handler(CommandHandler('roadmap', roadmap_command))
+    application.add_handler(CommandHandler('time', time_command))
     application.add_handler(CommandHandler('joke', joke_command))
     application.add_handler(CommandHandler('quote', quote_command))
     application.add_handler(CommandHandler(['ebb', '6ebb'], ebb_command))
