@@ -2339,7 +2339,8 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7101 Price: ${cgx7101price["x7101"]["usd"]}\n'
                 f'24 Hour Change: {round(cgx7101price["x7101"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7101price * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7101price["x7101"]["usd_24h_vol"])}\n\n\n\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7101price["x7101"]["usd_24h_vol"])}'
+                f'Holders: {x7101holders}\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
@@ -2443,7 +2444,8 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7102 Price: ${cgx7102price["x7102"]["usd"]}\n'
                 f'24 Hour Change: {round(cgx7102price["x7102"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7102price * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7102price["x7102"]["usd_24h_vol"])}\n\n\n\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7102price["x7102"]["usd_24h_vol"])}'
+                f'Holders: {x7102holders}\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
@@ -2547,7 +2549,8 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7103 Price: ${cgx7103price["x7103"]["usd"]}\n'
                 f'24 Hour Change: {round(cgx7103price["x7103"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7103price * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7103price["x7103"]["usd_24h_vol"])}\n\n\n\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7103price["x7103"]["usd_24h_vol"])}'
+                f'Holders: {x7103holders}\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
@@ -2651,7 +2654,8 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7104 Price: ${cgx7104price["x7104"]["usd"]}\n'
                 f'24 Hour Change: {round(cgx7104price["x7104"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7104price * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7104price["x7104"]["usd_24h_vol"])}\n\n\n\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7104price["x7104"]["usd_24h_vol"])}'
+                f'Holders: {x7104holders}\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
@@ -2775,7 +2779,8 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7105 Price: ${cgx7105price["x7105"]["usd"]}\n'
                 f'24 Hour Change: {round(cgx7105price["x7105"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7105price * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7105price["x7105"]["usd_24h_vol"])}\n\n\n\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7105price["x7105"]["usd_24h_vol"])}'
+                f'Holders: {x7105holders}\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
@@ -3042,6 +3047,27 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
             photo=open(r'media\blackhole.png', 'rb'))
 
 
+async def faq_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    quoteresponse = requests.get(items.quoteapi)
+    quotedata = quoteresponse.json()
+    quoteraw = (random.choice(quotedata))
+    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+    await update.message.reply_photo(
+        photo=open((random.choice(items.logos)), 'rb'),
+        caption=f'*X7 Finance FAQ*\n\n{quote}',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='Constellation Tokens', url='https://www.x7finance.org/faq/constellations')],
+            [InlineKeyboardButton(text='Developer Questions', url='https://www.x7finance.org/faq/devs')],
+            [InlineKeyboardButton(text='General Questions', url='https://www.x7finance.org/faq/general')],
+            [InlineKeyboardButton(text='Governance Questions', url='https://www.x7finance.org/faq/governance')],
+            [InlineKeyboardButton(text='Investor Questions', url='https://www.x7finance.org/faq/investors')],
+            [
+                InlineKeyboardButton(text='Liquidity Lending Questions',
+                                  url='https://www.x7finance.org/faq/liquiditylending')],
+            [InlineKeyboardButton(text='NFT Questions', url='https://www.x7finance.org/faq/nfts')],
+            [InlineKeyboardButton(text='Xchange Questions', url='https://www.x7finance.org/faq/xchange')], ]))
+
 # HARD AUTO MESSAGES
 async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
@@ -3213,6 +3239,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('roadmap', roadmap_command))
     application.add_handler(CommandHandler('time', time_command))
     application.add_handler(CommandHandler('joke', joke_command))
+    application.add_handler(CommandHandler('faq', faq_command))
     application.add_handler(CommandHandler('quote', quote_command))
     application.add_handler(CommandHandler('today', today_command))
     application.add_handler(CommandHandler('holders', holders_command))

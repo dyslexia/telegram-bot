@@ -273,7 +273,6 @@ dead = '0x000000000000000000000000000000000000dead'
 supply = 100000000
 
 # MEDIA
-x7rprice = r'media\x7rprice.png'
 blackhole = [r'media\blackhole1.jpg', r'media\blackhole2.jpg', r'media\blackhole3.jpg', r'media\blackhole4.jpg',
              r'media\blackhole5.jpg', r'media\blackhole6.jpg', r'media\blackhole7.jpg']
 logos = [r'media\logo1.png', r'media\logo2.png', r'media\logo3.png', r'media\logo4.png', r'media\logo4.png',
