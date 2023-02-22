@@ -941,6 +941,21 @@ async def channels_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text='Chinese Community', url='https://t.me/X7CNPortal')], ]))
 
 
+async def buybots_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    quoteresponse = requests.get(items.quoteapi)
+    quotedata = quoteresponse.json()
+    quoteraw = (random.choice(quotedata))
+    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+    await update.message.reply_photo(
+        photo=open((random.choice(items.logos)), 'rb'),
+        caption=f'*X7 Finance Community TG Channels*\n\n{quote}', parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text='Arbirtum', url='https://t.me/x7arbbuybotsl')],
+             [InlineKeyboardButton(text='BSC', url='https://t.me/x7bscbuybots')],
+             [InlineKeyboardButton(text='Optimism', url='https://t.me/x7optibuybots')],
+             [InlineKeyboardButton(text='Polygon', url='https://t.me/x7polybuybots')], ]))
+
+
 async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteresponse = requests.get(items.quoteapi)
     quotedata = quoteresponse.json()
@@ -3062,11 +3077,11 @@ async def faq_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='General Questions', url='https://www.x7finance.org/faq/general')],
             [InlineKeyboardButton(text='Governance Questions', url='https://www.x7finance.org/faq/governance')],
             [InlineKeyboardButton(text='Investor Questions', url='https://www.x7finance.org/faq/investors')],
-            [
-                InlineKeyboardButton(text='Liquidity Lending Questions',
+            [InlineKeyboardButton(text='Liquidity Lending Questions',
                                   url='https://www.x7finance.org/faq/liquiditylending')],
             [InlineKeyboardButton(text='NFT Questions', url='https://www.x7finance.org/faq/nfts')],
             [InlineKeyboardButton(text='Xchange Questions', url='https://www.x7finance.org/faq/xchange')], ]))
+
 
 # HARD AUTO MESSAGES
 async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -3238,6 +3253,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler(['mcap', 'marketcap'], mcap_command))
     application.add_handler(CommandHandler('roadmap', roadmap_command))
     application.add_handler(CommandHandler('time', time_command))
+    application.add_handler(CommandHandler(['buybots', 'bobby', 'buybot'], buybots_command))
     application.add_handler(CommandHandler('joke', joke_command))
     application.add_handler(CommandHandler('faq', faq_command))
     application.add_handler(CommandHandler('quote', quote_command))
