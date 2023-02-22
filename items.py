@@ -116,7 +116,7 @@ dextoolsopti = 'https://www.dextools.io/app/optimism/pair-explorer/'
 # ETH
 x7rpaireth = '0x6139240a5907e4ce74673257c320ea366c521aea'
 x7daopaireth = '0x75311ee016c82e7770e4aca73a0d142f96ddb969'
-x7101paireth = '0x75311ee016c82e7770e4aca73a0d142f96ddb969'
+x7101paireth = '0x81b786ed4b2f1118e0fa0343ad4760e15448e3e8'
 x7102paireth = '0x49c838c60170c36e90cfa6021a57f2268dda3254'
 x7103paireth = '0xcecf54edc42c5c9f6ee10cb1efcc23e49f7d5a5d'
 x7104paireth = '0x7d0d7c088233cbc08ee2400b96d10bf24c40e93a'
@@ -273,9 +273,12 @@ dead = '0x000000000000000000000000000000000000dead'
 supply = 100000000
 
 # MEDIA
+x7rprice = r'media\x7rprice.png'
+blackhole = [r'media\blackhole1.jpg', r'media\blackhole2.jpg', r'media\blackhole3.jpg', r'media\blackhole4.jpg',
+             r'media\blackhole5.jpg', r'media\blackhole6.jpg', r'media\blackhole7.jpg']
 logos = [r'media\logo1.png', r'media\logo2.png', r'media\logo3.png', r'media\logo4.png', r'media\logo4.png',
          r'media\logo5.png', r'media\logo6.png', r'media\logo7.png', r'media\logo8.png', r'media\logo9.png',
-         r'media\logo10.png']
+         r'media\logo10.png', r'media\logo11.png']
 x7rlogo = r'media\X7R_LOGO_black_back_200_x_200_px.png'
 x7daologo = r'media\X7_DAO_LOGO_black_back_200_x_200_px.png'
 x7101logo = r'media\X7101_LOGO_black_back_200_x_200_px.png'
