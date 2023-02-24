@@ -308,8 +308,22 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     comx7dprice = comx7d * ethvalue
     comtotal = comx7rprice + comdollar + comx7dprice
     if chain == "":
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        i1.text((28, 36),
+                f'X7 Finance Treasury (ETH)\n\n'
+                f'Pioneer Pool:\n{pioneeramount[:4]}ETH (${"{:0,.0f}".format(pioneerdollar)})\n\n'
+                f'Developer Wallet:\n{devamount[:4]}ETH (${"{:0,.0f}".format(devdollar)})\n\n'
+                f'Community Wallet:\n{comamount[:4]}ETH (${"{:0,.0f}".format(comdollar)})\n'
+                f'{comx7d} X7D (${"{:0,.0f}".format(comx7dprice)})\n'
+                f'{comx7r} X7R (${"{:0,.0f}".format(comx7rprice)})\n'
+                f'Total: (${"{:0,.0f}".format(comtotal)})\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((r"media\blackhole.png"), 'rb'),
             caption='*X7 Finance Treasury (ETH)*\nUse `/treasury [chain-name]` for other chains\n\n'
                     f'Pioneer Pool:\n{pioneeramount[:4]}ETH (${"{:0,.0f}".format(pioneerdollar)})\n\n'
                     f'Developer Wallet:\n{devamount[:4]}ETH (${"{:0,.0f}".format(devdollar)})\n\n'
@@ -725,8 +739,26 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         damount = float(x7ddata["result"][0]["balance"])
         x7damount = str(damount / 10 ** 18)
         x7ddollar = float(x7damount) * float(ethvalue) / 1 ** 18
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 20)
+        i1.text((28, 36),
+                f'X7D (ETH) Info\n\n'
+                f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
+                f'Holders: {x7dholders}\n\n'
+                f'To receive X7D:\n\n'
+                '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
+                f'{items.lpreserveca}\n\n'
+                '2. Import the X7D contract address to your custom tokens in your wallet\nto see your tokens:\n'
+                f'{items.x7dca}\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
+                'Note:\n'
+                'Do not interact directly with the X7D contract\n'
+                'Do not send from a CEX\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(items.x7dlogo, 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7D (ETH) Info*\n'
                     f'For other chains use `/x7d [chainname]`\n\n'
                     f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
@@ -948,12 +980,12 @@ async def buybots_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     await update.message.reply_photo(
         photo=open((random.choice(items.logos)), 'rb'),
-        caption=f'*X7 Finance Community TG Channels*\n\n{quote}', parse_mode='Markdown',
+        caption=f'*X7 Finance Bobby Buy Bot Channels*\n\n{quote}', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text='Arbirtum', url='https://t.me/x7arbbuybotsl')],
+            [[InlineKeyboardButton(text='Arbirtum', url='https://t.me/x7arbbuybots')],
              [InlineKeyboardButton(text='BSC', url='https://t.me/x7bscbuybots')],
              [InlineKeyboardButton(text='Optimism', url='https://t.me/x7optibuybots')],
-             [InlineKeyboardButton(text='Polygon', url='https://t.me/x7polybuybots')], ]))
+             [InlineKeyboardButton(text='Polygon', url='https://t.me/x7polygonbuybots')], ]))
 
 
 async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -989,22 +1021,6 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pioneerdollarraw = float(totalamount) * float(ethvalue) / 1 ** 18 / 639
     pioneerdollar = str(pioneerdollarraw)
     if pioneerid == "":
-        await update.message.reply_photo(
-            photo=open(items.pioneerlogo, 'rb'),
-            caption=f'*X7 Pioneer NFT Info*\n\nFloor Price: {floor} ETH\n'
-                    f'Average Price: {price} ETH\n'
-                    f'Market Cap: {cap} ETH\n'
-                    f'Total Volume: {volume} ETH\n'
-                    f'Total Sales: {sales}\n'
-                    f'Number of Owners: {owners}\n'
-                    f'Pioneers Unlocked: {traits}\n'
-                    f'Pioneer Pool: {totalamount[:3]} ETH (${totaldollar[:4]})\n\n'
-                    f'Pioneer Earnings: {pioneereamount[:5]} ETH (${pioneerdollar[:4]})\n\n{quote}',
-            parse_mode='markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Pioneer Dashboard', url='https://x7.finance/x/nft/pioneer')],
-                 [InlineKeyboardButton(text='Opensea', url='https://opensea.io/collection/x7-pioneer')], ]))
-    if pioneerid == "img":
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -1015,15 +1031,27 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Total Volume: {volume} ETH\n'
                 f'Total Sales: {sales}\n'
                 f'Number of Owners: {owners}\n'
-                f'Pioneers Unlocked: {traits}\n'
-                f'Pioneer Pool: {totalamount[:3]} ETH (${totaldollar[:4]})\n\n'
+                f'Pioneers Unlocked: {traits}\n\n'
+                f'Pioneer Pool: {totalamount[:3]} ETH (${totaldollar[:4]})\n'
                 f'Pioneer Earnings: {pioneereamount[:5]} ETH (${pioneerdollar[:4]})\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(r'media\blackhole.png', 'rb'))
-
+            photo=open(r"media\blackhole.png", 'rb'),
+            caption=f'*X7 Pioneer NFT Info*\n\nFloor Price: {floor} ETH\n'
+                    f'Average Price: {price} ETH\n'
+                    f'Market Cap: {cap} ETH\n'
+                    f'Total Volume: {volume} ETH\n'
+                    f'Total Sales: {sales}\n'
+                    f'Number of Owners: {owners}\n'
+                    f'Pioneers Unlocked: {traits}\n\n'
+                    f'Pioneer Pool: {totalamount[:3]} ETH (${totaldollar[:4]})\n'
+                    f'Pioneer Earnings: {pioneereamount[:5]} ETH (${pioneerdollar[:4]})\n\n{quote}',
+            parse_mode='markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='X7 Pioneer Dashboard', url='https://x7.finance/x/nft/pioneer')],
+                 [InlineKeyboardButton(text='Opensea', url='https://opensea.io/collection/x7-pioneer')], ]))
     else:
         baseurl = "https://api.opensea.io/api/v1/asset/"
         slug = items.pioneerca+"/"
@@ -1052,8 +1080,18 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         burndata = burnresponse.json()
         burndata["result"] = int(burndata["result"][:-18])
         result = round(((burndata["result"] / items.supply) * 100), 6)
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        i1.text((28, 36),
+                f'X7R (ETH) Tokens Burned:\n\n'
+                f'{"{:,}".format(burndata["result"])}\n'
+                f'{result}% of Supply\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(items.x7rlogo, 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'\n\nX7R (ETH) Tokens Burned:\nUse `/burn [chain-name]` for other chains\n\n'
                     f'{"{:,}".format(burndata["result"])}\n'
                     f'{result}% of Supply\n\n'
@@ -1199,8 +1237,22 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     polypooldollar = float(polypoolamount) * float(polyvalue) / 1 ** 18
     totaldollar = polypooldollar + bscpooldollar + optipooldollar + arbpooldollar + pooldollar
     if chain == "":
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        i1.text((28, 36),
+                f'X7 Finance Lending Pool Info\n\n'
+                f'ETH: {poolamount[:5]} ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
+                f'ARB: {arbpoolamount[:4]} ETH (${"{:0,.0f}".format(arbpooldollar)})\n\n'
+                f'OPTI: {optipoolamount[:4]} ETH (${"{:0,.0f}".format(optipooldollar)})\n\n'
+                f'BSC: {bscpoolamount[:4]} BNB (${"{:0,.0f}".format(bscpooldollar)})\n\n'
+                f'POLY: {polypoolamount[:6]} MATIC (${"{:0,.0f}".format(polypooldollar)})\n\n'
+                f'TOTAL: ${"{:0,.0f}".format(totaldollar)}\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((r"media\blackhole.png"), 'rb'),
             caption=f'*X7 Finance Lending Pool Info *\nUse `/pool [chain-name]` for individual chains\n\n'
                     f'ETH: {poolamount[:5]} ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
                     f'ARB: {arbpoolamount[:4]} ETH (${"{:0,.0f}".format(arbpooldollar)})\n\n'
@@ -1269,23 +1321,6 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.polyaddress}{items.lpreserveca}')],
                  [InlineKeyboardButton(text='X7 Deposit Contract',
                                        url=f'{items.polyaddress}{items.x7dca}#code')], ]))
-    if chain == "img":
-        img = Image.open((random.choice(items.blackhole)))
-        i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
-        i1.text((28, 36),
-                f'X7 Finance Lending Pool Info \nUse /pool [chain-name] for individual chains\n\n'
-                f'ETH: {poolamount[:5]} ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
-                f'ARB: {arbpoolamount[:4]} ETH (${"{:0,.0f}".format(arbpooldollar)})\n\n'
-                f'OPTI: {optipoolamount[:4]} ETH (${"{:0,.0f}".format(optipooldollar)})\n\n'
-                f'BSC: {bscpoolamount[:4]} BNB (${"{:0,.0f}".format(bscpooldollar)})\n\n'
-                f'POLY: {polypoolamount[:6]} MATIC (${"{:0,.0f}".format(polypooldollar)})\n\n'
-                f'TOTAL: ${"{:0,.0f}".format(totaldollar)}\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-                photo=open(r'media\blackhole.png', 'rb'))
 
 
 async def listings_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2058,8 +2093,25 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'\n\n{quote}',
             parse_mode='Markdown')
     if chain == "":
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        i1.text((28, 36),
+                f'X7R Info (ETH)\n\n'
+                f'X7R Price: ${cgx7rprice["x7r"]["usd"]}\n'
+                f'24 Hour Change: {round(cgx7rprice["x7r"]["usd_24h_change"], 1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(x7rprice * items.supply)}\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7rprice["x7r"]["usd_24h_vol"])}\n'
+                f'Holders: {x7rholders}\n\n'
+                f'X7R Tokens Burned:\n'
+                f'{"{:,}".format(burndata["result"])}\n'
+                f'{burnresult}% of Supply\n\n'
+                f'Uniswap Supply:\n{"{:,}".format(unidata["result"])}\n{round(uniresult, 2)}% of Supply\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(r'media\x7rprice.png', 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7R Info (ETH)*\nUse `/x7r [chain-name]` for other chains\n\n'
                     f'X7R Price: ${cgx7rprice["x7r"]["usd"]}\n'
                     f'24 Hour Change: {round(cgx7rprice["x7r"]["usd_24h_change"], 1)}%\n'
@@ -2116,26 +2168,6 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{items.optitoken}{items.x7rca}')],
                 [InlineKeyboardButton(text='Chart', url=f'{items.dextoolsopti}{items.x7rpairopti}')],
                 [InlineKeyboardButton(text='Buy', url=f'{items.xchangebuy}{items.x7rca}')], ]))
-    if chain == "img":
-        img = Image.open((random.choice(items.blackhole)))
-        i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
-        i1.text((28, 36),
-                f'X7R Info (ETH)\nUse /x7r [chain-name] for other chains\n\n'
-                f'X7R Price: ${cgx7rprice["x7r"]["usd"]}\n'
-                f'24 Hour Change: {round(cgx7rprice["x7r"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(x7rprice * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7rprice["x7r"]["usd_24h_vol"])}\n'
-                f'Holders: {x7rholders}\n\n'
-                f'X7R Tokens Burned:\n'
-                f'{"{:,}".format(burndata["result"])}\n'
-                f'{burnresult}% of Supply\n\n'
-                f'Uniswap Supply:\n{"{:,}".format(unidata["result"])}\n{round(uniresult, 2)}% of Supply\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r'media\blackhole.png', 'rb'))
 
 
 async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2185,8 +2217,22 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'{chain} X7DAO (ETH) Currently Costs:\n\n${amount}\n\n{quote}',
             parse_mode='Markdown')
     if chain == "":
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        i1.text((28, 36),
+                f'X7DAO Info (ETH)\n\n'
+                f'X7DAO Price: ${cgx7daoprice["x7dao"]["usd"]}\n'
+                f'24 Hour Change: {round(cgx7daoprice["x7dao"]["usd_24h_change"], 1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(daoprice * items.supply)}\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7daoprice["x7dao"]["usd_24h_vol"])}\n'
+                f'Holders: {x7daoholders}\n\n'
+                f'Uniswap Supply:\n{"{:,}".format(unidata["result"])}\n{round(uniresult, 2)}% of Supply\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(r'media\x7daoprice.png', 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7DAO (ETH) Info*\n\n'
             f'X7DAO Price: ${cgx7daoprice["x7dao"]["usd"]}\n'
             f'24 Hour Change: {round(cgx7daoprice["x7dao"]["usd_24h_change"],1)}%\n'
@@ -2240,23 +2286,6 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Polygonscan', url=f'{items.polytoken}{items.x7daoca}')],
                 [InlineKeyboardButton(text='Chart', url=f'{items.dextoolspoly}{items.x7daopairpoly}')],
                 [InlineKeyboardButton(text='Buy', url=f'{items.xchangebuy}{items.x7daoca}')], ]))
-    if chain == "img":
-        img = Image.open((random.choice(items.blackhole)))
-        i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
-        i1.text((28, 36),
-                f'X7DAO Info (ETH)\nUse /x7dao [chain-name] for other chains\n\n'
-                f'X7DAO Price: ${cgx7daoprice["x7dao"]["usd"]}\n'
-                f'24 Hour Change: {round(cgx7daoprice["x7dao"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(daoprice * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7daoprice["x7dao"]["usd_24h_vol"])}\n'
-                f'Holders: {x7daoholders}\n\n'
-                f'Uniswap Supply:\n{"{:,}".format(unidata["result"])}\n{round(uniresult, 2)}% of Supply\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r'media\blackhole.png', 'rb'))
 
 
 async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2291,8 +2320,21 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'{chain} X7101 (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
             parse_mode='Markdown')
     if chain == "":
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        i1.text((28, 36),
+                f'X7101 Info (ETH)\n\n'
+                f'X7101 Price: ${cgx7101price["x7101"]["usd"]}\n'
+                f'24 Hour Change: {round(cgx7101price["x7101"]["usd_24h_change"], 1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(x7101price * items.supply)}\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7101price["x7101"]["usd_24h_vol"])}'
+                f'Holders: {x7101holders}\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(r'media\x7101price.png', 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7101 (ETH) Info*\nUse `/X7101 [chain-name]` for other chains\n\n'
             f'X7101 Price: ${cgx7101price["x7101"]["usd"]}\n'
             f'24 Hour Change: {"{:0,.0f}".format(cgx7101price["x7101"]["usd_24h_change"], 1)}%\n'
@@ -2345,22 +2387,6 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{items.optitoken}{items.x7101ca}')],
                 [InlineKeyboardButton(text='Chart', url=f'{items.dextoolsopti}{items.x7101pairopti}')],
                 [InlineKeyboardButton(text='Buy', url=f'{items.xchangebuy}{items.x7101ca}')], ]))
-    if chain == "img":
-        img = Image.open((random.choice(items.blackhole)))
-        i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
-        i1.text((28, 36),
-                f'X7101 Info (ETH)\nUse /x7101 [chain-name] for other chains\n\n'
-                f'X7101 Price: ${cgx7101price["x7101"]["usd"]}\n'
-                f'24 Hour Change: {round(cgx7101price["x7101"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(x7101price * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7101price["x7101"]["usd_24h_vol"])}'
-                f'Holders: {x7101holders}\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r'media\blackhole.png', 'rb'))
 
 
 async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2396,8 +2422,21 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'{chain} X7102 (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
             parse_mode='Markdown')
     if chain == "":
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        i1.text((28, 36),
+                f'X7102 Info (ETH)\n\n'
+                f'X7102 Price: ${cgx7102price["x7102"]["usd"]}\n'
+                f'24 Hour Change: {round(cgx7102price["x7102"]["usd_24h_change"], 1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(x7102price * items.supply)}\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7102price["x7102"]["usd_24h_vol"])}'
+                f'Holders: {x7102holders}\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(r'media\x7102price.png', 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7102 (ETH) Info*\nUse `/x7102 [chain-name]` for other chains\n\n'
                     f'X7102 Price: ${cgx7102price["x7102"]["usd"]}\n'
                     f'24 Hour Change: {round(cgx7102price["x7102"]["usd_24h_change"], 1)}%\n'
@@ -2450,22 +2489,6 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Arbiscan', url=f'{items.arbtoken}{items.x7102ca}')],
                 [InlineKeyboardButton(text='Chart', url=f'{items.dextoolsarb}{items.x7102pairarb}')],
                 [InlineKeyboardButton(text='Buy', url=f'{items.xchangebuy}{items.x7102ca}')], ]))
-    if chain == "img":
-        img = Image.open((random.choice(items.blackhole)))
-        i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
-        i1.text((28, 36),
-                f'X7102 Info (ETH)\nUse /x7102 [chain-name] for other chains\n\n'
-                f'X7102 Price: ${cgx7102price["x7102"]["usd"]}\n'
-                f'24 Hour Change: {round(cgx7102price["x7102"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(x7102price * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7102price["x7102"]["usd_24h_vol"])}'
-                f'Holders: {x7102holders}\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r'media\blackhole.png', 'rb'))
 
 
 async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2501,8 +2524,21 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'{chain} X7103 (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
             parse_mode='Markdown')
     if chain == "":
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        i1.text((28, 36),
+                f'X7103 Info (ETH)\n\n'
+                f'X7103 Price: ${cgx7103price["x7103"]["usd"]}\n'
+                f'24 Hour Change: {round(cgx7103price["x7103"]["usd_24h_change"], 1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(x7103price * items.supply)}\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7103price["x7103"]["usd_24h_vol"])}'
+                f'Holders: {x7103holders}\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(r'media\x7103price.png', 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7103 (ETH) Info*\nUse `/x7103` [chain-name] for other chains\n\n'
                     f'X7103 Price: ${cgx7103price["x7103"]["usd"]}\n'
                     f'24 Hour Change: {round(cgx7103price["x7103"]["usd_24h_change"], 1)}%\n'
@@ -2555,22 +2591,6 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{items.optitoken}{items.x7103ca}')],
                 [InlineKeyboardButton(text='Chart', url=f'{items.dextoolsopti}{items.x7103pairopti}')],
                 [InlineKeyboardButton(text='Buy', url=f'{items.xchangebuy}{items.x7103ca}')], ]))
-    if chain == "img":
-        img = Image.open((random.choice(items.blackhole)))
-        i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
-        i1.text((28, 36),
-                f'X7103 Info (ETH)\nUse /x7103 [chain-name] for other chains\n\n'
-                f'X7103 Price: ${cgx7103price["x7103"]["usd"]}\n'
-                f'24 Hour Change: {round(cgx7103price["x7103"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(x7103price * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7103price["x7103"]["usd_24h_vol"])}'
-                f'Holders: {x7103holders}\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r'media\blackhole.png', 'rb'))
 
 
 async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2606,8 +2626,21 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'{chain} X7104 (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
             parse_mode='Markdown')
     if chain == "":
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        i1.text((28, 36),
+                f'X7104 Info (ETH)\n\n'
+                f'X7104 Price: ${cgx7104price["x7104"]["usd"]}\n'
+                f'24 Hour Change: {round(cgx7104price["x7104"]["usd_24h_change"], 1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(x7104price * items.supply)}\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7104price["x7104"]["usd_24h_vol"])}'
+                f'Holders: {x7104holders}\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(r'media\x7104price.png', 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7104 (ETH) Info*\n`Use /x7104 [chain-name]` for other chains\n\n'
                     f'X7104 Price: ${cgx7104price["x7104"]["usd"]}\n'
                     f'24 Hour Change: {round(cgx7104price["x7104"]["usd_24h_change"], 1)}%\n'
@@ -2660,22 +2693,6 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{items.optitoken}{items.x7104ca}')],
                 [InlineKeyboardButton(text='Chart', url=f'{items.dextoolsopti}{items.x7104pairopti}')],
                 [InlineKeyboardButton(text='Buy', url=f'{items.xchangebuy}{items.x7104ca}')], ]))
-    if chain == "img":
-        img = Image.open((random.choice(items.blackhole)))
-        i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
-        i1.text((28, 36),
-                f'X7104 Info (ETH)\nUse /x7104 [chain-name] for other chains\n\n'
-                f'X7104 Price: ${cgx7104price["x7104"]["usd"]}\n'
-                f'24 Hour Change: {round(cgx7104price["x7104"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(x7104price * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7104price["x7104"]["usd_24h_vol"])}'
-                f'Holders: {x7104holders}\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r'media\blackhole.png', 'rb'))
 
 
 async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2711,8 +2728,21 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'{chain} X7105 (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
             parse_mode='Markdown')
     if chain == "":
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        i1.text((28, 36),
+                f'X7105 Info (ETH)\n\n'
+                f'X7105 Price: ${cgx7105price["x7105"]["usd"]}\n'
+                f'24 Hour Change: {round(cgx7105price["x7105"]["usd_24h_change"], 1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(x7105price * items.supply)}\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7105price["x7105"]["usd_24h_vol"])}'
+                f'Holders: {x7105holders}\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(r'media\x7105price.png', 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7105 (ETH) Info*\nUse `/x7105 [chain-name]` for other chains\n'
                     f'X7105 Price: ${cgx7105price["x7105"]["usd"]}\n'
                     f'24 Hour Change: {round(cgx7105price["x7105"]["usd_24h_change"], 1)}%\n'
@@ -2785,22 +2815,6 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{items.optitoken}{items.x7105ca}')],
                 [InlineKeyboardButton(text='Chart', url=f'{items.dextoolsopti}{items.x7105pairopti}')],
                 [InlineKeyboardButton(text='Buy', url=f'{items.xchangebuy}{items.x7105ca}')], ]))
-    if chain == "img":
-        img = Image.open((random.choice(items.blackhole)))
-        i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
-        i1.text((28, 36),
-                f'X7105 Info (ETH)\nUse /x7105 [chain-name] for other chains\n\n'
-                f'X7105 Price: ${cgx7105price["x7105"]["usd"]}\n'
-                f'24 Hour Change: {round(cgx7105price["x7105"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(x7105price * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7105price["x7105"]["usd_24h_vol"])}'
-                f'Holders: {x7105holders}\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r'media\blackhole.png', 'rb'))
 
 
 async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2826,23 +2840,6 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7105price = (cgx7105price["x7105"]["usd"]) * items.supply
     total = x7rprice + x7daoprice + x7101price + x7102price + x7103price + x7104price + x7105price
     if chain == "":
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Market Cap Info (ETH)*\n\n'
-                    f'X7R:           ${"{:0,.0f}".format(x7rprice)}\n'
-                    f'X7DAO:      ${"{:0,.0f}".format(x7daoprice)}\n'     
-                    f'X7101:       ${"{:0,.0f}".format(x7101price)}\n'
-                    f'X7102:       ${"{:0,.0f}".format(x7102price)}\n'
-                    f'X7103:       ${"{:0,.0f}".format(x7103price)}\n'
-                    f'X7104:       ${"{:0,.0f}".format(x7104price)}\n'
-                    f'X7105:       ${"{:0,.0f}".format(x7105price)}\n\n'
-                    f'Constellations Combined:\n'
-                    f'${"{:0,.0f}".format(x7101price+x7102price+x7103price+x7104price+x7105price)}\n\n'
-                    f'Total Token Marketcap:\n'
-                    f'${"{:0,.0f}".format(total)}'
-                    f'\n\n{quote}',
-            parse_mode="Markdown")
-    if chain == "img":
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -2863,7 +2860,21 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(r'media\blackhole.png', 'rb'))
+            photo=open((r"media\blackhole.png"), 'rb'),
+            caption=f'*X7 Finance Market Cap Info (ETH)*\n\n'
+                    f'X7R:           ${"{:0,.0f}".format(x7rprice)}\n'
+                    f'X7DAO:      ${"{:0,.0f}".format(x7daoprice)}\n'     
+                    f'X7101:       ${"{:0,.0f}".format(x7101price)}\n'
+                    f'X7102:       ${"{:0,.0f}".format(x7102price)}\n'
+                    f'X7103:       ${"{:0,.0f}".format(x7103price)}\n'
+                    f'X7104:       ${"{:0,.0f}".format(x7104price)}\n'
+                    f'X7105:       ${"{:0,.0f}".format(x7105price)}\n\n'
+                    f'Constellations Combined:\n'
+                    f'${"{:0,.0f}".format(x7101price+x7102price+x7103price+x7104price+x7105price)}\n\n'
+                    f'Total Token Marketcap:\n'
+                    f'${"{:0,.0f}".format(total)}'
+                    f'\n\n{quote}',
+            parse_mode="Markdown")
 
 
 async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2885,8 +2896,20 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cgtogetherprice = (cg.get_price(ids='x7r,x7dao', vs_currencies='usd', include_24hr_change='true',
                                     include_24hr_vol='true'))
     if search == "":
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
+        i1.text((28, 36),
+                f'X7 Finance Token Price Info (ETH)\n\n'
+                f'X7R:      ${cgtogetherprice["x7r"]["usd"]}\n'
+                f'24 Hour Change: {round(cgtogetherprice["x7r"]["usd_24h_change"], 1)}%\n\n'
+                f'X7DAO:  ${cgtogetherprice["x7dao"]["usd"]}\n'
+                f'24 Hour Change: {round(cgtogetherprice["x7dao"]["usd_24h_change"], 0)}%\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((r"media\blackhole.png"), 'rb'),
             caption=f'*X7 Finance Token Price Info (ETH)*\n'
                     f'Use `/x7tokenname` for all other details\n'
                     f'Use `/constellations` for constellations\n\n'
@@ -2899,23 +2922,6 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7R Chart', url=f'{items.dextoolseth}{items.x7rpaireth}')],
                  [InlineKeyboardButton(text='X7DAO Chart', url=f'{items.dextoolseth}{items.x7daopaireth}')], ]))
-    if search == "img":
-        img = Image.open((random.choice(items.blackhole)))
-        i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
-        i1.text((28, 36),
-                f'X7 Finance Token Price Info (ETH)\n'
-                f'Use /x7tokenname for all other details\n'
-                f'Use /constellations for constellations\n\n'
-                f'X7R:      ${cgtogetherprice["x7r"]["usd"]}\n'
-                f'24 Hour Change: {round(cgtogetherprice["x7r"]["usd_24h_change"], 1)}%\n\n'
-                f'X7DAO:  ${cgtogetherprice["x7dao"]["usd"]}\n'
-                f'24 Hour Change: {round(cgtogetherprice["x7dao"]["usd_24h_change"], 0)}%\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r'media\blackhole.png', 'rb'))
         return
     if search == "eth":
         quoteresponse = requests.get(items.quoteapi)
@@ -2967,27 +2973,23 @@ async def holders_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7daoholdersresponse = requests.get(x7daoholdersurl)
     x7daoholdersdata = x7daoholdersresponse.json()
     x7daoholders = x7daoholdersdata["holdersCount"]
-    if chain == "":
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Token Holders (ETH)*\n\n'
-                    f'X7R Holders: {x7rholders}\n'
-                    f'X7DAO Holders: {x7daoholders}\n\n'
-                    f'{quote}',
-            parse_mode='Markdown')
-    if chain == "img":
-        img = Image.open((random.choice(items.blackhole)))
-        i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
-        i1.text((28, 36),
-                f'X7 Finance Token Holders (ETH)\n\n'
+    img = Image.open((random.choice(items.blackhole)))
+    i1 = ImageDraw.Draw(img)
+    myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
+    i1.text((28, 36),
+            f'X7 Finance Token Holders (ETH)\n\n'
+            f'X7R Holders: {x7rholders}\n'
+            f'X7DAO Holders: {x7daoholders}\n\n\n\n'
+            f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont, fill=(255, 255, 255))
+    img.save(r"media\blackhole.png")
+    await update.message.reply_photo(
+        photo=open((r'media\blackhole.png'), 'rb'),
+        caption=f'*X7 Finance Token Holders (ETH)*\n\n'
                 f'X7R Holders: {x7rholders}\n'
-                f'X7DAO Holders: {x7daoholders}\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r'media\blackhole.png', 'rb'))
+                f'X7DAO Holders: {x7daoholders}\n\n'
+                f'{quote}',
+        parse_mode='Markdown')
 
 
 async def constellations_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3060,6 +3062,28 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r'media\blackhole.png', 'rb'))
+
+
+async def dashboard_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    quoteresponse = requests.get(items.quoteapi)
+    quotedata = quoteresponse.json()
+    quoteraw = (random.choice(quotedata))
+    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+    await update.message.reply_photo(
+        photo=open((random.choice(items.logos)), 'rb'),
+        caption=f'*X7 Finance Dashboard*\n\n{quote}',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='Live', url='https://www.x7finance.org/')],
+            [InlineKeyboardButton(text='Docs', url='https://www.x7finance.org/docs/')],
+            [InlineKeyboardButton(text='On-Chains', url='https://www.x7finance.org/onchains')],
+            [InlineKeyboardButton(text='Contracts', url='https://www.x7finance.org/contracts/')],
+            [InlineKeyboardButton(text='Loans', url='https://www.x7finance.org/loans/')],
+            [InlineKeyboardButton(text='Community',
+                                  url='https://www.x7finance.org/community/')],
+            [InlineKeyboardButton(text='NFTs', url='https://www.x7finance.org/nfts/')],
+            [InlineKeyboardButton(text='Whitepaper', url='https://www.x7finance.org/whitepaper/')],
+            [InlineKeyboardButton(text='FAQs', url='https://www.x7finance.org/faq/')],]))
 
 
 async def faq_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3275,6 +3299,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('everyone', everyone_command))
     application.add_handler(CommandHandler('voting', voting_command))
     application.add_handler(CommandHandler('gas', gas_command))
+    application.add_handler(CommandHandler(['docs','dashboard'], dashboard_command))
     application.add_handler(CommandHandler(['snapshot', 'rollout', 'multichain', 'airdrop'], snapshot_command))
     application.add_handler(CommandHandler(['discount', 'dsc', 'dac'], discount_command))
     application.add_handler(CommandHandler(['admin_commands', 'admin', 'admincommands'], admincommands_command))
