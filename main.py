@@ -323,7 +323,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open((r"media\blackhole.png"), 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption='*X7 Finance Treasury (ETH)*\nUse `/treasury [chain-name]` for other chains\n\n'
                     f'Pioneer Pool:\n{pioneeramount[:4]}ETH (${"{:0,.0f}".format(pioneerdollar)})\n\n'
                     f'Developer Wallet:\n{devamount[:4]}ETH (${"{:0,.0f}".format(devdollar)})\n\n'
@@ -1252,7 +1252,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open((r"media\blackhole.png"), 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7 Finance Lending Pool Info *\nUse `/pool [chain-name]` for individual chains\n\n'
                     f'ETH: {poolamount[:5]} ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
                     f'ARB: {arbpoolamount[:4]} ETH (${"{:0,.0f}".format(arbpooldollar)})\n\n'
@@ -2038,13 +2038,17 @@ async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tokyoraw = pytz.timezone("Asia/Tokyo")
     tokyo = datetime.now(tokyoraw)
     tokyotime = tokyo.strftime("%H:%M:%S")
+    dubairaw = pytz.timezone("Asia/Dubai")
+    dubai = datetime.now(dubairaw)
+    dubaitime = dubai.strftime("%H:%M:%S")
     await update.message.reply_text(f'`GM or GN Where ever you are...`\n\n'
                                     f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n\n'
-                                    f'PST: {westcoasttime}\n'
-                                    f'EST: {eastcoasttime}\n'
-                                    f'UK: {londontime}\n'
-                                    f'EU: {berlintime}\n'
-                                    f'Tokyo: {tokyotime}\n',
+                                    f'PST:        {westcoasttime}\n'
+                                    f'EST:         {eastcoasttime}\n'
+                                    f'UK:          {londontime}\n'
+                                    f'EU:          {berlintime}\n'
+                                    f'Dubai:    {dubaitime}\n'
+                                    f'Tokyo:   {tokyotime}\n',
                                     parse_mode="Markdown")
 
 
@@ -2860,7 +2864,7 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open((r"media\blackhole.png"), 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7 Finance Market Cap Info (ETH)*\n\n'
                     f'X7R:           ${"{:0,.0f}".format(x7rprice)}\n'
                     f'X7DAO:      ${"{:0,.0f}".format(x7daoprice)}\n'     
@@ -2888,7 +2892,6 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tokenresponse = requests.get(tokenurl)
     token = tokenresponse.json()
     tokenid = token["coins"][0]["api_symbol"]
-    tokenlogo = token["coins"][0]["large"]
     symbol = token["coins"][0]["symbol"]
     cg = CoinGeckoAPI()
     tokenprice = (cg.get_price(ids=tokenid, vs_currencies='usd', include_24hr_change='true',
@@ -2909,7 +2912,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open((r"media\blackhole.png"), 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7 Finance Token Price Info (ETH)*\n'
                     f'Use `/x7tokenname` for all other details\n'
                     f'Use `/constellations` for constellations\n\n'
@@ -2936,31 +2939,26 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ethurl = items.ethpriceapi + keys.ether
         ethresponse = requests.get(ethurl)
         ethdata = ethresponse.json()
-        await update.message.reply_photo(
-            photo=tokenlogo,
-            caption=f'*{symbol} price*\n\n'
-                    f'Price: ${ethdata["result"]["ethusd"]}\n'
-                    f'24 Hour Change: {round(eth["ethereum"]["usd_24h_change"], 1)}%\n'
-                    f'Market Cap: ${"{:0,.0f}".format(eth["ethereum"]["usd_market_cap"])}\n\n'
-                    f'Gas Prices:\n'
-                    f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
-                    f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
-                    f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
-                    f'{quote}',
+        await update.message.reply_text(
+            f'*{symbol} price*\n\n'
+            f'Price: ${ethdata["result"]["ethusd"]}\n'
+            f'24 Hour Change: {round(eth["ethereum"]["usd_24h_change"], 1)}%\n\n'
+            f'Gas Prices:\n'
+            f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
+            f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
+            f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
+            f'{quote}',
             parse_mode='Markdown')
     else:
-        await update.message.reply_photo(
-            photo=tokenlogo,
-            caption=f'*{symbol} price*\n\n'
-                    f'Price: ${tokenprice[tokenid]["usd"]}\n'
-                    f'24 Hour Change: {round(tokenprice[tokenid]["usd_24h_change"], 1)}%\n'
-                    f'Market Cap: ${"{:0,.0f}".format(tokenprice[tokenid]["usd_market_cap"])}\n\n'
-                    f'{quote}',
+        await update.message.reply_text(
+            f'*{symbol} price*\n\n'
+            f'Price: ${tokenprice[tokenid]["usd"]}\n'
+            f'24 Hour Change: {round(tokenprice[tokenid]["usd_24h_change"], 1)}%\n\n'
+            f'{quote}',
             parse_mode='Markdown')
 
 
 async def holders_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chain = " ".join(context.args).lower()
     quoteresponse = requests.get(items.quoteapi)
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
@@ -2984,7 +2982,7 @@ async def holders_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont, fill=(255, 255, 255))
     img.save(r"media\blackhole.png")
     await update.message.reply_photo(
-        photo=open((r'media\blackhole.png'), 'rb'),
+        photo=open(r'media\blackhole.png', 'rb'),
         caption=f'*X7 Finance Token Holders (ETH)*\n\n'
                 f'X7R Holders: {x7rholders}\n'
                 f'X7DAO Holders: {x7daoholders}\n\n'
@@ -3008,8 +3006,32 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
     x7105mc = cgconstellationprice["x7105"]["usd"] * items.supply
     constmc = x7101mc + x7102mc + x7103mc + x7104mc + x7105mc
     if chain == "":
-        await update.message.reply_video(
-            video=open(items.constellationlogo, 'rb'),
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 20)
+        i1.text((28, 36),
+                f'X7 Finance Constellation Token Prices (ETH)\n\n'
+                f'X7101:      ${cgconstellationprice["x7101"]["usd"]}\n'
+                f'24 Hour Change: {round(cgconstellationprice["x7101"]["usd_24h_change"], 1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(x7101mc)}\n\n'
+                f'X7102:      ${cgconstellationprice["x7102"]["usd"]}\n'
+                f'24 Hour Change: {round(cgconstellationprice["x7102"]["usd_24h_change"], 1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(x7102mc)}\n\n'
+                f'X7103:      ${cgconstellationprice["x7103"]["usd"]}\n'
+                f'24 Hour Change: {round(cgconstellationprice["x7103"]["usd_24h_change"], 1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(x7103mc)}\n\n'
+                f'X7104:      ${cgconstellationprice["x7104"]["usd"]}\n'
+                f'24 Hour Change: {round(cgconstellationprice["x7104"]["usd_24h_change"], 1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(x7104mc)}\n\n'
+                f'X7105:      ${cgconstellationprice["x7105"]["usd"]}\n'
+                f'24 Hour Change: {round(cgconstellationprice["x7105"]["usd_24h_change"], 1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(x7105mc)}\n\n'
+                f'Combined Market Cap: ${"{:0,.0f}".format(constmc)}\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
+        await update.message.reply_photo(
+            photo=open(r'media\blackhole.png', 'rb'),
             caption=f'*X7 Finance Constellation Token Prices (ETH)*\n\n'
                     f'For more info use `/x7tokenname`\n\n'
                     f'X7101:      ${cgconstellationprice["x7101"]["usd"]}\n'
@@ -3034,34 +3056,6 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
                     f'CA: `{items.x7105ca}\n\n`'
                     f'Combined Market Cap: ${"{:0,.0f}".format(constmc)}\n\n'
                     f'{quote}', parse_mode="Markdown")
-    if chain == "img":
-        img = Image.open((random.choice(items.blackhole)))
-        i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 16)
-        i1.text((28, 36),
-                f'X7 Finance Constellation Token Prices (ETH)\n\n'
-                f'For more info use /x7tokenname\n\n'
-                f'X7101:      ${cgconstellationprice["x7101"]["usd"]}\n'
-                f'24 Hour Change: {round(cgconstellationprice["x7101"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(x7101mc)}\n\n'
-                f'X7102:      ${cgconstellationprice["x7102"]["usd"]}\n'
-                f'24 Hour Change: {round(cgconstellationprice["x7102"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(x7102mc)}\n\n'
-                f'X7103:      ${cgconstellationprice["x7103"]["usd"]}\n'
-                f'24 Hour Change: {round(cgconstellationprice["x7103"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(x7103mc)}\n\n'
-                f'X7104:      ${cgconstellationprice["x7104"]["usd"]}\n'
-                f'24 Hour Change: {round(cgconstellationprice["x7104"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(x7104mc)}\n\n'
-                f'X7105:      ${cgconstellationprice["x7105"]["usd"]}\n'
-                f'24 Hour Change: {round(cgconstellationprice["x7105"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(x7105mc)}\n\n'
-                f'Combined Market Cap: ${"{:0,.0f}".format(constmc)}\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r'media\blackhole.png', 'rb'))
 
 
 async def dashboard_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3083,7 +3077,7 @@ async def dashboard_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                   url='https://www.x7finance.org/community/')],
             [InlineKeyboardButton(text='NFTs', url='https://www.x7finance.org/nfts/')],
             [InlineKeyboardButton(text='Whitepaper', url='https://www.x7finance.org/whitepaper/')],
-            [InlineKeyboardButton(text='FAQs', url='https://www.x7finance.org/faq/')],]))
+            [InlineKeyboardButton(text='FAQs', url='https://www.x7finance.org/faq/')], ]))
 
 
 async def faq_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3189,6 +3183,9 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = str(update.effective_message.text).lower()
     print(f'{update.effective_message.from_user.username} says "{message}" in: '
           f'{update.effective_message.chat.title}')
+    if "@devs" in message:
+        await update.message.reply_text(f'Please send 1000 X7R to the burn wallet.\n\nThank you for your '
+                                        f'contribution {update.message.from_user.username}', parse_mode='Markdown')
     if "rob the bank" in message:
         await update.message.reply_text(f'`Rob The Bank (an outstanding community member and marketer)`\n\n'
                                         f'`-X7Devs`', parse_mode='Markdown')
@@ -3299,7 +3296,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('everyone', everyone_command))
     application.add_handler(CommandHandler('voting', voting_command))
     application.add_handler(CommandHandler('gas', gas_command))
-    application.add_handler(CommandHandler(['docs','dashboard'], dashboard_command))
+    application.add_handler(CommandHandler(['docs', 'dashboard'], dashboard_command))
     application.add_handler(CommandHandler(['snapshot', 'rollout', 'multichain', 'airdrop'], snapshot_command))
     application.add_handler(CommandHandler(['discount', 'dsc', 'dac'], discount_command))
     application.add_handler(CommandHandler(['admin_commands', 'admin', 'admincommands'], admincommands_command))
