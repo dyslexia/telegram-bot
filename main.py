@@ -2043,14 +2043,23 @@ async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     dubaitime = dubai.strftime("%H:%M:%S")
     await update.message.reply_text(f'`GM or GN Where ever you are...`\n\n'
                                     f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n\n'
-                                    f'PST:        {westcoasttime}\n'
-                                    f'EST:         {eastcoasttime}\n'
-                                    f'UK:          {londontime}\n'
-                                    f'EU:          {berlintime}\n'
-                                    f'Dubai:    {dubaitime}\n'
+                                    f'PST:       {westcoasttime}\n'
+                                    f'EST:       {eastcoasttime}\n'
+                                    f'UK:         {londontime}\n'
+                                    f'EU:         {berlintime}\n'
+                                    f'Dubai:   {dubaitime}\n'
                                     f'Tokyo:   {tokyotime}\n',
                                     parse_mode="Markdown")
 
+
+async def wei_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    eth = " ".join(context.args)
+    weiraw = float(eth)
+    wei = weiraw * 10 ** 18
+    await update.message.reply_text(
+        f'{eth} ETH is equal to \n\n'
+        f'`{wei:.0f}` wei',
+        parse_mode="Markdown")
 
 # CG COMMANDS
 async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3296,6 +3305,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('everyone', everyone_command))
     application.add_handler(CommandHandler('voting', voting_command))
     application.add_handler(CommandHandler('gas', gas_command))
+    application.add_handler(CommandHandler('wei', wei_command))
     application.add_handler(CommandHandler(['docs', 'dashboard'], dashboard_command))
     application.add_handler(CommandHandler(['snapshot', 'rollout', 'multichain', 'airdrop'], snapshot_command))
     application.add_handler(CommandHandler(['discount', 'dsc', 'dac'], discount_command))
