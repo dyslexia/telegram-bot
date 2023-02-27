@@ -2061,6 +2061,7 @@ async def wei_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'`{wei:.0f}` wei',
         parse_mode="Markdown")
 
+
 # CG COMMANDS
 async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteresponse = requests.get(items.quoteapi)
@@ -2837,22 +2838,23 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     cg = CoinGeckoAPI()
-    cgx7rprice = (cg.get_price(ids='x7r', vs_currencies='usd'))
-    x7rprice = (cgx7rprice["x7r"]["usd"]) * items.supply
-    cgx7daoprice = (cg.get_price(ids='x7dao', vs_currencies='usd'))
-    x7daoprice = (cgx7daoprice["x7dao"]["usd"]) * items.supply
-    cgx7101price = (cg.get_price(ids='x7101', vs_currencies='usd'))
-    x7101price = (cgx7101price["x7101"]["usd"]) * items.supply
-    cgx7102price = (cg.get_price(ids='x7102', vs_currencies='usd'))
-    x7102price = (cgx7102price["x7102"]["usd"]) * items.supply
-    cgx7103price = (cg.get_price(ids='x7103', vs_currencies='usd'))
-    x7103price = (cgx7103price["x7103"]["usd"]) * items.supply
-    cgx7104price = (cg.get_price(ids='x7104', vs_currencies='usd'))
-    x7104price = (cgx7104price["x7104"]["usd"]) * items.supply
-    cgx7105price = (cg.get_price(ids='x7105', vs_currencies='usd'))
-    x7105price = (cgx7105price["x7105"]["usd"]) * items.supply
+    cgprice = (cg.get_price(ids='x7r,x7dao,x7101,x7102,x7103,x7104,x7105', vs_currencies='usd'))
+    burnurl = items.tokenbalanceapieth + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.ether
+    burnresponse = requests.get(burnurl)
+    burndata = burnresponse.json()
+    burndata["result"] = int(burndata["result"][:-18])
+    x7rsupply = items.supply - burndata["result"]
+    x7rprice = (cgprice["x7r"]["usd"]) * x7rsupply
+    x7daoprice = (cgprice["x7dao"]["usd"]) * items.supply
+    x7101price = (cgprice["x7101"]["usd"]) * items.supply
+    x7102price = (cgprice["x7102"]["usd"]) * items.supply
+    x7103price = (cgprice["x7103"]["usd"]) * items.supply
+    x7104price = (cgprice["x7104"]["usd"]) * items.supply
+    x7105price = (cgprice["x7105"]["usd"]) * items.supply
     total = x7rprice + x7daoprice + x7101price + x7102price + x7103price + x7104price + x7105price
     if chain == "":
+        print(burndata["result"])
+        print(x7rsupply)
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
