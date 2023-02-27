@@ -1389,7 +1389,6 @@ async def spaces_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     days = divmod(duration_in_s, 86400)
     hours = divmod(days[1], 3600)
     minutes = divmod(hours[1], 60)
-    seconds = divmod(minutes[1], 1)
     if duration < timedelta(0):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
@@ -1398,11 +1397,10 @@ async def spaces_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_sticker(sticker=items.twittersticker)
         await update.message.reply_text(
-            text=f'Next X7 Finance Twitter space is:\n\n{then} (UTC)\n\n'
-                 f'%d days, %d hours, %d minutes and %d seconds\n\n'
+            text=f'Next X7 Finance Twitter space is:\n\n{then.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
+                 f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
                  f'[Click here]({variables.spaceslink}) to set a reminder!'
-                 f'\n\n{quote}'
-                 % (days[0], hours[0], minutes[0], seconds[0]), parse_mode="Markdown")
+                 f'\n\n{quote}', parse_mode="Markdown")
 
 
 async def roadmap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2025,24 +2023,25 @@ async def draw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     westcoastraw = pytz.timezone("America/Los_Angeles")
     westcoast = datetime.now(westcoastraw)
-    westcoasttime = westcoast.strftime("%H:%M:%S")
+    westcoasttime = westcoast.strftime("%I:%M %p")
     eastcoastraw = pytz.timezone("America/New_York")
     eastcoast = datetime.now(eastcoastraw)
-    eastcoasttime = eastcoast.strftime("%H:%M:%S")
+    eastcoasttime = eastcoast.strftime("%I:%M %p")
     londonraw = pytz.timezone("Europe/London")
     london = datetime.now(londonraw)
-    londontime = london.strftime("%H:%M:%S")
+    londontime = london.strftime("%I:%M %p")
     berlinraw = pytz.timezone("Europe/Berlin")
     berlin = datetime.now(berlinraw)
-    berlintime = berlin.strftime("%H:%M:%S")
+    berlintime = berlin.strftime("%I:%M %p")
     tokyoraw = pytz.timezone("Asia/Tokyo")
     tokyo = datetime.now(tokyoraw)
-    tokyotime = tokyo.strftime("%H:%M:%S")
+    tokyotime = tokyo.strftime("%I:%M %p")
     dubairaw = pytz.timezone("Asia/Dubai")
     dubai = datetime.now(dubairaw)
-    dubaitime = dubai.strftime("%H:%M:%S")
+    dubaitime = dubai.strftime("%I:%M %p")
     await update.message.reply_text(f'`GM or GN Where ever you are...`\n\n'
-                                    f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n\n'
+                                    f'UTC: {datetime.now().strftime("%A %B %d %Y")}\n'
+                                    f'{datetime.now().strftime("%I:%M %p")}\n\n'
                                     f'PST:       {westcoasttime}\n'
                                     f'EST:       {eastcoasttime}\n'
                                     f'UK:         {londontime}\n'
@@ -2060,6 +2059,49 @@ async def wei_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'{eth} ETH is equal to \n\n'
         f'`{wei:.0f}` wei',
         parse_mode="Markdown")
+
+
+async def dashboard_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    quoteresponse = requests.get(items.quoteapi)
+    quotedata = quoteresponse.json()
+    quoteraw = (random.choice(quotedata))
+    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+    await update.message.reply_photo(
+        photo=open((random.choice(items.logos)), 'rb'),
+        caption=f'*X7 Finance Dashboard*\n\n{quote}',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='Live', url='https://www.x7finance.org/')],
+            [InlineKeyboardButton(text='Docs', url='https://www.x7finance.org/docs/')],
+            [InlineKeyboardButton(text='On-Chains', url='https://www.x7finance.org/onchains')],
+            [InlineKeyboardButton(text='Contracts', url='https://www.x7finance.org/contracts/')],
+            [InlineKeyboardButton(text='Loans', url='https://www.x7finance.org/loans/')],
+            [InlineKeyboardButton(text='Community',
+                                  url='https://www.x7finance.org/community/')],
+            [InlineKeyboardButton(text='NFTs', url='https://www.x7finance.org/nfts/')],
+            [InlineKeyboardButton(text='Whitepaper', url='https://www.x7finance.org/whitepaper/')],
+            [InlineKeyboardButton(text='FAQs', url='https://www.x7finance.org/faq/')], ]))
+
+
+async def faq_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    quoteresponse = requests.get(items.quoteapi)
+    quotedata = quoteresponse.json()
+    quoteraw = (random.choice(quotedata))
+    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+    await update.message.reply_photo(
+        photo=open((random.choice(items.logos)), 'rb'),
+        caption=f'*X7 Finance FAQ*\n\n{quote}',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='Constellation Tokens', url='https://www.x7finance.org/faq/constellations')],
+            [InlineKeyboardButton(text='Developer Questions', url='https://www.x7finance.org/faq/devs')],
+            [InlineKeyboardButton(text='General Questions', url='https://www.x7finance.org/faq/general')],
+            [InlineKeyboardButton(text='Governance Questions', url='https://www.x7finance.org/faq/governance')],
+            [InlineKeyboardButton(text='Investor Questions', url='https://www.x7finance.org/faq/investors')],
+            [InlineKeyboardButton(text='Liquidity Lending Questions',
+                                  url='https://www.x7finance.org/faq/liquiditylending')],
+            [InlineKeyboardButton(text='NFT Questions', url='https://www.x7finance.org/faq/nfts')],
+            [InlineKeyboardButton(text='Xchange Questions', url='https://www.x7finance.org/faq/xchange')], ]))
 
 
 # CG COMMANDS
@@ -2853,8 +2895,6 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7105price = (cgprice["x7105"]["usd"]) * items.supply
     total = x7rprice + x7daoprice + x7101price + x7102price + x7103price + x7104price + x7105price
     if chain == "":
-        print(burndata["result"])
-        print(x7rsupply)
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -3067,49 +3107,6 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
                     f'CA: `{items.x7105ca}\n\n`'
                     f'Combined Market Cap: ${"{:0,.0f}".format(constmc)}\n\n'
                     f'{quote}', parse_mode="Markdown")
-
-
-async def dashboard_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    quoteresponse = requests.get(items.quoteapi)
-    quotedata = quoteresponse.json()
-    quoteraw = (random.choice(quotedata))
-    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
-        caption=f'*X7 Finance Dashboard*\n\n{quote}',
-        parse_mode='Markdown',
-        reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Live', url='https://www.x7finance.org/')],
-            [InlineKeyboardButton(text='Docs', url='https://www.x7finance.org/docs/')],
-            [InlineKeyboardButton(text='On-Chains', url='https://www.x7finance.org/onchains')],
-            [InlineKeyboardButton(text='Contracts', url='https://www.x7finance.org/contracts/')],
-            [InlineKeyboardButton(text='Loans', url='https://www.x7finance.org/loans/')],
-            [InlineKeyboardButton(text='Community',
-                                  url='https://www.x7finance.org/community/')],
-            [InlineKeyboardButton(text='NFTs', url='https://www.x7finance.org/nfts/')],
-            [InlineKeyboardButton(text='Whitepaper', url='https://www.x7finance.org/whitepaper/')],
-            [InlineKeyboardButton(text='FAQs', url='https://www.x7finance.org/faq/')], ]))
-
-
-async def faq_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    quoteresponse = requests.get(items.quoteapi)
-    quotedata = quoteresponse.json()
-    quoteraw = (random.choice(quotedata))
-    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
-        caption=f'*X7 Finance FAQ*\n\n{quote}',
-        parse_mode='Markdown',
-        reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Constellation Tokens', url='https://www.x7finance.org/faq/constellations')],
-            [InlineKeyboardButton(text='Developer Questions', url='https://www.x7finance.org/faq/devs')],
-            [InlineKeyboardButton(text='General Questions', url='https://www.x7finance.org/faq/general')],
-            [InlineKeyboardButton(text='Governance Questions', url='https://www.x7finance.org/faq/governance')],
-            [InlineKeyboardButton(text='Investor Questions', url='https://www.x7finance.org/faq/investors')],
-            [InlineKeyboardButton(text='Liquidity Lending Questions',
-                                  url='https://www.x7finance.org/faq/liquiditylending')],
-            [InlineKeyboardButton(text='NFT Questions', url='https://www.x7finance.org/faq/nfts')],
-            [InlineKeyboardButton(text='Xchange Questions', url='https://www.x7finance.org/faq/xchange')], ]))
 
 
 # HARD AUTO MESSAGES
