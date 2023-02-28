@@ -1463,7 +1463,6 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     days = divmod(duration_in_s, 86400)
     hours = divmod(days[1], 3600)
     minutes = divmod(hours[1], 60)
-    seconds = divmod(minutes[1], 1)
     if duration < timedelta(0):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
@@ -1474,11 +1473,10 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_photo(
                 photo=open((random.choice(items.logos)), 'rb'),
                 caption=f'*{variables.giveawaytitle}*\n\n'
-                        f'X7 Finance Giveaway ends:\n\n{then} (UTC)\n\n'
-                        f'%d days, %d hours, %d minutes and %d seconds\n\n'
+                        f'X7 Finance Giveaway ends:\n\n{then.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
+                        f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
                         f'{variables.giveawayinfo}'
-                        f'\n\n{quote}'
-                        % (days[0], hours[0], minutes[0], seconds[0]), parse_mode="Markdown")
+                        f'\n\n{quote}', parse_mode="Markdown")
         if ext == "entries":
             await update.message.reply_photo(
                 photo=open((random.choice(items.logos)), 'rb'),
@@ -1711,6 +1709,91 @@ async def discount_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [[InlineKeyboardButton(text='Discount Application', url=items.dac)],
              [InlineKeyboardButton(text='X7 Lending Discount Contract',
                                    url=f'{items.etheraddress}{items.lendingdisca}#code')], ]))
+
+
+
+async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chain = " ".join(context.args).lower()
+    if chain == "eth" or chain == "":
+        await update.message.reply_text(
+            '*X7D Withdrawal (ETH)*\n'
+            'For other chains use `/withdraw [chain-name]`\n\n'
+            'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
+            '1. Write Contract\n'
+            '2. Connect to Web3 (This will connect via your chosen wallet)\n'
+            '3. Select Function `13. withdrawETH`\n'
+            '3. Input your desired amount in wei\n'
+            '4. Write\n'
+            '5. Confirm TX in chosen wallet\n\n'
+            'Note: use command `/wei ETHAMOUNT` in TG to quickly convert your eth into wei division',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
+                                       url=f'{items.etheraddress}{items.lpreserveca}#code')], ]))
+    if chain == "poly" or chain == "polygon":
+        await update.message.reply_text(
+            '*X7D Withdrawal (ETH)*\n'
+            'For other chains use `/withdraw [chain-name]`\n\n'
+            'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
+            '1. Write Contract\n'
+            '2. Connect to Web3 (This will connect via your chosen wallet)\n'
+            '3. Select Function `13. withdrawETH`\n'
+            '3. Input your desired amount in wei\n'
+            '4. Write\n'
+            '5. Confirm TX in chosen wallet\n\n'
+            'Note: use command `/wei ETHAMOUNT` in TG to quickly convert your eth into wei division',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
+                                        url=f'{items.polyaddress}{items.lpreserveca}#code')], ]))
+    if chain == "arb" or chain == "arbitrum":
+        await update.message.reply_text(
+            '*X7D Withdrawal (ETH)*\n'
+            'For other chains use `/withdraw [chain-name]`\n\n'
+            'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
+            '1. Write Contract\n'
+            '2. Connect to Web3 (This will connect via your chosen wallet)\n'
+            '3. Select Function `13. withdrawETH`\n'
+            '3. Input your desired amount in wei\n'
+            '4. Write\n'
+            '5. Confirm TX in chosen wallet\n\n'
+            'Note: use command `/wei ETHAMOUNT` in TG to quickly convert your eth into wei division',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
+                                        url=f'{items.arbaddress}{items.lpreserveca}#code')], ]))
+    if chain == "opti" or chain == "optimism":
+        await update.message.reply_text(
+            '*X7D Withdrawal (ETH)*\n'
+            'For other chains use `/withdraw [chain-name]`\n\n'
+            'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
+            '1. Write Contract\n'
+            '2. Connect to Web3 (This will connect via your chosen wallet)\n'
+            '3. Select Function `13. withdrawETH`\n'
+            '3. Input your desired amount in wei\n'
+            '4. Write\n'
+            '5. Confirm TX in chosen wallet\n\n'
+            'Note: use command `/wei ETHAMOUNT` in TG to quickly convert your eth into wei division',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
+                                        url=f'{items.optiaddress}{items.lpreserveca}#code')], ]))
+    if chain == "bsc" or chain == "bnb":
+        await update.message.reply_text(
+            '*X7D Withdrawal (ETH)*\n'
+            'For other chains use `/withdraw [chain-name]`\n\n'
+            'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
+            '1. Write Contract\n'
+            '2. Connect to Web3 (This will connect via your chosen wallet)\n'
+            '3. Select Function `13. withdrawETH`\n'
+            '3. Input your desired amount in wei\n'
+            '4. Write\n'
+            '5. Confirm TX in chosen wallet\n\n'
+            'Note: use command `/wei ETHAMOUNT` in TG to quickly convert your eth into wei division',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
+                                        url=f'{items.bscaddress}{items.lpreserveca}#code')], ]))
 
 
 async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3192,8 +3275,18 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'{update.effective_message.from_user.username} says "{message}" in: '
           f'{update.effective_message.chat.title}')
     if "@devs" in message:
-        await update.message.reply_text(f'Please send 1000 X7R to the burn wallet.\n\nThank you for your '
-                                        f'contribution {update.message.from_user.username}', parse_mode='Markdown')
+        burnurl = items.tokenbalanceapieth + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.ether
+        burnresponse = requests.get(burnurl)
+        burndata = burnresponse.json()
+        burndata["result"] = int(burndata["result"][:-18])
+        result = round(((burndata["result"] / items.supply) * 100), 6)
+        await update.message.reply_text(f'Please send 1000 X7R to the burn wallet:\n\n'
+                                        f'`0x000000000000000000000000000000000000dEaD`\n\nThank you for your '
+                                        f'contribution {update.message.from_user.username}\n\n'
+                                        f'X7R (ETH) Tokens Burned:\n'
+                                        f'{"{:,}".format(burndata["result"])}\n'
+                                        f'{result}% of Supply\n\n\n\n'
+                                        , parse_mode='Markdown')
     if "rob the bank" in message:
         await update.message.reply_text(f'`Rob The Bank (an outstanding community member and marketer)`\n\n'
                                         f'`-X7Devs`', parse_mode='Markdown')
@@ -3264,6 +3357,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler(['chart', 'charts'], chart_command))
     application.add_handler(CommandHandler(['opensea',  'os'], opensea_command))
     application.add_handler(CommandHandler('about', about_command))
+    application.add_handler(CommandHandler('withdraw', withdraw_command))
     application.add_handler(CommandHandler(['price', 'prices'], price_command))
     application.add_handler(CommandHandler(['ecosystem', 'tokens'], ecosystem_command))
     application.add_handler(CommandHandler('media', media_command))
