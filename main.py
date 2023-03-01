@@ -2179,7 +2179,7 @@ async def faq_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         caption=f'*X7 Finance FAQ*\n\n{quote}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Constellation Tokens', url='https://www.x7finance.org/faq/constellations')],
+            [InlineKeyboardButton(text='Constellation Token', url='https://www.x7finance.org/faq/constellations')],
             [InlineKeyboardButton(text='Developer Questions', url='https://www.x7finance.org/faq/devs')],
             [InlineKeyboardButton(text='General Questions', url='https://www.x7finance.org/faq/general')],
             [InlineKeyboardButton(text='Governance Questions', url='https://www.x7finance.org/faq/governance')],
