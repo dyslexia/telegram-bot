@@ -1711,7 +1711,6 @@ async def discount_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                    url=f'{items.etheraddress}{items.lendingdisca}#code')], ]))
 
 
-
 async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "eth" or chain == "":
@@ -1732,7 +1731,7 @@ async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.etheraddress}{items.lpreserveca}#code')], ]))
     if chain == "poly" or chain == "polygon":
         await update.message.reply_text(
-            '*X7D Withdrawal (ETH)*\n'
+            '*X7D Withdrawal (POLYGON)*\n'
             'For other chains use `/withdraw [chain-name]`\n\n'
             'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
             '1. Write Contract\n'
@@ -1745,10 +1744,10 @@ async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
-                                        url=f'{items.polyaddress}{items.lpreserveca}#code')], ]))
+                                       url=f'{items.polyaddress}{items.lpreserveca}#code')], ]))
     if chain == "arb" or chain == "arbitrum":
         await update.message.reply_text(
-            '*X7D Withdrawal (ETH)*\n'
+            '*X7D Withdrawal (ARBITRUM)*\n'
             'For other chains use `/withdraw [chain-name]`\n\n'
             'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
             '1. Write Contract\n'
@@ -1761,10 +1760,10 @@ async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
-                                        url=f'{items.arbaddress}{items.lpreserveca}#code')], ]))
+                                       url=f'{items.arbaddress}{items.lpreserveca}#code')], ]))
     if chain == "opti" or chain == "optimism":
         await update.message.reply_text(
-            '*X7D Withdrawal (ETH)*\n'
+            '*X7D Withdrawal (OPTIMISM)*\n'
             'For other chains use `/withdraw [chain-name]`\n\n'
             'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
             '1. Write Contract\n'
@@ -1777,10 +1776,10 @@ async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
-                                        url=f'{items.optiaddress}{items.lpreserveca}#code')], ]))
+                                       url=f'{items.optiaddress}{items.lpreserveca}#code')], ]))
     if chain == "bsc" or chain == "bnb":
         await update.message.reply_text(
-            '*X7D Withdrawal (ETH)*\n'
+            '*X7D Withdrawal (BSC)*\n'
             'For other chains use `/withdraw [chain-name]`\n\n'
             'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
             '1. Write Contract\n'
@@ -1793,7 +1792,7 @@ async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
-                                        url=f'{items.bscaddress}{items.lpreserveca}#code')], ]))
+                                       url=f'{items.bscaddress}{items.lpreserveca}#code')], ]))
 
 
 async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1801,6 +1800,10 @@ async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     engine.save_to_file(" ".join(context.args), 'media/voicenote.mp3')
     engine.runAndWait()
     await update.message.reply_audio(audio=open('media/voicenote.mp3', 'rb'))
+
+
+async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text('https://etherscan.io/address/0x8fe821fb171076b850a3048b9aad7600be8d0f30')
 
 
 async def announcements_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3285,8 +3288,8 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                         f'contribution {update.message.from_user.username}\n\n'
                                         f'X7R (ETH) Tokens Burned:\n'
                                         f'{"{:,}".format(burndata["result"])}\n'
-                                        f'{result}% of Supply\n\n\n\n'
-                                        , parse_mode='Markdown')
+                                        f'{result}% of Supply\n\n\n\n',
+                                        parse_mode='Markdown')
     if "rob the bank" in message:
         await update.message.reply_text(f'`Rob The Bank (an outstanding community member and marketer)`\n\n'
                                         f'`-X7Devs`', parse_mode='Markdown')
@@ -3339,6 +3342,7 @@ if __name__ == '__main__':
     job_queue = application.job_queue
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
+    application.add_handler(CommandHandler('deployer', deployer_command))
     application.add_handler(CommandHandler('links', links_command))
     application.add_handler(CommandHandler(['ca', 'contract', 'contracts'], ca_command))
     application.add_handler(CommandHandler('x7r', x7r_command))
