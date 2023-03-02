@@ -130,18 +130,38 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     if chain == "":
+        dexholdersurl = items.blockspanapi + items.dexca + '?chain=eth-main'
+        dexholdersresponse = requests.get(dexholdersurl,headers=keys.blockspan)
+        dexholdersdata = dexholdersresponse.json()
+        dexholders = dexholdersdata["total_tokens"]
+        liqholdersurl = items.blockspanapi + items.liqca + '?chain=eth-main'
+        liqholdersresponse = requests.get(liqholdersurl, headers=keys.blockspan)
+        liqholdersdata = liqholdersresponse.json()
+        liqholders = liqholdersdata["total_tokens"]
+        borrowholdersurl = items.blockspanapi + items.borrowca + '?chain=eth-main'
+        borrowholdersresponse = requests.get(borrowholdersurl, headers=keys.blockspan)
+        borrowholdersdata = borrowholdersresponse.json()
+        borrowholders = borrowholdersdata["total_tokens"]
+        ecoholdersurl = items.blockspanapi + items.ecoca + '?chain=eth-main'
+        ecoholdersresponse = requests.get(ecoholdersurl, headers=keys.blockspan)
+        ecoholdersdata = ecoholdersresponse.json()
+        ecoholders = ecoholdersdata["total_tokens"]
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (ETH)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{items.ecopriceeth}\n'
+                    f'Available - {500-int(ecoholders)}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
                     f'Liquidity Maxi*\n{items.liqpriceeth}\n'
+                    f'Available - {250-int(liqholders)}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
                     f'*Dex Maxi*\n{items.dexpriceeth}\n'
+                    f'Available - {150-int(dexholders)}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
                     f'*Borrowing Maxi*\n{items.borrowpriceeth}\n'
+                    f'Available - {100-int(borrowholders)}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
                     f'*Magister*\n{items.magisterpriceeth}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n*Pioneer*\n'
@@ -179,17 +199,39 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.bsctoken}{items.borrowca}')],
                 [InlineKeyboardButton(text='Magister', url=f'{items.bsctoken}{items.magisterca}')], ]))
     if chain == "arbitrum" or chain == "arb":
+        dexholdersurl = items.blockspanapi + items.dexca + '?chain=arbitrum-main'
+        dexholdersresponse = requests.get(dexholdersurl, headers=keys.blockspan)
+        dexholdersdata = dexholdersresponse.json()
+        dexholders = dexholdersdata["total_tokens"]
+        liqholdersurl = items.blockspanapi + items.liqca + '?chain=arbitrum-main'
+        liqholdersresponse = requests.get(liqholdersurl, headers=keys.blockspan)
+        liqholdersdata = liqholdersresponse.json()
+        liqholders = liqholdersdata["total_tokens"]
+        borrowholdersurl = items.blockspanapi + items.borrowca + '?chain=arbitrum-main'
+        borrowholdersresponse = requests.get(borrowholdersurl, headers=keys.blockspan)
+        borrowholdersdata = borrowholdersresponse.json()
+        borrowholders = borrowholdersdata["total_tokens"]
+        ecoholdersurl = items.blockspanapi + items.ecoca + '?chain=arbitrum-main'
+        ecoholdersresponse = requests.get(ecoholdersurl, headers=keys.blockspan)
+        ecoholdersdata = ecoholdersresponse.json()
+        ecoholders = ecoholdersdata["total_tokens"]
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (ARBITRUM)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{items.ecopricearb}\n'
+                    f'Available - {500-int(ecoholders)}\n'
                     f'> 25% discount on X7100 tax\n'
-                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n{items.liqpricearb}\n'
+                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
+                    f'Liquidity Maxi*\n{items.liqpricearb}\n'
+                    f'Available - {250-int(liqholders)}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
-                    f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.dexpricearb}\n'
+                    f'> 15 % discount on X7DAO tax\n\n'
+                    f'*Dex Maxi*\n{items.dexpricearb}\n'
+                    f'Available - {150-int(dexholders)}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{items.borrowpricearb}\n> Fee discounts for borrowing funds for ILO on X7 '
-                    f'DEX\n\n'
+                    f'*Borrowing Maxi*\n{items.borrowpricearb}\n'
+                    f'Available - {100-int(borrowholders)}\n'
+                    f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
                     f'*Magister*\n{items.magisterpricearb}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{quote}',
             parse_mode='Markdown',
@@ -201,19 +243,40 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.arbtoken}{items.borrowca}')],
                 [InlineKeyboardButton(text='Magister', url=f'{items.arbtoken}{items.magisterca}')], ]))
     if chain == "polygon" or chain == "poly":
+        dexholdersurl = items.blockspanapi + items.dexca + '?chain=poly-main'
+        dexholdersresponse = requests.get(dexholdersurl, headers=keys.blockspan)
+        dexholdersdata = dexholdersresponse.json()
+        print(dexholdersdata["total_tokens"])
+        dexholders = dexholdersdata["total_tokens"]
+        liqholdersurl = items.blockspanapi + items.liqca + '?chain=poly-main'
+        liqholdersresponse = requests.get(liqholdersurl, headers=keys.blockspan)
+        liqholdersdata = liqholdersresponse.json()
+        liqholders = liqholdersdata["total_tokens"]
+        borrowholdersurl = items.blockspanapi + items.borrowca + '?chain=poly-main'
+        borrowholdersresponse = requests.get(borrowholdersurl, headers=keys.blockspan)
+        borrowholdersdata = borrowholdersresponse.json()
+        borrowholders = borrowholdersdata["total_tokens"]
+        ecoholdersurl = items.blockspanapi + items.ecoca + '?chain=poly-main'
+        ecoholdersresponse = requests.get(ecoholdersurl, headers=keys.blockspan)
+        ecoholdersdata = ecoholdersresponse.json()
+        ecoholders = ecoholdersdata["total_tokens"]
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (POLYGON)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{items.ecopricepoly}\n'
+                    f'Available - {500-int(ecoholders)}\n'
                     f'> 25% discount on X7100 tax\n'
-                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n'
-                    f'*Liquidity Maxi*\n{items.liqpricepoly}\n'
+                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
+                    f'Liquidity Maxi*\n{items.liqpricepoly}\n'
+                    f'Available - {250-int(liqholders)}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
                     f'*Dex Maxi*\n{items.dexpricepoly}\n'
+                    f'Available - {150-int(dexholders)}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{items.borrowpricepoly}\n> Fee discounts for borrowing funds for ILO on X7 '
-                    f'DEX\n\n'
+                    f'*Borrowing Maxi*\n{items.borrowpricepoly}\n'
+                    f'Available - {100-int(borrowholders)}\n'
+                    f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
                     f'*Magister*\n{items.magisterpricepoly}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{quote}',
             parse_mode='Markdown',
@@ -225,19 +288,39 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.polytoken}{items.borrowca}')],
                 [InlineKeyboardButton(text='Magister', url=f'{items.polytoken}{items.magisterca}')], ]))
     if chain == "optimism" or chain == "opti":
+        dexholdersurl = items.blockspanapi + items.dexca + '?chain=optimism-main'
+        dexholdersresponse = requests.get(dexholdersurl, headers=keys.blockspan)
+        dexholdersdata = dexholdersresponse.json()
+        dexholders = dexholdersdata["total_tokens"]
+        liqholdersurl = items.blockspanapi + items.liqca + '?chain=optimism-main'
+        liqholdersresponse = requests.get(liqholdersurl, headers=keys.blockspan)
+        liqholdersdata = liqholdersresponse.json()
+        liqholders = liqholdersdata["total_tokens"]
+        borrowholdersurl = items.blockspanapi + items.borrowca + '?chain=optimism-main'
+        borrowholdersresponse = requests.get(borrowholdersurl, headers=keys.blockspan)
+        borrowholdersdata = borrowholdersresponse.json()
+        borrowholders = borrowholdersdata["total_tokens"]
+        ecoholdersurl = items.blockspanapi + items.ecoca + '?chain=optimism-main'
+        ecoholdersresponse = requests.get(ecoholdersurl, headers=keys.blockspan)
+        ecoholdersdata = ecoholdersresponse.json()
+        ecoholders = ecoholdersdata["total_tokens"]
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (OPTIMISM)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{items.ecopriceopti}\n'
+                    f'Available - {500-int(ecoholders)}\n'
                     f'> 25% discount on X7100 tax\n'
-                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n'
-                    f'*Liquidity Maxi*\n{items.liqpriceopti}\n'
+                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
+                    f'Liquidity Maxi*\n{items.liqpriceopti}\n'
+                    f'Available - {250-int(liqholders)}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
                     f'*Dex Maxi*\n{items.dexpriceopti}\n'
+                    f'Available - {150-int(dexholders)}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{items.borrowpriceopti}\n> Fee discounts for borrowing funds for ILO on X7 '
-                    f'DEX\n\n'
+                    f'*Borrowing Maxi*\n{items.borrowpriceopti}\n'
+                    f'Available - {100-int(borrowholders)}\n'
+                    f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
                     f'*Magister*\n{items.magisterpriceopti}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{quote}',
             parse_mode='Markdown',
@@ -725,7 +808,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     if chain == "":
-        x7dholdersurl = items.holdersapi + items.x7dca + keys.holders
+        x7dholdersurl = items.ethplorerapi + items.x7dca + keys.ethplorer
         x7dholdersresponse = requests.get(x7dholdersurl)
         x7dholdersdata = x7dholdersresponse.json()
         x7dholders = x7dholdersdata["holdersCount"]
@@ -2212,7 +2295,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     unidata = uniresponse.json()
     unidata["result"] = int(unidata["result"][:-18])
     uniresult = round(((unidata["result"] / items.supply) * 100), 6)
-    x7rholdersurl = items.holdersapi + items.x7rca + keys.holders
+    x7rholdersurl = items.ethplorerapi + items.x7rca + keys.ethplorer
     x7rholdersresponse = requests.get(x7rholdersurl)
     x7rholdersdata = x7rholdersresponse.json()
     x7rholders = x7rholdersdata["holdersCount"]
@@ -2328,7 +2411,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     unidata = uniresponse.json()
     unidata["result"] = int(unidata["result"][:-18])
     uniresult = round(((unidata["result"] / items.supply) * 100), 6)
-    x7daoholdersurl = items.holdersapi + items.x7daoca + keys.holders
+    x7daoholdersurl = items.ethplorerapi + items.x7daoca + keys.ethplorer
     x7daoholdersresponse = requests.get(x7daoholdersurl)
     x7daoholdersdata = x7daoholdersresponse.json()
     x7daoholders = x7daoholdersdata["holdersCount"]
@@ -2441,7 +2524,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cgx7101price = (cg.get_price(ids='x7101', vs_currencies='usd', include_24hr_change='true',
                                  include_24hr_vol='true', include_last_updated_at="true"))
     x7101price = (cgx7101price["x7101"]["usd"])
-    x7101holdersurl = items.holdersapi + items.x7101ca + keys.holders
+    x7101holdersurl = items.ethplorerapi + items.x7101ca + keys.ethplorer
     x7101holdersresponse = requests.get(x7101holdersurl)
     x7101holdersdata = x7101holdersresponse.json()
     x7101holders = x7101holdersdata["holdersCount"]
@@ -2542,7 +2625,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cgx7102price = (cg.get_price(ids='x7102', vs_currencies='usd', include_24hr_change='true',
                                  include_24hr_vol='true', include_last_updated_at="true"))
     x7102price = (cgx7102price["x7102"]["usd"])
-    x7102holdersurl = items.holdersapi + items.x7102ca + keys.holders
+    x7102holdersurl = items.ethplorerapi + items.x7102ca + keys.ethplorer
     x7102holdersresponse = requests.get(x7102holdersurl)
     x7102holdersdata = x7102holdersresponse.json()
     x7102holders = x7102holdersdata["holdersCount"]
@@ -2644,7 +2727,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cgx7103price = (cg.get_price(ids='x7103', vs_currencies='usd', include_24hr_change='true',
                                  include_24hr_vol='true', include_last_updated_at="true"))
     x7103price = (cgx7103price["x7103"]["usd"])
-    x7103holdersurl = items.holdersapi + items.x7103ca + keys.holders
+    x7103holdersurl = items.ethplorerapi + items.x7103ca + keys.ethplorer
     x7103holdersresponse = requests.get(x7103holdersurl)
     x7103holdersdata = x7103holdersresponse.json()
     x7103holders = x7103holdersdata["holdersCount"]
@@ -2746,7 +2829,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cgx7104price = (cg.get_price(ids='x7104', vs_currencies='usd', include_24hr_change='true',
                                  include_24hr_vol='true', include_last_updated_at="true"))
     x7104price = (cgx7104price["x7104"]["usd"])
-    x7104holdersurl = items.holdersapi + items.x7104ca + keys.holders
+    x7104holdersurl = items.ethplorerapi + items.x7104ca + keys.ethplorer
     x7104holdersresponse = requests.get(x7104holdersurl)
     x7104holdersdata = x7104holdersresponse.json()
     x7104holders = x7104holdersdata["holdersCount"]
@@ -2848,7 +2931,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cgx7105price = (cg.get_price(ids='x7105', vs_currencies='usd', include_24hr_change='true',
                                  include_24hr_vol='true', include_last_updated_at="true"))
     x7105price = (cgx7105price["x7105"]["usd"])
-    x7105holdersurl = items.holdersapi + items.x7105ca + keys.holders
+    x7105holdersurl = items.ethplorerapi + items.x7105ca + keys.ethplorer
     x7105holdersresponse = requests.get(x7105holdersurl)
     x7105holdersdata = x7105holdersresponse.json()
     x7105holders = x7105holdersdata["holdersCount"]
@@ -3100,11 +3183,11 @@ async def holders_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    x7rholdersurl = items.holdersapi + items.x7rca + keys.holders
+    x7rholdersurl = items.ethplorerapi + items.x7rca + keys.ethplorer
     x7rholdersresponse = requests.get(x7rholdersurl)
     x7rholdersdata = x7rholdersresponse.json()
     x7rholders = x7rholdersdata["holdersCount"]
-    x7daoholdersurl = items.holdersapi + items.x7daoca + keys.holders
+    x7daoholdersurl = items.ethplorerapi + items.x7daoca + keys.ethplorer
     x7daoholdersresponse = requests.get(x7daoholdersurl)
     x7daoholdersdata = x7daoholdersresponse.json()
     x7daoholders = x7daoholdersdata["holdersCount"]
