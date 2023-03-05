@@ -131,7 +131,7 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "":
         dexholdersurl = items.blockspanapi + items.dexca + '?chain=eth-main'
-        dexholdersresponse = requests.get(dexholdersurl,headers=keys.blockspan)
+        dexholdersresponse = requests.get(dexholdersurl, headers=keys.blockspan)
         dexholdersdata = dexholdersresponse.json()
         dexholders = dexholdersdata["total_tokens"]
         liqholdersurl = items.blockspanapi + items.liqca + '?chain=eth-main'
@@ -246,7 +246,6 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         dexholdersurl = items.blockspanapi + items.dexca + '?chain=poly-main'
         dexholdersresponse = requests.get(dexholdersurl, headers=keys.blockspan)
         dexholdersdata = dexholdersresponse.json()
-        print(dexholdersdata["total_tokens"])
         dexholders = dexholdersdata["total_tokens"]
         liqholdersurl = items.blockspanapi + items.liqca + '?chain=poly-main'
         liqholdersresponse = requests.get(liqholdersurl, headers=keys.blockspan)
@@ -2182,8 +2181,8 @@ async def draw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         count = '\n'.join(str(p) for p in response.data)
         await update.message.reply_sticker(sticker=items.twittersticker)
         await update.message.reply_text(
-            f'Retweeted {retweet_count} times, by the following members:\n\n{count}')
-        await update.message.reply_text(f'The Retweet winner is....\n\n{random.choice(response.data)}\n\n'
+            f'{retweet_count} Entries:\n\n{count}')
+        await update.message.reply_text(f'The Winner is....\n\n{random.choice(response.data)}\n\n'
                                         f'Congratulations, Please DM @X7_Finance to verify your account')
     else:
         await update.message.reply_text(f'{variables.modsonly}')
@@ -2208,7 +2207,7 @@ async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     dubairaw = pytz.timezone("Asia/Dubai")
     dubai = datetime.now(dubairaw)
     dubaitime = dubai.strftime("%I:%M %p")
-    await update.message.reply_text(f'`GM or GN Where ever you are...`\n\n'
+    await update.message.reply_text(f'`GM or GN Wherever you are...`\n\n'
                                     f'UTC: {datetime.now().strftime("%A %B %d %Y")}\n'
                                     f'{datetime.now().strftime("%I:%M %p")}\n\n'
                                     f'PST:       {westcoasttime}\n'
