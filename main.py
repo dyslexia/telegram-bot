@@ -1107,7 +1107,7 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1 = ImageDraw.Draw(img)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
-                f'X7 Pioneer NFT Info\n\nFloor Price: {floor} ETH\n'
+                f'X7 Pioneer NFT Info\n\nFloor Price: {floor} ETH (including locked pioneers)\n'
                 f'Average Price: {price} ETH\n'
                 f'Market Cap: {cap} ETH\n'
                 f'Total Volume: {volume} ETH\n'
@@ -1121,7 +1121,7 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*X7 Pioneer NFT Info*\n\nFloor Price: {floor} ETH\n'
+            caption=f'*X7 Pioneer NFT Info*\n\nFloor Price: {floor} ETH (including locked pioneers)\n'
                     f'Average Price: {price} ETH\n'
                     f'Market Cap: {cap} ETH\n'
                     f'Total Volume: {volume} ETH\n'
