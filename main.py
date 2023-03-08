@@ -131,19 +131,23 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "":
         dexholdersurl = items.blockspanapi + items.dexca + '?chain=eth-main'
-        dexholdersresponse = requests.get(dexholdersurl, headers=keys.blockspan)
+        dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
+                                                                  "X-API-KEY": keys.blockspan})
         dexholdersdata = dexholdersresponse.json()
         dexholders = dexholdersdata["total_tokens"]
         liqholdersurl = items.blockspanapi + items.liqca + '?chain=eth-main'
-        liqholdersresponse = requests.get(liqholdersurl, headers=keys.blockspan)
+        liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
+                                                                  "X-API-KEY": keys.blockspan})
         liqholdersdata = liqholdersresponse.json()
         liqholders = liqholdersdata["total_tokens"]
         borrowholdersurl = items.blockspanapi + items.borrowca + '?chain=eth-main'
-        borrowholdersresponse = requests.get(borrowholdersurl, headers=keys.blockspan)
+        borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
+                                                                        "X-API-KEY": keys.blockspan})
         borrowholdersdata = borrowholdersresponse.json()
         borrowholders = borrowholdersdata["total_tokens"]
         ecoholdersurl = items.blockspanapi + items.ecoca + '?chain=eth-main'
-        ecoholdersresponse = requests.get(ecoholdersurl, headers=keys.blockspan)
+        ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
+                                                                  "X-API-KEY": keys.blockspan})
         ecoholdersdata = ecoholdersresponse.json()
         ecoholders = ecoholdersdata["total_tokens"]
         await update.message.reply_video(
@@ -199,20 +203,24 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.bsctoken}{items.borrowca}')],
                 [InlineKeyboardButton(text='Magister', url=f'{items.bsctoken}{items.magisterca}')], ]))
     if chain == "arbitrum" or chain == "arb":
-        dexholdersurl = items.blockspanapi + items.dexca + '?chain=arbitrum-main'
-        dexholdersresponse = requests.get(dexholdersurl, headers=keys.blockspan)
+        dexholdersurl = items.blockspanapi + items.dexca + '?chain=arbitrum'
+        dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
+                                                                  "X-API-KEY": keys.blockspan})
         dexholdersdata = dexholdersresponse.json()
         dexholders = dexholdersdata["total_tokens"]
-        liqholdersurl = items.blockspanapi + items.liqca + '?chain=arbitrum-main'
-        liqholdersresponse = requests.get(liqholdersurl, headers=keys.blockspan)
+        liqholdersurl = items.blockspanapi + items.liqca + '?chain=arbitrum'
+        liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
+                                                                  "X-API-KEY": keys.blockspan})
         liqholdersdata = liqholdersresponse.json()
         liqholders = liqholdersdata["total_tokens"]
-        borrowholdersurl = items.blockspanapi + items.borrowca + '?chain=arbitrum-main'
-        borrowholdersresponse = requests.get(borrowholdersurl, headers=keys.blockspan)
+        borrowholdersurl = items.blockspanapi + items.borrowca + '?chain=arbitrum'
+        borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
+                                                                        "X-API-KEY": keys.blockspan})
         borrowholdersdata = borrowholdersresponse.json()
         borrowholders = borrowholdersdata["total_tokens"]
-        ecoholdersurl = items.blockspanapi + items.ecoca + '?chain=arbitrum-main'
-        ecoholdersresponse = requests.get(ecoholdersurl, headers=keys.blockspan)
+        ecoholdersurl = items.blockspanapi + items.ecoca + '?chain=arbitrum'
+        ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
+                                                                  "X-API-KEY": keys.blockspan})
         ecoholdersdata = ecoholdersresponse.json()
         ecoholders = ecoholdersdata["total_tokens"]
         await update.message.reply_video(
@@ -244,19 +252,23 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Magister', url=f'{items.arbtoken}{items.magisterca}')], ]))
     if chain == "polygon" or chain == "poly":
         dexholdersurl = items.blockspanapi + items.dexca + '?chain=poly-main'
-        dexholdersresponse = requests.get(dexholdersurl, headers=keys.blockspan)
+        dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
+                                                                  "X-API-KEY": keys.blockspan})
         dexholdersdata = dexholdersresponse.json()
         dexholders = dexholdersdata["total_tokens"]
         liqholdersurl = items.blockspanapi + items.liqca + '?chain=poly-main'
-        liqholdersresponse = requests.get(liqholdersurl, headers=keys.blockspan)
+        liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
+                                                                  "X-API-KEY": keys.blockspan})
         liqholdersdata = liqholdersresponse.json()
         liqholders = liqholdersdata["total_tokens"]
         borrowholdersurl = items.blockspanapi + items.borrowca + '?chain=poly-main'
-        borrowholdersresponse = requests.get(borrowholdersurl, headers=keys.blockspan)
+        borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
+                                                                        "X-API-KEY": keys.blockspan})
         borrowholdersdata = borrowholdersresponse.json()
         borrowholders = borrowholdersdata["total_tokens"]
         ecoholdersurl = items.blockspanapi + items.ecoca + '?chain=poly-main'
-        ecoholdersresponse = requests.get(ecoholdersurl, headers=keys.blockspan)
+        ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
+                                                                  "X-API-KEY": keys.blockspan})
         ecoholdersdata = ecoholdersresponse.json()
         ecoholders = ecoholdersdata["total_tokens"]
         await update.message.reply_video(
@@ -288,19 +300,23 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Magister', url=f'{items.polytoken}{items.magisterca}')], ]))
     if chain == "optimism" or chain == "opti":
         dexholdersurl = items.blockspanapi + items.dexca + '?chain=optimism-main'
-        dexholdersresponse = requests.get(dexholdersurl, headers=keys.blockspan)
+        dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
+                                                                   "X-API-KEY": keys.blockspan})
         dexholdersdata = dexholdersresponse.json()
         dexholders = dexholdersdata["total_tokens"]
         liqholdersurl = items.blockspanapi + items.liqca + '?chain=optimism-main'
-        liqholdersresponse = requests.get(liqholdersurl, headers=keys.blockspan)
+        liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
+                                                                   "X-API-KEY": keys.blockspan})
         liqholdersdata = liqholdersresponse.json()
         liqholders = liqholdersdata["total_tokens"]
         borrowholdersurl = items.blockspanapi + items.borrowca + '?chain=optimism-main'
-        borrowholdersresponse = requests.get(borrowholdersurl, headers=keys.blockspan)
+        borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
+                                                                         "X-API-KEY": keys.blockspan})
         borrowholdersdata = borrowholdersresponse.json()
         borrowholders = borrowholdersdata["total_tokens"]
         ecoholdersurl = items.blockspanapi + items.ecoca + '?chain=optimism-main'
-        ecoholdersresponse = requests.get(ecoholdersurl, headers=keys.blockspan)
+        ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
+                                                                   "X-API-KEY": keys.blockspan})
         ecoholdersdata = ecoholdersresponse.json()
         ecoholders = ecoholdersdata["total_tokens"]
         await update.message.reply_video(
