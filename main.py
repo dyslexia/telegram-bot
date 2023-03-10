@@ -301,22 +301,22 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "optimism" or chain == "opti":
         dexholdersurl = items.blockspanapi + items.dexca + '?chain=optimism-main'
         dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
-                                                                   "X-API-KEY": keys.blockspan})
+                                                                  "X-API-KEY": keys.blockspan})
         dexholdersdata = dexholdersresponse.json()
         dexholders = dexholdersdata["total_tokens"]
         liqholdersurl = items.blockspanapi + items.liqca + '?chain=optimism-main'
         liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
-                                                                   "X-API-KEY": keys.blockspan})
+                                                                  "X-API-KEY": keys.blockspan})
         liqholdersdata = liqholdersresponse.json()
         liqholders = liqholdersdata["total_tokens"]
         borrowholdersurl = items.blockspanapi + items.borrowca + '?chain=optimism-main'
         borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
-                                                                         "X-API-KEY": keys.blockspan})
+                                                                        "X-API-KEY": keys.blockspan})
         borrowholdersdata = borrowholdersresponse.json()
         borrowholders = borrowholdersdata["total_tokens"]
         ecoholdersurl = items.blockspanapi + items.ecoca + '?chain=optimism-main'
         ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
-                                                                   "X-API-KEY": keys.blockspan})
+                                                                  "X-API-KEY": keys.blockspan})
         ecoholdersdata = ecoholdersresponse.json()
         ecoholders = ecoholdersdata["total_tokens"]
         await update.message.reply_video(
@@ -1554,7 +1554,7 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     df = pd.read_csv(excel)
     addresses = list(df.Holders)
     last5 = [entry[-5:] for entry in addresses]
-    then = variables.giveawaytime
+    then = variables.giveaway
     now = datetime.now()
     duration = then - now
     duration_in_s = duration.total_seconds()

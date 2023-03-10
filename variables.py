@@ -16,24 +16,28 @@ spaceslink = "https://twitter.com/i/spaces/1kvJpmQjXzMxE"
 
 
 # GIVEAWAY               Y   M   D   H   M  S
-giveawaytime = datetime(2023, 3, 10, 20, 30, 00)
-snapshot1 = datetime(2023, 2, 9, 20, 30, 00)
-snapshot2 = datetime(2023, 3, 9, 20, 30, 00)
+giveaway = datetime(2023, 3, 30, 20, 30, 00)
+snapshot1 = datetime(2023, 3, 9, 20, 30, 00)
+snapshot2 = datetime(2023, 3, 29, 20, 30, 00)
+snapshot1time = snapshot1.strftime("%A %B %d %Y %I:%M %p")
+snapshot2time = snapshot2.strftime("%A %B %d %Y %I:%M %p")
+giveawaytime = giveaway.strftime("%A %B %d %Y %I:%M %p")
 giveawaytitle = "X7 Finance 20,000 X7R Giveaway!"
 giveawayinfo = "For every 0.1 X7D minted,1 entry into the draw was generated!\n\n" \
-               f"A Snapshot of minters was taken at {snapshot1} (UTC) and a second will be at {snapshot2} (UTC)\n\n" \
-               f"The Diamond hands that have held for the entire duration will be in the draw! The more minted," \
+               f"A Snapshot of minters was taken at {snapshot1time} (UTC) and a second will be at " \
+               f"{snapshot2time} (UTC)\n\n" \
+               f"The Diamond hands that have held for the entire duration are in the draw! The more minted," \
                " the better the chance!\n\n" \
-               "Any withdrawals will be deducted from the entries at the second snapshot.\n\n" \
-               f"The draw will be made at {giveawaytime} (UTC)\n\nCredit: Defi Dipper!\n\nUse `/giveaway entries`" \
-               f" to see last 5 of every address in the draw"
+               "Any withdrawals will be deducted from the entries at the second snapshot.\n\nTo view entries use " \
+               "`/giveaway entries`\n\n" \
+               f"The draw will be made on {giveawaytime} (UTC)\n\nCredit: Defi Dipper!"
 
 # TWITTER
 tweetid = 1625541579074158607
 tweetlink = "https://twitter.com/X7_Finance/status/1625541579074158607?s=20&t=h25BT4ivN34G70MIZCrHVQ"
 
 # COMMANDS
-modsonly = "You do not have permission from the X7 Mods to do this. #trustnoone"
+modsonly = "You do not have permission to do this. #trustnoone"
 
 commands = f'Available @X7Finance_bot Commands:\n\n/about - Welcome to X7 Finance\n' \
            f'/ecosystem - Token Overview\n' \
