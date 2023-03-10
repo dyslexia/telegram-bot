@@ -14,6 +14,8 @@ import tweepy
 import pyttsx3
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
+from moralis import evm_api
+
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -1972,10 +1974,41 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     if chain == "":
+        cg = CoinGeckoAPI()
+        cgprice = (cg.get_price(ids='x7r,x7dao', vs_currencies='usd', include_24hr_change='true',
+                                   include_24hr_vol='true', include_last_updated_at="true"))
+        x7rprice = (cgprice["x7r"]["usd"])
+        x7rresult = evm_api.defi.get_pair_reserves(api_key=keys.moralis,
+                                                   params={"chain": "eth", "pair_address": items.x7rpaireth})
+        x7daoresult = evm_api.defi.get_pair_reserves(api_key=keys.moralis,
+                                                     params={"chain": "eth","pair_address": items.x7daopaireth})
+        x7rtoken = int(x7rresult["reserve0"])
+        x7rweth = int(x7rresult["reserve1"])
+        ethurl = items.ethpriceapi + keys.ether
+        ethresponse = requests.get(ethurl)
+        ethdata = ethresponse.json()
+        ethvalue = float(ethdata["result"]["ethusd"])
+        x7rwethdollar = float(x7rweth) * float(ethvalue) / 10 ** 18
+        x7rtokendollar = float(x7rprice) * float(x7rtoken) /10 ** 18
+        x7daoprice = (cgprice["x7dao"]["usd"])
+        x7daotoken = int(x7daoresult["reserve0"])
+        x7daoweth = int(x7daoresult["reserve1"])
+        x7daowethdollar = float(x7daoweth) * float(ethvalue) / 10 ** 18
+        x7daotokendollar = float(x7daoprice) * float(x7daotoken) / 10 ** 18
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'To show initial liquidity, Please choose desired chain with \n`/liquidity [chain-name]`'
-                    f'\n\n{quote}', parse_mode='Markdown')
+            caption=f'*X7 Finance Token Liquidity (ETH)*\n'
+                    f'To show initial liquidity for other chains, Use `/liquidity '
+                    f'[chain-name]`\n\n'
+                    f'*X7R*\n'
+                    f'{"{:0,.0f}".format(x7rtoken)[:4]}M X7R (${"{:0,.0f}".format(x7rtokendollar)})\n'
+                    f'{"{:0,.0f}".format(x7rweth)[:6]} WETH (${"{:0,.0f}".format(x7rwethdollar)})\n'
+                    f'Total Liquidity (${"{:0,.0f}".format(x7rwethdollar+x7rtokendollar)})\n\n'
+                    f'*X7DAO*\n'
+                    f'{"{:0,.0f}".format(x7daotoken)[:4]}M X7DAO (${"{:0,.0f}".format(x7daotokendollar)})\n'
+                    f'{"{:0,.0f}".format(x7daoweth)[:6]} WETH (${"{:0,.0f}".format(x7daowethdollar)})\n'
+                    f'Total Liquidity (${"{:0,.0f}".format(x7daowethdollar+x7daotokendollar)})\n\n'
+                    f'{quote}', parse_mode='Markdown')
     if chain == "bsc" or chain == "bnb":
         liqurl = \
             items.bnbbalanceapi + items.daoliq + ',' + items.x7rliq + ',' + items.consliq + '&tag=latest' \
