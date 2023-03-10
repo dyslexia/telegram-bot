@@ -1995,8 +1995,24 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7daoweth = int(x7daoresult["reserve1"])
         x7daowethdollar = float(x7daoweth) * float(ethvalue) / 10 ** 18
         x7daotokendollar = float(x7daoprice) * float(x7daotoken) / 10 ** 18
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+        i1.text((28, 36),
+                f'X7 Finance Token Liquidity (ETH)\n\n'
+                f'X7R\n'
+                f'{"{:0,.0f}".format(x7rtoken)[:4]}M X7R (${"{:0,.0f}".format(x7rtokendollar)})\n'
+                f'{"{:0,.0f}".format(x7rweth)[:6]} WETH (${"{:0,.0f}".format(x7rwethdollar)})\n'
+                f'Total Liquidity (${"{:0,.0f}".format(x7rwethdollar + x7rtokendollar)})\n\n'
+                f'X7DAO\n'
+                f'{"{:0,.0f}".format(x7daotoken)[:4]}M X7DAO (${"{:0,.0f}".format(x7daotokendollar)})\n'
+                f'{"{:0,.0f}".format(x7daoweth)[:6]} WETH (${"{:0,.0f}".format(x7daowethdollar)})\n'
+                f'Total Liquidity (${"{:0,.0f}".format(x7daowethdollar + x7daotokendollar)})\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7 Finance Token Liquidity (ETH)*\n'
                     f'To show initial liquidity for other chains, Use `/liquidity '
                     f'[chain-name]`\n\n'
@@ -2028,8 +2044,19 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7daodollar = float(x7daoamount) * float(ethvalue) / 1 ** 18
         x7rdollar = float(x7ramount) * float(ethvalue) / 1 ** 18
         x7consdollar = float(x7consamount) * float(ethvalue) / 1 ** 18
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+        i1.text((28, 36),
+                f'X7 Finance Initial Liquidity (BSC)\n\n'
+                f'X7R:\n{x7ramount} BNB (${"{:0,.0f}".format(x7rdollar)})\n\n'
+                f'X7DAO:\n{x7dao} BNB (${"{:0,.0f}".format(x7daodollar)})\n\n'
+                f'X7100:\n{x7cons} BNB (${"{:0,.0f}".format(x7consdollar)})\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption='*X7 Finance Initial Liquidity (BSC)*\nUse `/liquidity [chain-name]` for other chains\n\n'
                     f'X7R:\n{x7ramount} BNB (${"{:0,.0f}".format(x7rdollar)})\n\n'
                     f'X7DAO:\n{x7dao} BNB (${"{:0,.0f}".format(x7daodollar)})\n\n'
@@ -2062,8 +2089,19 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7daodollar = float(x7daoamount) * float(ethvalue) / 1 ** 18
         x7rdollar = float(x7ramount) * float(ethvalue) / 1 ** 18
         x7consdollar = float(x7rconsamount) * float(ethvalue) / 1 ** 18
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+        i1.text((28, 36),
+                f'X7 Finance Initial Liquidity (ARBITRUM)\n\n'
+                f'X7R:\n{x7ramount} ETH (${"{:0,.0f}".format(x7rdollar)})\n\n'
+                f'X7DAO:\n{x7dao} ETH (${"{:0,.0f}".format(x7daodollar)})\n\n'
+                f'X7100:\n{x7cons} ETH (${"{:0,.0f}".format(x7consdollar)})\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption='*X7 Finance Initial Liquidity (ARBITRUM)*\nUse `/liquidity [chain-name]` for other chains\n\n'
                     f'X7R:\n{x7ramount} ETH (${"{:0,.0f}".format(x7rdollar)})\n\n'
                     f'X7DAO:\n{x7dao} ETH (${"{:0,.0f}".format(x7daodollar)})\n\n'
@@ -2096,8 +2134,19 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7daodollar = float(x7daoamount) * float(ethvalue) / 1 ** 18
         x7rdollar = float(x7ramount) * float(ethvalue) / 1 ** 18
         x7consdollar = float(x7consamount) * float(ethvalue) / 1 ** 18
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+        i1.text((28, 36),
+                f'X7 Finance Initial Liquidity (OPTIMISM)\n\n'
+                f'X7R:\n{x7ramount} ETH (${"{:0,.0f}".format(x7rdollar)})\n\n'
+                f'X7DAO:\n{x7dao} ETH (${"{:0,.0f}".format(x7daodollar)})\n\n'
+                f'X7100:\n{x7cons} ETH (${"{:0,.0f}".format(x7consdollar)})\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption='*X7 Finance Initial Liquidity (OPTIMISM)*\nUse `/liquidity [chain-name]` for other chains\n\n'
                     f'X7R:\n{x7ramount} ETH (${"{:0,.0f}".format(x7rdollar)})\n\n'
                     f'X7DAO:\n{x7dao} ETH (${"{:0,.0f}".format(x7daodollar)})\n\n'
@@ -2130,8 +2179,19 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7daodollar = float(x7daoamount) * float(ethvalue) / 1 ** 18
         x7rdollar = float(x7ramount) * float(ethvalue) / 1 ** 18
         x7consdollar = float(x7consamount) * float(ethvalue) / 1 ** 18
+        img = Image.open((random.choice(items.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+        i1.text((28, 36),
+                f'X7 Finance Initial Liquidity (POLYGON)\n\n'
+                f'X7R:\n{x7ramount} MATIC (${"{:0,.0f}".format(x7rdollar)})\n\n'
+                f'X7DAO:\n{x7dao} MATIC (${"{:0,.0f}".format(x7daodollar)})\n\n'
+                f'X7100:\n{x7cons} MATIC (${"{:0,.0f}".format(x7consdollar)})\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption='*X7 Finance Initial Liquidity (POLYGON)*\nUse `/liquidity [chain-name]` for other chains\n\n'
                     f'X7R:\n{x7ramount} MATIC (${"{:0,.0f}".format(x7rdollar)})\n\n'
                     f'X7DAO:\n{x7dao} MATIC (${"{:0,.0f}".format(x7daodollar)})\n\n'
