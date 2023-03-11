@@ -1994,8 +1994,9 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    cgx7rprice = (keys.cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
-                                    include_24hr_vol='true', include_last_updated_at="true"))
+    cg = CoinGeckoAPI()
+    cgx7rprice = (cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
+                               include_24hr_vol='true', include_last_updated_at="true"))
     x7rprice = (cgx7rprice["x7r"]["usd"])
     burnurl = items.tokenbalanceapieth + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.ether
     burnresponse = requests.get(burnurl)
@@ -2114,8 +2115,9 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    cgx7daoprice = (keys.cg.get_price(ids='x7dao', vs_currencies='usd', include_24hr_change='true',
-                                      include_24hr_vol='true', include_last_updated_at="true"))
+    cg = CoinGeckoAPI()
+    cgx7daoprice = (cg.get_price(ids='x7dao', vs_currencies='usd', include_24hr_change='true',
+                                 include_24hr_vol='true', include_last_updated_at="true"))
     daoprice = (cgx7daoprice["x7dao"]["usd"])
     uniurl = items.tokenbalanceapieth + items.x7daoca + '&address=' + items.x7daopaireth + '&tag=latest' + keys.ether
     uniresponse = requests.get(uniurl)
@@ -2231,8 +2233,9 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    cgx7101price = (keys.cg.get_price(ids='x7101', vs_currencies='usd', include_24hr_change='true',
-                                      include_24hr_vol='true', include_last_updated_at="true"))
+    cg = CoinGeckoAPI()
+    cgx7101price = (cg.get_price(ids='x7101', vs_currencies='usd', include_24hr_change='true',
+                                 include_24hr_vol='true', include_last_updated_at="true"))
     x7101price = (cgx7101price["x7101"]["usd"])
     x7101holdersurl = items.ethplorerapi + items.x7101ca + keys.ethplorer
     x7101holdersresponse = requests.get(x7101holdersurl)
@@ -2331,8 +2334,9 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    cgx7102price = (keys.cg.get_price(ids='x7102', vs_currencies='usd', include_24hr_change='true',
-                                      include_24hr_vol='true', include_last_updated_at="true"))
+    cg = CoinGeckoAPI()
+    cgx7102price = (cg.get_price(ids='x7102', vs_currencies='usd', include_24hr_change='true',
+                                 include_24hr_vol='true', include_last_updated_at="true"))
     x7102price = (cgx7102price["x7102"]["usd"])
     x7102holdersurl = items.ethplorerapi + items.x7102ca + keys.ethplorer
     x7102holdersresponse = requests.get(x7102holdersurl)
@@ -2432,8 +2436,9 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    cgx7103price = (keys.cg.get_price(ids='x7103', vs_currencies='usd', include_24hr_change='true',
-                                      include_24hr_vol='true', include_last_updated_at="true"))
+    cg = CoinGeckoAPI()
+    cgx7103price = (cg.get_price(ids='x7103', vs_currencies='usd', include_24hr_change='true',
+                                 include_24hr_vol='true', include_last_updated_at="true"))
     x7103price = (cgx7103price["x7103"]["usd"])
     x7103holdersurl = items.ethplorerapi + items.x7103ca + keys.ethplorer
     x7103holdersresponse = requests.get(x7103holdersurl)
@@ -2533,8 +2538,9 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    cgx7104price = (keys.cg.get_price(ids='x7104', vs_currencies='usd', include_24hr_change='true',
-                                      include_24hr_vol='true', include_last_updated_at="true"))
+    cg = CoinGeckoAPI()
+    cgx7104price = (cg.get_price(ids='x7104', vs_currencies='usd', include_24hr_change='true',
+                                 include_24hr_vol='true', include_last_updated_at="true"))
     x7104price = (cgx7104price["x7104"]["usd"])
     x7104holdersurl = items.ethplorerapi + items.x7104ca + keys.ethplorer
     x7104holdersresponse = requests.get(x7104holdersurl)
@@ -2634,8 +2640,9 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    cgx7105price = (keys.cg.get_price(ids='x7105', vs_currencies='usd', include_24hr_change='true',
-                                      include_24hr_vol='true', include_last_updated_at="true"))
+    cg = CoinGeckoAPI()
+    cgx7105price = (cg.get_price(ids='x7105', vs_currencies='usd', include_24hr_change='true',
+                                 include_24hr_vol='true', include_last_updated_at="true"))
     x7105price = (cgx7105price["x7105"]["usd"])
     x7105holdersurl = items.ethplorerapi + items.x7105ca + keys.ethplorer
     x7105holdersresponse = requests.get(x7105holdersurl)
@@ -2754,7 +2761,8 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    cgprice = (keys.cg.get_price(ids='x7r,x7dao,x7101,x7102,x7103,x7104,x7105', vs_currencies='usd'))
+    cg = CoinGeckoAPI()
+    cgprice = (cg.get_price(ids='x7r,x7dao,x7101,x7102,x7103,x7104,x7105', vs_currencies='usd'))
     burnurl = items.tokenbalanceapieth + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.ether
     burnresponse = requests.get(burnurl)
     burndata = burnresponse.json()
@@ -2818,10 +2826,11 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     token = tokenresponse.json()
     tokenid = token["coins"][0]["api_symbol"]
     symbol = token["coins"][0]["symbol"]
-    tokenprice = (keys.cg.get_price(ids=tokenid, vs_currencies='usd', include_24hr_change='true',
-                                    include_24hr_vol='true', include_market_cap="true"))
-    cgtogetherprice = (keys.cg.get_price(ids='x7r,x7dao', vs_currencies='usd', include_24hr_change='true',
-                                         include_24hr_vol='true'))
+    cg = CoinGeckoAPI()
+    tokenprice = (cg.get_price(ids=tokenid, vs_currencies='usd', include_24hr_change='true',
+                               include_24hr_vol='true', include_market_cap="true"))
+    cgtogetherprice = (cg.get_price(ids='x7r,x7dao', vs_currencies='usd', include_24hr_change='true',
+                                    include_24hr_vol='true'))
     if search == "":
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
@@ -2888,8 +2897,9 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    cgconstellationprice = (keys.cg.get_price(ids='x7101,x7102,x7103,x7104,x7105', vs_currencies='usd',
-                                              include_24hr_change='true'))
+    cg = CoinGeckoAPI()
+    cgconstellationprice = (cg.get_price(ids='x7101,x7102,x7103,x7104,x7105', vs_currencies='usd',
+                                         include_24hr_change='true'))
     x7101mc = cgconstellationprice["x7101"]["usd"] * items.supply
     x7102mc = cgconstellationprice["x7102"]["usd"] * items.supply
     x7103mc = cgconstellationprice["x7103"]["usd"] * items.supply
@@ -2955,8 +2965,9 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    cgx7rprice = (keys.cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
-                                    include_24hr_vol='true', include_last_updated_at="true"))
+    cg = CoinGeckoAPI()
+    cgx7rprice = (cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
+                               include_24hr_vol='true', include_last_updated_at="true"))
     x7rprice = (cgx7rprice["x7r"]["usd"])
     treasuryurl = \
         items.ethbalanceapieth + items.devmultieth + ',' + items.commultieth + ',' + items.pioneerca + '&tag=latest' \
@@ -3142,28 +3153,83 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     if chain == "" or chain == "eth":
-        cgprice = (keys.cg.get_price(ids='x7r,x7dao', vs_currencies='usd', include_24hr_change='true',
-                                     include_24hr_vol='true', include_last_updated_at="true"))
+        cg = CoinGeckoAPI()
+        cgprice = (cg.get_price(ids='x7r,x7dao,x7101,x7102,x7103,x7104,x7105',
+                                vs_currencies='usd', include_24hr_change='true',
+                                include_24hr_vol='true', include_last_updated_at="true"))
         x7rprice = (cgprice["x7r"]["usd"])
+        x7daoprice = (cgprice["x7dao"]["usd"])
+        x7101price = (cgprice["x7101"]["usd"])
+        x7102price = (cgprice["x7102"]["usd"])
+        x7103price = (cgprice["x7103"]["usd"])
+        x7104price = (cgprice["x7104"]["usd"])
+        x7105price = (cgprice["x7105"]["usd"])
         # noinspection PyTypeChecker
         x7rresult = evm_api.defi.get_pair_reserves(api_key=keys.moralis,
                                                    params={"chain": "eth", "pair_address": items.x7rpaireth})
         # noinspection PyTypeChecker
         x7daoresult = evm_api.defi.get_pair_reserves(api_key=keys.moralis,
                                                      params={"chain": "eth", "pair_address": items.x7daopaireth})
-        x7rtoken = int(x7rresult["reserve0"])
-        x7rweth = int(x7rresult["reserve1"])
+        # noinspection PyTypeChecker
+        x7101result = evm_api.defi.get_pair_reserves(api_key=keys.moralis,
+                                                     params={"chain": "eth", "pair_address": items.x7101paireth})
+        # noinspection PyTypeChecker
+        x7102result = evm_api.defi.get_pair_reserves(api_key=keys.moralis,
+                                                     params={"chain": "eth", "pair_address": items.x7102paireth})
+        # noinspection PyTypeChecker
+        x7103result = evm_api.defi.get_pair_reserves(api_key=keys.moralis,
+                                                     params={"chain": "eth", "pair_address": items.x7103paireth})
+        # noinspection PyTypeChecker
+        x7104result = evm_api.defi.get_pair_reserves(api_key=keys.moralis,
+                                                     params={"chain": "eth", "pair_address": items.x7104paireth})
+        # noinspection PyTypeChecker
+        x7105result = evm_api.defi.get_pair_reserves(api_key=keys.moralis,
+                                                     params={"chain": "eth", "pair_address": items.x7105paireth})
         ethurl = items.ethpriceapi + keys.ether
         ethresponse = requests.get(ethurl)
         ethdata = ethresponse.json()
         ethvalue = float(ethdata["result"]["ethusd"])
+
+        x7rtoken = int(x7rresult["reserve0"])
+        x7rweth = int(x7rresult["reserve1"])
         x7rwethdollar = float(x7rweth) * float(ethvalue) / 10 ** 18
         x7rtokendollar = float(x7rprice) * float(x7rtoken) / 10 ** 18
-        x7daoprice = (cgprice["x7dao"]["usd"])
+
         x7daotoken = int(x7daoresult["reserve0"])
         x7daoweth = int(x7daoresult["reserve1"])
         x7daowethdollar = float(x7daoweth) * float(ethvalue) / 10 ** 18
         x7daotokendollar = float(x7daoprice) * float(x7daotoken) / 10 ** 18
+
+        x7101token = int(x7101result["reserve0"])
+        x7101weth = int(x7101result["reserve1"])
+        x7101wethdollar = float(x7101weth) * float(ethvalue) / 10 ** 18
+        x7101tokendollar = float(x7101price) * float(x7101token) / 10 ** 18
+
+        x7102token = int(x7102result["reserve0"])
+        x7102weth = int(x7102result["reserve1"])
+        x7102wethdollar = float(x7102weth) * float(ethvalue) / 10 ** 18
+        x7102tokendollar = float(x7102price) * float(x7102token) / 10 ** 18
+
+        x7103token = int(x7103result["reserve0"])
+        x7103weth = int(x7103result["reserve1"])
+        x7103wethdollar = float(x7103weth) * float(ethvalue) / 10 ** 18
+        x7103tokendollar = float(x7103price) * float(x7103token) / 10 ** 18
+
+        x7104token = int(x7104result["reserve0"])
+        x7104weth = int(x7104result["reserve1"])
+        x7104wethdollar = float(x7104weth) * float(ethvalue) / 10 ** 18
+        x7104tokendollar = float(x7104price) * float(x7104token) / 10 ** 18
+
+        x7105token = int(x7105result["reserve0"])
+        x7105weth = int(x7105result["reserve1"])
+        x7105wethdollar = float(x7105weth) * float(ethvalue) / 10 ** 18
+        x7105tokendollar = float(x7105price) * float(x7105token) / 10 ** 18
+
+        constellationstoken = x7101token+x7102token+x7103token+x7104token+x7105token
+        constellationsweth = x7101weth+x7102weth+x7103weth+x7104weth+x7105weth
+        constellationswethdollar = x7101wethdollar+x7102wethdollar+x7103wethdollar+x7104wethdollar+x7105wethdollar
+        constellationstokendollar = x7101tokendollar+x7102tokendollar+x7103tokendollar+x7104tokendollar+x7105tokendollar
+
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
@@ -3175,9 +3241,15 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Total Liquidity (${"{:0,.0f}".format(x7rwethdollar + x7rtokendollar)})\n\n'
                 f'X7DAO\n'
                 f'{"{:0,.0f}".format(x7daotoken)[:4]}M X7DAO (${"{:0,.0f}".format(x7daotokendollar)})\n'
-                f'{"{:0,.0f}".format(x7daoweth)[:6]} WETH (${"{:0,.0f}".format(x7daowethdollar)})\n'
-                f'Total Liquidity (${"{:0,.0f}".format(x7daowethdollar + x7daotokendollar)})\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'{"{:0,.0f}".format(x7daoweth)[:5]} WETH (${"{:0,.0f}".format(x7daowethdollar)})\n'
+                f'Total Liquidity (${"{:0,.0f}".format(x7daowethdollar + x7daotokendollar)})\n\n'
+                f'Constellations\n'
+                f'{"{:0,.0f}".format(constellationstoken)[:4]}M X7100 '
+                f'(${"{:0,.0f}".format(constellationstokendollar)})\n'
+                f'{"{:0,.0f}".format(constellationsweth)[:6]} WETH '
+                f'(${"{:0,.0f}".format(constellationswethdollar)})\n'
+                f'Total Liquidity (${"{:0,.0f}".format(constellationswethdollar+constellationstokendollar)})\n\n\n'
+                f'\nUTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3191,8 +3263,14 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'Total Liquidity (${"{:0,.0f}".format(x7rwethdollar+x7rtokendollar)})\n\n'
                     f'*X7DAO*\n'
                     f'{"{:0,.0f}".format(x7daotoken)[:4]}M X7DAO (${"{:0,.0f}".format(x7daotokendollar)})\n'
-                    f'{"{:0,.0f}".format(x7daoweth)[:6]} WETH (${"{:0,.0f}".format(x7daowethdollar)})\n'
+                    f'{"{:0,.0f}".format(x7daoweth)[:5]} WETH (${"{:0,.0f}".format(x7daowethdollar)})\n'
                     f'Total Liquidity (${"{:0,.0f}".format(x7daowethdollar+x7daotokendollar)})\n\n'
+                    f'*Constellations*\n'
+                    f'{"{:0,.0f}".format(constellationstoken)[:4]}M X7100 '
+                    f'(${"{:0,.0f}".format(constellationstokendollar)})\n'
+                    f'{"{:0,.0f}".format(constellationsweth)[:6]} WETH '
+                    f'(${"{:0,.0f}".format(constellationswethdollar)})\n'
+                    f'Total Liquidity (${"{:0,.0f}".format(constellationswethdollar+constellationstokendollar)})\n\n'
                     f'{quote}', parse_mode='Markdown')
     if chain == "bsc" or chain == "bnb":
         liqurl = \
