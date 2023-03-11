@@ -2012,10 +2012,8 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7rholdersresponse = requests.get(x7rholdersurl)
     x7rholdersdata = x7rholdersresponse.json()
     x7rholders = x7rholdersdata["holdersCount"]
-    img = Image.open(items.x7rlogo)
-    i1 = ImageDraw.Draw(img)
-    i1.text((36, 36), f'24 Hour Change: {round(cgx7rprice["x7r"]["usd_24h_change"], 1)}%\n', fill=(255, 255, 255))
-    img.save(r"media\x7rprice.png")
+    if cgx7rprice["x7r"]["usd_24h_change"] is None:
+        cgx7rprice["x7r"]["usd_24h_change"] = 0
     if dollar:
         amount = round(float(chain[1:]) / float(x7rprice), 2)
         await update.message.reply_photo(
@@ -2128,10 +2126,8 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7daoholdersresponse = requests.get(x7daoholdersurl)
     x7daoholdersdata = x7daoholdersresponse.json()
     x7daoholders = x7daoholdersdata["holdersCount"]
-    img = Image.open(items.x7daologo)
-    i1 = ImageDraw.Draw(img)
-    i1.text((58, 34), f'24 Hour: {round(cgx7daoprice["x7dao"]["usd_24h_change"], 1)}%\n', fill=(0, 0, 0))
-    img.save(r"media\x7daoprice.png")
+    if cgx7daoprice["x7dao"]["usd_24h_change"] is None:
+        cgx7daoprice["x7dao"]["usd_24h_change"] = 0
     if dollar:
         amount = round(float(chain[1:]) / float(daoprice), 2)
         await update.message.reply_photo(
@@ -2241,6 +2237,8 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7101holdersresponse = requests.get(x7101holdersurl)
     x7101holdersdata = x7101holdersresponse.json()
     x7101holders = x7101holdersdata["holdersCount"]
+    if cgx7101price["x7101"]["usd_24h_change"] is None:
+        cgx7101price["x7101"]["usd_24h_change"] = 0
     if dollar:
         amount = round(float(chain[1:]) / float(x7101price), 2)
         await update.message.reply_photo(
@@ -2260,7 +2258,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((28, 36),
                 f'X7101 Info (ETH)\n\n'
                 f'X7101 Price: ${cgx7101price["x7101"]["usd"]}\n'
-                f'24 Hour Change: {cgx7101price["x7101"]["usd_24h_change"]}%\n'
+                f'24 Hour Change: {round(cgx7101price["x7101"]["usd_24h_change"]),1}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7101price * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(cgx7101price["x7101"]["usd_24h_vol"])}'
                 f'Holders: {x7101holders}\n\n\n\n'
@@ -2271,7 +2269,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7101 (ETH) Info*\nUse `/X7101 [chain-name]` for other chains\n\n'
             f'X7101 Price: ${cgx7101price["x7101"]["usd"]}\n'
-            f'24 Hour Change: {cgx7101price["x7101"]["usd_24h_change"]}%\n'
+            f'24 Hour Change: {round(cgx7101price["x7101"]["usd_24h_change"],1)}%\n'
             f'Market Cap:  ${"{:0,.0f}".format(x7101price*items.supply)}\n'
             f'24 Hour Volume: ${round(cgx7101price["x7101"]["usd_24h_vol"])}\n'
             f'Holders: {x7101holders}\n\n'
@@ -2338,6 +2336,8 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7102holdersresponse = requests.get(x7102holdersurl)
     x7102holdersdata = x7102holdersresponse.json()
     x7102holders = x7102holdersdata["holdersCount"]
+    if cgx7102price["x7102"]["usd_24h_change"] is None:
+        cgx7102price["x7102"]["usd_24h_change"] = 0
     if dollar:
         amount = round(float(chain[1:]) / float(x7102price), 2)
         await update.message.reply_photo(
@@ -2358,7 +2358,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((28, 36),
                 f'X7102 Info (ETH)\n\n'
                 f'X7102 Price: ${cgx7102price["x7102"]["usd"]}\n'
-                f'24 Hour Change: {cgx7102price["x7102"]["usd_24h_change"]}%\n'
+                f'24 Hour Change: {round(cgx7102price["x7102"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7102price * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(cgx7102price["x7102"]["usd_24h_vol"])}'
                 f'Holders: {x7102holders}\n\n\n\n'
@@ -2369,7 +2369,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7102 (ETH) Info*\nUse `/x7102 [chain-name]` for other chains\n\n'
                     f'X7102 Price: ${cgx7102price["x7102"]["usd"]}\n'
-                    f'24 Hour Change: {cgx7102price["x7102"]["usd_24h_change"]}%\n'
+                    f'24 Hour Change: {round(cgx7102price["x7102"]["usd_24h_change"],1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7102price*items.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(cgx7102price["x7102"]["usd_24h_vol"])}\n'
                     f'Holders: {x7102holders}\n\n'
@@ -2436,6 +2436,8 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7103holdersresponse = requests.get(x7103holdersurl)
     x7103holdersdata = x7103holdersresponse.json()
     x7103holders = x7103holdersdata["holdersCount"]
+    if cgx7103price["x7103"]["usd_24h_change"] is None:
+        cgx7103price["x7103"]["usd_24h_change"] = 0
     if dollar:
         amount = round(float(chain[1:]) / float(x7103price), 2)
         await update.message.reply_photo(
@@ -2456,7 +2458,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((28, 36),
                 f'X7103 Info (ETH)\n\n'
                 f'X7103 Price: ${cgx7103price["x7103"]["usd"]}\n'
-                f'24 Hour Change: {cgx7103price["x7103"]["usd_24h_change"]}%\n'
+                f'24 Hour Change: {round(cgx7103price["x7103"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7103price * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(cgx7103price["x7103"]["usd_24h_vol"])}'
                 f'Holders: {x7103holders}\n\n\n\n'
@@ -2467,7 +2469,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7103 (ETH) Info*\nUse `/x7103` [chain-name] for other chains\n\n'
                     f'X7103 Price: ${cgx7103price["x7103"]["usd"]}\n'
-                    f'24 Hour Change: {cgx7103price["x7103"]["usd_24h_change"]}%\n'
+                    f'24 Hour Change: {round(cgx7103price["x7103"]["usd_24h_change"],1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7103price*items.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(cgx7103price["x7103"]["usd_24h_vol"])}\n'
                     f'Holders: {x7103holders}\n\n'
@@ -2534,6 +2536,8 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7104holdersresponse = requests.get(x7104holdersurl)
     x7104holdersdata = x7104holdersresponse.json()
     x7104holders = x7104holdersdata["holdersCount"]
+    if cgx7104price["x7104"]["usd_24h_change"] is None:
+        cgx7104price["x7104"]["usd_24h_change"] = 0
     if dollar:
         amount = round(float(chain[1:]) / float(x7104price), 2)
         await update.message.reply_photo(
@@ -2554,7 +2558,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((28, 36),
                 f'X7104 Info (ETH)\n\n'
                 f'X7104 Price: ${cgx7104price["x7104"]["usd"]}\n'
-                f'24 Hour Change: {cgx7104price["x7104"]["usd_24h_change"]}%\n'
+                f'24 Hour Change: {round(cgx7104price["x7104"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7104price * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(cgx7104price["x7104"]["usd_24h_vol"])}'
                 f'Holders: {x7104holders}\n\n\n\n'
@@ -2565,7 +2569,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7104 (ETH) Info*\n`Use /x7104 [chain-name]` for other chains\n\n'
                     f'X7104 Price: ${cgx7104price["x7104"]["usd"]}\n'
-                    f'24 Hour Change: {cgx7104price["x7104"]["usd_24h_change"]}%\n'
+                    f'24 Hour Change: {round(cgx7104price["x7104"]["usd_24h_change"],1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7104price * items.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(cgx7104price["x7104"]["usd_24h_vol"])}\n'
                     f'Holders: {x7104holders}\n\n'
@@ -2632,10 +2636,8 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7105holdersresponse = requests.get(x7105holdersurl)
     x7105holdersdata = x7105holdersresponse.json()
     x7105holders = x7105holdersdata["holdersCount"]
-    img = Image.open(items.x7105logo)
-    i1 = ImageDraw.Draw(img)
-    i1.text((58, 20), f'24 Hour: {round(cgx7105price["x7105"]["usd_24h_change"], 1)}%\n', fill=(255, 255, 255))
-    img.save(r"media\x7105price.png")
+    if cgx7105price["x7105"]["usd_24h_change"] is None:
+        cgx7105price["x7105"]["usd_24h_change"] = 0
     if dollar:
         amount = round(float(chain[1:]) / float(x7105price), 2)
         await update.message.reply_photo(
@@ -2656,7 +2658,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((28, 36),
                 f'X7105 Info (ETH)\n\n'
                 f'X7105 Price: ${cgx7105price["x7105"]["usd"]}\n'
-                f'24 Hour Change: {cgx7105price["x7105"]["usd_24h_change"]}%\n'
+                f'24 Hour Change: {round(cgx7105price["x7105"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7105price * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(cgx7105price["x7105"]["usd_24h_vol"])}'
                 f'Holders: {x7105holders}\n\n\n\n'
@@ -2667,7 +2669,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7105 (ETH) Info*\nUse `/x7105 [chain-name]` for other chains\n'
                     f'X7105 Price: ${cgx7105price["x7105"]["usd"]}\n'
-                    f'24 Hour Change: {cgx7105price["x7105"]["usd_24h_change"]}%\n'
+                    f'24 Hour Change: {round(cgx7105price["x7105"]["usd_24h_change"],1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7105price*items.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(cgx7105price["x7105"]["usd_24h_vol"])}\n'
                     f'Holders: {x7105holders}\n\n'
@@ -2890,6 +2892,16 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
     x7104mc = cgconstellationprice["x7104"]["usd"] * items.supply
     x7105mc = cgconstellationprice["x7105"]["usd"] * items.supply
     constmc = x7101mc + x7102mc + x7103mc + x7104mc + x7105mc
+    if cgconstellationprice["x7101"]["usd_24h_change"] is None:
+        cgconstellationprice["x7101"]["usd_24h_change"] = 0
+    if cgconstellationprice["x7102"]["usd_24h_change"] is None:
+        cgconstellationprice["x7102"]["usd_24h_change"] = 0
+    if cgconstellationprice["x7103"]["usd_24h_change"] is None:
+        cgconstellationprice["x7103"]["usd_24h_change"] = 0
+    if cgconstellationprice["x7104"]["usd_24h_change"] is None:
+        cgconstellationprice["x7104"]["usd_24h_change"] = 0
+    if cgconstellationprice["x7105"]["usd_24h_change"] is None:
+        cgconstellationprice["x7105"]["usd_24h_change"] = 0
     if chain == "":
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
@@ -2897,19 +2909,19 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
         i1.text((28, 36),
                 f'X7 Finance Constellation Token Prices (ETH)\n\n'
                 f'X7101:      ${cgconstellationprice["x7101"]["usd"]}\n'
-                f'24 Hour Change: {cgconstellationprice["x7101"]["usd_24h_change"]}%\n'
+                f'24 Hour Change: {round(cgconstellationprice["x7101"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7101mc)}\n\n'
                 f'X7102:      ${cgconstellationprice["x7102"]["usd"]}\n'
-                f'24 Hour Change: {cgconstellationprice["x7102"]["usd_24h_change"]}%\n'
+                f'24 Hour Change: {round(cgconstellationprice["x7102"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7102mc)}\n\n'
                 f'X7103:      ${cgconstellationprice["x7103"]["usd"]}\n'
-                f'24 Hour Change: {cgconstellationprice["x7103"]["usd_24h_change"]}%\n'
+                f'24 Hour Change: {round(cgconstellationprice["x7103"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7103mc)}\n\n'
                 f'X7104:      ${cgconstellationprice["x7104"]["usd"]}\n'
-                f'24 Hour Change: {cgconstellationprice["x7104"]["usd_24h_change"]}%\n'
+                f'24 Hour Change: {round(cgconstellationprice["x7104"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7104mc)}\n\n'
                 f'X7105:      ${cgconstellationprice["x7105"]["usd"]}\n'
-                f'24 Hour Change: {cgconstellationprice["x7105"]["usd_24h_change"]}%\n'
+                f'24 Hour Change: {round(cgconstellationprice["x7105"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7105mc)}\n\n'
                 f'Combined Market Cap: ${"{:0,.0f}".format(constmc)}\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
@@ -2920,23 +2932,23 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
             caption=f'*X7 Finance Constellation Token Prices (ETH)*\n\n'
                     f'For more info use `/x7tokenname`\n\n'
                     f'X7101:      ${cgconstellationprice["x7101"]["usd"]}\n'
-                    f'24 Hour Change: {cgconstellationprice["x7101"]["usd_24h_change"]}%\n'
+                    f'24 Hour Change: {round(cgconstellationprice["x7101"]["usd_24h_change"],1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7101mc)}\n'
                     f'CA: `{items.x7101ca}\n\n`'
                     f'X7102:      ${cgconstellationprice["x7102"]["usd"]}\n'
-                    f'24 Hour Change: {cgconstellationprice["x7102"]["usd_24h_change"]}%\n'
+                    f'24 Hour Change: {round(cgconstellationprice["x7102"]["usd_24h_change"],1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7102mc)}\n'
                     f'CA: `{items.x7102ca}\n\n`'
                     f'X7103:      ${cgconstellationprice["x7103"]["usd"]}\n'
-                    f'24 Hour Change: {cgconstellationprice["x7103"]["usd_24h_change"]}%\n'
+                    f'24 Hour Change: {round(cgconstellationprice["x7103"]["usd_24h_change"],1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7103mc)}\n'
                     f'CA: `{items.x7103ca}\n\n`'
                     f'X7104:      ${cgconstellationprice["x7104"]["usd"]}\n'
-                    f'24 Hour Change: {cgconstellationprice["x7104"]["usd_24h_change"]}%\n'
+                    f'24 Hour Change: {round(cgconstellationprice["x7104"]["usd_24h_change"],1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7104mc)}\n'
                     f'CA: `{items.x7104ca}\n\n`'
                     f'X7105:      ${cgconstellationprice["x7105"]["usd"]}\n'
-                    f'24 Hour Change: {cgconstellationprice["x7105"]["usd_24h_change"]}%\n'
+                    f'24 Hour Change: {round(cgconstellationprice["x7105"]["usd_24h_change"],1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7105mc)}\n'
                     f'CA: `{items.x7105ca}\n\n`'
                     f'Combined Market Cap: ${"{:0,.0f}".format(constmc)}\n\n'
@@ -3209,15 +3221,14 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7104weth = str(x7104wethraw / 10 ** 18)
         x7104wethdollar = float(x7104weth) * float(ethvalue)
         x7104tokendollar = float(x7104price) * float(x7104token) / 10 ** 18
-
         x7105token = int(x7105result["reserve0"])
         x7105wethraw = int(x7105result["reserve1"])
         x7105weth = str(x7105wethraw / 10 ** 18)
         x7105wethdollar = float(x7105weth) * float(ethvalue)
         x7105tokendollar = float(x7105price) * float(x7105token) / 10 ** 18
-
         constellationstoken = x7101token+x7102token+x7103token+x7104token+x7105token
-        constellationsweth = x7101weth+x7102weth+x7103weth+x7104weth+x7105weth
+        constellationsweth = round(float(x7101weth)+float(x7102weth)+float(x7103weth)+float(x7104weth)
+                                   + float(x7105weth), 2)
         constellationswethdollar = x7101wethdollar+x7102wethdollar+x7103wethdollar+x7104wethdollar+x7105wethdollar
         constellationstokendollar = x7101tokendollar+x7102tokendollar+x7103tokendollar+x7104tokendollar+x7105tokendollar
 
@@ -3237,7 +3248,7 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Constellations\n'
                 f'{"{:0,.0f}".format(constellationstoken)[:4]}M X7100 '
                 f'(${"{:0,.0f}".format(constellationstokendollar)})\n'
-                f'{constellationsweth[:6]} WETH '
+                f'{constellationsweth} WETH '
                 f'(${"{:0,.0f}".format(constellationswethdollar)})\n'
                 f'Total Liquidity (${"{:0,.0f}".format(constellationswethdollar+constellationstokendollar)})\n\n\n'
                 f'\nUTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
@@ -3259,7 +3270,7 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'*Constellations*\n'
                     f'{"{:0,.0f}".format(constellationstoken)[:4]}M X7100 '
                     f'(${"{:0,.0f}".format(constellationstokendollar)})\n'
-                    f'{constellationsweth[:6]} WETH '
+                    f'{constellationsweth} WETH '
                     f'(${"{:0,.0f}".format(constellationswethdollar)})\n'
                     f'Total Liquidity (${"{:0,.0f}".format(constellationswethdollar+constellationstokendollar)})\n\n'
                     f'{quote}', parse_mode='Markdown')
