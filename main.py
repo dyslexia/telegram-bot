@@ -18,8 +18,7 @@ from moralis import evm_api
 
 
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 print('Bot Restarted')
 
@@ -1998,20 +1997,6 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cgx7rprice = (cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
                                include_24hr_vol='true', include_last_updated_at="true"))
     x7rprice = (cgx7rprice["x7r"]["usd"])
-    burnurl = items.tokenbalanceapieth + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.ether
-    burnresponse = requests.get(burnurl)
-    burndata = burnresponse.json()
-    burndata["result"] = int(burndata["result"][:-18])
-    burnresult = round(((burndata["result"] / items.supply) * 100), 6)
-    uniurl = items.tokenbalanceapieth + items.x7rca + '&address=' + items.x7rpaireth + '&tag=latest' + keys.ether
-    uniresponse = requests.get(uniurl)
-    unidata = uniresponse.json()
-    unidata["result"] = int(unidata["result"][:-18])
-    uniresult = round(((unidata["result"] / items.supply) * 100), 6)
-    x7rholdersurl = items.ethplorerapi + items.x7rca + keys.ethplorer
-    x7rholdersresponse = requests.get(x7rholdersurl)
-    x7rholdersdata = x7rholdersresponse.json()
-    x7rholders = x7rholdersdata["holdersCount"]
     if cgx7rprice["x7r"]["usd_24h_change"] is None:
         cgx7rprice["x7r"]["usd_24h_change"] = 0
     if dollar:
@@ -2028,7 +2013,28 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'{chain} X7R (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}'
                     f'\n\n{quote}',
             parse_mode='Markdown')
-    if chain == "":
+    if chain == "" or chain == "eth":
+        burnurl = items.tokenbalanceapieth + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.ether
+        burnresponse = requests.get(burnurl)
+        burndata = burnresponse.json()
+        burndata["result"] = int(burndata["result"][:-18])
+        burnresult = round(((burndata["result"] / items.supply) * 100), 6)
+        x7rholdersurl = items.ethplorerapi + items.x7rca + keys.ethplorer
+        x7rholdersresponse = requests.get(x7rholdersurl)
+        x7rholdersdata = x7rholdersresponse.json()
+        x7rholders = x7rholdersdata["holdersCount"]
+        ethurl = items.ethpriceapi + keys.ether
+        ethresponse = requests.get(ethurl)
+        ethdata = ethresponse.json()
+        ethvalue = float(ethdata["result"]["ethusd"])
+        # noinspection PyTypeChecker
+        x7rresult = evm_api.defi.get_pair_reserves(api_key=keys.moralis,
+                                                   params={"chain": "eth", "pair_address": items.x7rpaireth})
+        x7rtoken = int(x7rresult["reserve0"])
+        x7rwethraw = int(x7rresult["reserve1"])
+        x7rweth = str(x7rwethraw / 10 ** 18)
+        x7rwethdollar = float(x7rweth) * float(ethvalue)
+        x7rtokendollar = float(x7rprice) * float(x7rtoken) / 10 ** 18
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -2042,7 +2048,10 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7R Tokens Burned:\n'
                 f'{"{:,}".format(burndata["result"])}\n'
                 f'{burnresult}% of Supply\n\n'
-                f'Uniswap Supply:\n{"{:,}".format(unidata["result"])}\n{round(uniresult, 2)}% of Supply\n\n'
+                f'Liquidity:\n'
+                f'{"{:0,.0f}".format(x7rtoken)[:4]}M X7R (${"{:0,.0f}".format(x7rtokendollar)})\n'
+                f'{x7rweth[:6]} WETH (${"{:0,.0f}".format(x7rwethdollar)})\n'
+                f'Total Liquidity (${"{:0,.0f}".format(x7rwethdollar + x7rtokendollar)})\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
@@ -2057,7 +2066,10 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'X7R Tokens Burned:\n'
                     f'{"{:,}".format(burndata["result"])}\n'
                     f'{burnresult}% of Supply\n\n'
-                    f'Uniswap Supply:\n{"{:,}".format(unidata["result"])}\n{round(uniresult, 2)}% of Supply\n\n'
+                    f'Liquidity:\n'
+                    f'{"{:0,.0f}".format(x7rtoken)[:4]}M X7R (${"{:0,.0f}".format(x7rtokendollar)})\n'
+                    f'{x7rweth[:6]} WETH (${"{:0,.0f}".format(x7rwethdollar)})\n'
+                    f'Total Liquidity (${"{:0,.0f}".format(x7rwethdollar + x7rtokendollar)})\n\n'
                     f'Contract Address:\n`{items.x7rca}`\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -2116,27 +2128,18 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cg = CoinGeckoAPI()
     cgx7daoprice = (cg.get_price(ids='x7dao', vs_currencies='usd', include_24hr_change='true',
                                  include_24hr_vol='true', include_last_updated_at="true"))
-    daoprice = (cgx7daoprice["x7dao"]["usd"])
-    uniurl = items.tokenbalanceapieth + items.x7daoca + '&address=' + items.x7daopaireth + '&tag=latest' + keys.ether
-    uniresponse = requests.get(uniurl)
-    unidata = uniresponse.json()
-    unidata["result"] = int(unidata["result"][:-18])
-    uniresult = round(((unidata["result"] / items.supply) * 100), 6)
-    x7daoholdersurl = items.ethplorerapi + items.x7daoca + keys.ethplorer
-    x7daoholdersresponse = requests.get(x7daoholdersurl)
-    x7daoholdersdata = x7daoholdersresponse.json()
-    x7daoholders = x7daoholdersdata["holdersCount"]
+    x7daoprice = (cgx7daoprice["x7dao"]["usd"])
     if cgx7daoprice["x7dao"]["usd_24h_change"] is None:
         cgx7daoprice["x7dao"]["usd_24h_change"] = 0
     if dollar:
-        amount = round(float(chain[1:]) / float(daoprice), 2)
+        amount = round(float(chain[1:]) / float(x7daoprice), 2)
         await update.message.reply_photo(
             photo=open(items.x7daologo, 'rb'),
             caption=f'{chain} Will currently buy:\n\n{"{:0,.0f}".format(amount)}'
                     f' X7DAO (ETH) Tokens (Before Tax)\n\n{quote}',
             parse_mode='Markdown')
     if chain == "500000":
-        amount = round(float(chain) * float(daoprice), 2)
+        amount = round(float(chain) * float(x7daoprice), 2)
         await update.message.reply_photo(
             photo=open(items.x7daologo, 'rb'),
             caption=f'{chain} X7DAO (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n'
@@ -2145,12 +2148,28 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown')
         return
     if chain.isdigit():
-        amount = round(float(chain)*float(daoprice), 2)
+        amount = round(float(chain)*float(x7daoprice), 2)
         await update.message.reply_photo(
             photo=open(items.x7daologo, 'rb'),
             caption=f'{chain} X7DAO (ETH) Currently Costs:\n\n${amount}\n\n{quote}',
             parse_mode='Markdown')
     if chain == "":
+        x7daoholdersurl = items.ethplorerapi + items.x7daoca + keys.ethplorer
+        x7daoholdersresponse = requests.get(x7daoholdersurl)
+        x7daoholdersdata = x7daoholdersresponse.json()
+        x7daoholders = x7daoholdersdata["holdersCount"]
+        ethurl = items.ethpriceapi + keys.ether
+        ethresponse = requests.get(ethurl)
+        ethdata = ethresponse.json()
+        ethvalue = float(ethdata["result"]["ethusd"])
+        # noinspection PyTypeChecker
+        x7daoresult = evm_api.defi.get_pair_reserves(api_key=keys.moralis,
+                                                     params={"chain": "eth", "pair_address": items.x7daopaireth})
+        x7daotoken = int(x7daoresult["reserve0"])
+        x7daowethraw = int(x7daoresult["reserve1"])
+        x7daoweth = str(x7daowethraw / 10 ** 18)
+        x7daowethdollar = float(x7daoweth) * float(ethvalue)
+        x7daotokendollar = float(x7daoprice) * float(x7daotoken) / 10 ** 18
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -2158,10 +2177,13 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7DAO Info (ETH)\n\n'
                 f'X7DAO Price: ${cgx7daoprice["x7dao"]["usd"]}\n'
                 f'24 Hour Change: {round(cgx7daoprice["x7dao"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(daoprice * items.supply)}\n'
+                f'Market Cap:  ${"{:0,.0f}".format(x7daoprice * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(cgx7daoprice["x7dao"]["usd_24h_vol"])}\n'
                 f'Holders: {x7daoholders}\n\n'
-                f'Uniswap Supply:\n{"{:,}".format(unidata["result"])}\n{round(uniresult, 2)}% of Supply\n\n\n'
+                f'Liquidity:\n'
+                f'{"{:0,.0f}".format(x7daotoken)[:4]}M X7DAO (${"{:0,.0f}".format(x7daotokendollar)})\n'
+                f'{x7daoweth[:5]} WETH (${"{:0,.0f}".format(x7daowethdollar)})\n'
+                f'Total Liquidity (${"{:0,.0f}".format(x7daowethdollar + x7daotokendollar)})\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
@@ -2170,10 +2192,13 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7DAO (ETH) Info*\n\n'
             f'X7DAO Price: ${cgx7daoprice["x7dao"]["usd"]}\n'
             f'24 Hour Change: {round(cgx7daoprice["x7dao"]["usd_24h_change"],1)}%\n'
-            f'Market Cap:  ${"{:0,.0f}".format(daoprice*items.supply)}\n'
+            f'Market Cap:  ${"{:0,.0f}".format(x7daoprice*items.supply)}\n'
             f'24 Hour Volume: ${"{:0,.0f}".format(cgx7daoprice["x7dao"]["usd_24h_vol"])}\n'
             f'Holders: {x7daoholders}\n\n'
-            f'Uniswap Supply:\n{"{:,}".format(unidata["result"])}\n{round(uniresult,2)}% of Supply\n\n'
+            f'Liquidity:\n'
+            f'{"{:0,.0f}".format(x7daotoken)[:4]}M X7DAO (${"{:0,.0f}".format(x7daotokendollar)})\n'
+            f'{x7daoweth[:5]} WETH (${"{:0,.0f}".format(x7daowethdollar)})\n'
+            f'Total Liquidity (${"{:0,.0f}".format(x7daowethdollar + x7daotokendollar)})\n\n'
             f'Contract Address:\n`{items.x7daoca}`\n\n{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -2251,7 +2276,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open(items.x7101logo, 'rb'),
             caption=f'{chain} X7101 (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n{quote}',
             parse_mode='Markdown')
-    if chain == "":
+    if chain == "" or chain == "eth":
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -2260,7 +2285,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7101 Price: ${cgx7101price["x7101"]["usd"]}\n'
                 f'24 Hour Change: {round(cgx7101price["x7101"]["usd_24h_change"]),1}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7101price * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7101price["x7101"]["usd_24h_vol"])}'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7101price["x7101"]["usd_24h_vol"])}\n'
                 f'Holders: {x7101holders}\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2360,7 +2385,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7102 Price: ${cgx7102price["x7102"]["usd"]}\n'
                 f'24 Hour Change: {round(cgx7102price["x7102"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7102price * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7102price["x7102"]["usd_24h_vol"])}'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7102price["x7102"]["usd_24h_vol"])}\n'
                 f'Holders: {x7102holders}\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2460,7 +2485,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7103 Price: ${cgx7103price["x7103"]["usd"]}\n'
                 f'24 Hour Change: {round(cgx7103price["x7103"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7103price * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7103price["x7103"]["usd_24h_vol"])}'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7103price["x7103"]["usd_24h_vol"])}\n'
                 f'Holders: {x7103holders}\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2560,7 +2585,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7104 Price: ${cgx7104price["x7104"]["usd"]}\n'
                 f'24 Hour Change: {round(cgx7104price["x7104"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7104price * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7104price["x7104"]["usd_24h_vol"])}'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7104price["x7104"]["usd_24h_vol"])}\n'
                 f'Holders: {x7104holders}\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2660,7 +2685,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7105 Price: ${cgx7105price["x7105"]["usd"]}\n'
                 f'24 Hour Change: {round(cgx7105price["x7105"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7105price * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7105price["x7105"]["usd_24h_vol"])}'
+                f'24 Hour Volume: ${"{:0,.0f}".format(cgx7105price["x7105"]["usd_24h_vol"])}\n'
                 f'Holders: {x7105holders}\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
