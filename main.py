@@ -16,7 +16,6 @@ import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 from moralis import evm_api
 
-
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -653,7 +652,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7ddollar = float(x7damount) * float(ethvalue) / 1 ** 18
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 20)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
         i1.text((28, 36),
                 f'X7D (ETH) Info\n\n'
                 f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
@@ -1154,10 +1153,10 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'X7 Finance Lending Pool Info\n\n'
-                f'ETH: {poolamount[:5]} ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
-                f'ARB: {arbpoolamount[:4]} ETH (${"{:0,.0f}".format(arbpooldollar)})\n\n'
-                f'OPTI: {optipoolamount[:4]} ETH (${"{:0,.0f}".format(optipooldollar)})\n\n'
-                f'BSC: {bscpoolamount[:4]} BNB (${"{:0,.0f}".format(bscpooldollar)})\n\n'
+                f'ETH: {poolamount[:5]} ETH (${"{:0,.0f}".format(pooldollar)})\n'
+                f'ARB: {arbpoolamount[:4]} ETH (${"{:0,.0f}".format(arbpooldollar)})\n'
+                f'OPTI: {optipoolamount[:4]} ETH (${"{:0,.0f}".format(optipooldollar)})\n'
+                f'BSC: {bscpoolamount[:4]} BNB (${"{:0,.0f}".format(bscpooldollar)})\n'
                 f'POLY: {polypoolamount[:6]} MATIC (${"{:0,.0f}".format(polypooldollar)})\n\n'
                 f'TOTAL: ${"{:0,.0f}".format(totaldollar)}\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
@@ -1166,10 +1165,10 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7 Finance Lending Pool Info *\nUse `/pool [chain-name]` for individual chains\n\n'
-                    f'ETH: {poolamount[:5]} ETH (${"{:0,.0f}".format(pooldollar)})\n\n'
-                    f'ARB: {arbpoolamount[:4]} ETH (${"{:0,.0f}".format(arbpooldollar)})\n\n'
-                    f'OPTI: {optipoolamount[:4]} ETH (${"{:0,.0f}".format(optipooldollar)})\n\n'
-                    f'BSC: {bscpoolamount[:4]} BNB (${"{:0,.0f}".format(bscpooldollar)})\n\n'
+                    f'ETH: {poolamount[:5]} ETH (${"{:0,.0f}".format(pooldollar)})\n'
+                    f'ARB: {arbpoolamount[:4]} ETH (${"{:0,.0f}".format(arbpooldollar)})\n'
+                    f'OPTI: {optipoolamount[:4]} ETH (${"{:0,.0f}".format(optipooldollar)})\n'
+                    f'BSC: {bscpoolamount[:4]} BNB (${"{:0,.0f}".format(bscpooldollar)})\n'
                     f'POLY: {polypoolamount[:6]} MATIC (${"{:0,.0f}".format(polypooldollar)})\n\n'
                     f'TOTAL: ${"{:0,.0f}".format(totaldollar)}\n\n'
                     f'{quote}', parse_mode='Markdown')
@@ -1445,39 +1444,44 @@ async def fg_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     fearresponse = requests.get(items.fearapi)
     feardata = fearresponse.json()
-    timestamp = float(feardata["data"][0]["timestamp"])
-    localtime = datetime.fromtimestamp(timestamp)
-    timestamp = float(feardata["data"][1]["timestamp"])
-    localtime1 = datetime.fromtimestamp(timestamp)
-    timestamp = float(feardata["data"][2]["timestamp"])
-    localtime2 = datetime.fromtimestamp(timestamp)
-    timestamp = float(feardata["data"][3]["timestamp"])
-    localtime3 = datetime.fromtimestamp(timestamp)
-    timestamp = float(feardata["data"][4]["timestamp"])
-    localtime4 = datetime.fromtimestamp(timestamp)
-    timestamp = float(feardata["data"][5]["timestamp"])
-    localtime5 = datetime.fromtimestamp(timestamp)
-    timestamp = float(feardata["data"][6]["timestamp"])
-    localtime6 = datetime.fromtimestamp(timestamp)
+    timestamp0 = float(feardata["data"][0]["timestamp"])
+    localtime0 = datetime.fromtimestamp(timestamp0)
+    timestamp1 = float(feardata["data"][1]["timestamp"])
+    localtime1 = datetime.fromtimestamp(timestamp1)
+    timestamp2 = float(feardata["data"][2]["timestamp"])
+    localtime2 = datetime.fromtimestamp(timestamp2)
+    timestamp3 = float(feardata["data"][3]["timestamp"])
+    localtime3 = datetime.fromtimestamp(timestamp3)
+    timestamp4 = float(feardata["data"][4]["timestamp"])
+    localtime4 = datetime.fromtimestamp(timestamp4)
+    timestamp5 = float(feardata["data"][5]["timestamp"])
+    localtime5 = datetime.fromtimestamp(timestamp5)
+    timestamp6 = float(feardata["data"][6]["timestamp"])
+    localtime6 = datetime.fromtimestamp(timestamp6)
     duration_in_s = float(feardata["data"][0]["time_until_update"])
     days = divmod(duration_in_s, 86400)
     hours = divmod(days[1], 3600)
     minutes = divmod(hours[1], 60)
-    seconds = divmod(minutes[1], 1)
     await update.message.reply_photo(
         photo='https://alternative.me/crypto/fear-and-greed-index.png',
         caption=f'*Market Fear and Greed Index*\n\n'
-                f'{feardata["data"][0]["value"]} - {feardata["data"][0]["value_classification"]} - {localtime} \n\n'
+                f'{feardata["data"][0]["value"]} - {feardata["data"][0]["value_classification"]} - '
+                f'{localtime0.strftime("%A %B %d")} \n\n'
                 f'Change:\n'
-                f'{feardata["data"][1]["value"]} - {feardata["data"][1]["value_classification"]} - {localtime1}\n'
-                f'{feardata["data"][2]["value"]} - {feardata["data"][2]["value_classification"]} - {localtime2}\n'
-                f'{feardata["data"][3]["value"]} - {feardata["data"][3]["value_classification"]} - {localtime3}\n'
-                f'{feardata["data"][4]["value"]} - {feardata["data"][4]["value_classification"]} - {localtime4}\n'
-                f'{feardata["data"][5]["value"]} - {feardata["data"][5]["value_classification"]} - {localtime5}\n'
-                f'{feardata["data"][6]["value"]} - {feardata["data"][6]["value_classification"]} - {localtime6}\n\n'
+                f'{feardata["data"][1]["value"]} - {feardata["data"][1]["value_classification"]} - '
+                f'{localtime1.strftime("%A %B %d")}\n'
+                f'{feardata["data"][2]["value"]} - {feardata["data"][2]["value_classification"]} - '
+                f'{localtime2.strftime("%A %B %d")}\n'
+                f'{feardata["data"][3]["value"]} - {feardata["data"][3]["value_classification"]} - '
+                f'{localtime3.strftime("%A %B %d")}\n'
+                f'{feardata["data"][4]["value"]} - {feardata["data"][4]["value_classification"]} - '
+                f'{localtime4.strftime("%A %B %d")}\n'
+                f'{feardata["data"][5]["value"]} - {feardata["data"][5]["value_classification"]} - '
+                f'{localtime5.strftime("%A %B %d")}\n'
+                f'{feardata["data"][6]["value"]} - {feardata["data"][6]["value_classification"]} - '
+                f'{localtime6.strftime("%A %B %d")}\n\n'
                 f'Next Update:\n'
-                f'%d hours, %d minutes and %d seconds\n\n{quote}'
-                % (hours[0], minutes[0], seconds[0]), parse_mode='Markdown')
+                f'{int(hours[0])} hours and {int(minutes[0])} minutes\n\n{quote}', parse_mode='Markdown')
 
 
 async def quote_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2037,7 +2041,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7rtokendollar = float(x7rprice) * float(x7rtoken) / 10 ** 18
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 20)
         i1.text((28, 36),
                 f'X7R Info (ETH)\n\n'
                 f'X7R Price: ${cgx7rprice["x7r"]["usd"]}\n'
@@ -2172,7 +2176,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7daotokendollar = float(x7daoprice) * float(x7daotoken) / 10 ** 18
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1.text((28, 36),
                 f'X7DAO Info (ETH)\n\n'
                 f'X7DAO Price: ${cgx7daoprice["x7dao"]["usd"]}\n'
@@ -2790,7 +2794,7 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "":
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 22)
         i1.text((28, 36),
                 f'X7 Finance Market Cap Info (ETH)\n\n'
                 f'X7R:         ${"{:0,.0f}".format(x7rprice)}\n'
@@ -2837,6 +2841,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     token = tokenresponse.json()
     tokenid = token["coins"][0]["api_symbol"]
     symbol = token["coins"][0]["symbol"]
+    thumb = token["coins"][0]["large"]
     cg = CoinGeckoAPI()
     tokenprice = (cg.get_price(ids=tokenid, vs_currencies='usd', include_24hr_change='true',
                                include_24hr_vol='true', include_market_cap="true"))
@@ -2883,22 +2888,54 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ethurl = items.ethpriceapi + keys.ether
         ethresponse = requests.get(ethurl)
         ethdata = ethresponse.json()
-        await update.message.reply_text(
-            f'*{symbol} price*\n\n'
-            f'Price: ${ethdata["result"]["ethusd"]}\n'
-            f'24 Hour Change: {round(eth["ethereum"]["usd_24h_change"], 1)}%\n\n'
-            f'Gas Prices:\n'
-            f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
-            f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
-            f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
-            f'{quote}',
+        im1 = Image.open((random.choice(items.blackhole)))
+        im2 = Image.open(requests.get(thumb, stream=True).raw)
+        im1.paste(im2, (680, 20))
+        im1.save(r"media\blackhole.png", quality=95)
+        i1 = ImageDraw.Draw(im1)
+        myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
+        i1.text((28, 36),
+                f'{symbol} price\n\n'
+                f'Price: ${ethdata["result"]["ethusd"]}\n'
+                f'24 Hour Change: {round(eth["ethereum"]["usd_24h_change"], 1)}%\n\n'
+                f'Gas Prices:\n'
+                f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
+                f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
+                f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        im1.save(r"media\blackhole.png")
+        await update.message.reply_photo(
+            photo=open(r"media\blackhole.png", 'rb'),
+            caption=f'*{symbol} price*\n\n'
+                    f'Price: ${ethdata["result"]["ethusd"]}\n'
+                    f'24 Hour Change: {round(eth["ethereum"]["usd_24h_change"], 1)}%\n\n'
+                    f'Gas Prices:\n'
+                    f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
+                    f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
+                    f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
+                    f'{quote}',
             parse_mode='Markdown')
     else:
-        await update.message.reply_text(
-            f'*{symbol} price*\n\n'
-            f'Price: ${tokenprice[tokenid]["usd"]}\n'
-            f'24 Hour Change: {round(tokenprice[tokenid]["usd_24h_change"], 1)}%\n\n'
-            f'{quote}',
+        im1 = Image.open((random.choice(items.blackhole)))
+        im2 = Image.open(requests.get(thumb, stream=True).raw)
+        im1.paste(im2, (680, 20))
+        myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
+        im1.save(r"media\blackhole.png", quality=95)
+        i1 = ImageDraw.Draw(im1)
+        i1.text((28, 36),
+                f'{symbol} price\n\n'
+                f'Price: ${tokenprice[tokenid]["usd"]}\n'
+                f'24 Hour Change: {round(tokenprice[tokenid]["usd_24h_change"], 1)}%\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        im1.save(r"media\blackhole.png", quality=95)
+        await update.message.reply_photo(
+            photo=open(r"media\blackhole.png", 'rb'),
+            caption=f'*{symbol} price*\n\n'
+                    f'Price: ${tokenprice[tokenid]["usd"]}\n'
+                    f'24 Hour Change: {round(tokenprice[tokenid]["usd_24h_change"], 1)}%\n\n'
+                    f'{quote}',
             parse_mode='Markdown')
 
 
@@ -2941,15 +2978,17 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
                 f'Market Cap:  ${"{:0,.0f}".format(x7102mc)}\n\n'
                 f'X7103:      ${cgconstellationprice["x7103"]["usd"]}\n'
                 f'24 Hour Change: {round(cgconstellationprice["x7103"]["usd_24h_change"],1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(x7103mc)}\n\n'
+                f'Market Cap:  ${"{:0,.0f}".format(x7103mc)}\n\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        i1.text((522, 90),
                 f'X7104:      ${cgconstellationprice["x7104"]["usd"]}\n'
                 f'24 Hour Change: {round(cgconstellationprice["x7104"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7104mc)}\n\n'
                 f'X7105:      ${cgconstellationprice["x7105"]["usd"]}\n'
                 f'24 Hour Change: {round(cgconstellationprice["x7105"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7105mc)}\n\n'
-                f'Combined Market Cap: ${"{:0,.0f}".format(constmc)}\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'Combined Market Cap:\n${"{:0,.0f}".format(constmc)}\n',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3022,7 +3061,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "":
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 20)
         i1.text((28, 36),
                 f'X7 Finance Treasury (ETH)\n\n'
                 f'Pioneer Pool:\n{pioneeramount[:4]}ETH (${"{:0,.0f}".format(pioneerdollar)})\n\n'
@@ -3259,7 +3298,7 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 20)
         i1.text((28, 36),
                 f'X7 Finance Token Liquidity (ETH)\n\n'
                 f'X7R\n'
@@ -3275,7 +3314,7 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'(${"{:0,.0f}".format(constellationstokendollar)})\n'
                 f'{constellationsweth} WETH '
                 f'(${"{:0,.0f}".format(constellationswethdollar)})\n'
-                f'Total Liquidity (${"{:0,.0f}".format(constellationswethdollar+constellationstokendollar)})\n\n\n'
+                f'Total Liquidity (${"{:0,.0f}".format(constellationswethdollar+constellationstokendollar)})\n'
                 f'\nUTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
