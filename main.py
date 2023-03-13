@@ -1465,7 +1465,7 @@ async def fg_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     minutes = divmod(hours[1], 60)
     seconds = divmod(minutes[1], 1)
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo='https://alternative.me/crypto/fear-and-greed-index.png',
         caption=f'*Market Fear and Greed Index*\n\n'
                 f'{feardata["data"][0]["value"]} - {feardata["data"][0]["value_classification"]} - {localtime} \n\n'
                 f'Change:\n'
