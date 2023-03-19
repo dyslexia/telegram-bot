@@ -15,6 +15,7 @@ import pyttsx3
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 from moralis import evm_api
+import cloudscraper
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
@@ -96,10 +97,10 @@ async def about_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'Pool, Future Development etc.). Pumping your bag!" - X7DAO Founding Team\n\n{quote}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Website', url='https://x7.finance')],
-            [InlineKeyboardButton(text='Community Dashboard', url='https://x7community.space/')],
-            [InlineKeyboardButton(text='Linktree', url='https://linktr.ee/X7_Finance')],
-            [InlineKeyboardButton(text='Medium', url='https://medium.com/@X7Finance')], ]))
+            [InlineKeyboardButton(text='Website', url=f'{items.website}')],
+            [InlineKeyboardButton(text='Community Dashboard', url=f'{items.dashboard}')],
+            [InlineKeyboardButton(text='Linktree', url=f'{items.linktree}')],
+            [InlineKeyboardButton(text='Medium', url=f'{items.twitter}')], ]))
 
 
 async def links_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1114,12 +1115,6 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pool = float(pooldata["result"][0]["balance"])
     poolamount = str(pool / 10 ** 18)
     pooldollar = float(poolamount) * float(ethvalue) / 1 ** 18
-    arbpoolurl = items.ethbalanceapiarb + items.lpreserveca + '&tag=latest' + keys.arb
-    arbpoolresponse = requests.get(arbpoolurl)
-    arbpooldata = arbpoolresponse.json()
-    arbpool = float(arbpooldata["result"][0]["balance"])
-    arbpoolamount = str(arbpool / 10 ** 18)
-    arbpooldollar = float(arbpoolamount) * float(ethvalue) / 1 ** 18
     bscurl = items.bnbpriceapi + keys.bsc
     bscresponse = requests.get(bscurl)
     bscdata = bscresponse.json()
@@ -1130,12 +1125,12 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     bscpool = float(bscpooldata["result"][0]["balance"])
     bscpoolamount = str(bscpool / 10 ** 18)
     bscpooldollar = float(bscpoolamount) * float(bscvalue) / 1 ** 18
-    optipoolurl = items.ethbalanceapiopti + items.lpreserveca + '&tag=latest' + keys.opti
-    optipoolresponse = requests.get(optipoolurl)
-    optipooldata = optipoolresponse.json()
-    optipool = float(optipooldata["result"][0]["balance"])
-    optipoolamount = str(optipool / 10 ** 18)
-    optipooldollar = float(optipoolamount) * float(ethvalue) / 1 ** 18
+    arbpoolurl = items.ethbalanceapiarb + items.lpreserveca + '&tag=latest' + keys.arb
+    arbpoolresponse = requests.get(arbpoolurl)
+    arbpooldata = arbpoolresponse.json()
+    arbpool = float(arbpooldata["result"][0]["balance"])
+    arbpoolamount = str(arbpool / 10 ** 18)
+    arbpooldollar = float(arbpoolamount) * float(ethvalue) / 1 ** 18
     polyurl = items.maticpriceapi + keys.poly
     polyresponse = requests.get(polyurl)
     polydata = polyresponse.json()
@@ -1146,6 +1141,14 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     polypool = float(polypooldata["result"][0]["balance"])
     polypoolamount = str(polypool / 10 ** 18)
     polypooldollar = float(polypoolamount) * float(polyvalue) / 1 ** 18
+    optipoolurl = items.ethbalanceapiopti + items.lpreserveca + '&tag=latest' + keys.opti
+    scraper = cloudscraper.create_scraper(delay=10, browser={'custom': 'ScraperBot/1.0', })
+    url = optipoolurl
+    optipoolresponse = scraper.get(url)
+    optipooldata = optipoolresponse.json()
+    optipool = float(optipooldata["result"][0]["balance"])
+    optipoolamount = str(optipool / 10 ** 18)
+    optipooldollar = float(optipoolamount) * float(ethvalue) / 1 ** 18
     totaldollar = polypooldollar + bscpooldollar + optipooldollar + arbpooldollar + pooldollar
     if chain == "":
         img = Image.open((random.choice(items.blackhole)))
@@ -3430,10 +3433,12 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ]))
     if chain == "optimism" or chain == "opti":
         liqurl = \
-            items.ethbalanceapiarb + items.daoliq + ',' + items.x7rliq + ',' + items.consliq + '&tag=latest' \
-            + keys.arb
-        response = requests.get(liqurl)
-        data = response.json()
+            items.ethbalanceapiopti + items.daoliq + ',' + items.x7rliq + ',' + items.consliq + '&tag=latest' \
+            + keys.opti
+        scraper = cloudscraper.create_scraper(delay=10, browser={'custom': 'ScraperBot/1.0', })
+        url = liqurl
+        optipoolresponse = scraper.get(url)
+        data = optipoolresponse.json()
         x7dao = float(data["result"][0]["balance"])
         x7daoamount = str(x7dao / 10 ** 18)
         x7r = float(data["result"][1]["balance"])
@@ -3518,6 +3523,30 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='X7100 Initial Liquidity',
                                       url=f'{items.polyaddress}{items.consliq}')],
             ]))
+
+
+async def raffle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    quoteresponse = requests.get(items.quoteapi)
+    quotedata = quoteresponse.json()
+    quoteraw = (random.choice(quotedata))
+    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+    cg = CoinGeckoAPI()
+    cgx7rprice = (cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
+                               include_24hr_vol='true', include_last_updated_at="true"))
+    x7rprice = (cgx7rprice["x7r"]["usd"])
+    x7rurl = items.tokenbalanceapieth + items.x7rca + '&address=' + items.commultieth + '&tag=latest' + keys.ether
+    x7rresponse = requests.get(x7rurl)
+    x7rdata = x7rresponse.json()
+    x7rbalance = int(x7rdata["result"][:6]) - 172897
+    x7rdollar  = x7rbalance * x7rprice
+    x7rhalfdollar = x7rdollar / 2
+    x7rhalfbalance = x7rbalance / 2
+    await update.message.reply_text(
+                f'X7 Finance 50/50 Raffle\n\n'
+                f'Total Kitty:      {"{:0,.0f}".format(x7rbalance)} X7R (${"{:0,.0f}".format(x7rdollar)})\n\n'
+                f'Winners Prize: {"{:0,.0f}".format(x7rhalfbalance)} X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n'
+                f'Burn Amount: {"{:0,.0f}".format(x7rhalfbalance)} X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n\n'
+                f'{quote}', parse_mode='Markdown')
 
 
 # HARD AUTO MESSAGES
@@ -3728,6 +3757,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('voting', voting_command))
     application.add_handler(CommandHandler('gas', gas_command))
     application.add_handler(CommandHandler('wei', wei_command))
+    application.add_handler(CommandHandler('raffle', raffle_command))
     application.add_handler(CommandHandler(['docs', 'dashboard'], dashboard_command))
     application.add_handler(CommandHandler(['snapshot', 'rollout', 'multichain', 'airdrop'], snapshot_command))
     application.add_handler(CommandHandler(['discount', 'dsc', 'dac'], discount_command))

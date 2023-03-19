@@ -11,8 +11,8 @@ automessage = "**X7 Finance Twitter Raid**\n\nClick the link below and like and 
 automessagelink = "https://twitter.com/search?q=%23x7finance&src=typed_query"
 
 # SPACES                Y   M   D   H   M  S
-spacestime = datetime(2023, 3, 7, 21, 00, 00)
-spaceslink = "https://twitter.com/i/spaces/1kvJpmQjXzMxE"
+spacestime = datetime(2023, 3, 20, 21, 00, 00)
+spaceslink = "https://twitter.com/i/spaces/1YqKDoRnXLDxV"
 
 
 # GIVEAWAY               Y   M   D   H   M  S
