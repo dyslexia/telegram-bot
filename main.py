@@ -2894,7 +2894,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7R:      ${cgtogetherprice["x7r"]["usd"]}\n'
                 f'24 Hour Change: {round(cgtogetherprice["x7r"]["usd_24h_change"], 1)}%\n\n'
                 f'X7DAO:  ${cgtogetherprice["x7dao"]["usd"]}\n'
-                f'24 Hour Change: {round(cgtogetherprice["x7dao"]["usd_24h_change"], 0)}%\n\n\n\n'
+                f'24 Hour Change: {round(cgtogetherprice["x7dao"]["usd_24h_change"], 0)}%\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
@@ -2964,7 +2964,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((28, 36),
                 f'{symbol} price\n\n'
                 f'Price: ${tokenprice[tokenid]["usd"]}\n'
-                f'24 Hour Change: {round(tokenprice[tokenid]["usd_24h_change"], 1)}%\n\n\n\n'
+                f'24 Hour Change: {round(tokenprice[tokenid]["usd_24h_change"], 1)}%\n\n\n\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png", quality=95)
@@ -3096,7 +3096,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     comx7d = int(comx7ddata["result"][:-18])
     comx7dprice = comx7d * ethvalue
     comtotal = comx7rprice + comdollar + comx7dprice
-    if chain == "":
+    if chain == "" or chain == "eth":
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 20)
@@ -3107,7 +3107,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Community Wallet:\n{comamount[:4]}ETH (${"{:0,.0f}".format(comdollar)})\n'
                 f'{comx7d} X7D (${"{:0,.0f}".format(comx7dprice)})\n'
                 f'{comx7r} X7R (${"{:0,.0f}".format(comx7rprice)})\n'
-                f'Total: (${"{:0,.0f}".format(comtotal)})\n\n\n'
+                f'Total: (${"{:0,.0f}".format(comtotal)})\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
