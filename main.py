@@ -1126,7 +1126,8 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     bscpoolamount = str(bscpool / 10 ** 18)
     bscpooldollar = float(bscpoolamount) * float(bscvalue) / 1 ** 18
     arbpoolurl = items.ethbalanceapiarb + items.lpreserveca + '&tag=latest' + keys.arb
-    arbpoolresponse = requests.get(arbpoolurl)
+    scraper = cloudscraper.create_scraper(delay=10, browser={'custom': 'ScraperBot/1.0', })
+    arbpoolresponse = scraper.get(arbpoolurl)
     arbpooldata = arbpoolresponse.json()
     arbpool = float(arbpooldata["result"][0]["balance"])
     arbpoolamount = str(arbpool / 10 ** 18)
@@ -1143,8 +1144,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     polypooldollar = float(polypoolamount) * float(polyvalue) / 1 ** 18
     optipoolurl = items.ethbalanceapiopti + items.lpreserveca + '&tag=latest' + keys.opti
     scraper = cloudscraper.create_scraper(delay=10, browser={'custom': 'ScraperBot/1.0', })
-    url = optipoolurl
-    optipoolresponse = scraper.get(url)
+    optipoolresponse = scraper.get(optipoolurl)
     optipooldata = optipoolresponse.json()
     optipool = float(optipooldata["result"][0]["balance"])
     optipoolamount = str(optipool / 10 ** 18)
@@ -3182,8 +3182,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         treasuryurl = items.ethbalanceapiopti + items.devmultiopti + ',' + items.commultiopti + '&tag=latest' +\
                       keys.opti
         scraper = cloudscraper.create_scraper(delay=10, browser={'custom': 'ScraperBot/1.0', })
-        url = treasuryurl
-        treasuryresponse = scraper.get(url)
+        treasuryresponse = scraper.get(treasuryurl)
         treasurydata = treasuryresponse.json()
         dev = float(treasurydata["result"][0]["balance"])
         devamount = str(dev / 10 ** 18)
@@ -3438,8 +3437,7 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             items.ethbalanceapiopti + items.daoliq + ',' + items.x7rliq + ',' + items.consliq + '&tag=latest' \
             + keys.opti
         scraper = cloudscraper.create_scraper(delay=10, browser={'custom': 'ScraperBot/1.0', })
-        url = liqurl
-        optipoolresponse = scraper.get(url)
+        optipoolresponse = scraper.get(liqurl)
         data = optipoolresponse.json()
         x7dao = float(data["result"][0]["balance"])
         x7daoamount = str(x7dao / 10 ** 18)
@@ -3540,7 +3538,7 @@ async def raffle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7rresponse = requests.get(x7rurl)
     x7rdata = x7rresponse.json()
     x7rbalance = int(x7rdata["result"][:6]) - 172897
-    x7rdollar  = x7rbalance * x7rprice
+    x7rdollar = x7rbalance * x7rprice
     x7rhalfdollar = x7rdollar / 2
     x7rhalfbalance = x7rbalance / 2
     await update.message.reply_text(
@@ -3548,6 +3546,20 @@ async def raffle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Total Kitty:      {"{:0,.0f}".format(x7rbalance)} X7R (${"{:0,.0f}".format(x7rdollar)})\n\n'
                 f'Winners Prize: {"{:0,.0f}".format(x7rhalfbalance)} X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n'
                 f'Burn Amount: {"{:0,.0f}".format(x7rhalfbalance)} X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n\n'
+                f'{quote}', parse_mode='Markdown')
+
+
+async def alumni_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    quoteresponse = requests.get(items.quoteapi)
+    quotedata = quoteresponse.json()
+    quoteraw = (random.choice(quotedata))
+    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+    await update.message.reply_photo(
+        photo=open((random.choice(items.logos)), 'rb'),
+        caption=f'*X7 Finance Alumni*\n\n'
+                f'@Callmelandlord - The Godfather of the X7 Finance community, the OG, the creator - X7 God\n\n'
+                f'@WoxieX - Creator of the OG dashboard -  x7community.space\n\n'
+                f'@Zaratustra  - Defi extraordinaire and protocol prophet\n\n'
                 f'{quote}', parse_mode='Markdown')
 
 
@@ -3682,9 +3694,9 @@ async def admincommands_command(update: Update, context: ContextTypes.DEFAULT_TY
 
 
 async def everyone_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('@robthebank44 @Adz1doubleD @DallasX7 @CoastCorn @cryptod0c @Phlux '
-                                    '@shillingtonlevy @SlumdOg_shillionaire2022 @Zaratustra @WoxieX @CallMeLandlord '
-                                    '@gazuga @Gavalars @MikeMurpher\n\n'
+    await update.message.reply_text('@robthebank44 @Adz1doubleD @CoastCorn @cryptod0c @Phlux '
+                                    '@shillingtonlevy @SlumdOg_shillionaire2022 @CallMeLandlord '
+                                    '@gazuga @Gavalars @MikeMurpher @KBCrypto11\n\n'
                                     'MODS ASSEMBLE!')
 
 
@@ -3760,6 +3772,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('gas', gas_command))
     application.add_handler(CommandHandler('wei', wei_command))
     application.add_handler(CommandHandler('raffle', raffle_command))
+    application.add_handler(CommandHandler('alumni', alumni_command))
     application.add_handler(CommandHandler(['docs', 'dashboard'], dashboard_command))
     application.add_handler(CommandHandler(['snapshot', 'rollout', 'multichain', 'airdrop'], snapshot_command))
     application.add_handler(CommandHandler(['discount', 'dsc', 'dac'], discount_command))
