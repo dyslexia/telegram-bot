@@ -3124,7 +3124,8 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ]))
     if chain == "arbitrum" or chain == "arb":
         treasuryurl = items.ethbalanceapiarb + items.devmultiarb + ',' + items.commultiarb + '&tag=latest' + keys.arb
-        treasuryresponse = requests.get(treasuryurl)
+        scraper = cloudscraper.create_scraper(delay=10, browser={'custom': 'ScraperBot/1.0', })
+        treasuryresponse = scraper.get(treasuryurl)
         treasurydata = treasuryresponse.json()
         dev = float(treasurydata["result"][0]["balance"])
         devamount = str(dev / 10 ** 18)
@@ -3391,7 +3392,8 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         liqurl = \
             items.ethbalanceapiarb + items.daoliq + ',' + items.x7rliq + ',' + items.consliq + '&tag=latest' \
             + keys.arb
-        response = requests.get(liqurl)
+        scraper = cloudscraper.create_scraper(delay=10, browser={'custom': 'ScraperBot/1.0', })
+        response = scraper.get(liqurl)
         data = response.json()
         x7dao = float(data["result"][0]["balance"])
         x7daoamount = str(x7dao / 10 ** 18)
