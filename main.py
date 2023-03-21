@@ -2946,7 +2946,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*{symbol} price*\n\n'
-                    f'Price: ${ethdata["result"]["ethusd"]}\n'
+                    f'PPrice: ${ethdata["result"]["ethusd"]}\n'
                     f'24 Hour Change: {round(eth["ethereum"]["usd_24h_change"], 1)}%\n\n'
                     f'Gas Prices:\n'
                     f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
