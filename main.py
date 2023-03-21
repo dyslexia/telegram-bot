@@ -1722,7 +1722,13 @@ async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('https://etherscan.io/address/0x8fe821fb171076b850a3048b9aad7600be8d0f30')
+    await update.message.reply_photo(
+        photo=open((random.choice(items.logos)), 'rb'),
+        caption='*X7 Finance Deployer*\n\n'
+                'V2: https://etherscan.io/address/0x7000a09c425abf5173ff458df1370c25d1c58105\n\n'
+                'V1 DAO: https://etherscan.io/address/0x7565cE5E02d368BB3aEC044b7C3398911E27dB1E\n\n'
+                'V1 Protocol https://etherscan.io/address/0x8FE821FB171076B850A3048B9AAD7600BE8d0F30',
+        parse_mode='Markdown')
 
 
 async def announcements_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1792,12 +1798,23 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    gasurl = items.ethgasapi + keys.ether
-    gasresponse = requests.get(gasurl)
-    gasdata = gasresponse.json()
+    img = Image.open((random.choice(items.blackhole)))
+    i1 = ImageDraw.Draw(img)
+    myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
     if chain == "":
+        gasurl = items.ethgasapi + keys.ether
+        gasresponse = requests.get(gasurl)
+        gasdata = gasresponse.json()
+        i1.text((28, 36),
+                f'ETH Gas Prices:\n\n'
+                f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
+                f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
+                f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*Eth Gas Prices:*\n\n'
                     f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                     f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
@@ -1808,9 +1825,17 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         gasurl = items.bscgasapi + keys.bsc
         gasresponse = requests.get(gasurl)
         gasdata = gasresponse.json()
+        i1.text((28, 36),
+                f'*BSC Gas Prices:*\n\n'
+                f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
+                f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
+                f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*BSC Gas Prices:*\n\n'
+            photo=open(r"media\blackhole.png", 'rb'),
+            caption=f'BSC Gas Prices:\n\n'
                     f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                     f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
                     f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
@@ -1820,9 +1845,17 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         gasurl = items.polygasapi + keys.poly
         gasresponse = requests.get(gasurl)
         gasdata = gasresponse.json()
+        i1.text((28, 36),
+                f'POLYGON Gas Prices:\n\n'
+                f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
+                f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
+                f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*POLYGON Gas Prices:*\n\n'
+            photo=open(r"media\blackhole.png", 'rb'),
+            caption=f'POLYGON Gas Prices:\n\n'
                     f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                     f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
                     f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
@@ -1895,7 +1928,7 @@ async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     dubairaw = pytz.timezone("Asia/Dubai")
     dubai = datetime.now(dubairaw)
     dubaitime = dubai.strftime("%I:%M %p")
-    await update.message.reply_text(f'`GM or GN Wherever you are...`\n\n'
+    await update.message.reply_text(f'GM or GN Wherever you are...\n\n'
                                     f'UTC: {datetime.now().strftime("%A %B %d %Y")}\n'
                                     f'{datetime.now().strftime("%I:%M %p")}\n\n'
                                     f'PST:       {westcoasttime}\n'
@@ -1979,7 +2012,7 @@ async def holders_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     i1.text((28, 36),
             f'X7 Finance Token Holders (ETH)\n\n'
             f'X7R Holders: {x7rholders}\n'
-            f'X7DAO Holders: {x7daoholders}\n\n\n\n'
+            f'X7DAO Holders: {x7daoholders}\n\n\n\n\n\n\n\n\n'
             f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
             font=myfont, fill=(255, 255, 255))
     img.save(r"media\blackhole.png")
@@ -2044,7 +2077,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7rtokendollar = float(x7rprice) * float(x7rtoken) / 10 ** 18
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 20)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'X7R Info (ETH)\n\n'
                 f'X7R Price: ${cgx7rprice["x7r"]["usd"]}\n'
@@ -2055,12 +2088,14 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7R Tokens Burned:\n'
                 f'{"{:,}".format(burndata["result"])}\n'
                 f'{burnresult}% of Supply\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        i1.text((500, 105),
                 f'Liquidity:\n'
                 f'{"{:0,.0f}".format(x7rtoken)[:4]}M X7R (${"{:0,.0f}".format(x7rtokendollar)})\n'
                 f'{x7rweth[:6]} WETH (${"{:0,.0f}".format(x7rwethdollar)})\n'
-                f'Total Liquidity (${"{:0,.0f}".format(x7rwethdollar + x7rtokendollar)})\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
+                f'Total Liquidity (${"{:0,.0f}".format(x7rwethdollar + x7rtokendollar)})\n\n',
+        font = myfont, fill = (255, 255, 255))
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
@@ -2293,7 +2328,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(cgx7101price["x7101"]["usd_24h_change"]),1}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7101price * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(cgx7101price["x7101"]["usd_24h_vol"])}\n'
-                f'Holders: {x7101holders}\n\n\n\n'
+                f'Holders: {x7101holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
@@ -2393,7 +2428,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(cgx7102price["x7102"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7102price * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(cgx7102price["x7102"]["usd_24h_vol"])}\n'
-                f'Holders: {x7102holders}\n\n\n\n'
+                f'Holders: {x7102holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
@@ -2493,7 +2528,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(cgx7103price["x7103"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7103price * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(cgx7103price["x7103"]["usd_24h_vol"])}\n'
-                f'Holders: {x7103holders}\n\n\n\n'
+                f'Holders: {x7103holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
@@ -2593,7 +2628,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(cgx7104price["x7104"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7104price * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(cgx7104price["x7104"]["usd_24h_vol"])}\n'
-                f'Holders: {x7104holders}\n\n\n\n'
+                f'Holders: {x7104holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
@@ -2693,7 +2728,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(cgx7105price["x7105"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7105price * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(cgx7105price["x7105"]["usd_24h_vol"])}\n'
-                f'Holders: {x7105holders}\n\n\n\n'
+                f'Holders: {x7105holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
