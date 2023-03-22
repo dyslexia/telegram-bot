@@ -63,38 +63,38 @@ async def about_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteresponse = requests.get(items.quoteapi)
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
-    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     await update.message.reply_text(
         '*Welcome to X7 Finance*\n\nX7 is an ecosystem of innovative smart contracts that provide those with '
         'visionary ideas access to leveraged seed capital (e.g. Initial Liquidity Offerings, or ILOs) without '
         'lenders incurring the risk of losing the principal. This invention has massive implications not just '
-        'for our users, but for all of DeFi 💡\n\n'
-        '🌟 At its core, leveraged ILOs means anyone with a good idea can raise 10-1000X the amount of Eth in '
-        'their wallet to launch projects on XChange, our world-class DEX. 🌟\n\n'
-        '✅ Overtime, the network effect of product launches will result in billions of dollars in trading '
-        'volume on our Decentralized Exchange.\n'
-        '✅ The protocol will extend to other use case including but not limited to lending/borrowing, leveraged '
-        'trading, liquidity locks, & more.\n'
-        '✅ A novel DAO governance structure + IPFS website ensures complete decentralization and '
-        'censorship-resistance. #LongLiveDefi\n'
-        '✅ Our Telegram and Twitter are community-run, in the spirit of decentralization\n\n'
-        '🥇 We will consider this project a success once it captures at least 1% of the $100b daily trading '
+        'for our users, but for all of DeFi \n\n'
+        '• At its core, leveraged ILOs means anyone with a good idea can raise 10-1000X the amount of Eth in '
+        'their wallet to launch projects on XChange, our world-class DEX.\n\n'
+        '• Over time, the network effect of product launches will result in billions of dollars in trading '
+        'volume on our Decentralized Exchange.\n\n'
+        '• The protocol will extend to other use case including but not limited to lending/borrowing, leveraged '
+        'trading, liquidity locks, & more.\n\n'
+        '• A novel DAO governance structure + IPFS website ensures complete decentralization and '
+        'censorship-resistance. #LongLiveDefi\n\n'
+        '• Our Telegram and Twitter are community-run, in the spirit of decentralization\n\n'
+        '• We will consider this project a success once it captures at least 1% of the $100b daily trading '
         'volume on Eth.\n\n'
-        'There are many innovative technical and governance applications in this platform so we encourage you '
-        'to dig and hop on this rocket ship! 🚀\n\n'
-        '"X7’s founding team believes that capital should be available to those with great ideas and that the '
-        'unflinching reliability of code and distributed consensus can provide capital while eliminating '
-        'significant downside risk.\n\nFirst Initial Leveraged Liquidity DEX to launch\n\n'
-        'Developers will be able to borrow initial liquidity to launch with for a small fee. This means projects '
-        'can launch with more liquidity and will be very attractive for investors at the beginning.\n\nThe '
+        '• There are many innovative technical and governance applications in this platform so we encourage you '
+        'to dig and hop on this rocket ship!\n\n'
+        'As the first Initial Leveraged Liquidity DEX to launch Developers will be able to borrow initial liquidity '
+        'to launch with for a small fee. This means projects '
+        'can launch with more liquidity and will be very attractive for investors at the beginning.\n\n• The '
         'amount you will be able to borrow, depends on how much your capital is. The more you have, the more '
-        'you will be able to borrow from the Lending Pool.\n\nThis is like a decentralized Bank on the '
-        'Blockchain. Borrowing money for new projects without a risk, that profits everyone.\n\nEveryone will be '
+        'you will be able to borrow from the Lending Pool.\n\n• This is like a decentralized Bank on the '
+        'Blockchain. Borrowing money for new projects without a risk, that profits everyone.\n\n• Everyone will be '
         'able to loan to the Lending Pool. Lock your ETH in the Lending Pool for 1 month RISK FREE and gain a '
         'specific %  as reward on top of that when '
         'claiming that back (Just for example). This in turn makes the Lending Pool more liquid and helps with'
-        ' its growth and success.\n\nAll profit from the DEX, goes back into the ecosystem (Tokens, Lending '
-        f'Pool, Future Development etc.). Pumping your bag!" - X7DAO Founding Team\n\n{quote}',
+        ' its growth and success.\n\n• All profit from the DEX, goes back into the ecosystem (Tokens, Lending '
+        f'Pool, Future Development etc.). Pumping your bag!\n\n'
+        f'`"X7’s founding team believes that capital should be available to those with great ideas and that the '
+        'unflinching reliability of code and distributed consensus can provide capital while eliminating '
+        'significant downside risk."\n\n- X7DAO Founding Team`\n\n',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton(text='Website', url=f'{items.website}')],
@@ -2095,7 +2095,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'{"{:0,.0f}".format(x7rtoken)[:4]}M X7R (${"{:0,.0f}".format(x7rtokendollar)})\n'
                 f'{x7rweth[:6]} WETH (${"{:0,.0f}".format(x7rwethdollar)})\n'
                 f'Total Liquidity (${"{:0,.0f}".format(x7rwethdollar + x7rtokendollar)})\n\n',
-        font = myfont, fill = (255, 255, 255))
+                font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
@@ -2901,7 +2901,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7 Finance Token Price Info (ETH)*\n'
-                    f'Use `/x7tokenname` for all other details\n'
+                    f'Use `/x7r [chain]` or `/x7dao [chain]` for all other details\n'
                     f'Use `/constellations` for constellations\n\n'
                     f'X7R:      ${cgtogetherprice["x7r"]["usd"]}\n'
                     f'24 Hour Change: {round(cgtogetherprice["x7r"]["usd_24h_change"], 1)}%\n\n'
@@ -2910,8 +2910,10 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{quote}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7R Chart', url=f'{items.dextoolseth}{items.x7rpaireth}')],
-                 [InlineKeyboardButton(text='X7DAO Chart', url=f'{items.dextoolseth}{items.x7daopaireth}')], ]))
+                [[InlineKeyboardButton(text='X7R Chart - Rewards Token',
+                                       url=f'{items.dextoolseth}{items.x7rpaireth}')],
+                 [InlineKeyboardButton(text='X7DAO Chart - Governance Token',
+                                       url=f'{items.dextoolseth}{items.x7daopaireth}')], ]))
         return
     if search == "eth":
         quoteresponse = requests.get(items.quoteapi)
@@ -2946,7 +2948,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*{symbol} price*\n\n'
-                    f'PPrice: ${ethdata["result"]["ethusd"]}\n'
+                    f'Price: ${ethdata["result"]["ethusd"]}\n'
                     f'24 Hour Change: {round(eth["ethereum"]["usd_24h_change"], 1)}%\n\n'
                     f'Gas Prices:\n'
                     f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
