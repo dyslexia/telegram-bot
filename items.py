@@ -291,6 +291,12 @@ constellationlogo = r'media\constellation.mp4'
 ebblogo = r'media\photo_2023-01-11_10-38-43.jpg'
 nftlogo = r'media\NFTvid.mp4'
 opensealogo = r'media\Logomark-Blue.png'
+arblogo = r'media\arbitrum.png'
+polylogo = r'media\polygon.png'
+bsclogo = r'media\bsc.png'
+optilogo = r'media\optimism.png'
+ethlogo = r'media\ethereum.png'
+
 
 # STICKERS
 gm = 'CAACAgQAAxkBAAEGsh9jjfZUfCKtJjaLGZbNFuzVgb9VOQAC6g4AAsII4FH2AAFleY-pPhorBA'
