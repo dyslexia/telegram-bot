@@ -34,18 +34,18 @@ async def ecosystem_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     await update.message.reply_text(
-        '*X7 Finance Ecosystem*\n\n🌟 *X7R*\nX7\'s original launched token. Hodl as a percentage of all '
+        '*X7 Finance Ecosystem*\n\n• *X7R*\nX7\'s original launched token. Hodl as a percentage of all '
         'transaction fees are used to buy and burn tokens, reducing total supply of available tokens.\n\n'
-        '🌟 *X7DAO*\nHolders of X7DAO tokens will be able to vote on fee rates, loan terms, funding terms, '
+        '• *X7DAO*\nHolders of X7DAO tokens will be able to vote on fee rates, loan terms, funding terms, '
         'tradable token tax terms, distribution of capital flows and any additional settings on and off chain. '
         'This includes the establishment of committees and other foundational efforts off chain.\n\n'
-        '🌟 *X7100 Constellation (X7101 - X7105)*\n'
+        '• *X7100 Constellation (X7101 - X7105)*\n'
         'A novel - eventually price consistent collection of five tokens. These act as the backstop to the '
         'Lending Pool. The X7100 series of tokens are burned on every transaction. While continually raising its '
         'floor price - it also provides further opportunities to mint new X7Deposit tokens.\n\n'
-        '🌟 *X7 NFTs*\nNFTs within the ecosystem will be used to provide opportunities for staking, lending, '
+        '• *X7 NFTs*\nNFTs within the ecosystem will be used to provide opportunities for staking, lending, '
         'discounts, rewards, access to higher governance privileges & much more.\n\n'
-        '🌟 *X7Deposit*\nWith insurance of the investor at heart - individuals and '
+        '• *X7Deposit*\nWith insurance of the investor at heart - individuals and '
         'institutions will hold these tokens '
         'just as they would underwrite treasury bills and other stable assets. Holders of X7D will be able to '
         'mint a time-based interest-bearing NFT. X7D is always exchangeable with Ethereum at a 1-to-1 ratio.\n'
@@ -60,9 +60,6 @@ async def ecosystem_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def about_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    quoteresponse = requests.get(items.quoteapi)
-    quotedata = quoteresponse.json()
-    quoteraw = (random.choice(quotedata))
     await update.message.reply_text(
         '*Welcome to X7 Finance*\n\nX7 is an ecosystem of innovative smart contracts that provide those with '
         'visionary ideas access to leveraged seed capital (e.g. Initial Liquidity Offerings, or ILOs) without '
@@ -110,7 +107,7 @@ async def links_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     await update.message.reply_photo(
         photo=open((random.choice(items.logos)), 'rb'),
-        caption=f'*X7 Finance links, Dont forget to follow us on socials*\n\n{quote}',
+        caption=f'*X7 Finance links*\n\n{quote}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton(text='Website', url=f'{items.website}')],
@@ -354,17 +351,83 @@ async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    await update.message.reply_photo(
-        photo=open(items.opensealogo, 'rb'),
-        caption=f'*X7 Finance Opensea Links (ETH)*\n\n{quote}',
-        parse_mode='Markdown',
-        reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Ecosystem Maxi', url='https://opensea.io/collection/x7-ecosystem-maxi')],
-            [InlineKeyboardButton(text='Liquidity Maxi', url='https://opensea.io/collection/x7-liquidity-maxi')],
-            [InlineKeyboardButton(text='DEX Maxi', url='https://opensea.io/collection/x7-dex-maxi')],
-            [InlineKeyboardButton(text='Borrowing Maxi', url='https://opensea.io/collection/x7-borrowing-max')],
-            [InlineKeyboardButton(text='Magister', url='https://opensea.io/collection/x7-magister')],
-            [InlineKeyboardButton(text='Pioneer', url='https://opensea.io/collection/x7-pioneer')], ]))
+    chain = " ".join(context.args).lower()
+    if chain == "" or chain == "eth":
+        await update.message.reply_photo(
+            photo=open(items.opensealogo, 'rb'),
+            caption=f'*X7 Finance Opensea Links (ETH)*\nUse `/nft [chain-name]` for other chains\n\n{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Ecosystem Maxi', url='https://opensea.io/collection/x7-ecosystem-maxi')],
+                [InlineKeyboardButton(text='Liquidity Maxi', url='https://opensea.io/collection/x7-liquidity-maxi')],
+                [InlineKeyboardButton(text='DEX Maxi', url='https://opensea.io/collection/x7-dex-maxi')],
+                [InlineKeyboardButton(text='Borrowing Maxi', url='https://opensea.io/collection/x7-borrowing-max')],
+                [InlineKeyboardButton(text='Magister', url='https://opensea.io/collection/x7-magister')],
+                [InlineKeyboardButton(text='Pioneer', url='https://opensea.io/collection/x7-pioneer')], ]))
+    if chain == "arb" or chain == "arbitrum":
+        await update.message.reply_photo(
+            photo=open(items.opensealogo, 'rb'),
+            caption=f'*X7 Finance Opensea Links (ARB)*\nUse `/nft [chain-name]` for other chains\n\n{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Ecosystem Maxi',
+                                      url='https://opensea.io/collection/x7-ecosystem-maxi-arbitrum')],
+                [InlineKeyboardButton(text='Liquidity Maxi',
+                                      url='https://opensea.io/collection/x7-liquidity-maxi-arbitrum')],
+                [InlineKeyboardButton(text='DEX Maxi',
+                                      url='https://opensea.io/collection/x7-dex-maxi-arbitrum')],
+                [InlineKeyboardButton(text='Borrowing Maxi',
+                                      url='https://opensea.io/collection/x7-borrowing-max-arbitrum')],
+                [InlineKeyboardButton(text='Magister',
+                                      url='https://opensea.io/collection/x7-magister-arbitrum')],]))
+    if chain == "optimism" or chain == "opti":
+        await update.message.reply_photo(
+            photo=open(items.opensealogo, 'rb'),
+            caption=f'*X7 Finance Opensea Links (OPTI)*\nUse `/nft [chain-name]` for other chains\n\n{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Ecosystem Maxi',
+                                      url='https://opensea.io/collection/x7-ecosystem-maxi-optimism')],
+                [InlineKeyboardButton(text='Liquidity Maxi',
+                                      url='https://opensea.io/collection/x7-liquidity-maxi-optimism')],
+                [InlineKeyboardButton(text='DEX Maxi',
+                                      url='https://opensea.io/collection/x7-dex-maxi-optimism')],
+                [InlineKeyboardButton(text='Borrowing Maxi',
+                                      url='https://opensea.io/collection/x7-borrowing-max-optimism')],
+                [InlineKeyboardButton(text='Magister',
+                                      url='https://opensea.io/collection/x7-magister-optimism')],]))
+    if chain == "bnb" or chain == "bsc" or chain  =="binance":
+        await update.message.reply_photo(
+            photo=open(items.opensealogo, 'rb'),
+            caption=f'*X7 Finance Opensea Links (BSC)*\nUse `/nft [chain-name]` for other chains\n\n{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Ecosystem Maxi',
+                                      url='https://opensea.io/collection/x7-ecosystem-maxi-binance')],
+                [InlineKeyboardButton(text='Liquidity Maxi',
+                                      url='https://opensea.io/collection/x7-liquidity-maxi-binance')],
+                [InlineKeyboardButton(text='DEX Maxi',
+                                      url='https://opensea.io/collection/x7-dex-maxi-binance')],
+                [InlineKeyboardButton(text='Borrowing Maxi',
+                                      url='https://opensea.io/collection/x7-borrowing-max-binance')],
+                [InlineKeyboardButton(text='Magister',
+                                      url='https://opensea.io/collection/x7-magister-binance')],]))
+    if chain == "poly" or chain == "polygon":
+        await update.message.reply_photo(
+            photo=open(items.opensealogo, 'rb'),
+            caption=f'*X7 Finance Opensea Links (POLYGON)*\nUse `/nft [chain-name]` for other chains\n\n{quote}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Ecosystem Maxi',
+                                      url='https://opensea.io/collection/x7-ecosystem-maxi-polygon')],
+                [InlineKeyboardButton(text='Liquidity Maxi',
+                                      url='https://opensea.io/collection/x7-liquidity-maxi-polygon')],
+                [InlineKeyboardButton(text='DEX Maxi',
+                                      url='https://opensea.io/collection/x7-dex-maxi-polygon')],
+                [InlineKeyboardButton(text='Borrowing Maxi',
+                                      url='https://opensea.io/collection/x7-borrowing-max-polygon')],
+                [InlineKeyboardButton(text='Magister',
+                                      url='https://opensea.io/collection/x7-magister-polygon')],]))
 
 
 async def website_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
