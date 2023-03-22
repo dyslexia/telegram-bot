@@ -16,6 +16,7 @@ spaceslink = "https://twitter.com/i/spaces/1YqKDoRnXLDxV"
 
 
 # GIVEAWAY               Y   M   D   H   M  S
+raffle = datetime(2023, 3, 28, 12, 00, 00)
 giveaway = datetime(2023, 3, 30, 20, 30, 00)
 snapshot1 = datetime(2023, 3, 9, 20, 30, 00)
 snapshot2 = datetime(2023, 3, 29, 20, 30, 00)

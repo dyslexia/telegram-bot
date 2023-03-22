@@ -3999,6 +3999,11 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def raffle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    ext = " ".join(context.args)
+    excel = r"raffle.csv"
+    df = pd.read_csv(excel)
+    addresses = list(df.Holders)
+    last5 = [entry[-5:] for entry in addresses]
     quoteresponse = requests.get(items.quoteapi)
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
@@ -4014,12 +4019,62 @@ async def raffle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7rdollar = x7rbalance * x7rprice
     x7rhalfdollar = x7rdollar / 2
     x7rhalfbalance = x7rbalance / 2
-    await update.message.reply_text(
-                f'X7 Finance 50/50 Raffle\n\n'
-                f'Total Kitty:      {"{:0,.0f}".format(x7rbalance)} X7R (${"{:0,.0f}".format(x7rdollar)})\n\n'
-                f'Winners Prize: {"{:0,.0f}".format(x7rhalfbalance)} X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n'
-                f'Burn Amount: {"{:0,.0f}".format(x7rhalfbalance)} X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n\n'
-                f'{quote}', parse_mode='Markdown')
+    then = variables.raffle
+    now = datetime.now()
+    duration = then - now
+    duration_in_s = duration.total_seconds()
+    days = divmod(duration_in_s, 86400)
+    hours = divmod(days[1], 3600)
+    minutes = divmod(hours[1], 60)
+    if duration < timedelta(0):
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption=f'X7 Finance 50/50 raffle entries are now closed\n\nPlease check back for more details'
+            f'\n\n{quote}', parse_mode="Markdown")
+    else:
+        if ext == "":
+            await update.message.reply_photo(
+                photo=open((random.choice(items.logos)), 'rb'),
+                caption=f'*X7 Finance 50/50 Raffle*\n\n'
+                        f'To enter send X7R to the community multisig wallet\n`{items.commultieth}`\n'
+                        f'Community Multisig contributions: 10000 X7R\n\n'
+                        f'100 X7R = 1 Ticket\n'
+                        f'200 X7R = 3 Tickets\n'
+                        f'300 X7R = 8 Tickets\n'
+                        f'400 X7R = 12 Tickets\n'
+                        f'500 X7R = 20 Tickets\n'
+                        f'1000 X7R = 45 Tickets\n\n'
+                        f'First Prize:        50% of the pool\n'
+                        f'Second Prize:  1 Ecosystem Maxi NFT\n'
+                        f'Third Prize:      1 Ecosystem Maxi NFT\n'
+                        f'Burn:                  50% of the pool\n\n'
+                        f'Entries Close:\n{then.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n'
+                        f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
+                        f'Running Total: {"{:0,.0f}".format(x7rbalance)} X7R (${"{:0,.0f}".format(x7rdollar)})\n'
+                        f'Winners Prize: {"{:0,.0f}".format(x7rhalfbalance)} '
+                        f'X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n'
+                        f'Burn Amount: {"{:0,.0f}".format(x7rhalfbalance)} '
+                        f'X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n\n'
+                        f'{quote}', parse_mode='Markdown')
+        if ext == "entries":
+            await update.message.reply_photo(
+                photo=open((random.choice(items.logos)), 'rb'),
+                caption=f'The following addresses are in the draw, weighted by ticket amount'
+                        f' (last 5 digits only):\n\n{last5}\n\n'
+                        f'{quote}',
+                parse_mode="Markdown")
+        if ext == "run":
+            chat_admins = await update.effective_chat.get_administrators()
+            if update.effective_user in (admin.user for admin in chat_admins):
+                await update.message.reply_photo(
+                    photo=open((random.choice(items.logos)), 'rb'),
+                    caption=f'*X7 Finance 50/50 Raffle*\n\n'
+                            f'The winner of the 50/50 Raffle is:\n\n'
+                            f'{random.choice(last5)} (last 5 digits only)\n'
+                            f'Trust no one, trust code. Long live Defi!\n\n{quote}',
+                    parse_mode="Markdown")
+            else:
+                await update.message.reply_text(f'{variables.modsonly}')
 
 
 async def alumni_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
