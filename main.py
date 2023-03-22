@@ -91,7 +91,7 @@ async def about_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'Pool, Future Development etc.). Pumping your bag!\n\n'
         f'`"X7’s founding team believes that capital should be available to those with great ideas and that the '
         'unflinching reliability of code and distributed consensus can provide capital while eliminating '
-        'significant downside risk."\n\n- X7DAO Founding Team`\n\n',
+        'significant downside risk."\n\n- X7DAO Founding Team`',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton(text='Website', url=f'{items.website}')],
@@ -1972,24 +1972,27 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    img = Image.open((random.choice(items.blackhole)))
-    i1 = ImageDraw.Draw(img)
-    myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
-    if chain == "":
+    if chain == "" or chain == "eth":
         gasurl = items.ethgasapi + keys.ether
         gasresponse = requests.get(gasurl)
         gasdata = gasresponse.json()
-        i1.text((28, 36),
+        im1 = Image.open((random.choice(items.blackhole)))
+        im2 = Image.open(items.ethlogo)
+        im1.paste(im2, (720, 20), im2)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+        i1 = ImageDraw.Draw(im1)
+        i1.text((26, 30),
                 f'ETH Gas Prices:\n\n'
                 f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                 f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
-                f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n'
+                f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
+        im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*Eth Gas Prices:*\n\n'
+            caption=f'*Eth Gas Prices:*\n'
+                    f'For other chains use `/gas [chain-name]`\n\n'
                     f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                     f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
                     f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
@@ -1999,17 +2002,23 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         gasurl = items.bscgasapi + keys.bsc
         gasresponse = requests.get(gasurl)
         gasdata = gasresponse.json()
-        i1.text((28, 36),
-                f'*BSC Gas Prices:*\n\n'
+        im1 = Image.open((random.choice(items.blackhole)))
+        im2 = Image.open(items.bsclogo)
+        im1.paste(im2, (720, 20), im2)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+        i1 = ImageDraw.Draw(im1)
+        i1.text((26, 30),
+                f'BSC Gas Prices:\n\n'
                 f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                 f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
-                f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n'
+                f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
+        im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'BSC Gas Prices:\n\n'
+            caption=f'*BSC Gas Prices:*\n'
+                    f'For other chains use `/gas [chain-name]`\n\n'
                     f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                     f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
                     f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
@@ -2019,17 +2028,23 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         gasurl = items.polygasapi + keys.poly
         gasresponse = requests.get(gasurl)
         gasdata = gasresponse.json()
-        i1.text((28, 36),
+        im1 = Image.open((random.choice(items.blackhole)))
+        im2 = Image.open(items.polylogo)
+        im1.paste(im2, (720, 20), im2)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+        i1 = ImageDraw.Draw(im1)
+        i1.text((26, 30),
                 f'POLYGON Gas Prices:\n\n'
                 f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                 f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
-                f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n'
+                f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
+        im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'POLYGON Gas Prices:\n\n'
+            caption=f'*POLYGON Gas Prices:*\n'
+                    f'For other chains use `/gas [chain-name]`\n\n'
                     f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                     f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
                     f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
@@ -3858,7 +3873,6 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7daodollar = float(x7daoamount) * float(ethvalue) / 1 ** 18
         x7rdollar = float(x7ramount) * float(ethvalue) / 1 ** 18
         x7consdollar = float(x7rconsamount) * float(ethvalue) / 1 ** 18
-        img = Image.open((random.choice(items.blackhole)))
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.arblogo)
         im1.paste(im2, (720, 20), im2)
