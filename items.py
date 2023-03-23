@@ -296,6 +296,7 @@ polylogo = r'media\polygon.png'
 bsclogo = r'media\bsc.png'
 optilogo = r'media\optimism.png'
 ethlogo = r'media\ethereum.png'
+raffle = r'media\raffle.jpg'
 
 
 # STICKERS
