@@ -2054,24 +2054,21 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def count_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tweet = context.args[0]
-    chat_admins = await update.effective_chat.get_administrators()
-    if update.effective_user in (admin.user for admin in chat_admins):
-        start = tweet.index('status/')
-        end = tweet.index('?', start + 1)
-        tweetid = tweet[start + 7:end]
-        rtclient = tweepy.Client(keys.bearer)
-        rtauth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
-        rtauth.set_access_token(keys.access, keys.accesssecret)
-        api = tweepy.API(rtauth)
-        response = rtclient.get_retweeters(tweetid)
-        status = api.get_status(tweetid)
-        retweet_count = status.retweet_count
-        count = '\n'.join(str(p) for p in response.data)
-        await update.message.reply_sticker(sticker=items.twittersticker)
-        await update.message.reply_text(
-            f'Retweeted {retweet_count} times, by the following members:\n\n{count}')
-    else:
-        await update.message.reply_text(f'{variables.modsonly}')
+    start = tweet.index('status/')
+    end = tweet.index('?', start + 1)
+    tweetid = tweet[start + 7:end]
+    rtclient = tweepy.Client(keys.bearer)
+    rtauth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
+    rtauth.set_access_token(keys.access, keys.accesssecret)
+    api = tweepy.API(rtauth)
+    rtresponse = rtclient.get_retweeters(tweetid)
+    status = api.get_status(tweetid)
+    retweetcount = status.retweet_count
+
+    rtnames = '\n'.join(str(p) for p in rtresponse.data)
+    await update.message.reply_sticker(sticker=items.twittersticker)
+    await update.message.reply_text(
+        f'Retweeted {retweetcount} times, by the following members:\n\n{rtnames}')
 
 
 async def draw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3204,9 +3201,11 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7105price = (cgprice["x7105"]["usd"]) * items.supply
     total = x7rprice + x7daoprice + x7101price + x7102price + x7103price + x7104price + x7105price
     if chain == "":
-        img = Image.open((random.choice(items.blackhole)))
-        i1 = ImageDraw.Draw(img)
+        im1 = Image.open((random.choice(items.blackhole)))
+        im2 = Image.open(items.ethlogo)
+        im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 22)
+        i1 = ImageDraw.Draw(im1)
         i1.text((28, 36),
                 f'X7 Finance Market Cap Info (ETH)\n\n'
                 f'X7R:         ${"{:0,.0f}".format(x7rprice)}\n'
@@ -3222,7 +3221,7 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'${"{:0,.0f}".format(total)}\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
+        im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7 Finance Market Cap Info (ETH)*\n\n'
@@ -3305,7 +3304,6 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(requests.get(thumb, stream=True).raw)
         im1.paste(im2, (680, 20), im2)
-        im1.save(r"media\blackhole.png", quality=95)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
@@ -3331,11 +3329,13 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{quote}',
             parse_mode='Markdown')
     else:
+        img = Image.open(requests.get(thumb, stream=True).raw)
+        result = img.convert('RGBA')
+        result.save(r'media\cgtokenlogo.png')
         im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(requests.get(thumb, stream=True).raw)
+        im2 = Image.open(r'media\cgtokenlogo.png')
         im1.paste(im2, (680, 20), im2)
         myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
-        im1.save(r"media\blackhole.png", quality=95)
         i1 = ImageDraw.Draw(im1)
         i1.text((28, 36),
                 f'{symbol} price\n\n'
@@ -4028,13 +4028,13 @@ async def raffle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     minutes = divmod(hours[1], 60)
     if duration < timedelta(0):
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open(r"media\raffle.jpg", 'rb'),
             caption=f'X7 Finance 50/50 raffle entries are now closed\n\nPlease check back for more details'
             f'\n\n{quote}', parse_mode="Markdown")
     else:
         if ext == "":
             await update.message.reply_photo(
-                photo=open((random.choice(items.logos)), 'rb'),
+                photo=open(r"media\raffle.jpg", 'rb'),
                 caption=f'*X7 Finance 50/50 Raffle*\n\n'
                         f'To enter send X7R to the community multisig wallet\n`{items.commultieth}`\n'
                         f'Community Multisig contributions: 10000 X7R\n\n'
@@ -4055,19 +4055,22 @@ async def raffle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         f'X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n'
                         f'Burn Amount: {"{:0,.0f}".format(x7rhalfbalance)} '
                         f'X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n\n'
-                        f'{quote}', parse_mode='Markdown')
+                        f'{quote}', parse_mode='Markdown',
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton(text='X7 Community Multisig Wallet',
+                                          url=f'{items.etheraddress}{items.commultieth}')], ]))
         if ext == "entries":
             await update.message.reply_photo(
-                photo=open((random.choice(items.logos)), 'rb'),
+                photo=open(r"media\raffle.jpg", 'rb'),
                 caption=f'The following addresses are in the draw, weighted by ticket amount'
-                        f' (last 5 digits only):\n\n{last5}\n\n'
+                        f' (last 5 digits only):\n\n{last5}\n\nLast updated: 11PM 03/22/23 UTC\n\n'
                         f'{quote}',
                 parse_mode="Markdown")
         if ext == "run":
             chat_admins = await update.effective_chat.get_administrators()
             if update.effective_user in (admin.user for admin in chat_admins):
                 await update.message.reply_photo(
-                    photo=open((random.choice(items.logos)), 'rb'),
+                    photo=open(r"media\raffle.jpg", 'rb'),
                     caption=f'*X7 Finance 50/50 Raffle*\n\n'
                             f'The winner of the 50/50 Raffle is:\n\n'
                             f'{random.choice(last5)} (last 5 digits only)\n'
