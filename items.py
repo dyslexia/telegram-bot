@@ -33,7 +33,6 @@ ethplorerapi = 'https://api.ethplorer.io/getTokenInfo/'
 osapi = "https://api.opensea.io/api/v1/collection/"
 quoteapi = 'https://type.fit/api/quotes'
 fearapi = 'https://api.alternative.me/fng/?limit=0'
-
 todayapi = 'http://history.muffinlabs.com/date/'
 jokeapi = 'https://v2.jokeapi.dev/joke/Any?safe-mode'
 

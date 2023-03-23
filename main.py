@@ -2,7 +2,6 @@ import logging
 from telegram.ext import *
 from telegram import *
 import keys
-from pycoingecko import CoinGeckoAPI
 from datetime import datetime, timedelta
 import pytz
 import wikipediaapi
@@ -16,6 +15,7 @@ import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 from moralis import evm_api
 import cloudscraper
+from pycoingecko import CoinGeckoAPI
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
@@ -3255,7 +3255,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     thumb = token["coins"][0]["large"]
     cg = CoinGeckoAPI()
     tokenprice = (cg.get_price(ids=tokenid, vs_currencies='usd', include_24hr_change='true',
-                               include_24hr_vol='true', include_market_cap="true"))
+                               include_24hr_vol='true', include_market_cap="true", include_sparkline="true"))
     cgtogetherprice = (cg.get_price(ids='x7r,x7dao', vs_currencies='usd', include_24hr_change='true',
                                     include_24hr_vol='true'))
     if search == "":
@@ -3339,7 +3339,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1 = ImageDraw.Draw(im1)
         i1.text((28, 36),
                 f'{symbol} price\n\n'
-                f'Price: ${tokenprice[tokenid]["usd"]}\n'
+                f'Price: ${"{:f}".format(float(tokenprice[tokenid]["usd"]))}\n'
                 f'24 Hour Change: {round(tokenprice[tokenid]["usd_24h_change"], 1)}%\n\n\n\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
