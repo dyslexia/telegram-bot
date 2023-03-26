@@ -2,7 +2,7 @@ import logging
 from telegram.ext import *
 from telegram import *
 import keys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import pytz
 import wikipediaapi
 import random
@@ -720,24 +720,26 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         damount = float(x7ddata["result"][0]["balance"])
         x7damount = str(damount / 10 ** 18)
         x7ddollar = float(x7damount) * float(ethvalue) / 1 ** 18
-        img = Image.open((random.choice(items.blackhole)))
-        i1 = ImageDraw.Draw(img)
+        im1 = Image.open((random.choice(items.blackhole)))
+        im2 = Image.open(items.x7dlogo)
+        im1.paste(im2, (720, 20), im2)
+        i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
         i1.text((28, 36),
                 f'X7D (ETH) Info\n\n'
                 f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
                 f'Holders: {x7dholders}\n\n'
-                f'To receive X7D:\n\n'
+                f'To receive X7D:\n'
                 '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                 f'{items.lpreserveca}\n\n'
                 '2. Import the X7D contract address to your custom tokens in your wallet\nto see your tokens:\n'
                 f'{items.x7dca}\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
                 'Note:\n'
                 'Do not interact directly with the X7D contract\n'
-                'Do not send from a CEX\n\n\n'
+                'Do not send from a CEX\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
+        im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7D (ETH) Info*\n'
@@ -771,8 +773,28 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         damount = float(x7ddata["result"][0]["balance"])
         x7damount = str(damount / 10 ** 18)
         x7ddollar = float(x7damount) * float(ethvalue) / 1 ** 18
+        im1 = Image.open((random.choice(items.blackhole)))
+        im2 = Image.open(items.x7dlogo)
+        im1.paste(im2, (720, 20), im2)
+        i1 = ImageDraw.Draw(im1)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
+        i1.text((28, 36),
+                f'X7D (BSC) Info\n\n'
+                f'Supply: {x7damount[:4]}BNB (${"{:0,.0f}".format(x7ddollar)})\n\n'
+                f'To receive X7D:\n\n'
+                '1. Send BNB (Not Swap) to the Lending Pool Reserve Contract:\n'
+                f'{items.lpreserveca}\n\n'
+                '2. Import the X7D contract address to your custom tokens in your\n'
+                'wallet to see your tokens:\n'
+                f'{items.x7dca}\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:BNB\n\n'
+                'Note:\n'
+                'Do not interact directly with the X7D contract\n'
+                'Do not send from a CEX\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(items.x7dlogo, 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7D (BSC) Info*\n\n'
                     f'Supply: {x7damount[:4]}BNB (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'To receive X7D:\n\n'
@@ -802,8 +824,28 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         damount = float(x7ddata["result"][0]["balance"])
         x7damount = str(damount / 10 ** 18)
         x7ddollar = float(x7damount) * float(ethvalue) / 1 ** 18
+        im1 = Image.open((random.choice(items.blackhole)))
+        im2 = Image.open(items.x7dlogo)
+        im1.paste(im2, (720, 20), im2)
+        i1 = ImageDraw.Draw(im1)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
+        i1.text((28, 36),
+                f'X7D (POLY) Info\n\n'
+                f'Supply: {x7damount[:4]}MATIC (${"{:0,.0f}".format(x7ddollar)})\n\n'
+                f'To receive X7D:\n\n'
+                '1. Send MATIC (Not Swap) to the Lending Pool Reserve Contract:\n'
+                f'{items.lpreserveca}\n\n'
+                '2. Import the X7D contract address to your custom tokens in your wallet\n'
+                'to see your tokens:\n'
+                f'{items.x7dca}\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:MATIC\n\n'
+                'Note:\n'
+                'Do not interact directly with the X7D contract\n'
+                'Do not send from a CEX\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(items.x7dlogo, 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7D (POLY) Info*\n\n'
                     f'Supply: {x7damount[:4]}MATIC (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'To receive X7D.\n\n'
@@ -833,8 +875,28 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         damount = float(x7ddata["result"][0]["balance"])
         x7damount = str(damount / 10 ** 18)
         x7ddollar = float(x7damount) * float(ethvalue) / 1 ** 18
+        im1 = Image.open((random.choice(items.blackhole)))
+        im2 = Image.open(items.x7dlogo)
+        im1.paste(im2, (720, 20), im2)
+        i1 = ImageDraw.Draw(im1)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
+        i1.text((28, 36),
+                f'*X7D (OPTIMISM) Info*\n\n'
+                f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n\n'
+                f'To receive X7D:\n\n'
+                '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
+                f'{items.lpreserveca}\n\n'
+                '2. Import the X7D contract address to your custom tokens in your wallet'
+                '\nto see your tokens:\n'
+                f'{items.x7dca}\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
+                'Note:\n'
+                'Do not interact directly with the X7D contract\n'
+                'Do not send from a CEX\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(items.x7dlogo, 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7D (OPTIMISM) Info*\n\n'
                     f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'To receive X7D.\n\n'
@@ -864,11 +926,31 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         damount = float(x7ddata["result"][0]["balance"])
         x7damount = str(damount / 10 ** 18)
         x7ddollar = float(x7damount) * float(ethvalue) / 1 ** 18
+        im1 = Image.open((random.choice(items.blackhole)))
+        im2 = Image.open(items.x7dlogo)
+        im1.paste(im2, (720, 20), im2)
+        i1 = ImageDraw.Draw(im1)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
+        i1.text((28, 36),
+                f'X7D (ARBITRUM) Info\n\n'
+                f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n\n'
+                f'To receive X7D.\n\n'
+                '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
+                f'{items.lpreserveca}\n\n'
+                '2. Import the X7D contract address to your custom tokens in your wallet\n'
+                'to see your tokens:\n'
+                f'{items.x7dca}\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
+                'Note:\n'
+                'Do not interact directly with the X7D contract\n'
+                'Do not send from a CEX\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(items.x7dlogo, 'rb'),
+            photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7D (ARBITRUM) Info*\n\n'
                     f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
-                    f'To receive X7D.\n\n'
+                    f'To receive X7D:\n\n'
                     '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpreserveca}`\n\n'
                     '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
@@ -1270,8 +1352,10 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     optipooldollar = float(optipoolamount) * float(ethvalue) / 1 ** 18
     totaldollar = polypooldollar + bscpooldollar + optipooldollar + arbpooldollar + pooldollar
     if chain == "":
-        img = Image.open((random.choice(items.blackhole)))
-        i1 = ImageDraw.Draw(img)
+        im1 = Image.open((random.choice(items.blackhole)))
+        im2 = Image.open(items.x7dlogo)
+        im1.paste(im2, (720, 20), im2)
+        i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'X7 Finance Lending Pool Info\n\n'
@@ -1283,7 +1367,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'TOTAL: ${"{:0,.0f}".format(totaldollar)}\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
+        im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7 Finance Lending Pool Info *\nUse `/pool [chain-name]` for individual chains\n\n'
@@ -2115,8 +2199,8 @@ async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     dubai = datetime.now(dubairaw)
     dubaitime = dubai.strftime("%I:%M %p")
     await update.message.reply_text(f'GM or GN Wherever you are...\n\n'
-                                    f'UTC: {datetime.now().strftime("%A %B %d %Y")}\n'
-                                    f'{datetime.now().strftime("%I:%M %p")}\n\n'
+                                    f'UTC: {datetime.now(timezone.utc).strftime("%A %B %d %Y")}\n'
+                                    f'{datetime.now(timezone.utc).strftime("%I:%M %p")}\n\n'
                                     f'PST:       {westcoasttime}\n'
                                     f'EST:       {eastcoasttime}\n'
                                     f'UK:         {londontime}\n'
@@ -3259,8 +3343,10 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cgtogetherprice = (cg.get_price(ids='x7r,x7dao', vs_currencies='usd', include_24hr_change='true',
                                     include_24hr_vol='true'))
     if search == "":
-        img = Image.open((random.choice(items.blackhole)))
-        i1 = ImageDraw.Draw(img)
+        im1 = Image.open((random.choice(items.blackhole)))
+        im2 = Image.open(r'media\logo11.png')
+        im1.paste(im2, (740, 20), im2)
+        i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'X7 Finance Token Price Info (ETH)\n\n'
@@ -3270,7 +3356,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(cgtogetherprice["x7dao"]["usd_24h_change"], 0)}%\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
-        img.save(r"media\blackhole.png")
+        im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7 Finance Token Price Info (ETH)*\n'
@@ -3326,8 +3412,94 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                     f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
                     f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
-                    f'{quote}',
-            parse_mode='Markdown')
+                    f'{quote}', parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Chart', url=f'https://www.coingecko.com/en/coins/ethereum')], ]))
+        return
+    if search == "bnb":
+        quoteresponse = requests.get(items.quoteapi)
+        quotedata = quoteresponse.json()
+        quoteraw = (random.choice(quotedata))
+        quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+        cg = CoinGeckoAPI()
+        bnb = (cg.get_price(ids='binancecoin', vs_currencies='usd', include_24hr_change='true',
+                            include_market_cap='true'))
+        gasurl = items.bscgasapi + keys.bsc
+        gasresponse = requests.get(gasurl)
+        gasdata = gasresponse.json()
+        bscurl = items.bnbpriceapi + keys.bsc
+        bscresponse = requests.get(bscurl)
+        bscdata = bscresponse.json()
+        im1 = Image.open((random.choice(items.blackhole)))
+        im2 = Image.open(requests.get(thumb, stream=True).raw)
+        im1.paste(im2, (680, 20), im2)
+        i1 = ImageDraw.Draw(im1)
+        myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
+        i1.text((28, 36),
+                f'{symbol} price\n\n'
+                f'Price: ${bscdata["result"]["ethusd"]}\n'
+                f'24 Hour Change: {round(bnb["binancecoin"]["usd_24h_change"], 1)}%\n\n'
+                f'Gas Prices:\n'
+                f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
+                f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
+                f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        im1.save(r"media\blackhole.png")
+        await update.message.reply_photo(
+            photo=open(r"media\blackhole.png", 'rb'),
+            caption=f'*{symbol} price*\n\n'
+                    f'Price: ${bscdata["result"]["ethusd"]}\n'
+                    f'24 Hour Change: {round(bnb["binancecoin"]["usd_24h_change"], 1)}%\n\n'
+                    f'Gas Prices:\n'
+                    f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
+                    f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
+                    f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
+                    f'{quote}', parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Chart', url=f'https://www.coingecko.com/en/coins/bnb')], ]))
+    if search == "matic" or search == "poly" or search == "polygon":
+        quoteresponse = requests.get(items.quoteapi)
+        quotedata = quoteresponse.json()
+        quoteraw = (random.choice(quotedata))
+        quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+        cg = CoinGeckoAPI()
+        matic = (cg.get_price(ids='matic-network', vs_currencies='usd', include_24hr_change='true',
+                              include_market_cap='true'))
+        gasurl = items.polygasapi + keys.poly
+        gasresponse = requests.get(gasurl)
+        gasdata = gasresponse.json()
+        polyurl = items.maticpriceapi + keys.poly
+        polyresponse = requests.get(polyurl)
+        polydata = polyresponse.json()
+        im1 = Image.open((random.choice(items.blackhole)))
+        im2 = Image.open(requests.get(thumb, stream=True).raw)
+        im1.paste(im2, (680, 20), im2)
+        i1 = ImageDraw.Draw(im1)
+        myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
+        i1.text((28, 36),
+                f'{symbol} price\n\n'
+                f'Price: ${polydata["result"]["maticusd"]}\n'
+                f'24 Hour Change: {round(matic["matic-network"]["usd_24h_change"], 1)}%\n\n'
+                f'Gas Prices:\n'
+                f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
+                f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
+                f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n'
+                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont, fill=(255, 255, 255))
+        im1.save(r"media\blackhole.png")
+        await update.message.reply_photo(
+            photo=open(r"media\blackhole.png", 'rb'),
+            caption=f'*{symbol} price*\n\n'
+                    f'Price: ${polydata["result"]["maticusd"]}\n'
+                    f'24 Hour Change: {round(matic["matic-network"]["usd_24h_change"], 1)}%\n\n'
+                    f'Gas Prices:\n'
+                    f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
+                    f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
+                    f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
+                    f'{quote}', parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Chart', url=f'https://www.coingecko.com/en/coins/polygon')], ]))
     else:
         img = Image.open(requests.get(thumb, stream=True).raw)
         result = img.convert('RGBA')
@@ -3347,10 +3519,12 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*{symbol} price*\n\n'
-                    f'Price: ${tokenprice[tokenid]["usd"]}\n'
+                    f'Price: ${"{:f}".format(float(tokenprice[tokenid]["usd"]))}\n'
                     f'24 Hour Change: {round(tokenprice[tokenid]["usd_24h_change"], 1)}%\n\n'
                     f'{quote}',
-            parse_mode='Markdown')
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Chart', url=f'https://www.coingecko.com/en/coins/{tokenid}')], ]))
 
 
 async def constellations_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -4015,7 +4189,7 @@ async def raffle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7rurl = items.tokenbalanceapieth + items.x7rca + '&address=' + items.commultieth + '&tag=latest' + keys.ether
     x7rresponse = requests.get(x7rurl)
     x7rdata = x7rresponse.json()
-    x7rbalance = int(x7rdata["result"][:6]) - 172897
+    x7rbalance = int(x7rdata["result"][:6]) - 201416
     x7rdollar = x7rbalance * x7rprice
     x7rhalfdollar = x7rdollar / 2
     x7rhalfbalance = x7rbalance / 2
@@ -4063,18 +4237,45 @@ async def raffle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_photo(
                 photo=open(r"media\raffle.jpg", 'rb'),
                 caption=f'The following addresses are in the draw, weighted by ticket amount'
-                        f' (last 5 digits only):\n\n{last5}\n\nLast updated: 11PM 03/22/23 UTC\n\n'
+                        f' (last 5 digits only):\n\n{last5}\n\nLast updated: '
+                        f'{variables.raffleupdate.strftime("%A %B %d %Y %I:%M %p")} UTC\n\n'
                         f'{quote}',
                 parse_mode="Markdown")
-        if ext == "run":
+        if ext == "run1":
             chat_admins = await update.effective_chat.get_administrators()
             if update.effective_user in (admin.user for admin in chat_admins):
                 await update.message.reply_photo(
                     photo=open(r"media\raffle.jpg", 'rb'),
                     caption=f'*X7 Finance 50/50 Raffle*\n\n'
-                            f'The winner of the 50/50 Raffle is:\n\n'
-                            f'{random.choice(last5)} (last 5 digits only)\n'
-                            f'Trust no one, trust code. Long live Defi!\n\n{quote}',
+                            f'Winner of the 50/50 Raffle is:\n\n'
+                            f'{random.choice(last5)} (last 5 digits only)\n\n'
+                            f'Congratulations, you win: {"{:0,.0f}".format(x7rhalfbalance)} '
+                            f'X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n\n'
+                            f'Community Multisig will burn: {"{:0,.0f}".format(x7rhalfbalance)} '
+                            f'X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n',
+                    parse_mode="Markdown")
+            else:
+                await update.message.reply_text(f'{variables.modsonly}')
+        if ext == "run2":
+            chat_admins = await update.effective_chat.get_administrators()
+            if update.effective_user in (admin.user for admin in chat_admins):
+                await update.message.reply_text(
+                    f'*X7 Finance 50/50 Raffle*\n\n'
+                    f'Second Place winner of the 50/50 Raffle is:\n\n'
+                    f'{random.choice(last5)} (last 5 digits only)\n\n'
+                    f'Congratulations! you win an Ecosystem Maxi NFT (ETH)\n\n',
+                    parse_mode="Markdown")
+            else:
+                await update.message.reply_text(f'{variables.modsonly}')
+        if ext == "run3":
+            chat_admins = await update.effective_chat.get_administrators()
+            if update.effective_user in (admin.user for admin in chat_admins):
+                await update.message.reply_text(
+                    f'*X7 Finance 50/50 Raffle*\n\n'
+                    f'Third place winner of the 50/50 Raffle is:\n\n'
+                    f'{random.choice(last5)} (last 5 digits only)\n\n'
+                    f'Congratulations! you win an Ecosystem Maxi NFT (ETH)\n\n'
+                    f'Trust no one, trust code. Long live Defi!\n\n{quote}',
                     parse_mode="Markdown")
             else:
                 await update.message.reply_text(f'{variables.modsonly}')
