@@ -18,7 +18,7 @@ spaceslink = "https://twitter.com/i/spaces/1RDGlanOvMkJL?s=20"
 
 # RAFFLE               Y   M   D   H   M  S
 raffle = datetime(2023, 3, 28, 12, 00, 00)
-raffleupdate = datetime(2023, 3, 27, 10, 00, 00)
+raffleupdate = datetime(2023, 3, 27, 11, 00, 00)
 
 
 # GIVEAWAY               Y   M   D   H   M  S
@@ -46,47 +46,56 @@ tweetlink = "https://twitter.com/X7_Finance/status/1625541579074158607?s=20&t=h2
 # COMMANDS
 modsonly = "You do not have permission to do this. #trustnoone"
 
-commands = f'Available @X7Finance_bot Commands:\n\n/about - Welcome to X7 Finance\n' \
-           f'/ecosystem - Token Overview\n' \
-           f'/swap - Xchange Info\n' \
-           f'/roadmap - wen?\n' \
-           f'/links - Official Links\n' \
-           f'/website - Official Website\n' \
-           f'/channels - List of X7 Finance TG Channels\n' \
-           f'/discount - Discount Launch NFT Info\n' \
-           f'/contract - Token Contract Addresses\n' \
-           f'/chart - Chart Links\n' \
-           f'/price - /price [anytoken] - Price Info\n' \
-           f'/buy - Buy Links\n' \
-           f'/wp - Whitepaper Links\n' \
-           f'/x7r - X7R Info\n' \
-           f'/x7dao - X7DAO Info\n' \
-           f'/x7101 - X7101 Info\n' \
-           f'/x7102 - X7102 Info\n' \
-           f'/x7103 - X7103 Info\n' \
-           f'/x7104 - X7104 Info\n' \
-           f'/x7105 - X7105 Info\n' \
-           f'/constellations - X7 Constellation Info\n' \
-           f'/x7d - X7Deposit Info\n' \
-           f'/buyevenly - A Guide to buying constellation series evenly\n' \
-           f'/tax - Token Tax Info\n' \
-           f'/ebb - DexTools help\n' \
-           f'/mcap - Market Cap Info\n' \
-           f'/spaces - Twitter Space Info\n' \
-           f'/listings - Token Listing Info\n' \
-           f'/nft - NFT Info\n' \
-           f'/opensea - Opensea Links\n' \
-           f'/pioneer - Pioneer NFT Details (can be used as /pioneer #)\n' \
-           f'/treasury - Treasury Info\n' \
-           f'/pool - Lending Pool Info\n' \
-           f'/loans - Loan Term Info\n' \
-           f'/burn - Burnt Tokens Info\n' \
-           f'/holders - Token Holder Info\n' \
-           f'/smart - Smart Contract Info\n' \
-           f'/voting - DAO Voting Info\n' \
-           f'/media - TG Stickers and Emojis\n' \
-           f'/giveaway - Current Giveaway Info\n' \
-           f'/search - Search the web\n\n'
+commands = '/about - Welcome to X7 Finance\n' \
+           '/ecosystem - Token Overview\n' \
+           '/links - Official Links\n' \
+           '/dashboard - X7 Finance community dashboard\n' \
+           '/twitter - Latest X7 Finance tweet\n' \
+           '/swap - Xchange DEX Info\n' \
+           '/roadmap - Whats coming next\n' \
+           '/website - Official Website\n' \
+           '/x7r - X7R Info\n' \
+           '/x7dao - X7DAO Info\n' \
+           '/x7d  - X7Deposit Info\n' \
+           '/x7101 - X7101 Info\n' \
+           '/x7102 - X7102 Info\n' \
+           '/x7103 - X7103 Info\n' \
+           '/x7104 - X7104 Info\n' \
+           '/x7105 - X7105 \n' \
+           '/constellations - X7 Constellation Info\n' \
+           '/buyevenly - A Guide to buying constellation series evenly\n' \
+           '/contract - Token Contract Addresses\n' \
+           '/chart - Chart Links\n' \
+           '/price - [anytoken]  CG Price Info\n' \
+           '/buy - Buy Links\n' \
+           '/wp - Whitepaper\n' \
+           '/tax - Token Tax and Slippage Info\n' \
+           '/mcap - Market Cap Info\n' \
+           '/liquidity - Liquidity Info\n' \
+           '/treasury - Treasury Details\n' \
+           '/pool - Lending Pool Info\n' \
+           '/loans - Loan Term Info\n' \
+           '/burn - X7R Burn \n' \
+           '/holders - Token Holder Info\n' \
+           '/airdrop - Snapshot Info\n' \
+           '/nft - NFT Details\n' \
+           'opensea - Opensea Links\n' \
+           '/pioneer -  [tokenid] Pioneer NFT Stats\n' \
+           '/discount - discount committee NFT Info\n' \
+           '/smart - Smart Contract Details\n' \
+           '/deployer  - X7 Finance Deployer Info\n' \
+           '/withdraw  - How to withdraw X7D\n' \
+           '/giveaway - Giveaway Details\n' \
+           '/spaces  - Twitter Space Info\n' \
+           '/gas - Gas Info\n' \
+           '/wei - amount convert to ETH\n' \
+           '/fg - Market fg Info\n' \
+           '/time - World Time Info\n' \
+           '/search - [keyword] Search the web\n' \
+           '/channels - List of X7 Finance Community TG Channels\n' \
+           '/media - TG Stickers and Emojis\n' \
+           '/bobby - Bobby BuyBot Channels\n' \
+           '/alumni - X7 Finance Alumni\n'
 
 admincommands = 'To be run in main chat\n\n' \
                 '/settings - Open the setting menu\n' \
