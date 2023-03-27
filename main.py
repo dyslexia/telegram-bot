@@ -1496,34 +1496,6 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.polyaddress}{items.x7dca}#code')], ]))
 
 
-async def listings_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    quoteresponse = requests.get(items.quoteapi)
-    quotedata = quoteresponse.json()
-    quoteraw = (random.choice(quotedata))
-    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
-        caption=f'*X7 Finance Listings*\n\n'
-                f'*X7R*\nhttps://coinmarketcap.com/currencies/x7r/\n'
-                f'https://www.coingecko.com/en/coins/x7r\n'
-                f'https://tokeninsight.com/en/coins/x7r/overview\n'
-                f'https://coinbazooka.com/coin/X7R\n\n'
-                f'*X7DAO*\n'
-                f'https://coinmarketcap.com/currencies/x7dao/\n'
-                f'https://www.coingecko.com/en/coins/x7dao\n'
-                f'https://tokeninsight.com/en/coins/x7dao/overview\n'
-                f'https://coinbazooka.com/coin/X7dao\n\n'
-                f'*Constellations*\n'
-                f'https://www.coingecko.com/en/coins/x7101\n'
-                f'https://www.coingecko.com/en/coins/x7102\n'
-                f'https://www.coingecko.com/en/coins/x7103\n'
-                f'https://www.coingecko.com/en/coins/x7104\n'
-                f'https://www.coingecko.com/en/coins/x7105\n\n'
-                f'*NFTs*\n'
-                f'https://www.coingecko.com/en/nft/x7-pioneer\n\n{quote}',
-        parse_mode='Markdown')
-
-
 async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteresponse = requests.get(items.quoteapi)
     quotedata = quoteresponse.json()
@@ -2042,7 +2014,7 @@ async def snapshot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     await update.message.reply_sticker(sticker=items.chains)
     await update.message.reply_text(
-        f'*X7 Finance Snapshot Information*\n\nThe rollout of the Ecosystem Contracts on BNB Smart Chain, Polygon ' 
+        f'*X7 Finance Airdrop Information*\n\nThe rollout of the Ecosystem Contracts on BNB Smart Chain, Polygon ' 
         f'(MATIC), Arbitrum, and Optimism has begun.\n\n'
         f'We will go live with Xchange, borrowing, lending, revenue ' 
         f'splitting, and profit splitting on other chains as soon as we can in concert with the full release on ' 
@@ -4436,7 +4408,7 @@ async def admincommands_command(update: Update, context: ContextTypes.DEFAULT_TY
 
 async def everyone_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('@robthebank44 @Adz1doubleD @CoastCorn @cryptod0c @Phlux '
-                                    '@shillingtonlevy @SlumdOg_shillionaire2022 @CallMeLandlord '
+                                    '@shillingtonlevy @SlumdOg_shillionaire2022'
                                     '@gazuga @Gavalars @MikeMurpher @KBCrypto11\n\n'
                                     'MODS ASSEMBLE!')
 
@@ -4482,7 +4454,6 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('burn', burn_command))
     application.add_handler(CommandHandler('search', search_command))
     application.add_handler(CommandHandler(['pool', 'lpool', 'lendingpool'], pool_command))
-    application.add_handler(CommandHandler('listings', listings_command))
     application.add_handler(CommandHandler(['tax', 'slippage'], tax_command))
     application.add_handler(CommandHandler(['swap', 'xchange', 'dex'], swap_command))
     application.add_handler(CommandHandler('giveaway', giveaway_command))
