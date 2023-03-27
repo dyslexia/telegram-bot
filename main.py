@@ -16,6 +16,7 @@ from PIL import Image, ImageDraw, ImageFont
 from moralis import evm_api
 import cloudscraper
 from pycoingecko import CoinGeckoAPI
+local = pytz.timezone("Europe/London")
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
@@ -1554,14 +1555,15 @@ async def spaces_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    then = variables.spacestime
-    now = datetime.now()
+    local_dt = local.localize(variables.spacestime, is_dst=None)
+    then = local_dt.astimezone(pytz.utc)
+    now = datetime.now(timezone.utc)
     duration = then - now
     duration_in_s = duration.total_seconds()
     days = divmod(duration_in_s, 86400)
     hours = divmod(days[1], 3600)
     minutes = divmod(hours[1], 60)
-    if duration < timedelta(1):
+    if duration < timedelta(0):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'X7 Finance Twitter space\n\nPlease check back for more details'
@@ -1628,8 +1630,9 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     df = pd.read_csv(excel)
     addresses = list(df.Holders)
     last5 = [entry[-5:] for entry in addresses]
-    then = variables.giveaway
-    now = datetime.now()
+    local_dt = local.localize(variables.giveawaytime, is_dst=None)
+    then = local_dt.astimezone(pytz.utc)
+    now = datetime.now(timezone.utc)
     duration = then - now
     duration_in_s = duration.total_seconds()
     days = divmod(duration_in_s, 86400)
@@ -1650,10 +1653,13 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         f'{variables.giveawayinfo}'
                         f'\n\n{quote}', parse_mode="Markdown")
         if ext == "entries":
+            updatelocal = local.localize(variables.giveawayupdate, is_dst=None)
+            updateutc = updatelocal.astimezone(pytz.utc)
             await update.message.reply_photo(
                 photo=open((random.choice(items.logos)), 'rb'),
                 caption=f'The following addresses are in the draw, weighted by minted amount'
-                        f' (last 5 digits only):\n\n{last5}\n\n'
+                        f' (last 5 digits only):\n\n{last5}\n\nLast updated: '
+                        f'{updateutc.strftime("%A %B %d %Y %I:%M %p")} UTC\n\n'
                         f'{quote}',
                 parse_mode="Markdown")
         if ext == "run":
@@ -4193,8 +4199,9 @@ async def raffle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7rdollar = x7rbalance * x7rprice
     x7rhalfdollar = x7rdollar / 2
     x7rhalfbalance = x7rbalance / 2
-    then = variables.raffle
-    now = datetime.now()
+    local_dt = local.localize(variables.raffle, is_dst=None)
+    then = local_dt.astimezone(pytz.utc)
+    now = datetime.now(timezone.utc)
     duration = then - now
     duration_in_s = duration.total_seconds()
     days = divmod(duration_in_s, 86400)
@@ -4234,11 +4241,13 @@ async def raffle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     [InlineKeyboardButton(text='X7 Community Multisig Wallet',
                                           url=f'{items.etheraddress}{items.commultieth}')], ]))
         if ext == "entries":
+            updatelocal = local.localize(variables.raffleupdate, is_dst=None)
+            updateutc = updatelocal.astimezone(pytz.utc)
             await update.message.reply_photo(
                 photo=open(r"media\raffle.jpg", 'rb'),
                 caption=f'The following addresses are in the draw, weighted by ticket amount'
                         f' (last 5 digits only):\n\n{last5}\n\nLast updated: '
-                        f'{variables.raffleupdate.strftime("%A %B %d %Y %I:%M %p")} UTC\n\n'
+                        f'{updateutc.strftime("%A %B %d %Y %I:%M %p")} UTC\n\n'
                         f'{quote}',
                 parse_mode="Markdown")
         if ext == "run1":

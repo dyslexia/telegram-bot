@@ -1,4 +1,6 @@
 from datetime import datetime
+import pytz
+local = pytz.timezone("Europe/London")
 # VARIABLES
 
 # AUTO TIMES HOURS
@@ -11,17 +13,19 @@ automessage = "**X7 Finance Twitter Raid**\n\nClick the link below and like and 
 automessagelink = "https://twitter.com/search?q=%23x7finance&src=typed_query"
 
 # SPACES                Y   M   D   H   M  S
-spacestime = datetime(2023, 3, 28, 19, 00, 00)
+spacestime = datetime(2023, 3, 28, 20, 00, 00)
 spaceslink = "https://twitter.com/i/spaces/1RDGlanOvMkJL?s=20"
 
 # RAFFLE               Y   M   D   H   M  S
 raffle = datetime(2023, 3, 28, 12, 00, 00)
 raffleupdate = datetime(2023, 3, 27, 10, 00, 00)
-# GIVEAWAY               Y   M   D   H   M  S
 
+
+# GIVEAWAY               Y   M   D   H   M  S
 giveaway = datetime(2023, 3, 30, 20, 30, 00)
 snapshot1 = datetime(2023, 3, 9, 20, 30, 00)
 snapshot2 = datetime(2023, 3, 29, 20, 30, 00)
+giveawayupdate = datetime(2023, 3, 29, 20, 30, 00)
 snapshot1time = snapshot1.strftime("%A %B %d %Y %I:%M %p")
 snapshot2time = snapshot2.strftime("%A %B %d %Y %I:%M %p")
 giveawaytime = giveaway.strftime("%A %B %d %Y %I:%M %p")
