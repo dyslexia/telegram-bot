@@ -1603,10 +1603,14 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     df = pd.read_csv(excel)
     addresses = list(df.Holders)
     last5 = [entry[-5:] for entry in addresses]
-    local_dt = localtime.localize(variables.giveawaytime, is_dst=None)
-    then = local_dt.astimezone(pytz.utc)
+    local_giveaway = localtime.localize(variables.giveawaytime, is_dst=None)
+    giveawaytime = local_giveaway.astimezone(pytz.utc)
+    local_snap1 = localtime.localize(variables.snapshot1, is_dst=None)
+    snapshot1 = local_snap1.astimezone(pytz.utc)
+    local_snap2 = localtime.localize(variables.snapshot2, is_dst=None)
+    snapshot2 = local_snap2.astimezone(pytz.utc)
     now = datetime.now(timezone.utc)
-    duration = then - now
+    duration = giveawaytime - now
     duration_in_s = duration.total_seconds()
     days = divmod(duration_in_s, 86400)
     hours = divmod(days[1], 3600)
@@ -1620,10 +1624,18 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if ext == "":
             await update.message.reply_photo(
                 photo=open((random.choice(items.logos)), 'rb'),
-                caption=f'*{variables.giveawaytitle}*\n\n'
-                        f'X7 Finance Giveaway ends:\n\n{then.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
+                caption=f'*X7 Finance 20,000 X7R Giveaway!*\n\n'
+                        f'X7 Finance Giveaway ends:\n\n{giveawaytime.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
                         f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
-                        f'{variables.giveawayinfo}'
+                        'For every 0.1 X7D minted,1 entry into the draw was generated!\n\n'
+                        f'A Snapshot of minters was taken at {snapshot1.strftime("%A %B %d %Y %I:%M %p")} (UTC) '
+                        f'and a second will be at {snapshot2.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
+                        f'The Diamond hands that have held for the entire duration are in the draw! The more minted, '
+                        f'the better the chance!\n\n'
+                        'Any withdrawals will be deducted from the entries at the second snapshot.\n\n'
+                        'To view entries use `/giveaway entries`\n\n'
+                        f'The draw will be made on {giveawaytime.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
+                        f'Credit: Defi Dipper!'
                         f'\n\n{quote}', parse_mode="Markdown")
         if ext == "entries":
             updatelocal = localtime.localize(variables.giveawayupdate, is_dst=None)
@@ -1640,8 +1652,8 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if update.effective_user in (admin.user for admin in chat_admins):
                 await update.message.reply_photo(
                     photo=open((random.choice(items.logos)), 'rb'),
-                    caption=f'*{variables.giveawaytitle}*\n\n'
-                            f'The winner of the {variables.giveawaytitle} is:\n\n'
+                    caption=f'*X7 Finance 20,000 X7R Giveaway!*\n\n'
+                            f'The winner of the *X7 Finance 20,000 X7R Giveaway!* is:\n\n'
                             f'{random.choice(last5)} (last 5 digits only)\n'
                             f'Trust no one, trust code. Long live Defi!\n\n{quote}',
                     parse_mode="Markdown")

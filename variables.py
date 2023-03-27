@@ -16,26 +16,14 @@ spaceslink = "https://twitter.com/i/spaces/1RDGlanOvMkJL?s=20"
 
 # RAFFLE               Y   M   D   H   M  S
 raffle = datetime(2023, 3, 28, 13, 00, 00)
-raffleupdate = datetime(2023, 3, 27, 20, 00, 00)
+raffleupdate = datetime(2023, 3, 27, 21, 30, 00)
 
 
 # GIVEAWAY               Y   M   D   H   M  S
-giveaway = datetime(2023, 3, 30, 20, 30, 00)
+giveawaytime = datetime(2023, 3, 30, 20, 30, 00)
 snapshot1 = datetime(2023, 3, 9, 20, 30, 00)
 snapshot2 = datetime(2023, 3, 29, 20, 30, 00)
-giveawayupdate = datetime(2023, 3, 29, 20, 30, 00)
-snapshot1time = snapshot1.strftime("%A %B %d %Y %I:%M %p")
-snapshot2time = snapshot2.strftime("%A %B %d %Y %I:%M %p")
-giveawaytime = giveaway.strftime("%A %B %d %Y %I:%M %p")
-giveawaytitle = "X7 Finance 20,000 X7R Giveaway!"
-giveawayinfo = "For every 0.1 X7D minted,1 entry into the draw was generated!\n\n" \
-               f"A Snapshot of minters was taken at {snapshot1time} (UTC) and a second will be at " \
-               f"{snapshot2time} (UTC)\n\n" \
-               f"The Diamond hands that have held for the entire duration are in the draw! The more minted," \
-               " the better the chance!\n\n" \
-               "Any withdrawals will be deducted from the entries at the second snapshot.\n\nTo view entries use " \
-               "`/giveaway entries`\n\n" \
-               f"The draw will be made on {giveawaytime} (UTC)\n\nCredit: Defi Dipper!"
+giveawayupdate = datetime(2023, 3, 29, 21, 30, 00)
 
 # TWITTER
 tweetid = 1625541579074158607
