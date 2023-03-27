@@ -1,6 +1,4 @@
 from datetime import datetime
-import pytz
-local = pytz.timezone("Europe/London")
 # VARIABLES
 
 # AUTO TIMES HOURS
@@ -17,8 +15,8 @@ spacestime = datetime(2023, 3, 28, 20, 00, 00)
 spaceslink = "https://twitter.com/i/spaces/1RDGlanOvMkJL?s=20"
 
 # RAFFLE               Y   M   D   H   M  S
-raffle = datetime(2023, 3, 28, 12, 00, 00)
-raffleupdate = datetime(2023, 3, 27, 11, 00, 00)
+raffle = datetime(2023, 3, 28, 13, 00, 00)
+raffleupdate = datetime(2023, 3, 27, 20, 00, 00)
 
 
 # GIVEAWAY               Y   M   D   H   M  S
@@ -77,12 +75,13 @@ commands = '/about - Welcome to X7 Finance\n' \
            '/loans - Loan Term Info\n' \
            '/burn - X7R Burn \n' \
            '/holders - Token Holder Info\n' \
-           '/airdrop - Snapshot Info\n' \
+           '/airdrop - Airdrop/Snapshot Info\n' \
            '/nft - NFT Details\n' \
            'opensea - Opensea Links\n' \
            '/pioneer -  [tokenid] Pioneer NFT Stats\n' \
            '/discount - discount committee NFT Info\n' \
            '/smart - Smart Contract Details\n' \
+           '/faq - X7 Finance FAQs\n' \
            '/deployer  - X7 Finance Deployer Info\n' \
            '/withdraw  - How to withdraw X7D\n' \
            '/giveaway - Giveaway Details\n' \
@@ -92,7 +91,12 @@ commands = '/about - Welcome to X7 Finance\n' \
            '/fg - Market fg Info\n' \
            '/time - World Time Info\n' \
            '/search - [keyword] Search the web\n' \
+           '/joke - Tell a joke\n' \
+           '/quote - Inspirational quote\n' \
+           '/day - On this day in history\n' \
+           '/say - Text to speech\n' \
            '/channels - List of X7 Finance Community TG Channels\n' \
+           '/announcements - X7 Finance Announcements TG Channel\n' \
            '/media - TG Stickers and Emojis\n' \
            '/bobby - Bobby BuyBot Channels\n' \
            '/alumni - X7 Finance Alumni\n'
