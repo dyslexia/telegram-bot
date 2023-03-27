@@ -16,7 +16,8 @@ from PIL import Image, ImageDraw, ImageFont
 from moralis import evm_api
 import cloudscraper
 from pycoingecko import CoinGeckoAPI
-local = pytz.timezone("Europe/London")
+
+localtime = pytz.timezone("Europe/London")
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
@@ -1527,7 +1528,7 @@ async def spaces_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    local_dt = local.localize(variables.spacestime, is_dst=None)
+    local_dt = localtime.localize(variables.spacestime, is_dst=None)
     then = local_dt.astimezone(pytz.utc)
     now = datetime.now(timezone.utc)
     duration = then - now
@@ -1602,7 +1603,7 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     df = pd.read_csv(excel)
     addresses = list(df.Holders)
     last5 = [entry[-5:] for entry in addresses]
-    local_dt = local.localize(variables.giveawaytime, is_dst=None)
+    local_dt = localtime.localize(variables.giveawaytime, is_dst=None)
     then = local_dt.astimezone(pytz.utc)
     now = datetime.now(timezone.utc)
     duration = then - now
@@ -1625,7 +1626,7 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         f'{variables.giveawayinfo}'
                         f'\n\n{quote}', parse_mode="Markdown")
         if ext == "entries":
-            updatelocal = local.localize(variables.giveawayupdate, is_dst=None)
+            updatelocal = localtime.localize(variables.giveawayupdate, is_dst=None)
             updateutc = updatelocal.astimezone(pytz.utc)
             await update.message.reply_photo(
                 photo=open((random.choice(items.logos)), 'rb'),
@@ -4171,7 +4172,7 @@ async def raffle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7rdollar = x7rbalance * x7rprice
     x7rhalfdollar = x7rdollar / 2
     x7rhalfbalance = x7rbalance / 2
-    local_dt = local.localize(variables.raffle, is_dst=None)
+    local_dt = localtime.localize(variables.raffle, is_dst=None)
     then = local_dt.astimezone(pytz.utc)
     now = datetime.now(timezone.utc)
     duration = then - now
@@ -4213,7 +4214,7 @@ async def raffle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     [InlineKeyboardButton(text='X7 Community Multisig Wallet',
                                           url=f'{items.etheraddress}{items.commultieth}')], ]))
         if ext == "entries":
-            updatelocal = local.localize(variables.raffleupdate, is_dst=None)
+            updatelocal = localtime.localize(variables.raffleupdate, is_dst=None)
             updateutc = updatelocal.astimezone(pytz.utc)
             await update.message.reply_photo(
                 photo=open(r"media\raffle.jpg", 'rb'),
