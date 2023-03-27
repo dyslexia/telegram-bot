@@ -1561,7 +1561,7 @@ async def spaces_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     days = divmod(duration_in_s, 86400)
     hours = divmod(days[1], 3600)
     minutes = divmod(hours[1], 60)
-    if duration < timedelta(0):
+    if duration < timedelta(1):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'X7 Finance Twitter space\n\nPlease check back for more details'
