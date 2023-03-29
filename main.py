@@ -1599,9 +1599,9 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     ext = " ".join(context.args)
-    excel = r"addresses.csv"
+    excel = r"raffle.csv"
     df = pd.read_csv(excel)
-    addresses = list(df.Holders)
+    addresses = list(df.Address)
     last5 = [entry[-5:] for entry in addresses]
     local_giveaway = localtime.localize(variables.giveawaytime, is_dst=None)
     giveawaytime = local_giveaway.astimezone(pytz.utc)
@@ -1629,11 +1629,11 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
                         'For every 0.1 X7D minted,1 entry into the draw was generated!\n\n'
                         f'A Snapshot of minters was taken at {snapshot1.strftime("%A %B %d %Y %I:%M %p")} (UTC) '
-                        f'and a second will be at {snapshot2.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
+                        f'and a second was at {snapshot2.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
                         f'The Diamond hands that have held for the entire duration are in the draw! The more minted, '
                         f'the better the chance!\n\n'
-                        'Any withdrawals will be deducted from the entries at the second snapshot.\n\n'
-                        'To view entries use `/giveaway entries`\n\n'
+                        'Any withdrawals were deducted from the entries at the second snapshot.\n\n'
+                        'To view entries [click here](https://github.com/x7finance/telegram-bot/blob/main/raffle.csv)\n\n'
                         f'The draw will be made on {giveawaytime.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
                         f'Credit: Defi Dipper!'
                         f'\n\n{quote}', parse_mode="Markdown")
@@ -4163,101 +4163,6 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ]))
 
 
-async def raffle_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    ext = " ".join(context.args)
-    excel = r"raffle.csv"
-    df = pd.read_csv(excel)
-    addresses = list(df.Holders)
-    last5 = [entry[-5:] for entry in addresses]
-    quoteresponse = requests.get(items.quoteapi)
-    quotedata = quoteresponse.json()
-    quoteraw = (random.choice(quotedata))
-    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    cg = CoinGeckoAPI()
-    cgx7rprice = (cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
-                               include_24hr_vol='true', include_last_updated_at="true"))
-    x7rprice = (cgx7rprice["x7r"]["usd"])
-    x7rurl = items.tokenbalanceapieth + items.x7rca + '&address=' + items.commultieth + '&tag=latest' + keys.ether
-    x7rresponse = requests.get(x7rurl)
-    x7rdata = x7rresponse.json()
-    x7rbalance = int(x7rdata["result"][:6]) - 201416
-    x7rdollar = x7rbalance * x7rprice
-    x7rhalfdollar = x7rdollar / 2
-    x7rhalfbalance = x7rbalance / 2
-    local_dt = localtime.localize(variables.raffle, is_dst=None)
-    then = local_dt.astimezone(pytz.utc)
-    now = datetime.now(timezone.utc)
-    duration = then - now
-    duration_in_s = duration.total_seconds()
-    days = divmod(duration_in_s, 86400)
-    hours = divmod(days[1], 3600)
-    minutes = divmod(hours[1], 60)
-    if ext == "run1":
-        chat_admins = await update.effective_chat.get_administrators()
-        if update.effective_user in (admin.user for admin in chat_admins):
-            await update.message.reply_photo(
-                photo=open(r"media\raffle.jpg", 'rb'),
-                caption=f'*X7 Finance 50/50 Raffle*\n\n'
-                        f'Winner of the 50/50 Raffle is:\n\n'
-                        f'{random.choice(last5)} (last 5 digits only)\n\n'
-                        f'Congratulations, you win: {"{:0,.0f}".format(x7rhalfbalance)} '
-                        f'X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n\n'
-                        f'Community Multisig will burn: {"{:0,.0f}".format(x7rhalfbalance)} '
-                        f'X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n',
-                parse_mode="Markdown")
-        else:
-            await update.message.reply_text(f'{variables.modsonly}')
-    if ext == "run2":
-        chat_admins = await update.effective_chat.get_administrators()
-        if update.effective_user in (admin.user for admin in chat_admins):
-            await update.message.reply_text(
-                f'*X7 Finance 50/50 Raffle*\n\n'
-                f'Second Place winner of the 50/50 Raffle is:\n\n'
-                f'{random.choice(last5)} (last 5 digits only)\n\n'
-                f'Congratulations! you win an Ecosystem Maxi NFT (ETH)\n\n',
-                parse_mode="Markdown")
-        else:
-            await update.message.reply_text(f'{variables.modsonly}')
-    if ext == "run3":
-        chat_admins = await update.effective_chat.get_administrators()
-        if update.effective_user in (admin.user for admin in chat_admins):
-            await update.message.reply_text(
-                f'*X7 Finance 50/50 Raffle*\n\n'
-                f'Third place winner of the 50/50 Raffle is:\n\n'
-                f'{random.choice(last5)} (last 5 digits only)\n\n'
-                f'Congratulations! you win an Ecosystem Maxi NFT (ETH)\n\n'
-                f'Trust no one, trust code. Long live Defi!\n\n{quote}',
-                parse_mode="Markdown")
-        else:
-            await update.message.reply_text(f'{variables.modsonly}')
-    if ext == "":
-        await update.message.reply_photo(
-            photo=open(r"media\raffle.jpg", 'rb'),
-            caption=f'*X7 Finance 50/50 Raffle*\n\n'
-                    f'Draw coming soon... please stand by...\n\n'
-                    f'Prize Total: {"{:0,.0f}".format(x7rbalance)} X7R (${"{:0,.0f}".format(x7rdollar)})\n'
-                    f'Winners Prize: {"{:0,.0f}".format(x7rhalfbalance)} '
-                    f'X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n'
-                    f'Burn Amount: {"{:0,.0f}".format(x7rhalfbalance)} '
-                    f'X7R (${"{:0,.0f}".format(x7rhalfdollar)})\n\n'
-                    f'{quote}', parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='X7 Community Multisig Wallet',
-                                      url=f'{items.etheraddress}{items.commultieth}')], ]))
-    if ext == "entries":
-        updatelocal = localtime.localize(variables.raffleupdate, is_dst=None)
-        updateutc = updatelocal.astimezone(pytz.utc)
-        await update.message.reply_photo(
-            photo=open(r"media\raffle.jpg", 'rb'),
-            caption=f'The following addresses are in the draw, weighted by ticket amount'
-                    f' (last 5 digits only):\n\n{last5}\n\n'
-                    f'Please check here for full list:\n'
-                    f'https://github.com/x7finance/telegram-bot/blob/main/raffle.csv\n\nLast updated: '
-                    f'{updateutc.strftime("%A %B %d %Y %I:%M %p")} UTC\n\n'
-                    f'{quote}',
-            parse_mode="Markdown")
-
-
 async def alumni_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteresponse = requests.get(items.quoteapi)
     quotedata = quoteresponse.json()
@@ -4479,7 +4384,6 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('voting', voting_command))
     application.add_handler(CommandHandler('gas', gas_command))
     application.add_handler(CommandHandler('wei', wei_command))
-    application.add_handler(CommandHandler('raffle', raffle_command))
     application.add_handler(CommandHandler('alumni', alumni_command))
     application.add_handler(CommandHandler(['docs', 'dashboard'], dashboard_command))
     application.add_handler(CommandHandler(['snapshot', 'rollout', 'multichain', 'airdrop'], snapshot_command))
