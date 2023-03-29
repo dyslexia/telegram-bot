@@ -1083,7 +1083,6 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     totaldollar = float(totalamount) * float(ethvalue) / 1 ** 18
     pioneereamount = str(pioneer / 10 ** 18 / 639)
     pioneerdollar = float(totalamount) * float(ethvalue) / 1 ** 18 / 639
-
     if pioneerid == "":
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
@@ -1139,11 +1138,16 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     if chain == "" or chain == "eth":
+        cg = CoinGeckoAPI()
+        cgx7rprice = (cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
+                                   include_24hr_vol='true', include_last_updated_at="true"))
+        x7rprice = (cgx7rprice["x7r"]["usd"])
         burnurl = items.tokenbalanceapieth + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.ether
         burnresponse = requests.get(burnurl)
         burndata = burnresponse.json()
         burndata["result"] = int(burndata["result"][:-18])
         result = round(((burndata["result"] / items.supply) * 100), 6)
+        burndollar = x7rprice * burndata["result"]
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.ethlogo)
         im1.paste(im2, (720, 20), im2)
@@ -1151,7 +1155,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'X7R (ETH) Tokens Burned:\n\n'
-                f'{"{:,}".format(burndata["result"])}\n'
+                f'{"{:,}".format(burndata["result"])} (${"{:0,.0f}".format(burndollar)})\n'
                 f'{result}% of Supply\n\n\n\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -1159,7 +1163,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'\n\nX7R (ETH) Tokens Burned:\nUse `/burn [chain-name]` for other chains\n\n'
-                    f'{"{:,}".format(burndata["result"])}\n'
+                    f'{"{:,}".format(burndata["result"])} (${"{:0,.0f}".format(burndollar)})\n'
                     f'{result}% of Supply\n\n'
                     f'[Etherscan]({items.ethertoken}{items.x7rca}?a={items.dead})\n\n{quote}',
             parse_mode="markdown")
