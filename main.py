@@ -2460,7 +2460,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if cgx7daoprice["x7dao"]["usd_24h_change"] is None:
         cgx7daoprice["x7dao"]["usd_24h_change"] = 0
     if dollar:
-        amount = round(float(chain[1:]) / float(x7daoprice), 2)
+        amount = float(chain[1:]) / float(x7daoprice)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7daologo)
         im1.paste(im2, (720, 20), im2)
@@ -2481,7 +2481,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "proposal":
         chain = "500000"
     if chain == "500000":
-        amount = round(float(chain) * float(x7daoprice), 2)
+        amount = float(chain) * float(x7daoprice)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7daologo)
         im1.paste(im2, (720, 20), im2)
@@ -2502,7 +2502,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown')
         return
     if chain.isdigit():
-        amount = round(float(chain)*float(x7daoprice), 2)
+        amount = float(chain)*float(x7daoprice)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7daologo)
         im1.paste(im2, (720, 20), im2)
@@ -2516,7 +2516,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'{chain} X7DAO (ETH) currently costs:\n\n${amount} (before tax)\n\n{quote}',
+            caption=f'{chain} X7DAO (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n{quote}',
             parse_mode='Markdown')
     if chain == "":
         x7daoholdersurl = items.ethplorerapi + items.x7daoca + keys.ethplorer
@@ -2632,7 +2632,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if cgx7101price["x7101"]["usd_24h_change"] is None:
         cgx7101price["x7101"]["usd_24h_change"] = 0
     if dollar:
-        amount = round(float(chain[1:]) / float(x7101price), 2)
+        amount = float(chain[1:]) / float(x7101price)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7101logo)
         im1.paste(im2, (720, 20), im2)
@@ -2650,7 +2650,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'{chain} Is currently worth:\n\n{"{:0,.0f}".format(amount)}' 
                     f' X7101 (ETH) Tokens (before tax)\n\n{quote}', parse_mode='Markdown')
     if chain.isdigit():
-        amount = round(float(chain)*float(x7101price), 2)
+        amount = float(chain)*float(x7101price)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7101logo)
         im1.paste(im2, (720, 20), im2)
@@ -2664,7 +2664,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'{chain} X7101 (ETH) currently costs:\n\n${amount} (before tax)\n\n{quote}',
+            caption=f'{chain} X7101 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n{quote}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
         im1 = Image.open((random.choice(items.blackhole)))
@@ -2756,7 +2756,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if cgx7102price["x7102"]["usd_24h_change"] is None:
         cgx7102price["x7102"]["usd_24h_change"] = 0
     if dollar:
-        amount = round(float(chain[1:]) / float(x7102price), 2)
+        amount = float(chain[1:]) / float(x7102price)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7102logo)
         im1.paste(im2, (720, 20), im2)
@@ -2775,7 +2775,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f' X7102 (ETH) Tokens (before tax)\n\n{quote}',
             parse_mode='Markdown')
     if chain.isdigit():
-        amount = round(float(chain) * float(x7102price), 2)
+        amount = float(chain) * float(x7102price)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7102logo)
         im1.paste(im2, (720, 20), im2)
@@ -2789,7 +2789,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'{chain} X7102 (ETH) currently costs:\n\n${amount} (before tax)\n\n{quote}',
+            caption=f'{chain} X7102 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n{quote}',
             parse_mode='Markdown')
     if chain == "":
         im1 = Image.open((random.choice(items.blackhole)))
@@ -2881,7 +2881,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if cgx7103price["x7103"]["usd_24h_change"] is None:
         cgx7103price["x7103"]["usd_24h_change"] = 0
     if dollar:
-        amount = round(float(chain[1:]) / float(x7103price), 2)
+        amount = float(chain[1:]) / float(x7103price)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7103logo)
         im1.paste(im2, (720, 20), im2)
@@ -2914,7 +2914,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'{chain} X7103 (ETH) currently costs:\n\n${amount} (before tax)\n\n{quote}',
+            caption=f'{chain} X7103 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n{quote}',
             parse_mode='Markdown')
     if chain == "":
         im1 = Image.open((random.choice(items.blackhole)))
@@ -3006,7 +3006,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if cgx7104price["x7104"]["usd_24h_change"] is None:
         cgx7104price["x7104"]["usd_24h_change"] = 0
     if dollar:
-        amount = round(float(chain[1:]) / float(x7104price), 2)
+        amount = float(chain[1:]) / float(x7104price)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7104logo)
         im1.paste(im2, (720, 20), im2)
@@ -3025,7 +3025,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f' X7104 (ETH) Tokens (before tax)\n\n{quote}',
             parse_mode='Markdown')
     if chain.isdigit():
-        amount = round(float(chain) * float(x7104price), 2)
+        amount = float(chain) * float(x7104price)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7104logo)
         im1.paste(im2, (720, 20), im2)
@@ -3039,7 +3039,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'{chain} X7104 (ETH) currently costs:\n\n${amount} (before tax)\n\n{quote}',
+            caption=f'{chain} X7104 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n{quote}',
             parse_mode='Markdown')
     if chain == "":
         im1 = Image.open((random.choice(items.blackhole)))
@@ -3131,7 +3131,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if cgx7105price["x7105"]["usd_24h_change"] is None:
         cgx7105price["x7105"]["usd_24h_change"] = 0
     if dollar:
-        amount = round(float(chain[1:]) / float(x7105price), 2)
+        amount = float(chain[1:]) / float(x7105price)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7105logo)
         im1.paste(im2, (720, 20), im2)
@@ -3150,7 +3150,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f' X7105 (ETH) Tokens (before tax)\n\n{quote}',
             parse_mode='Markdown')
     if chain.isdigit():
-        amount = round(float(chain) * float(x7105price), 2)
+        amount = float(chain) * float(x7105price)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7105logo)
         im1.paste(im2, (720, 20), im2)
@@ -3164,7 +3164,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'{chain} X7105 (ETH) currently costs:\n\n${amount} (before tax)\n\n{quote}',
+            caption=f'{chain} X7105 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n{quote}',
             parse_mode='Markdown')
     if chain == "":
         im1 = Image.open((random.choice(items.blackhole)))
