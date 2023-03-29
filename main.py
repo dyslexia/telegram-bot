@@ -1080,11 +1080,10 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pioneerethdata = pioneerethresponse.json()
     pioneer = float(pioneerethdata["result"][0]["balance"])
     totalamount = str(pioneer / 10 ** 18)
-    totaldollarraw = float(totalamount) * float(ethvalue) / 1 ** 18
-    totaldollar = str(totaldollarraw)
+    totaldollar = float(totalamount) * float(ethvalue) / 1 ** 18
     pioneereamount = str(pioneer / 10 ** 18 / 639)
-    pioneerdollarraw = float(totalamount) * float(ethvalue) / 1 ** 18 / 639
-    pioneerdollar = str(pioneerdollarraw)
+    pioneerdollar = float(totalamount) * float(ethvalue) / 1 ** 18 / 639
+
     if pioneerid == "":
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
@@ -1096,9 +1095,9 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Total Volume: {volume} ETH\n'
                 f'Total Sales: {sales}\n'
                 f'Number of Owners: {owners}\n'
-                f'Pioneers Unlocked: {traits}\n\n'
-                f'Pioneer Pool: {totalamount[:3]} ETH (${totaldollar[:4]})\n'
-                f'Pioneer Earnings: {pioneereamount[:5]} ETH (${pioneerdollar[:4]})\n\n\n'
+                f'Pioneers Unlocked: {traits}\n'
+                f'Pioneer Pool: {totalamount[:3]} ETH (${"{:0,.0f}".format(totaldollar)})\n'
+                f'Pioneer Earnings: {pioneereamount[:5]} ETH (${"{:0,.0f}".format(pioneerdollar)})\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
@@ -1111,8 +1110,8 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'Total Sales: {sales}\n'
                     f'Number of Owners: {owners}\n'
                     f'Pioneers Unlocked: {traits}\n\n'
-                    f'Pioneer Pool: {totalamount[:3]} ETH (${totaldollar[:4]})\n'
-                    f'Pioneer Earnings: {pioneereamount[:5]} ETH (${pioneerdollar[:4]})\n\n{quote}',
+                    f'Pioneer Pool: {totalamount[:3]} ETH (${"{:0,.0f}".format(totaldollar)})\n'
+                    f'Pioneer Earnings: {pioneereamount[:5]} ETH (${"{:0,.0f}".format(pioneerdollar)})\n\n{quote}',
             parse_mode='markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7 Pioneer Dashboard', url='https://x7.finance/x/nft/pioneer')],
@@ -1633,7 +1632,8 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         f'The Diamond hands that have held for the entire duration are in the draw! The more minted, '
                         f'the better the chance!\n\n'
                         'Any withdrawals were deducted from the entries at the second snapshot.\n\n'
-                        'To view entries [click here](https://github.com/x7finance/telegram-bot/blob/main/raffle.csv)\n\n'
+                        'To view entries '
+                        '[click here](https://github.com/x7finance/telegram-bot/blob/main/raffle.csv)\n\n'
                         f'The draw will be made on {giveawaytime.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
                         f'Credit: Defi Dipper!'
                         f'\n\n{quote}', parse_mode="Markdown")
@@ -1654,7 +1654,7 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     photo=open((random.choice(items.logos)), 'rb'),
                     caption=f'*X7 Finance 20,000 X7R Giveaway!*\n\n'
                             f'The winner of the *X7 Finance 20,000 X7R Giveaway!* is:\n\n'
-                            f'{random.choice(last5)} (last 5 digits only)\n'
+                            f'{random.choice(last5)} (last 5 digits only)\n\n'
                             f'Trust no one, trust code. Long live Defi!\n\n{quote}',
                     parse_mode="Markdown")
             else:
