@@ -1127,7 +1127,10 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f'Transfer Lock Status: {status}\n\n'
             f'https://opensea.io/assets/ethereum/0x70000299ee8910ccacd97b1bb560e34f49c9e4f7/'
             f'{pioneerid}\n\n{quote}',
-            parse_mode='markdown')
+            parse_mode='markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='X7 Pioneer Dashboard', url='https://x7.finance/x/nft/pioneer')],
+                 [InlineKeyboardButton(text='Opensea', url='https://opensea.io/collection/x7-pioneer')], ]))
 
 
 async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1162,9 +1165,11 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'\n\nX7R (ETH) Tokens Burned:\nUse `/burn [chain-name]` for other chains\n\n'
                     f'{"{:,}".format(burndata["result"])} (${"{:0,.0f}".format(burndollar)})\n'
-                    f'{result}% of Supply\n\n'
-                    f'[Etherscan]({items.ethertoken}{items.x7rca}?a={items.dead})\n\n{quote}',
-            parse_mode="markdown")
+                    f'{result}% of Supply\n\n{quote}',
+            parse_mode="markdown",
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='Etherscan Burn Wallet',
+                                       url=f'{items.ethertoken}{items.x7rca}?a={items.dead}')], ]))
     if chain == "bsc" or chain == "bnb":
         burnurl = items.tokenbalanceapibsc + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.bsc
         burnresponse = requests.get(burnurl)
@@ -1187,9 +1192,11 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'X7R (BSC) Tokens Burned:\nUse `/burn [chain-name]` for other chains\n\n'
                     f'{"{:,}".format(burndata["result"])}\n'
-                    f'{result}% of Supply\n\n'
-                    f'[BSCscan]({items.ethertoken}{items.x7rca}?a={items.dead})\n\n{quote}',
-            parse_mode="markdown")
+                    f'{result}% of Supply\n\n{quote}',
+            parse_mode="markdown",
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='Etherscan Burn Wallet',
+                                       url=f'{items.bsctoken}{items.x7rca}?a={items.dead}')], ]))
     if chain == "polygon" or chain == "poly":
         burnurl = items.tokenbalanceapipoly + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.poly
         burnresponse = requests.get(burnurl)
@@ -1212,9 +1219,11 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'X7R (POLYGON) Tokens Burned:\n\n'
                     f'{"{:,}".format(burndata["result"])}\n'
-                    f'{result}% of Supply\n\n'
-                    f'[Polygonscan]({items.polytoken}{items.x7rca}?a={items.dead})\n\n{quote}',
-            parse_mode="markdown")
+                    f'{result}% of Supply\n\n{quote}',
+            parse_mode="markdown",
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='Etherscan Burn Wallet',
+                                       url=f'{items.polytoken}{items.x7rca}?a={items.dead}')], ]))
     if chain == "arbitrum" or chain == "arb":
         burnurl = items.tokenbalanceapibsc + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.arb
         burnresponse = requests.get(burnurl)
@@ -1237,9 +1246,11 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'X7R (ARBITRUM) Tokens Burned:\nUse `/burn [chain-name]` for other chains\n\n'
                     f'{"{:,}".format(burndata["result"])}\n'
-                    f'{result}% of Supply\n\n'
-                    f'[Arbiscan]({items.arbtoken}{items.x7rca}?a={items.dead})\n\n{quote}',
-            parse_mode="markdown")
+                    f'{result}% of Supply\n\n{quote}',
+            parse_mode="markdown",
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='Etherscan Burn Wallet',
+                                       url=f'{items.arbtoken}{items.x7rca}?a={items.dead}')], ]))
     if chain == "optimism" or chain == "arb":
         burnurl = items.tokenbalanceapibsc + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.opti
         burnresponse = requests.get(burnurl)
@@ -1262,9 +1273,11 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'X7R (OPTIMISM) Tokens Burned:\nUse `/burn [chain-name]` for other chains\n\n'
                     f'{"{:,}".format(burndata["result"])}\n'
-                    f'{result}% of Supply\n\n'
-                    f'[Optimism.Etherscan]({items.optitoken}{items.x7rca}?a={items.dead})\n\n{quote}',
-            parse_mode="markdown")
+                    f'{result}% of Supply\n\n{quote}',
+            parse_mode="markdown",
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='Etherscan Burn Wallet',
+                                       url=f'{items.optitoken}{items.x7rca}?a={items.dead}')], ]))
 
 
 async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1894,7 +1907,7 @@ async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             '3. Input your desired amount in wei\n'
             '4. Write\n'
             '5. Confirm TX in chosen wallet\n\n'
-            'Note: use command `/wei ETHAMOUNT` in TG to quickly convert your eth into wei division',
+            'Note: use command `/wei [amount]` in TG to quickly convert into wei division',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
@@ -1910,7 +1923,7 @@ async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             '3. Input your desired amount in wei\n'
             '4. Write\n'
             '5. Confirm TX in chosen wallet\n\n'
-            'Note: use command `/wei ETHAMOUNT` in TG to quickly convert your eth into wei division',
+            'Note: use command `/wei [amount]` in TG to quickly convert into wei division',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
@@ -1926,7 +1939,7 @@ async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             '3. Input your desired amount in wei\n'
             '4. Write\n'
             '5. Confirm TX in chosen wallet\n\n'
-            'Note: use command `/wei ETHAMOUNT` in TG to quickly convert your eth into wei division',
+            'Note: use command `/wei [amount]` in TG to quickly convert into wei division',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
@@ -1942,7 +1955,7 @@ async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             '3. Input your desired amount in wei\n'
             '4. Write\n'
             '5. Confirm TX in chosen wallet\n\n'
-            'Note: use command `/wei ETHAMOUNT` in TG to quickly convert your eth into wei division',
+            'Note: use command `/wei [amount]` in TG to quickly convert into wei division',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
@@ -1958,7 +1971,7 @@ async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             '3. Input your desired amount in wei\n'
             '4. Write\n'
             '5. Confirm TX in chosen wallet\n\n'
-            'Note: use command `/wei ETHAMOUNT` in TG to quickly convert your eth into wei division',
+            'Note: use command `/wei [amount]` in TG to quickly convert into wei division',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
@@ -2286,6 +2299,20 @@ async def holders_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7DAO Holders: {x7daoholders}\n\n'
                 f'{quote}',
         parse_mode='Markdown')
+
+
+async def alumni_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    quoteresponse = requests.get(items.quoteapi)
+    quotedata = quoteresponse.json()
+    quoteraw = (random.choice(quotedata))
+    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+    await update.message.reply_photo(
+        photo=open((random.choice(items.logos)), 'rb'),
+        caption=f'*X7 Finance Alumni*\n\n'
+                f'@Callmelandlord - The Godfather of the X7 Finance community, the OG, the creator - X7 God\n\n'
+                f'@WoxieX - Creator of the OG dashboard -  x7community.space\n\n'
+                f'@Zaratustra  - Defi extraordinaire and protocol prophet\n\n'
+                f'{quote}', parse_mode='Markdown')
 
 
 # CG COMMANDS
@@ -4151,20 +4178,6 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='X7100 Initial Liquidity',
                                       url=f'{items.polyaddress}{items.consliq}')],
             ]))
-
-
-async def alumni_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    quoteresponse = requests.get(items.quoteapi)
-    quotedata = quoteresponse.json()
-    quoteraw = (random.choice(quotedata))
-    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
-        caption=f'*X7 Finance Alumni*\n\n'
-                f'@Callmelandlord - The Godfather of the X7 Finance community, the OG, the creator - X7 God\n\n'
-                f'@WoxieX - Creator of the OG dashboard -  x7community.space\n\n'
-                f'@Zaratustra  - Defi extraordinaire and protocol prophet\n\n'
-                f'{quote}', parse_mode='Markdown')
 
 
 # HARD AUTO MESSAGES
