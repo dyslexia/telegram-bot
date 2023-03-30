@@ -1,3 +1,5 @@
+from pycoingecko import CoinGeckoAPI
+
 main_id = '-1001780235511'
 test_id = '-1001867816945'
 
@@ -35,6 +37,7 @@ quoteapi = 'https://type.fit/api/quotes'
 fearapi = 'https://api.alternative.me/fng/?limit=0'
 todayapi = 'http://history.muffinlabs.com/date/'
 jokeapi = 'https://v2.jokeapi.dev/joke/Any?safe-mode'
+cg = CoinGeckoAPI()
 
 # TOKEN CA
 x7rca = '0x70008F18Fc58928dcE982b0A69C2c21ff80Dca54'

@@ -15,7 +15,6 @@ import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 from moralis import evm_api
 import cloudscraper
-from pycoingecko import CoinGeckoAPI
 
 localtime = pytz.timezone("Europe/London")
 
@@ -1138,9 +1137,8 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     if chain == "" or chain == "eth":
-        cg = CoinGeckoAPI()
-        cgx7rprice = (cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
-                                   include_24hr_vol='true', include_last_updated_at="true"))
+        cgx7rprice = (items.cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
+                                         include_24hr_vol='true', include_last_updated_at="true"))
         x7rprice = (cgx7rprice["x7r"]["usd"])
         burnurl = items.tokenbalanceapieth + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.ether
         burnresponse = requests.get(burnurl)
@@ -2298,9 +2296,8 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    cg = CoinGeckoAPI()
-    cgx7rprice = (cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
-                               include_24hr_vol='true', include_last_updated_at="true"))
+    cgx7rprice = (items.cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
+                                     include_24hr_vol='true', include_last_updated_at="true"))
     x7rprice = (cgx7rprice["x7r"]["usd"])
     if cgx7rprice["x7r"]["usd_24h_change"] is None:
         cgx7rprice["x7r"]["usd_24h_change"] = 0
@@ -2324,7 +2321,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'X7R (ETH) Tokens (Before Tax)\n\n{quote}',
             parse_mode='Markdown')
     if chain.isdigit():
-        amount = round(float(chain) * float(x7rprice), 2)
+        amount = float(chain) * float(x7rprice)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7rlogo)
         im1.paste(im2, (720, 20), im2)
@@ -2453,9 +2450,8 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    cg = CoinGeckoAPI()
-    cgx7daoprice = (cg.get_price(ids='x7dao', vs_currencies='usd', include_24hr_change='true',
-                                 include_24hr_vol='true', include_last_updated_at="true"))
+    cgx7daoprice = (items.cg.get_price(ids='x7dao', vs_currencies='usd', include_24hr_change='true',
+                                       include_24hr_vol='true', include_last_updated_at="true"))
     x7daoprice = (cgx7daoprice["x7dao"]["usd"])
     if cgx7daoprice["x7dao"]["usd_24h_change"] is None:
         cgx7daoprice["x7dao"]["usd_24h_change"] = 0
@@ -2621,9 +2617,8 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    cg = CoinGeckoAPI()
-    cgx7101price = (cg.get_price(ids='x7101', vs_currencies='usd', include_24hr_change='true',
-                                 include_24hr_vol='true', include_last_updated_at="true"))
+    cgx7101price = (items.cg.get_price(ids='x7101', vs_currencies='usd', include_24hr_change='true',
+                                       include_24hr_vol='true', include_last_updated_at="true"))
     x7101price = (cgx7101price["x7101"]["usd"])
     x7101holdersurl = items.ethplorerapi + items.x7101ca + keys.ethplorer
     x7101holdersresponse = requests.get(x7101holdersurl)
@@ -2745,9 +2740,8 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    cg = CoinGeckoAPI()
-    cgx7102price = (cg.get_price(ids='x7102', vs_currencies='usd', include_24hr_change='true',
-                                 include_24hr_vol='true', include_last_updated_at="true"))
+    cgx7102price = (items.cg.get_price(ids='x7102', vs_currencies='usd', include_24hr_change='true',
+                                       include_24hr_vol='true', include_last_updated_at="true"))
     x7102price = (cgx7102price["x7102"]["usd"])
     x7102holdersurl = items.ethplorerapi + items.x7102ca + keys.ethplorer
     x7102holdersresponse = requests.get(x7102holdersurl)
@@ -2870,9 +2864,8 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    cg = CoinGeckoAPI()
-    cgx7103price = (cg.get_price(ids='x7103', vs_currencies='usd', include_24hr_change='true',
-                                 include_24hr_vol='true', include_last_updated_at="true"))
+    cgx7103price = (items.cg.get_price(ids='x7103', vs_currencies='usd', include_24hr_change='true',
+                                       include_24hr_vol='true', include_last_updated_at="true"))
     x7103price = (cgx7103price["x7103"]["usd"])
     x7103holdersurl = items.ethplorerapi + items.x7103ca + keys.ethplorer
     x7103holdersresponse = requests.get(x7103holdersurl)
@@ -2995,9 +2988,8 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    cg = CoinGeckoAPI()
-    cgx7104price = (cg.get_price(ids='x7104', vs_currencies='usd', include_24hr_change='true',
-                                 include_24hr_vol='true', include_last_updated_at="true"))
+    cgx7104price = (items.cg.get_price(ids='x7104', vs_currencies='usd', include_24hr_change='true',
+                                       include_24hr_vol='true', include_last_updated_at="true"))
     x7104price = (cgx7104price["x7104"]["usd"])
     x7104holdersurl = items.ethplorerapi + items.x7104ca + keys.ethplorer
     x7104holdersresponse = requests.get(x7104holdersurl)
@@ -3120,9 +3112,8 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    cg = CoinGeckoAPI()
-    cgx7105price = (cg.get_price(ids='x7105', vs_currencies='usd', include_24hr_change='true',
-                                 include_24hr_vol='true', include_last_updated_at="true"))
+    cgx7105price = (items.cg.get_price(ids='x7105', vs_currencies='usd', include_24hr_change='true',
+                                       include_24hr_vol='true', include_last_updated_at="true"))
     x7105price = (cgx7105price["x7105"]["usd"])
     x7105holdersurl = items.ethplorerapi + items.x7105ca + keys.ethplorer
     x7105holdersresponse = requests.get(x7105holdersurl)
@@ -3264,21 +3255,21 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    cg = CoinGeckoAPI()
-    cgprice = (cg.get_price(ids='x7r,x7dao,x7101,x7102,x7103,x7104,x7105', vs_currencies='usd'))
+    cgprice = (items.cg.get_price(ids='x7r,x7dao,x7101,x7102,x7103,x7104,x7105', vs_currencies='usd'))
     burnurl = items.tokenbalanceapieth + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.ether
     burnresponse = requests.get(burnurl)
     burndata = burnresponse.json()
     burndata["result"] = int(burndata["result"][:-18])
     x7rsupply = items.supply - burndata["result"]
-    x7rprice = (cgprice["x7r"]["usd"]) * x7rsupply
-    x7daoprice = (cgprice["x7dao"]["usd"]) * items.supply
-    x7101price = (cgprice["x7101"]["usd"]) * items.supply
-    x7102price = (cgprice["x7102"]["usd"]) * items.supply
-    x7103price = (cgprice["x7103"]["usd"]) * items.supply
-    x7104price = (cgprice["x7104"]["usd"]) * items.supply
-    x7105price = (cgprice["x7105"]["usd"]) * items.supply
-    total = x7rprice + x7daoprice + x7101price + x7102price + x7103price + x7104price + x7105price
+    x7rcap = (cgprice["x7r"]["usd"]) * x7rsupply
+    x7daocap = (cgprice["x7dao"]["usd"]) * items.supply
+    x7101cap = (cgprice["x7101"]["usd"]) * items.supply
+    x7102cap = (cgprice["x7102"]["usd"]) * items.supply
+    x7103cap = (cgprice["x7103"]["usd"]) * items.supply
+    x7104cap = (cgprice["x7104"]["usd"]) * items.supply
+    x7105cap = (cgprice["x7105"]["usd"]) * items.supply
+    conscap = x7101cap + x7102cap + x7103cap + x7104cap + x7105cap
+    totalcap = x7rcap + x7daocap + x7101cap + x7102cap + x7103cap + x7104cap + x7105cap
     if chain == "":
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.ethlogo)
@@ -3287,34 +3278,34 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1 = ImageDraw.Draw(im1)
         i1.text((28, 36),
                 f'X7 Finance Market Cap Info (ETH)\n\n'
-                f'X7R:         ${"{:0,.0f}".format(x7rprice)}\n'
-                f'X7DAO:       ${"{:0,.0f}".format(x7daoprice)}\n'
-                f'X7101:       ${"{:0,.0f}".format(x7101price)}\n'
-                f'X7102:       ${"{:0,.0f}".format(x7102price)}\n'
-                f'X7103:       ${"{:0,.0f}".format(x7103price)}\n'
-                f'X7104:       ${"{:0,.0f}".format(x7104price)}\n'
-                f'X7105:       ${"{:0,.0f}".format(x7105price)}\n\n'
+                f'X7R:         ${"{:0,.0f}".format(x7rcap)}\n'
+                f'X7DAO:       ${"{:0,.0f}".format(x7daocap)}\n'
+                f'X7101:       ${"{:0,.0f}".format(x7101cap)}\n'
+                f'X7102:       ${"{:0,.0f}".format(x7102cap)}\n'
+                f'X7103:       ${"{:0,.0f}".format(x7103cap)}\n'
+                f'X7104:       ${"{:0,.0f}".format(x7104cap)}\n'
+                f'X7105:       ${"{:0,.0f}".format(x7105cap)}\n\n'
                 f'Constellations Combined:\n'
-                f'${"{:0,.0f}".format(x7101price + x7102price + x7103price + x7104price + x7105price)}\n\n'
+                f'${"{:0,.0f}".format(conscap)}\n\n'
                 f'Total Token Marketcap:\n'
-                f'${"{:0,.0f}".format(total)}\n\n'
+                f'${"{:0,.0f}".format(totalcap)}\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7 Finance Market Cap Info (ETH)*\n\n'
-                    f'X7R:           ${"{:0,.0f}".format(x7rprice)}\n'
-                    f'X7DAO:      ${"{:0,.0f}".format(x7daoprice)}\n'     
-                    f'X7101:       ${"{:0,.0f}".format(x7101price)}\n'
-                    f'X7102:       ${"{:0,.0f}".format(x7102price)}\n'
-                    f'X7103:       ${"{:0,.0f}".format(x7103price)}\n'
-                    f'X7104:       ${"{:0,.0f}".format(x7104price)}\n'
-                    f'X7105:       ${"{:0,.0f}".format(x7105price)}\n\n'
+                    f'X7R:           ${"{:0,.0f}".format(x7rcap)}\n'
+                    f'X7DAO:      ${"{:0,.0f}".format(x7daocap)}\n'     
+                    f'X7101:       ${"{:0,.0f}".format(x7101cap)}\n'
+                    f'X7102:       ${"{:0,.0f}".format(x7102cap)}\n'
+                    f'X7103:       ${"{:0,.0f}".format(x7103cap)}\n'
+                    f'X7104:       ${"{:0,.0f}".format(x7104cap)}\n'
+                    f'X7105:       ${"{:0,.0f}".format(x7105cap)}\n\n'
                     f'Constellations Combined:\n'
-                    f'${"{:0,.0f}".format(x7101price+x7102price+x7103price+x7104price+x7105price)}\n\n'
+                    f'${"{:0,.0f}".format(conscap)}\n\n'
                     f'Total Token Marketcap:\n'
-                    f'${"{:0,.0f}".format(total)}'
+                    f'${"{:0,.0f}".format(totalcap)}'
                     f'\n\n{quote}',
             parse_mode="Markdown")
 
@@ -3332,11 +3323,10 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tokenid = token["coins"][0]["api_symbol"]
     symbol = token["coins"][0]["symbol"]
     thumb = token["coins"][0]["large"]
-    cg = CoinGeckoAPI()
-    tokenprice = (cg.get_price(ids=tokenid, vs_currencies='usd', include_24hr_change='true',
-                               include_24hr_vol='true', include_market_cap="true", include_sparkline="true"))
-    cgtogetherprice = (cg.get_price(ids='x7r,x7dao', vs_currencies='usd', include_24hr_change='true',
-                                    include_24hr_vol='true'))
+    tokenprice = (items.cg.get_price(ids=tokenid, vs_currencies='usd', include_24hr_change='true',
+                                     include_24hr_vol='true', include_market_cap="true", include_sparkline="true"))
+    cgtogetherprice = (items.cg.get_price(ids='x7r,x7dao', vs_currencies='usd', include_24hr_change='true',
+                                          include_24hr_vol='true'))
     if search == "":
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(r'media\logo11.png')
@@ -3374,8 +3364,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         quotedata = quoteresponse.json()
         quoteraw = (random.choice(quotedata))
         quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-        cg = CoinGeckoAPI()
-        eth = (cg.get_price(ids='ethereum', vs_currencies='usd', include_24hr_change='true', include_market_cap="true"))
+        eth = (items.cg.get_price(ids='ethereum', vs_currencies='usd', include_24hr_change='true'))
         gasurl = items.ethgasapi + keys.ether
         gasresponse = requests.get(gasurl)
         gasdata = gasresponse.json()
@@ -3416,9 +3405,8 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         quotedata = quoteresponse.json()
         quoteraw = (random.choice(quotedata))
         quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-        cg = CoinGeckoAPI()
-        bnb = (cg.get_price(ids='binancecoin', vs_currencies='usd', include_24hr_change='true',
-                            include_market_cap='true'))
+        bnb = (items.cg.get_price(ids='binancecoin', vs_currencies='usd', include_24hr_change='true',
+                                  include_market_cap='true'))
         gasurl = items.bscgasapi + keys.bsc
         gasresponse = requests.get(gasurl)
         gasdata = gasresponse.json()
@@ -3453,14 +3441,14 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{quote}', parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Chart', url=f'https://www.coingecko.com/en/coins/bnb')], ]))
+        return
     if search == "matic" or search == "poly" or search == "polygon":
         quoteresponse = requests.get(items.quoteapi)
         quotedata = quoteresponse.json()
         quoteraw = (random.choice(quotedata))
         quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-        cg = CoinGeckoAPI()
-        matic = (cg.get_price(ids='matic-network', vs_currencies='usd', include_24hr_change='true',
-                              include_market_cap='true'))
+        matic = (items.cg.get_price(ids='matic-network', vs_currencies='usd', include_24hr_change='true',
+                                    include_market_cap='true'))
         gasurl = items.polygasapi + keys.poly
         gasresponse = requests.get(gasurl)
         gasdata = gasresponse.json()
@@ -3495,6 +3483,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{quote}', parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Chart', url=f'https://www.coingecko.com/en/coins/polygon')], ]))
+        return
     else:
         img = Image.open(requests.get(thumb, stream=True).raw)
         result = img.convert('RGBA')
@@ -3528,9 +3517,8 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    cg = CoinGeckoAPI()
-    cgconstellationprice = (cg.get_price(ids='x7101,x7102,x7103,x7104,x7105', vs_currencies='usd',
-                                         include_24hr_change='true'))
+    cgconstellationprice = (items.cg.get_price(ids='x7101,x7102,x7103,x7104,x7105', vs_currencies='usd',
+                                               include_24hr_change='true'))
     x7101mc = cgconstellationprice["x7101"]["usd"] * items.supply
     x7102mc = cgconstellationprice["x7102"]["usd"] * items.supply
     x7103mc = cgconstellationprice["x7103"]["usd"] * items.supply
@@ -3608,9 +3596,8 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quotedata = quoteresponse.json()
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
-    cg = CoinGeckoAPI()
-    cgx7rprice = (cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
-                               include_24hr_vol='true', include_last_updated_at="true"))
+    cgx7rprice = (items.cg.get_price(ids='x7r', vs_currencies='usd', include_24hr_change='true',
+                                     include_24hr_vol='true', include_last_updated_at="true"))
     x7rprice = (cgx7rprice["x7r"]["usd"])
     treasuryurl = \
         items.ethbalanceapieth + items.devmultieth + ',' + items.commultieth + ',' + items.pioneerca + '&tag=latest' \
@@ -3848,10 +3835,9 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quoteraw = (random.choice(quotedata))
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     if chain == "" or chain == "eth":
-        cg = CoinGeckoAPI()
-        cgprice = (cg.get_price(ids='x7r,x7dao,x7101,x7102,x7103,x7104,x7105',
-                                vs_currencies='usd', include_24hr_change='true',
-                                include_24hr_vol='true', include_last_updated_at="true"))
+        cgprice = (items.cg.get_price(ids='x7r,x7dao,x7101,x7102,x7103,x7104,x7105',
+                                      vs_currencies='usd', include_24hr_change='true',
+                                      include_24hr_vol='true', include_last_updated_at="true"))
         x7rprice = (cgprice["x7r"]["usd"])
         x7daoprice = (cgprice["x7dao"]["usd"])
         x7101price = (cgprice["x7101"]["usd"])
