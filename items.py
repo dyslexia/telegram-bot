@@ -1,43 +1,6 @@
-from pycoingecko import CoinGeckoAPI
-
 main_id = '-1001780235511'
 test_id = '-1001867816945'
 
-# API
-# ETH
-ethpriceapi = 'https://api.etherscan.io/api?module=stats&action=ethprice&'
-tokenbalanceapieth = 'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
-ethbalanceapieth = 'https://api.etherscan.io/api?module=account&action=balancemulti&address='
-ethgasapi = 'https://api.etherscan.io/api?module=gastracker&action=gasoracle'
-
-# BSC
-bnbpriceapi = 'https://api.bscscan.com/api?module=stats&action=bnbprice&'
-tokenbalanceapibsc = 'https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress='
-bnbbalanceapi = 'https://api.bscscan.com/api?module=account&action=balancemulti&address='
-bscgasapi = 'https://api.bscscan.com/api?module=gastracker&action=gasoracle'
-
-# POLY
-maticpriceapi = 'https://api.polygonscan.com/api?module=stats&action=maticprice&'
-tokenbalanceapipoly = 'https://api.polygonscan.com/api?module=account&action=tokenbalance&contractaddress='
-maticbalanceapi = 'https://api.polygonscan.com/api?module=account&action=balancemulti&address='
-polygasapi = 'https://api.polygonscan.com/api?module=gastracker&action=gasoracle'
-
-# ARB
-tokenbalanceapiarb = 'https://api.arbiscan.io/api?module=account&action=tokenbalance&contractaddress='
-ethbalanceapiarb = 'https://api.arbiscan.io/api?module=account&action=balancemulti&address='
-
-# OPTI
-tokenbalanceapiopti = 'https://api-optimistic.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
-ethbalanceapiopti = 'https://api-optimistic.etherscan.io/api?module=account&action=balancemulti&address='
-
-blockspanapi = 'https://api.blockspan.com/v1/collections/contract/'
-ethplorerapi = 'https://api.ethplorer.io/getTokenInfo/'
-osapi = "https://api.opensea.io/api/v1/collection/"
-quoteapi = 'https://type.fit/api/quotes'
-fearapi = 'https://api.alternative.me/fng/?limit=0'
-todayapi = 'http://history.muffinlabs.com/date/'
-jokeapi = 'https://v2.jokeapi.dev/joke/Any?safe-mode'
-cg = CoinGeckoAPI()
 
 # TOKEN CA
 x7rca = '0x70008F18Fc58928dcE982b0A69C2c21ff80Dca54'
