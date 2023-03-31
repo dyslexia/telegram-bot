@@ -62,11 +62,66 @@ ethbalancearb = 'https://api.arbiscan.io/api?module=account&action=balancemulti&
 tokenbalanceopti = 'https://api-optimistic.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
 ethbalanceopti = 'https://api-optimistic.etherscan.io/api?module=account&action=balancemulti&address='
 
-ethplorer = 'https://api.ethplorer.io/getTokenInfo/'
 os = "https://api.opensea.io/api/v1/collection/"
 fear = 'https://api.alternative.me/fng/?limit=0'
 today = 'http://history.muffinlabs.com/date/'
 joke = 'https://v2.jokeapi.dev/joke/Any?safe-mode'
+
+def get_x7r_holders():
+    x7rholdersurl = 'https://api.ethplorer.io/getTokenInfo/' + items.x7rca + keys.ethplorer
+    x7rholdersresponse = requests.get(x7rholdersurl)
+    x7rholdersdata = x7rholdersresponse.json()
+    x7rholders = x7rholdersdata["holdersCount"]
+    return x7rholders
+
+def get_x7dao_holders():
+    x7daoholdersurl = 'https://api.ethplorer.io/getTokenInfo/' + items.x7daoca + keys.ethplorer
+    x7daoholdersresponse = requests.get(x7daoholdersurl)
+    x7daoholdersdata = x7daoholdersresponse.json()
+    x7daoholders = x7daoholdersdata["holdersCount"]
+    return x7daoholders
+
+def get_x7d_holders():
+    x7dholdersurl = 'https://api.ethplorer.io/getTokenInfo/' + items.x7dca + keys.ethplorer
+    x7dholdersresponse = requests.get(x7dholdersurl)
+    x7dholdersdata = x7dholdersresponse.json()
+    x7dholders = x7dholdersdata["holdersCount"]
+    return x7dholders
+
+def get_x7101_holders():
+    x7101holdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.x7101ca + keys.ethplorer
+    x7101holdersresponse = requests.get(x7101holdersurl)
+    x7101holdersdata = x7101holdersresponse.json()
+    x7101holders = x7101holdersdata["holdersCount"]
+    return x7101holders
+
+def get_x7102_holders():
+    x7102holdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.x7102ca + keys.ethplorer
+    x7102holdersresponse = requests.get(x7102holdersurl)
+    x7102holdersdata = x7102holdersresponse.json()
+    x7102holders = x7102holdersdata["holdersCount"]
+    return x7102holders
+
+def get_x7103_holders():
+    x7103holdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.x7103ca + keys.ethplorer
+    x7103holdersresponse = requests.get(x7103holdersurl)
+    x7103holdersdata = x7103holdersresponse.json()
+    x7103holders = x7103holdersdata["holdersCount"]
+    return x7103holders
+
+def get_x7104_holders():
+    x7104holdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.x7104ca + keys.ethplorer
+    x7104holdersresponse = requests.get(x7104holdersurl)
+    x7104holdersdata = x7104holdersresponse.json()
+    x7104holders = x7104holdersdata["holdersCount"]
+    return x7104holders
+
+def get_x7105_holders():
+    x7105holdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.x7105ca + keys.ethplorer
+    x7105holdersresponse = requests.get(x7105holdersurl)
+    x7105holdersdata = x7105holdersresponse.json()
+    x7105holders = x7105holdersdata["holdersCount"]
+    return x7105holders
 
 def get_quote():
     quoteresponse = requests.get('https://type.fit/api/quotes')
@@ -76,7 +131,7 @@ def get_quote():
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     return quote
 
-def get_dexholderseth():
+def get_dex_holders_eth():
     dexholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.dexca + '?chain=eth-main'
     dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
                                                               "X-API-KEY": keys.blockspan})
@@ -84,7 +139,7 @@ def get_dexholderseth():
     dexholders = dexholdersdata["total_tokens"]
     return dexholders
 
-def get_liqholderseth():
+def get_liq_holders_eth():
     liqholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.liqca + '?chain=eth-main'
     liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
                                                               "X-API-KEY": keys.blockspan})
@@ -92,7 +147,7 @@ def get_liqholderseth():
     liqholders = liqholdersdata["total_tokens"]
     return liqholders
 
-def get_borrowholderseth():
+def get_borrow_holders_eth():
     borrowholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.borrowca + '?chain=eth-main'
     borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
                                                                     "X-API-KEY": keys.blockspan})

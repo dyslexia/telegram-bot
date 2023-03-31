@@ -126,14 +126,14 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
                     f'Liquidity Maxi*\n{items.liqpriceeth}\n'
-                    f'Available - {250-int(api.get_liqholderseth())}\n'
+                    f'Available - {250-int(api.get_liq_holders_eth())}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
                     f'*Dex Maxi*\n{items.dexpriceeth}\n'
-                    f'Available - {150-int(api.get_dexholderseth())}\n'
+                    f'Available - {150-int(api.get_dex_holders_eth())}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
                     f'*Borrowing Maxi*\n{items.borrowpriceeth}\n'
-                    f'Available - {100-int(api.get_borrowholderseth())}\n'
+                    f'Available - {100-int(api.get_borrow_holders_eth())}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
                     f'*Magister*\n{items.magisterpriceeth}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n*Pioneer*\n'
@@ -595,10 +595,6 @@ async def ca_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "":
-        x7dholdersurl = api.ethplorer + items.x7dca + keys.ethplorer
-        x7dholdersresponse = requests.get(x7dholdersurl)
-        x7dholdersdata = x7dholdersresponse.json()
-        x7dholders = x7dholdersdata["holdersCount"]
         ethurl = api.ethprice + keys.ether
         ethresponse = requests.get(ethurl)
         ethdata = ethresponse.json()
@@ -617,7 +613,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((28, 36),
                 f'X7D (ETH) Info\n\n'
                 f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
-                f'Holders: {x7dholders}\n\n'
+                f'Holders: {api.get_x7d_holders()}\n\n'
                 f'To receive X7D:\n'
                 '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                 f'{items.lpreserveca}\n\n'
@@ -634,7 +630,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7D (ETH) Info*\n'
                     f'For other chains use `/x7d [chainname]`\n\n'
                     f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
-                    f'Holders: {x7dholders}\n\n'
+                    f'Holders: {api.get_x7d_holders()}\n\n'
                     f'To receive X7D:\n\n'
                     '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpreserveca}`\n\n'
@@ -1933,29 +1929,21 @@ async def faq_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def holders_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    x7rholdersurl = api.ethplorer + items.x7rca + keys.ethplorer
-    x7rholdersresponse = requests.get(x7rholdersurl)
-    x7rholdersdata = x7rholdersresponse.json()
-    x7rholders = x7rholdersdata["holdersCount"]
-    x7daoholdersurl = api.ethplorer + items.x7daoca + keys.ethplorer
-    x7daoholdersresponse = requests.get(x7daoholdersurl)
-    x7daoholdersdata = x7daoholdersresponse.json()
-    x7daoholders = x7daoholdersdata["holdersCount"]
     img = Image.open((random.choice(items.blackhole)))
     i1 = ImageDraw.Draw(img)
     myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
     i1.text((28, 36),
             f'X7 Finance Token Holders (ETH)\n\n'
-            f'X7R Holders: {x7rholders}\n'
-            f'X7DAO Holders: {x7daoholders}\n\n\n\n\n\n\n\n\n'
+            f'X7R Holders: {api.get_x7r_holders()}\n'
+            f'X7DAO Holders: {api.get_x7dao_holders()}\n\n\n\n\n\n\n\n\n'
             f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
             font=myfont, fill=(255, 255, 255))
     img.save(r"media\blackhole.png")
     await update.message.reply_photo(
         photo=open(r'media\blackhole.png', 'rb'),
         caption=f'*X7 Finance Token Holders (ETH)*\n\n'
-                f'X7R Holders: {x7rholders}\n'
-                f'X7DAO Holders: {x7daoholders}\n\n'
+                f'X7R Holders: {api.get_x7r_holders()}\n'
+                f'X7DAO Holders: {api.get_x7dao_holders()}\n\n'
                 f'{api.get_quote()}',
         parse_mode='Markdown')
 
@@ -2019,10 +2007,6 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         burndata = burnresponse.json()
         burndata["result"] = int(burndata["result"][:-18])
         burnresult = round(((burndata["result"] / items.supply) * 100), 6)
-        x7rholdersurl = api.ethplorer + items.x7rca + keys.ethplorer
-        x7rholdersresponse = requests.get(x7rholdersurl)
-        x7rholdersdata = x7rholdersresponse.json()
-        x7rholders = x7rholdersdata["holdersCount"]
         ethurl = api.ethprice + keys.ether
         ethresponse = requests.get(ethurl)
         ethdata = ethresponse.json()
@@ -2044,7 +2028,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(api.cg["x7r"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7r"]["usd"] * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7r"]["usd_24h_vol"])}\n'
-                f'Holders: {x7rholders}\n\n'
+                f'Holders: {api.get_x7r_holders()}\n\n'
                 f'Liquidity:\n'
                 f'{"{:0,.0f}".format(x7rtoken)[:4]}M X7R (${"{:0,.0f}".format(x7rtokendollar)})\n'
                 f'{x7rweth[:6]} WETH (${"{:0,.0f}".format(x7rwethdollar)})\n'
@@ -2059,7 +2043,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'24 Hour Change: {round(api.cg["x7r"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7r"]["usd"]*items.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7r"]["usd_24h_vol"])}\n'
-                    f'Holders: {x7rholders}\n\n'
+                    f'Holders: {api.get_x7r_holders()}\n\n'
                     f'X7R Tokens Burned:\n'
                     f'{"{:,}".format(burndata["result"])}\n'
                     f'{burnresult}% of Supply\n\n'
@@ -2181,10 +2165,6 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "":
-        x7daoholdersurl = api.ethplorer + items.x7daoca + keys.ethplorer
-        x7daoholdersresponse = requests.get(x7daoholdersurl)
-        x7daoholdersdata = x7daoholdersresponse.json()
-        x7daoholders = x7daoholdersdata["holdersCount"]
         ethurl = api.ethprice + keys.ether
         ethresponse = requests.get(ethurl)
         ethdata = ethresponse.json()
@@ -2205,7 +2185,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(api.cg["x7dao"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7dao"]["usd"] * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7dao"]["usd_24h_vol"])}\n'
-                f'Holders: {x7daoholders}\n\n'
+                f'Holders: {api.get_x7dao_holders()}\n\n'
                 f'Liquidity:\n'
                 f'{"{:0,.0f}".format(x7daotoken)[:4]}M X7DAO (${"{:0,.0f}".format(x7daotokendollar)})\n'
                 f'{x7daoweth[:5]} WETH (${"{:0,.0f}".format(x7daowethdollar)})\n'
@@ -2220,7 +2200,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f'24 Hour Change: {round(api.cg["x7dao"]["usd_24h_change"], 1)}%\n'
             f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7dao"]["usd"] * items.supply)}\n'
             f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7dao"]["usd_24h_vol"])}\n'
-            f'Holders: {x7daoholders}\n\n'
+            f'Holders: {api.get_x7dao_holders()}\n\n'
             f'Liquidity:\n'
             f'{"{:0,.0f}".format(x7daotoken)[:4]}M X7DAO (${"{:0,.0f}".format(x7daotokendollar)})\n'
             f'{x7daoweth[:5]} WETH (${"{:0,.0f}".format(x7daowethdollar)})\n'
@@ -2276,10 +2256,6 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    x7101holdersurl = api.ethplorer + items.x7101ca + keys.ethplorer
-    x7101holdersresponse = requests.get(x7101holdersurl)
-    x7101holdersdata = x7101holdersresponse.json()
-    x7101holders = x7101holdersdata["holdersCount"]
     if api.cg["x7101"]["usd_24h_change"] is None:
         api.cg["x7101"]["usd_24h_change"] = 0
     if dollar:
@@ -2330,7 +2306,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(api.cg["x7101"]["usd_24h_change"]),1}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7101"]["usd"] * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7101"]["usd_24h_vol"])}\n'
-                f'Holders: {x7101holders}\n\n\n\n\n\n'
+                f'Holders: {api.get_x7101_holders()}\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
@@ -2341,7 +2317,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f'24 Hour Change: {round(api.cg["x7101"]["usd_24h_change"], 1)}%\n'
             f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7101"]["usd"] * items.supply)}\n'
             f'24 Hour Volume: ${round(api.cg["x7101"]["usd_24h_vol"])}\n'
-            f'Holders: {x7101holders}\n\n'
+            f'Holders: {api.get_x7101_holders()}\n\n'
             f'*X7101 Contract*\n`{items.x7101ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -2393,10 +2369,6 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    x7102holdersurl = api.ethplorer + items.x7102ca + keys.ethplorer
-    x7102holdersresponse = requests.get(x7102holdersurl)
-    x7102holdersdata = x7102holdersresponse.json()
-    x7102holders = x7102holdersdata["holdersCount"]
     if api.cg["x7102"]["usd_24h_change"] is None:
         api.cg["x7102"]["usd_24h_change"] = 0
     if dollar:
@@ -2448,7 +2420,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(api.cg["x7102"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7102"]["usd"] * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7102"]["usd_24h_vol"])}\n'
-                f'Holders: {x7102holders}\n\n\n\n\n\n'
+                f'Holders: {api.get_x7102_holders()}\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
@@ -2459,7 +2431,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'24 Hour Change: {round(api.cg["x7102"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7102"]["usd"] * items.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7102"]["usd_24h_vol"])}\n'
-                    f'Holders: {x7102holders}\n\n'
+                    f'Holders: {api.get_x7102_holders()}\n\n'
                     f'*X7102 Contract*\n`{items.x7102ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -2511,10 +2483,6 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    x7103holdersurl = api.ethplorer + items.x7103ca + keys.ethplorer
-    x7103holdersresponse = requests.get(x7103holdersurl)
-    x7103holdersdata = x7103holdersresponse.json()
-    x7103holders = x7103holdersdata["holdersCount"]
     if api.cg["x7103"]["usd_24h_change"] is None:
         api.cg["x7103"]["usd_24h_change"] = 0
     if dollar:
@@ -2566,7 +2534,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(api.cg["x7103"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7103"]["usd"] * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7103"]["usd_24h_vol"])}\n'
-                f'Holders: {x7103holders}\n\n\n\n\n\n'
+                f'Holders: {api.get_x7103_holders()}\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
@@ -2577,7 +2545,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'24 Hour Change: {round(api.cg["x7103"]["usd_24h_change"],1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7103"]["usd"]*items.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7103"]["usd_24h_vol"])}\n'
-                    f'Holders: {x7103holders}\n\n'
+                    f'Holders: {api.get_x7103_holders()}\n\n'
                     f'*X7103 Contract*\n`{items.x7103ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -2629,10 +2597,6 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    x7104holdersurl = api.ethplorer + items.x7104ca + keys.ethplorer
-    x7104holdersresponse = requests.get(x7104holdersurl)
-    x7104holdersdata = x7104holdersresponse.json()
-    x7104holders = x7104holdersdata["holdersCount"]
     if api.cg["x7104"]["usd_24h_change"] is None:
         api.cg["x7104"]["usd_24h_change"] = 0
     if dollar:
@@ -2684,7 +2648,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(api.cg["x7104"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7104"]["usd"] * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7104"]["usd_24h_vol"])}\n'
-                f'Holders: {x7104holders}\n\n\n\n\n\n'
+                f'Holders: {api.get_x7104_holders()}\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
@@ -2695,7 +2659,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'24 Hour Change: {round(api.cg["x7104"]["usd_24h_change"],1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7104"]["usd"] * items.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7104"]["usd_24h_vol"])}\n'
-                    f'Holders: {x7104holders}\n\n'
+                    f'Holders: {api.get_x7104_holders()}\n\n'
                     f'*X7104 Contract*\n`{items.x7104ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -2747,10 +2711,6 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    x7105holdersurl = api.ethplorer + items.x7105ca + keys.ethplorer
-    x7105holdersresponse = requests.get(x7105holdersurl)
-    x7105holdersdata = x7105holdersresponse.json()
-    x7105holders = x7105holdersdata["holdersCount"]
     if api.cg["x7105"]["usd_24h_change"] is None:
         api.cg["x7105"]["usd_24h_change"] = 0
     if dollar:
@@ -2802,7 +2762,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(api.cg["x7105"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7105"]["usd"] * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7105"]["usd_24h_vol"])}\n'
-                f'Holders: {x7105holders}\n\n\n\n\n\n'
+                f'Holders: {api.get_x7105_holders()}\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
@@ -2813,7 +2773,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'24 Hour Change: {round(api.cg["x7105"]["usd_24h_change"],1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7105"]["usd"]*items.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7105"]["usd_24h_vol"])}\n'
-                    f'Holders: {x7105holders}\n\n'
+                    f'Holders: {api.get_x7105_holders()}\n\n'
                     f'*X7105 Contract*\n`{items.x7105ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
