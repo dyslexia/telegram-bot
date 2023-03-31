@@ -2,6 +2,8 @@ from pycoingecko import CoinGeckoAPI
 from moralis import evm_api
 import keys
 import items
+import requests
+import random
 
 
 # CG
@@ -63,8 +65,14 @@ ethbalanceopti = 'https://api-optimistic.etherscan.io/api?module=account&action=
 blockspan = 'https://api.blockspan.com/v1/collections/contract/'
 ethplorer = 'https://api.ethplorer.io/getTokenInfo/'
 os = "https://api.opensea.io/api/v1/collection/"
-quote = 'https://type.fit/api/quotes'
 fear = 'https://api.alternative.me/fng/?limit=0'
 today = 'http://history.muffinlabs.com/date/'
 joke = 'https://v2.jokeapi.dev/joke/Any?safe-mode'
 
+def get_quote():
+    quoteresponse = requests.get('https://type.fit/api/quotes')
+    quotedata = quoteresponse.json()
+    quoteraw = (random.choice(quotedata))
+    quote = quoteraw["text"] + quoteraw["author"]
+    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+    return quote
