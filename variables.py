@@ -1,5 +1,4 @@
 from datetime import datetime
-# VARIABLES
 
 # AUTO TIMES HOURS
 wptime = 1
@@ -13,11 +12,6 @@ automessagelink = "https://twitter.com/search?q=%23x7finance&src=typed_query"
 # SPACES                Y   M   D   H   M  S
 spacestime = datetime(2023, 3, 28, 20, 00, 00)
 spaceslink = "https://twitter.com/i/spaces/1RDGlanOvMkJL?s=20"
-
-# RAFFLE               Y   M   D   H   M  S
-raffle = datetime(2023, 3, 28, 13, 00, 00)
-raffleupdate = datetime(2023, 3, 27, 18, 00, 00)
-
 
 # GIVEAWAY               Y   M   D   H   M  S
 giveawaytime = datetime(2023, 3, 30, 20, 30, 00)
