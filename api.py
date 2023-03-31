@@ -36,37 +36,19 @@ x7105liq = evm_api.defi.get_pair_reserves(api_key=keys.moralis,
                                           params={"chain": "eth", "pair_address": items.x7105paireth})
 
 
-# ETH
-ethprice = 'https://api.etherscan.io/api?module=stats&action=ethprice&'
-tokenbalanceeth = 'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
-ethbalanceeth = 'https://api.etherscan.io/api?module=account&action=balancemulti&address='
+# GAS
 ethgas = 'https://api.etherscan.io/api?module=gastracker&action=gasoracle'
-
-# BSC
-bnbprice = 'https://api.bscscan.com/api?module=stats&action=bnbprice&'
-tokenbalancebsc = 'https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress='
-bnbbalance = 'https://api.bscscan.com/api?module=account&action=balancemulti&address='
 bscgas = 'https://api.bscscan.com/api?module=gastracker&action=gasoracle'
-
-# POLY
-maticprice = 'https://api.polygonscan.com/api?module=stats&action=maticprice&'
-tokenbalancepoly = 'https://api.polygonscan.com/api?module=account&action=tokenbalance&contractaddress='
-maticbalance = 'https://api.polygonscan.com/api?module=account&action=balancemulti&address='
 polygas = 'https://api.polygonscan.com/api?module=gastracker&action=gasoracle'
 
-# ARB
-tokenbalancearb = 'https://api.arbiscan.io/api?module=account&action=tokenbalance&contractaddress='
-ethbalancearb = 'https://api.arbiscan.io/api?module=account&action=balancemulti&address='
 
-# OPTI
-tokenbalanceopti = 'https://api-optimistic.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
-ethbalanceopti = 'https://api-optimistic.etherscan.io/api?module=account&action=balancemulti&address='
-
+# MISC
 os = "https://api.opensea.io/api/v1/collection/"
 fear = 'https://api.alternative.me/fng/?limit=0'
 today = 'http://history.muffinlabs.com/date/'
 joke = 'https://v2.jokeapi.dev/joke/Any?safe-mode'
 
+# GET
 def get_x7r_holders():
     x7rholdersurl = 'https://api.ethplorer.io/getTokenInfo/' + items.x7rca + keys.ethplorer
     x7rholdersresponse = requests.get(x7rholdersurl)
@@ -155,7 +137,7 @@ def get_borrow_holders_eth():
     borrowholders = borrowholdersdata["total_tokens"]
     return borrowholders
 
-def get_ecoholderseth():
+def get_eco_holders_eth():
     ecoholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.ecoca + '?chain=eth-main'
     ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
                                                               "X-API-KEY": keys.blockspan})
@@ -163,7 +145,7 @@ def get_ecoholderseth():
     ecoholders = ecoholdersdata["total_tokens"]
     return ecoholders
 
-def get_dexholdersarb():
+def get_dex_holders_arb():
     dexholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.dexca + '?chain=arbitrum'
     dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
                                                               "X-API-KEY": keys.blockspan})
@@ -171,7 +153,7 @@ def get_dexholdersarb():
     dexholders = dexholdersdata["total_tokens"]
     return dexholders
 
-def get_liqholdersarb():
+def get_liq_holders_arb():
     liqholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.liqca + '?chain=arbitrum'
     liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
                                                               "X-API-KEY": keys.blockspan})
@@ -179,7 +161,7 @@ def get_liqholdersarb():
     liqholders = liqholdersdata["total_tokens"]
     return liqholders
 
-def get_borrowholdersarb():
+def get_borrow_holders_arb():
     borrowholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.borrowca + '?chain=arbitrum'
     borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
                                                                     "X-API-KEY": keys.blockspan})
@@ -187,7 +169,7 @@ def get_borrowholdersarb():
     borrowholders = borrowholdersdata["total_tokens"]
     return borrowholders
 
-def get_ecoholdersarb():
+def get_eco_holders_arb():
     ecoholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.ecoca + '?chain=arbitrum'
     ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
                                                               "X-API-KEY": keys.blockspan})
@@ -195,7 +177,7 @@ def get_ecoholdersarb():
     ecoholders = ecoholdersdata["total_tokens"]
     return ecoholders
 
-def get_dexholderspoly():
+def get_dex_holders_poly():
     dexholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.dexca + '?chain=poly-main'
     dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
                                                               "X-API-KEY": keys.blockspan})
@@ -203,7 +185,7 @@ def get_dexholderspoly():
     dexholders = dexholdersdata["total_tokens"]
     return dexholders
 
-def get_liqholderspoly():
+def get_liq_holders_poly():
     liqholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.liqca + '?chain=poly-main'
     liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
                                                               "X-API-KEY": keys.blockspan})
@@ -211,7 +193,7 @@ def get_liqholderspoly():
     liqholders = liqholdersdata["total_tokens"]
     return liqholders
 
-def get_borrowholderspoly():
+def get_borrow_holders_poly():
     borrowholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.borrowca + '?chain=poly-main'
     borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
                                                                     "X-API-KEY": keys.blockspan})
@@ -219,7 +201,7 @@ def get_borrowholderspoly():
     borrowholders = borrowholdersdata["total_tokens"]
     return borrowholders
 
-def get_ecoholderspoly():
+def get_eco_holders_poly():
     ecoholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.ecoca + '?chain=poly-main'
     ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
                                                               "X-API-KEY": keys.blockspan})
@@ -227,7 +209,7 @@ def get_ecoholderspoly():
     ecoholders = ecoholdersdata["total_tokens"]
     return ecoholders
 
-def get_dexholdersopti():
+def get_dex_holders_opti():
     dexholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.dexca + '?chain=optimism-main'
     dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
                                                               "X-API-KEY": keys.blockspan})
@@ -235,7 +217,7 @@ def get_dexholdersopti():
     dexholders = dexholdersdata["total_tokens"]
     return dexholders
 
-def get_liqholdersopti():
+def get_liq_holders_opti():
     liqholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.liqca + '?chain=optimism-main'
     liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
                                                               "X-API-KEY": keys.blockspan})
@@ -243,7 +225,7 @@ def get_liqholdersopti():
     liqholders = liqholdersdata["total_tokens"]
     return liqholders
 
-def get_borrowholdersopti():
+def get_borrow_holders_opti():
     borrowholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.borrowca + '?chain=optimism-main'
     borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
                                                                     "X-API-KEY": keys.blockspan})
@@ -251,10 +233,128 @@ def get_borrowholdersopti():
     borrowholders = borrowholdersdata["total_tokens"]
     return borrowholders
 
-def get_ecoholdersopti():
+def get_eco_holders_opti():
     ecoholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.ecoca + '?chain=optimism-main'
     ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
                                                               "X-API-KEY": keys.blockspan})
     ecoholdersdata = ecoholdersresponse.json()
     ecoholders = ecoholdersdata["total_tokens"]
     return ecoholders
+
+def get_burn_eth():
+    burnurl = 'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress='\
+              + items.x7rca + '&address=' + items.dead + '&tag=latest' + keys.ether
+    burnresponse = requests.get(burnurl)
+    burndata = burnresponse.json()
+    burndata["result"] = int(burndata["result"][:-18])
+    return burndata["result"]
+
+def get_eth_price():
+    ethurl = 'https://api.etherscan.io/api?module=stats&action=ethprice&' + keys.ether
+    ethresponse = requests.get(ethurl)
+    ethdata = ethresponse.json()
+    ethvalue = float(ethdata["result"]["ethusd"])
+    return ethvalue
+
+def get_bnb_price():
+    ethurl = 'https://api.bscscan.com/api?module=stats&action=bnbprice&' + keys.bsc
+    ethresponse = requests.get(ethurl)
+    ethdata = ethresponse.json()
+    bnbvalue = float(ethdata["result"]["ethusd"])
+    return bnbvalue
+
+def get_matic_price():
+    ethurl = 'https://api.polygonscan.com/api?module=stats&action=maticprice&' + keys.poly
+    ethresponse = requests.get(ethurl)
+    ethdata = ethresponse.json()
+    maticvalue = float(ethdata["result"]["maticusd"])
+    return maticvalue
+
+def get_eth_balance_eth(wallet):
+    response = requests.get(
+        'https://api.etherscan.io/api?module=account&action=balancemulti&address='+wallet+'&tag=latest'+keys.ether)
+    data = response.json()
+    amountraw = float(data["result"][0]["balance"])
+    amount = str(amountraw / 10 ** 18)
+    return amount
+
+def get_x7r_balance(wallet):
+    response = requests.get(
+        'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress='+items.x7rca +
+        '&address='+wallet+'&tag=latest'+keys.ether)
+    data = response.json()
+    amount = int(data["result"][:-18])
+    return amount
+
+def get_x7d_balance(wallet):
+    response = requests.get(
+        'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress='+items.x7dca +
+        '&address='+wallet+'&tag=latest'+keys.ether)
+    data = response.json()
+    amount = int(data["result"][:-18])
+    return amount
+
+def get_x7r_balance_eth(wallet):
+    response = requests.get(
+        'https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress='+items.x7rca +
+        '&address='+items.dead+'&tag=latest'+keys.bsc)
+    data = response.json()
+    amount = int(data["result"][:-18])
+    return amount
+
+def get_x7r_balance_arb(wallet):
+    response = requests.get(
+        'https://api.arbiscan.io/api?module=account&action=tokenbalance&contractaddress=' + items.x7rca +
+        '&address=' + items.dead + '&tag=latest' + keys.arb)
+    data = response.json()
+    amount = int(data["result"][:-18])
+    return amount
+
+def get_x7r_balance_opti(wallet):
+    response = requests.get(
+        'https://api-optimistic.etherscan.io/api?module=account&action=tokenbalance&contractaddress=' + items.x7rca +
+        '&address=' + items.dead + '&tag=latest' + keys.opti)
+    data = response.json()
+    amount = int(data["result"][:-18])
+    return amount
+
+def get_x7r_balance_poly(wallet):
+    response = requests.get(
+        'https://api.polygonscan.com/api?module=account&action=tokenbalance&contractaddress=' + items.x7rca +
+        '&address=' + items.dead + '&tag=latest' + keys.poly)
+    data = response.json()
+    amount = int(data["result"][:-18])
+    return amount
+
+def get_bnb_balance(wallet):
+    response = requests.get('https://api.bscscan.com/api?module=account&action=balancemulti&address='+wallet +
+                            '&tag'+keys.bsc)
+    data = response.json()
+    amountraw = float(data["result"][0]["balance"])
+    amount = str(amountraw / 10 ** 18)
+    return amount
+
+def get_matic_balance(wallet):
+    response = requests.get('https://api.polygonscan.com/api?module=account&action=balancemulti&address=' + wallet +
+                            '&tag' + keys.poly)
+    data = response.json()
+    amountraw = float(data["result"][0]["balance"])
+    amount = str(amountraw / 10 ** 18)
+    return amount
+
+def get_eth_balance_arb(wallet):
+    response = requests.get('https://api.arbiscan.io/api?module=account&action=balancemulti&address=' + wallet +
+                            '&tag' + keys.arb)
+    data = response.json()
+    amountraw = float(data["result"][0]["balance"])
+    amount = str(amountraw / 10 ** 18)
+    return amount
+
+def get_eth_balance_opti(wallet):
+    response = requests.get(
+        'https://api-optimistic.etherscan.io/api?module=account&action=balancemulti&address=' + wallet +
+        '&tag=latest' + keys.opti)
+    data = response.json()
+    amountraw = float(data["result"][0]["balance"])
+    amount = str(amountraw / 10 ** 18)
+    return amount
