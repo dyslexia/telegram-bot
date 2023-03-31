@@ -118,42 +118,22 @@ async def links_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "":
-        dexholdersurl = api.blockspan + items.dexca + '?chain=eth-main'
-        dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
-                                                                  "X-API-KEY": keys.blockspan})
-        dexholdersdata = dexholdersresponse.json()
-        dexholders = dexholdersdata["total_tokens"]
-        liqholdersurl = api.blockspan + items.liqca + '?chain=eth-main'
-        liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
-                                                                  "X-API-KEY": keys.blockspan})
-        liqholdersdata = liqholdersresponse.json()
-        liqholders = liqholdersdata["total_tokens"]
-        borrowholdersurl = api.blockspan + items.borrowca + '?chain=eth-main'
-        borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
-                                                                        "X-API-KEY": keys.blockspan})
-        borrowholdersdata = borrowholdersresponse.json()
-        borrowholders = borrowholdersdata["total_tokens"]
-        ecoholdersurl = api.blockspan + items.ecoca + '?chain=eth-main'
-        ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
-                                                                  "X-API-KEY": keys.blockspan})
-        ecoholdersdata = ecoholdersresponse.json()
-        ecoholders = ecoholdersdata["total_tokens"]
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (ETH)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{items.ecopriceeth}\n'
-                    f'Available - {500-int(ecoholders)}\n'
+                    f'Available - {500-int(api.get_ecoholderseth())}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
                     f'Liquidity Maxi*\n{items.liqpriceeth}\n'
-                    f'Available - {250-int(liqholders)}\n'
+                    f'Available - {250-int(api.get_liqholderseth())}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
                     f'*Dex Maxi*\n{items.dexpriceeth}\n'
-                    f'Available - {150-int(dexholders)}\n'
+                    f'Available - {150-int(api.get_dexholderseth())}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
                     f'*Borrowing Maxi*\n{items.borrowpriceeth}\n'
-                    f'Available - {100-int(borrowholders)}\n'
+                    f'Available - {100-int(api.get_borrowholderseth())}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
                     f'*Magister*\n{items.magisterpriceeth}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n*Pioneer*\n'
@@ -191,42 +171,23 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.bsctoken}{items.borrowca}')],
                 [InlineKeyboardButton(text='Magister', url=f'{items.bsctoken}{items.magisterca}')], ]))
     if chain == "arbitrum" or chain == "arb":
-        dexholdersurl = api.blockspan + items.dexca + '?chain=arbitrum'
-        dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
-                                                                  "X-API-KEY": keys.blockspan})
-        dexholdersdata = dexholdersresponse.json()
-        dexholders = dexholdersdata["total_tokens"]
-        liqholdersurl = api.blockspan + items.liqca + '?chain=arbitrum'
-        liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
-                                                                  "X-API-KEY": keys.blockspan})
-        liqholdersdata = liqholdersresponse.json()
-        liqholders = liqholdersdata["total_tokens"]
-        borrowholdersurl = api.blockspan + items.borrowca + '?chain=arbitrum'
-        borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
-                                                                        "X-API-KEY": keys.blockspan})
-        borrowholdersdata = borrowholdersresponse.json()
-        borrowholders = borrowholdersdata["total_tokens"]
-        ecoholdersurl = api.blockspan + items.ecoca + '?chain=arbitrum'
-        ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
-                                                                  "X-API-KEY": keys.blockspan})
-        ecoholdersdata = ecoholdersresponse.json()
-        ecoholders = ecoholdersdata["total_tokens"]
+
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (ARBITRUM)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{items.ecopricearb}\n'
-                    f'Available - {500-int(ecoholders)}\n'
+                    f'Available - {500-int(api.get_ecoholdersarb())}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
                     f'Liquidity Maxi*\n{items.liqpricearb}\n'
-                    f'Available - {250-int(liqholders)}\n'
+                    f'Available - {250-int(api.get_liqholdersarb())}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
                     f'*Dex Maxi*\n{items.dexpricearb}\n'
-                    f'Available - {150-int(dexholders)}\n'
+                    f'Available - {150-int(api.get_dexholdersarb())}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
                     f'*Borrowing Maxi*\n{items.borrowpricearb}\n'
-                    f'Available - {100-int(borrowholders)}\n'
+                    f'Available - {100-int(api.get_borrowholdersarb())}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
                     f'*Magister*\n{items.magisterpricearb}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
@@ -239,42 +200,22 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.arbtoken}{items.borrowca}')],
                 [InlineKeyboardButton(text='Magister', url=f'{items.arbtoken}{items.magisterca}')], ]))
     if chain == "polygon" or chain == "poly":
-        dexholdersurl = api.blockspan + items.dexca + '?chain=poly-main'
-        dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
-                                                                  "X-API-KEY": keys.blockspan})
-        dexholdersdata = dexholdersresponse.json()
-        dexholders = dexholdersdata["total_tokens"]
-        liqholdersurl = api.blockspan + items.liqca + '?chain=poly-main'
-        liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
-                                                                  "X-API-KEY": keys.blockspan})
-        liqholdersdata = liqholdersresponse.json()
-        liqholders = liqholdersdata["total_tokens"]
-        borrowholdersurl = api.blockspan + items.borrowca + '?chain=poly-main'
-        borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
-                                                                        "X-API-KEY": keys.blockspan})
-        borrowholdersdata = borrowholdersresponse.json()
-        borrowholders = borrowholdersdata["total_tokens"]
-        ecoholdersurl = api.blockspan + items.ecoca + '?chain=poly-main'
-        ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
-                                                                  "X-API-KEY": keys.blockspan})
-        ecoholdersdata = ecoholdersresponse.json()
-        ecoholders = ecoholdersdata["total_tokens"]
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (POLYGON)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{items.ecopricepoly}\n'
-                    f'Available - {500-int(ecoholders)}\n'
+                    f'Available - {500-int(api.get_ecoholderspoly())}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
                     f'Liquidity Maxi*\n{items.liqpricepoly}\n'
-                    f'Available - {250-int(liqholders)}\n'
+                    f'Available - {250-int(api.get_liqholderspoly())}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
                     f'*Dex Maxi*\n{items.dexpricepoly}\n'
-                    f'Available - {150-int(dexholders)}\n'
+                    f'Available - {150-int(api.get_dexholderspoly())}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
                     f'*Borrowing Maxi*\n{items.borrowpricepoly}\n'
-                    f'Available - {100-int(borrowholders)}\n'
+                    f'Available - {100-int(api.get_borrowholderspoly())}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
                     f'*Magister*\n{items.magisterpricepoly}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
@@ -287,42 +228,22 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.polytoken}{items.borrowca}')],
                 [InlineKeyboardButton(text='Magister', url=f'{items.polytoken}{items.magisterca}')], ]))
     if chain == "optimism" or chain == "opti":
-        dexholdersurl = api.blockspan + items.dexca + '?chain=optimism-main'
-        dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
-                                                                  "X-API-KEY": keys.blockspan})
-        dexholdersdata = dexholdersresponse.json()
-        dexholders = dexholdersdata["total_tokens"]
-        liqholdersurl = api.blockspan + items.liqca + '?chain=optimism-main'
-        liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
-                                                                  "X-API-KEY": keys.blockspan})
-        liqholdersdata = liqholdersresponse.json()
-        liqholders = liqholdersdata["total_tokens"]
-        borrowholdersurl = api.blockspan + items.borrowca + '?chain=optimism-main'
-        borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
-                                                                        "X-API-KEY": keys.blockspan})
-        borrowholdersdata = borrowholdersresponse.json()
-        borrowholders = borrowholdersdata["total_tokens"]
-        ecoholdersurl = api.blockspan + items.ecoca + '?chain=optimism-main'
-        ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
-                                                                  "X-API-KEY": keys.blockspan})
-        ecoholdersdata = ecoholdersresponse.json()
-        ecoholders = ecoholdersdata["total_tokens"]
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (OPTIMISM)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{items.ecopriceopti}\n'
-                    f'Available - {500-int(ecoholders)}\n'
+                    f'Available - {500-int(api.get_ecoholdersopti())}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
                     f'Liquidity Maxi*\n{items.liqpriceopti}\n'
-                    f'Available - {250-int(liqholders)}\n'
+                    f'Available - {250-int(api.get_liqholdersopti())}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
                     f'*Dex Maxi*\n{items.dexpriceopti}\n'
-                    f'Available - {150-int(dexholders)}\n'
+                    f'Available - {150-int(api.get_dexholdersopti())}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
                     f'*Borrowing Maxi*\n{items.borrowpriceopti}\n'
-                    f'Available - {100-int(borrowholders)}\n'
+                    f'Available - {100-int(api.get_borrowholdersopti())}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
                     f'*Magister*\n{items.magisterpriceopti}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',

@@ -62,7 +62,6 @@ ethbalancearb = 'https://api.arbiscan.io/api?module=account&action=balancemulti&
 tokenbalanceopti = 'https://api-optimistic.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
 ethbalanceopti = 'https://api-optimistic.etherscan.io/api?module=account&action=balancemulti&address='
 
-blockspan = 'https://api.blockspan.com/v1/collections/contract/'
 ethplorer = 'https://api.ethplorer.io/getTokenInfo/'
 os = "https://api.opensea.io/api/v1/collection/"
 fear = 'https://api.alternative.me/fng/?limit=0'
@@ -76,3 +75,131 @@ def get_quote():
     quote = quoteraw["text"] + quoteraw["author"]
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     return quote
+
+def get_dexholderseth():
+    dexholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.dexca + '?chain=eth-main'
+    dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
+                                                              "X-API-KEY": keys.blockspan})
+    dexholdersdata = dexholdersresponse.json()
+    dexholders = dexholdersdata["total_tokens"]
+    return dexholders
+
+def get_liqholderseth():
+    liqholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.liqca + '?chain=eth-main'
+    liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
+                                                              "X-API-KEY": keys.blockspan})
+    liqholdersdata = liqholdersresponse.json()
+    liqholders = liqholdersdata["total_tokens"]
+    return liqholders
+
+def get_borrowholderseth():
+    borrowholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.borrowca + '?chain=eth-main'
+    borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
+                                                                    "X-API-KEY": keys.blockspan})
+    borrowholdersdata = borrowholdersresponse.json()
+    borrowholders = borrowholdersdata["total_tokens"]
+    return borrowholders
+
+def get_ecoholderseth():
+    ecoholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.ecoca + '?chain=eth-main'
+    ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
+                                                              "X-API-KEY": keys.blockspan})
+    ecoholdersdata = ecoholdersresponse.json()
+    ecoholders = ecoholdersdata["total_tokens"]
+    return ecoholders
+
+def get_dexholdersarb():
+    dexholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.dexca + '?chain=arbitrum'
+    dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
+                                                              "X-API-KEY": keys.blockspan})
+    dexholdersdata = dexholdersresponse.json()
+    dexholders = dexholdersdata["total_tokens"]
+    return dexholders
+
+def get_liqholdersarb():
+    liqholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.liqca + '?chain=arbitrum'
+    liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
+                                                              "X-API-KEY": keys.blockspan})
+    liqholdersdata = liqholdersresponse.json()
+    liqholders = liqholdersdata["total_tokens"]
+    return liqholders
+
+def get_borrowholdersarb():
+    borrowholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.borrowca + '?chain=arbitrum'
+    borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
+                                                                    "X-API-KEY": keys.blockspan})
+    borrowholdersdata = borrowholdersresponse.json()
+    borrowholders = borrowholdersdata["total_tokens"]
+    return borrowholders
+
+def get_ecoholdersarb():
+    ecoholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.ecoca + '?chain=arbitrum'
+    ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
+                                                              "X-API-KEY": keys.blockspan})
+    ecoholdersdata = ecoholdersresponse.json()
+    ecoholders = ecoholdersdata["total_tokens"]
+    return ecoholders
+
+def get_dexholderspoly():
+    dexholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.dexca + '?chain=poly-main'
+    dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
+                                                              "X-API-KEY": keys.blockspan})
+    dexholdersdata = dexholdersresponse.json()
+    dexholders = dexholdersdata["total_tokens"]
+    return dexholders
+
+def get_liqholderspoly():
+    liqholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.liqca + '?chain=poly-main'
+    liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
+                                                              "X-API-KEY": keys.blockspan})
+    liqholdersdata = liqholdersresponse.json()
+    liqholders = liqholdersdata["total_tokens"]
+    return liqholders
+
+def get_borrowholderspoly():
+    borrowholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.borrowca + '?chain=poly-main'
+    borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
+                                                                    "X-API-KEY": keys.blockspan})
+    borrowholdersdata = borrowholdersresponse.json()
+    borrowholders = borrowholdersdata["total_tokens"]
+    return borrowholders
+
+def get_ecoholderspoly():
+    ecoholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.ecoca + '?chain=poly-main'
+    ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
+                                                              "X-API-KEY": keys.blockspan})
+    ecoholdersdata = ecoholdersresponse.json()
+    ecoholders = ecoholdersdata["total_tokens"]
+    return ecoholders
+
+def get_dexholdersopti():
+    dexholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.dexca + '?chain=optimism-main'
+    dexholdersresponse = requests.get(dexholdersurl, headers={"accept": "application/json",
+                                                              "X-API-KEY": keys.blockspan})
+    dexholdersdata = dexholdersresponse.json()
+    dexholders = dexholdersdata["total_tokens"]
+    return dexholders
+
+def get_liqholdersopti():
+    liqholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.liqca + '?chain=optimism-main'
+    liqholdersresponse = requests.get(liqholdersurl, headers={"accept": "application/json",
+                                                              "X-API-KEY": keys.blockspan})
+    liqholdersdata = liqholdersresponse.json()
+    liqholders = liqholdersdata["total_tokens"]
+    return liqholders
+
+def get_borrowholdersopti():
+    borrowholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.borrowca + '?chain=optimism-main'
+    borrowholdersresponse = requests.get(borrowholdersurl, headers={"accept": "application/json",
+                                                                    "X-API-KEY": keys.blockspan})
+    borrowholdersdata = borrowholdersresponse.json()
+    borrowholders = borrowholdersdata["total_tokens"]
+    return borrowholders
+
+def get_ecoholdersopti():
+    ecoholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.ecoca + '?chain=optimism-main'
+    ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
+                                                              "X-API-KEY": keys.blockspan})
+    ecoholdersdata = ecoholdersresponse.json()
+    ecoholders = ecoholdersdata["total_tokens"]
+    return ecoholders
