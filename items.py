@@ -234,7 +234,7 @@ dac = 'http://shorturl.at/ehnr9'
 github = 'https://github.com/x7finance/'
 
 # OTHER
-dead = '0x000000000000000000000000000000000000dead'
+dead = '0x000000000000000000000000000000000000dEaD'
 supply = 100000000
 
 # MEDIA
