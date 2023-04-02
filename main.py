@@ -1021,7 +1021,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'X7 Finance Lending Pool Info (ETH)\n\n'
-                f'{ethpool} ETH (${"{:0,.0f}".format(pooldollar)})\n\n\n\n\n\n\n\n\n\n'
+                f'{ethpool[:5]} ETH (${"{:0,.0f}".format(pooldollar)})\n\n\n\n\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
@@ -3547,17 +3547,6 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.optitoken}{items.x7rca}?a={items.dead}')], ]))
 
 
-async def test_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        f'{api.get_eth_price()}',
-        parse_mode='Markdown',
-        reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Website', url='https://x7.finance')],
-            [InlineKeyboardButton(text='Community Dashboard', url='https://x7community.space/')],
-            [InlineKeyboardButton(text='Linktree', url='https://linktr.ee/X7_Finance')],
-            [InlineKeyboardButton(text='Medium', url='https://medium.com/@X7Finance')], ]))
-
-
 # HARD AUTO MESSAGES
 async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
@@ -3698,7 +3687,6 @@ if __name__ == '__main__':
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
     application.add_handler(CommandHandler('deployer', deployer_command))
-    application.add_handler(CommandHandler('test', test_command))
     application.add_handler(CommandHandler('links', links_command))
     application.add_handler(CommandHandler(['ca', 'contract', 'contracts'], ca_command))
     application.add_handler(CommandHandler('x7r', x7r_command))

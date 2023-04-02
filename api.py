@@ -6,6 +6,7 @@ import requests
 import random
 from datetime import datetime
 
+
 coingecko = CoinGeckoAPI()
 cg = coingecko.get_price(ids=',x7r,x7dao,x7101,x7102,x7103,x7104,x7105', vs_currencies='usd',
                          include_24hr_change='true', include_24hr_vol='true')
@@ -207,7 +208,7 @@ def get_balance(wallet, chain):
     if chain == "opti":
         key = keys.opti
         link = 'https://api-optimistic.etherscan.io/' \
-               '?module=account&action=balancemulti&address='
+               'api?module=account&action=balancemulti&address='
         response = requests.get(link + wallet + '&tag=latest' + key)
         data = response.json()
         amountraw = float(data["result"][0]["balance"])
