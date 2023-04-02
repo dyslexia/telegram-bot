@@ -92,41 +92,32 @@ def get_holders_nft_opti(nft):
     amount = data["total_tokens"]
     return amount
 
-def get_eco_holders_opti():
-    ecoholdersurl = 'https://api.blockspan.com/v1/collections/contract/' + items.ecoca + '?chain=optimism-main'
-    ecoholdersresponse = requests.get(ecoholdersurl, headers={"accept": "application/json",
-                                                              "X-API-KEY": keys.blockspan})
-    ecoholdersdata = ecoholdersresponse.json()
-    ecoholders = ecoholdersdata["total_tokens"]
-    return ecoholders
+def get_native_price(token):
+    if token == "eth":
+        url = 'https://api.etherscan.io/api?module=stats&action=ethprice&' + keys.ether
+        response = requests.get(url)
+        data = response.json()
+        value = float(data["result"]["ethusd"])
+        return value
+    if token == "bnb":
+        url = 'https://api.bscscan.com/api?module=stats&action=bnbprice&' + keys.bsc
+        response = requests.get(url)
+        data = response.json()
+        value = float(data["result"]["ethusd"])
+        return value
+    if token == "matic":
+        url = 'https://api.polygonscan.com/api?module=stats&action=maticprice&' + keys.poly
+        response = requests.get(url)
+        data = response.json()
+        value = float(data["result"]["ethusd"])
+        return value
 
-def get_eth_price():
-    ethurl = 'https://api.etherscan.io/api?module=stats&action=ethprice&' + keys.ether
-    ethresponse = requests.get(ethurl)
-    ethdata = ethresponse.json()
-    ethvalue = float(ethdata["result"]["ethusd"])
-    return ethvalue
-
-def get_bnb_price():
-    ethurl = 'https://api.bscscan.com/api?module=stats&action=bnbprice&' + keys.bsc
-    ethresponse = requests.get(ethurl)
-    ethdata = ethresponse.json()
-    bnbvalue = float(ethdata["result"]["ethusd"])
-    return bnbvalue
-
-def get_matic_price():
-    ethurl = 'https://api.polygonscan.com/api?module=stats&action=maticprice&' + keys.poly
-    ethresponse = requests.get(ethurl)
-    ethdata = ethresponse.json()
-    maticvalue = float(ethdata["result"]["maticusd"])
-    return maticvalue
-
-def get_x7d_balance(wallet, chain):
+def get_token_balance(wallet, chain, token):
     if chain == "eth":
         url = 'https://api.etherscan.io/' \
               'api?module=account&action=tokenbalance&contractaddress='
         key = keys.ether
-        response = requests.get(url + items.x7dca + '&address=' + wallet + '&tag=latest' + key)
+        response = requests.get(url + token + '&address=' + wallet + '&tag=latest' + key)
         data = response.json()
         amount = int(data["result"][:-18])
         return amount
@@ -134,7 +125,7 @@ def get_x7d_balance(wallet, chain):
         url = 'https://api.bscscan.com/' \
               'api?module=account&action=tokenbalance&contractaddress='
         key = keys.bsc
-        response = requests.get(url + items.x7dca + '&address=' + wallet + '&tag=latest' + key)
+        response = requests.get(url + token + '&address=' + wallet + '&tag=latest' + key)
         data = response.json()
         amount = int(data["result"][:-18])
         return amount
@@ -142,7 +133,7 @@ def get_x7d_balance(wallet, chain):
         url = 'https://api-optimistic.etherscan.io/' \
               'api?module=account&action=tokenbalance&contractaddress='
         key = keys.opti
-        response = requests.get(url + items.x7dca + '&address=' + wallet + '&tag=latest' + key)
+        response = requests.get(url + token + '&address=' + wallet + '&tag=latest' + key)
         data = response.json()
         amount = int(data["result"][:-18])
         return amount
@@ -150,7 +141,7 @@ def get_x7d_balance(wallet, chain):
         url = 'https://api.polygonscan.com/' \
               'api?module=account&action=tokenbalance&contractaddress='
         key = keys.poly
-        response = requests.get(url + items.x7dca + '&address=' + wallet + '&tag=latest' + key)
+        response = requests.get(url + token + '&address=' + wallet + '&tag=latest' + key)
         data = response.json()
         amount = int(data["result"][:-18])
         return amount
@@ -158,48 +149,7 @@ def get_x7d_balance(wallet, chain):
         url = 'https://api.arbiscan.io/' \
               'api?module=account&action=tokenbalance&contractaddress='
         key = keys.arb
-        response = requests.get(url + items.x7dca + '&address=' + wallet + '&tag=latest' + key)
-        data = response.json()
-        amount = int(data["result"][:-18])
-        return amount
-
-def get_x7r_balance(wallet, chain):
-    if chain == "eth":
-        url = 'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
-        key = keys.ether
-        response = requests.get(url + items.x7rca + '&address=' + wallet + '&tag=latest' + key)
-        data = response.json()
-        amount = int(data["result"][:-18])
-        return amount
-    if chain == "arb":
-        url = 'https://api.arbiscan.io/' \
-              'api?module=account&action=tokenbalance&contractaddress='
-        key = keys.arb
-        response = requests.get(url + items.x7rca + '&address=' + wallet + '&tag=latest' + key)
-        data = response.json()
-        amount = int(data["result"][:-18])
-        return amount
-    if chain == "opti":
-        url = 'https://api-optimistic.etherscan.io/' \
-              'api?module=account&action=tokenbalance&contractaddress='
-        key = keys.opti
-        response = requests.get(url + items.x7rca + '&address=' + wallet + '&tag=latest' + key)
-        data = response.json()
-        amount = int(data["result"][:-18])
-        return amount
-    if chain == "bsc":
-        url = 'https://api.bscscan.com/' \
-              'api?module=account&action=tokenbalance&contractaddress='
-        key = keys.bsc
-        response = requests.get(url + items.x7rca + '&address=' + wallet + '&tag=latest' + key)
-        data = response.json()
-        amount = int(data["result"][:-18])
-        return amount
-    if chain == "poly":
-        url = 'https://api.polygonscan.com/' \
-              'api?module=account&action=tokenbalance&contractaddress='
-        key = keys.poly
-        response = requests.get(url + items.x7rca + '&address=' + wallet + '&tag=latest' + key)
+        response = requests.get(url + token + '&address=' + wallet + '&tag=latest' + key)
         data = response.json()
         amount = int(data["result"][:-18])
         return amount

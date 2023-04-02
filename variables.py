@@ -5,9 +5,6 @@ wptime = 1
 twittertime = 6
 airdroptime = 1
 
-# AUTO MESSAGE
-automessage = "**X7 Finance Twitter Raid**\n\nClick the link below and like and RT everything you see!"
-automessagelink = "https://twitter.com/search?q=%23x7finance&src=typed_query"
 
 # SPACES                Y   M   D   H   M  S
 spacestime = datetime(2023, 3, 28, 20, 00, 00)

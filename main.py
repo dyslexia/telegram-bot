@@ -592,10 +592,10 @@ async def ca_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    if chain == "":
+    if chain == "" or chain == "eth":
         supply = api.get_balance(items.x7dca, "eth")
         holders = api.get_holders(items.x7dca)
-        x7ddollar = float(supply) * float(api.get_eth_price()) / 1 ** 18
+        x7ddollar = float(supply) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7dlogo)
         im1.paste(im2, (720, 20), im2)
@@ -640,7 +640,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  ]))
     if chain == "bsc" or chain == "bnb":
         supply = api.get_balance(items.x7dca, "bnb")
-        x7ddollar = float(supply) * float(api.get_bnb_price()) / 1 ** 18
+        x7ddollar = float(supply) * float(api.get_native_price("bnb")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7dlogo)
         im1.paste(im2, (720, 20), im2)
@@ -683,7 +683,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  ]))
     if chain == "polygon" or chain == "poly":
         x7damount = api.get_balance(items.x7dca, "poly")
-        x7ddollar = float(x7damount) * float(api.get_matic_price()) / 1 ** 18
+        x7ddollar = float(x7damount) * float(api.get_native_price("matic")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7dlogo)
         im1.paste(im2, (720, 20), im2)
@@ -726,7 +726,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  ]))
     if chain == "optimism" or chain == "opti":
         x7damount = api.get_balance(items.x7dca, "opti")
-        x7ddollar = float(x7damount) * float(api.get_eth_price()) / 1 ** 18
+        x7ddollar = float(x7damount) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7dlogo)
         im1.paste(im2, (720, 20), im2)
@@ -769,7 +769,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  ]))
     if chain == "arbitrum" or chain == "arb":
         x7damount = api.get_balance(items.lpreserveca, "arb")
-        x7ddollar = float(x7damount) * float(api.get_eth_price()) / 1 ** 18
+        x7ddollar = float(x7damount) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7dlogo)
         im1.paste(im2, (720, 20), im2)
@@ -890,8 +890,7 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     price = round(data["collection"]["stats"]["average_price"], 2)
     volume = round(data["collection"]["stats"]["total_volume"], 2)
     pioneerpool = api.get_balance(items.pioneerca, "eth")
-    totaldollar = float(pioneerpool) * float(api.get_eth_price()) / 1 ** 18
-    pioneerdollar = float(pioneerpool) * float(api.get_eth_price()) / 1 ** 18 / 639
+    totaldollar = float(pioneerpool) * float(api.get_native_price("eth")) / 1 ** 18
     if pioneerid == "":
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
@@ -976,15 +975,15 @@ async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     ethpool = api.get_balance(items.lpreserveca, "eth")
-    pooldollar = float(ethpool) * float(api.get_eth_price()) / 1 ** 18
+    pooldollar = float(ethpool) * float(api.get_native_price("eth")) / 1 ** 18
     bscpool = api.get_balance(items.lpreserveca, "bsc")
-    bscpooldollar = float(bscpool) * float(api.get_bnb_price()) / 1 ** 18
+    bscpooldollar = float(bscpool) * float(api.get_native_price("bnb")) / 1 ** 18
     arbpool = api.get_balance(items.lpreserveca, "arb")
-    arbpooldollar = float(arbpool) * float(api.get_eth_price()) / 1 ** 18
+    arbpooldollar = float(arbpool) * float(api.get_native_price("eth")) / 1 ** 18
     polypool = api.get_balance(items.lpreserveca, "poly")
-    polypooldollar = float(polypool) * float(api.get_matic_price()) / 1 ** 18
+    polypooldollar = float(polypool) * float(api.get_native_price("matic")) / 1 ** 18
     optipool = api.get_balance(items.lpreserveca, "opti")
-    optipooldollar = float(optipool) * float(api.get_eth_price()) / 1 ** 18
+    optipooldollar = float(optipool) * float(api.get_native_price("eth")) / 1 ** 18
     totaldollar = polypooldollar + bscpooldollar + optipooldollar + arbpooldollar + pooldollar
     if chain == "":
         im1 = Image.open((random.choice(items.blackhole)))
@@ -1905,12 +1904,12 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
         holders = api.get_holders(items.x7rca)
-        burn = api.get_x7r_balance(items.dead, "eth")
+        burn = api.get_token_balance(items.dead, "eth", items.x7rca)
         burnpercent = round(((burn / items.supply) * 100), 6)
         x7r = api.get_liquidity(items.x7rpaireth)
         x7rtoken = float(x7r["reserve0"])
         x7rweth = float(x7r["reserve1"]) / 10 ** 18
-        x7rwethdollar = float(x7rweth) * float(api.get_eth_price())
+        x7rwethdollar = float(x7rweth) * float(api.get_native_price("eth"))
         x7rtokendollar = float(api.cg["x7r"]["usd"]) * float(x7rtoken) / 10 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7rlogo)
@@ -2065,7 +2064,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7dao = api.get_liquidity(items.x7daopaireth)
         x7daotoken = float(x7dao["reserve0"])
         x7daoweth = float(x7dao["reserve1"]) / 10 ** 18
-        x7daowethdollar = float(x7daoweth) * float(api.get_eth_price())
+        x7daowethdollar = float(x7daoweth) * float(api.get_native_price("eth"))
         x7daotokendollar = float(api.cg["x7dao"]["usd"]) * float(x7daotoken) / 10 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7daologo)
@@ -2722,7 +2721,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    x7rsupply = items.supply - api.get_x7r_balance(items.dead, "eth")
+    x7rsupply = items.supply - api.get_token_balance(items.dead, "eth", items.x7rca)
     x7rcap = (api.cg["x7r"]["usd"]) * x7rsupply
     x7daocap = (api.cg["x7dao"]["usd"]) * items.supply
     x7101cap = (api.cg["x7101"]["usd"]) * items.supply
@@ -2825,7 +2824,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'{symbol} price\n\n'
-                f'Price: ${api.get_eth_price()}\n'
+                f'Price: ${eth["ethereum"]["usd"]}\n'
                 f'24 Hour Change: {round(eth["ethereum"]["usd_24h_change"], 1)}%\n\n'
                 f'Gas Prices:\n'
                 f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
@@ -2837,7 +2836,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*{symbol} price*\n\n'
-                    f'Price: ${api.get_eth_price()}\n'
+                    f'Price: ${eth["ethereum"]["usd"]}\n'
                     f'24 Hour Change: {round(eth["ethereum"]["usd_24h_change"], 1)}%\n\n'
                     f'Gas Prices:\n'
                     f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
@@ -2858,7 +2857,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'{symbol} price\n\n'
-                f'Price: ${api.get_bnb_price()}\n'
+                f'Price: ${bnb["binancecoin"]["usd"]}\n'
                 f'24 Hour Change: {round(bnb["binancecoin"]["usd_24h_change"], 1)}%\n\n'
                 f'Gas Prices:\n'
                 f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
@@ -2870,7 +2869,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*{symbol} price*\n\n'
-                    f'Price: ${api.get_bnb_price()}\n'
+                    f'Price: ${bnb["binancecoin"]["usd"]}\n'
                     f'24 Hour Change: {round(bnb["binancecoin"]["usd_24h_change"], 1)}%\n\n'
                     f'Gas Prices:\n'
                     f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
@@ -2891,7 +2890,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'{symbol} price\n\n'
-                f'Price: ${api.get_matic_price()}\n'
+                f'Price: ${matic["matic-network"]["usd"]}\n'
                 f'24 Hour Change: {round(matic["matic-network"]["usd_24h_change"], 1)}%\n\n'
                 f'Gas Prices:\n'
                 f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
@@ -2903,7 +2902,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*{symbol} price*\n\n'
-                    f'Price: ${api.get_matic_price()}\n'
+                    f'Price: ${matic["matic-network"]["usd"]}\n'
                     f'24 Hour Change: {round(matic["matic-network"]["usd_24h_change"], 1)}%\n\n'
                     f'Gas Prices:\n'
                     f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
@@ -3019,13 +3018,13 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         deveth = api.get_balance(items.devmultieth, "eth")
         cometh = api.get_balance(items.commultieth, "eth")
         pioneereth = api.get_balance(items.pioneerca, "eth")
-        devdollar = float(deveth) * float(api.get_eth_price()) / 1 ** 18
-        comdollar = float(cometh) * float(api.get_eth_price()) / 1 ** 18
-        pioneerdollar = float(pioneereth) * float(api.get_eth_price()) / 1 ** 18
-        comx7r = api.get_x7r_balance(items.commultieth, "eth")
+        devdollar = float(deveth) * float(api.get_native_price("eth")) / 1 ** 18
+        comdollar = float(cometh) * float(api.get_native_price("eth")) / 1 ** 18
+        pioneerdollar = float(pioneereth) * float(api.get_native_price("eth")) / 1 ** 18
+        comx7r = api.get_token_balance(items.commultieth, "eth", items.x7rca)
         comx7rprice = comx7r * api.cg["x7r"]["usd"]
-        comx7d = api.get_x7d_balance(items.commultieth, "eth")
-        comx7dprice = comx7d * api.get_eth_price()
+        comx7d = api.get_token_balance(items.commultieth, "eth", items.x7dca)
+        comx7dprice = comx7d * api.get_native_price("eth")
         comtotal = comx7rprice + comdollar + comx7dprice
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.ethlogo)
@@ -3064,8 +3063,8 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "bsc" or chain == "bnb":
         deveth = api.get_balance(items.devmultibsc, "bsc")
         cometh = api.get_balance(items.commultibsc, "bsc")
-        devdollar = float(deveth) * float(api.get_bnb_price()) / 1 ** 18
-        comdollar = float(cometh) * float(api.get_bnb_price()) / 1 ** 18
+        devdollar = float(deveth) * float(api.get_native_price("bnb")) / 1 ** 18
+        comdollar = float(cometh) * float(api.get_native_price("bnb")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.bsclogo)
         im1.paste(im2, (720, 20), im2)
@@ -3095,8 +3094,8 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "arbitrum" or chain == "arb":
         devamount = api.get_balance(items.devmultiarb, "arb")
         comamount = api.get_balance(items.devmultiarb, "arb")
-        devdollar = float(devamount) * float(api.get_eth_price()) / 1 ** 18
-        comdollar = float(comamount) * float(api.get_eth_price()) / 1 ** 18
+        devdollar = float(devamount) * float(api.get_native_price("eth")) / 1 ** 18
+        comdollar = float(comamount) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.arblogo)
         im1.paste(im2, (720, 20), im2)
@@ -3126,8 +3125,8 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "polygon" or chain == "poly":
         devamount = api.get_balance(items.devmultipoly, "poly")
         comamount = api.get_balance(items.commultipoly, "poly")
-        devdollar = float(devamount) * float(api.get_matic_price()) / 1 ** 18
-        comdollar = float(comamount) * float(api.get_matic_price()) / 1 ** 18
+        devdollar = float(devamount) * float(api.get_native_price("matic")) / 1 ** 18
+        comdollar = float(comamount) * float(api.get_native_price("matic")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.polylogo)
         im1.paste(im2, (720, 20), im2)
@@ -3157,8 +3156,8 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "optimism" or chain == "opti":
         devamount = api.get_balance(items.devmultiopti, "opti")
         comamount = api.get_balance(items.commultiopti, "opti")
-        devdollar = float(devamount) * float(api.get_eth_price()) / 1 ** 18
-        comdollar = float(comamount) * float(api.get_eth_price()) / 1 ** 18
+        devdollar = float(devamount) * float(api.get_native_price("eth")) / 1 ** 18
+        comdollar = float(comamount) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.optilogo)
         im1.paste(im2, (720, 20), im2)
@@ -3206,31 +3205,31 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7105 = api.get_liquidity(items.x7105paireth)
         x7rtoken = float(x7r["reserve0"])
         x7rweth = float(x7r["reserve1"]) / 10 ** 18
-        x7rwethdollar = float(x7rweth) * float(api.get_eth_price())
+        x7rwethdollar = float(x7rweth) * float(api.get_native_price("eth"))
         x7rtokendollar = float(x7rprice) * float(x7rtoken) / 10 ** 18
         x7daotoken = float(x7dao["reserve0"])
         x7daoweth = float(x7dao["reserve1"]) / 10 ** 18
-        x7daowethdollar = float(x7daoweth) * float(api.get_eth_price())
+        x7daowethdollar = float(x7daoweth) * float(api.get_native_price("eth"))
         x7daotokendollar = float(x7daoprice) * float(x7daotoken) / 10 ** 18
         x7101token = float(x7101["reserve0"])
         x7101weth = float(x7101["reserve1"]) / 10 ** 18
-        x7101wethdollar = float(x7101weth) * float(api.get_eth_price())
+        x7101wethdollar = float(x7101weth) * float(api.get_native_price("eth"))
         x7101tokendollar = float(x7101price) * float(x7101token) / 10 ** 18
         x7102token = float(x7102["reserve0"])
         x7102weth = float(x7102["reserve1"]) / 10 ** 18
-        x7102wethdollar = float(x7102weth) * float(api.get_eth_price())
+        x7102wethdollar = float(x7102weth) * float(api.get_native_price("eth"))
         x7102tokendollar = float(x7102price) * float(x7102token) / 10 ** 18
         x7103token = float(x7103["reserve0"])
         x7103weth = float(x7103["reserve1"]) / 10 ** 18
-        x7103wethdollar = float(x7103weth) * float(api.get_eth_price())
+        x7103wethdollar = float(x7103weth) * float(api.get_native_price("eth"))
         x7103tokendollar = float(x7103price) * float(x7103token) / 10 ** 18
         x7104token = float(x7104["reserve0"])
         x7104weth = float(x7104["reserve1"]) / 10 ** 18
-        x7104wethdollar = float(x7104weth) * float(api.get_eth_price())
+        x7104wethdollar = float(x7104weth) * float(api.get_native_price("eth"))
         x7104tokendollar = float(x7104price) * float(x7104token) / 10 ** 18
         x7105token = float(x7105["reserve0"])
         x7105weth = float(x7105["reserve1"]) / 10 ** 18
-        x7105wethdollar = float(x7105weth) * float(api.get_eth_price())
+        x7105wethdollar = float(x7105weth) * float(api.get_native_price("eth"))
         x7105tokendollar = float(x7105price) * float(x7105token) / 10 ** 18
         constellationstokens = x7101token+x7102token+x7103token+x7104token+x7105token
         constellationsweth = x7101weth + x7102weth + x7103weth + x7104weth + x7105weth
@@ -3284,9 +3283,9 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7ramount = api.get_balance(items.x7rliq, "bsc")
         x7daoamount = api.get_balance(items.daoliq, "bsc")
         x7consamount = api.get_balance(items.consliq, "bsc")
-        x7daodollar = float(x7daoamount) * float(api.get_eth_price()) / 1 ** 18
-        x7rdollar = float(x7ramount) * float(api.get_eth_price()) / 1 ** 18
-        x7consdollar = float(x7consamount) * float(api.get_eth_price()) / 1 ** 18
+        x7daodollar = float(x7daoamount) * float(api.get_native_price("bnb")) / 1 ** 18
+        x7rdollar = float(x7ramount) * float(api.get_native_price("bnb")) / 1 ** 18
+        x7consdollar = float(x7consamount) * float(api.get_native_price("bnb")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.bsclogo)
         im1.paste(im2, (720, 20), im2)
@@ -3319,9 +3318,9 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7ramount = api.get_balance(items.x7rliq, "arb")
         x7daoamount = api.get_balance(items.daoliq, "arb")
         x7consamount = api.get_balance(items.consliq, "arb")
-        x7daodollar = float(x7daoamount) * float(api.get_eth_price()) / 1 ** 18
-        x7rdollar = float(x7ramount) * float(api.get_eth_price()) / 1 ** 18
-        x7consdollar = float(x7consamount) * float(api.get_eth_price()) / 1 ** 18
+        x7daodollar = float(x7daoamount) * float(api.get_native_price("eth")) / 1 ** 18
+        x7rdollar = float(x7ramount) * float(api.get_native_price("eth")) / 1 ** 18
+        x7consdollar = float(x7consamount) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.arblogo)
         im1.paste(im2, (720, 20), im2)
@@ -3354,9 +3353,9 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7ramount = api.get_balance(items.x7rliq, "opti")
         x7daoamount = api.get_balance(items.daoliq, "opti")
         x7consamount = api.get_balance(items.consliq, "opti")
-        x7daodollar = float(x7daoamount) * float(api.get_eth_price()) / 1 ** 18
-        x7rdollar = float(x7ramount) * float(api.get_eth_price()) / 1 ** 18
-        x7consdollar = float(x7consamount) * float(api.get_eth_price()) / 1 ** 18
+        x7daodollar = float(x7daoamount) * float(api.get_native_price("eth")) / 1 ** 18
+        x7rdollar = float(x7ramount) * float(api.get_native_price("eth")) / 1 ** 18
+        x7consdollar = float(x7consamount) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.optilogo)
         im1.paste(im2, (720, 20), im2)
@@ -3389,9 +3388,9 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7ramount = api.get_balance(items.x7rliq, "poly")
         x7daoamount = api.get_balance(items.daoliq, "poly")
         x7consamount = api.get_balance(items.consliq, "poly")
-        x7daodollar = float(x7daoamount) * float(api.get_matic_price()) / 1 ** 18
-        x7rdollar = float(x7ramount) * float(api.get_matic_price()) / 1 ** 18
-        x7consdollar = float(x7consamount) * float(api.get_matic_price()) / 1 ** 18
+        x7daodollar = float(x7daoamount) * float(api.get_native_price("matic")) / 1 ** 18
+        x7rdollar = float(x7ramount) * float(api.get_native_price("matic")) / 1 ** 18
+        x7consdollar = float(x7consamount) * float(api.get_native_price("matic")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.polylogo)
         im1.paste(im2, (720, 20), im2)
@@ -3425,7 +3424,7 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "" or chain == "eth":
-        burn = api.get_x7r_balance(items.dead, "eth")
+        burn = api.get_token_balance(items.dead, "eth", items.x7rca)
         percent = round(burn / items.supply * 100, 2)
         burndollar = api.cg["x7r"]["usd"] * float(burn)
         im1 = Image.open((random.choice(items.blackhole)))
@@ -3450,7 +3449,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [[InlineKeyboardButton(text='Etherscan Burn Wallet',
                                        url=f'{items.ethertoken}{items.x7rca}?a={items.dead}')], ]))
     if chain == "bsc" or chain == "bnb":
-        amount = api.get_x7r_balance(items.dead, "bsc")
+        amount = api.get_token_balance(items.dead, "bsc", items.x7rca)
         percent = round(((amount / items.supply) * 100), 6)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.bsclogo)
@@ -3474,7 +3473,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [[InlineKeyboardButton(text='Etherscan Burn Wallet',
                                        url=f'{items.bsctoken}{items.x7rca}?a={items.dead}')], ]))
     if chain == "polygon" or chain == "poly":
-        amount = api.get_x7r_balance(items.dead, "poly")
+        amount = api.get_token_balance(items.dead, "poly", items.x7rca)
         percent = round(((amount / items.supply) * 100), 6)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.polylogo)
@@ -3498,7 +3497,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [[InlineKeyboardButton(text='Etherscan Burn Wallet',
                                        url=f'{items.polytoken}{items.x7rca}?a={items.dead}')], ]))
     if chain == "arbitrum" or chain == "arb":
-        amount = api.get_x7r_balance(items.dead, "arb")
+        amount = api.get_token_balance(items.dead, "arb", items.x7rca)
         percent = round(((amount / items.supply) * 100), 6)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.arblogo)
@@ -3522,7 +3521,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [[InlineKeyboardButton(text='Etherscan Burn Wallet',
                                        url=f'{items.arbtoken}{items.x7rca}?a={items.dead}')], ]))
     if chain == "optimism" or chain == "arb":
-        amount = api.get_x7r_balance(items.dead, "opti")
+        amount = api.get_token_balance(items.dead, "opti", items.x7rca)
         percent = round(((amount / items.supply) * 100), 6)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.optilogo)
@@ -3547,7 +3546,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.optitoken}{items.x7rca}?a={items.dead}')], ]))
 
 
-# HARD AUTO MESSAGES
+# AUTO MESSAGES
 async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
     await context.bot.send_message(
@@ -3559,18 +3558,6 @@ async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
             [InlineKeyboardButton(text='Whitepaper', url=f'{items.wplink}')], ]))
 
 
-async def twitter_message(context: ContextTypes.DEFAULT_TYPE) -> None:
-    job = context.job
-    await context.bot.send_sticker(chat_id=job.chat.id, sticker=items.twittersticker)
-    await context.bot.send_text(
-        chat_id=job.chat_id,
-        caption=f'{variables.automessage}\n\n{api.get_quote()}',
-        parse_mode='Markdown',
-        reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text='Twitter Raid!', url=f'{variables.automessagelink}')], ]))
-
-
-# AUTO MESSAGES
 async def auto_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
     await context.bot.send_photo(
@@ -3626,12 +3613,12 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'{update.effective_message.from_user.username} says "{message}" in: '
           f'{update.effective_message.chat.title}')
     if "@devs" in message:
-        result = round(((api.get_x7r_balance(items.dead, "eth") / items.supply) * 100), 6)
+        result = round(((api.get_token_balance(items.dead, "eth", items.x7rca) / items.supply) * 100), 6)
         await update.message.reply_text(f'Please send 1000 X7R to the burn wallet:\n\n'
                                         f'`0x000000000000000000000000000000000000dEaD`\n\nThank you for your '
                                         f'contribution {update.message.from_user.username}\n\n'
                                         f'X7R (ETH) Tokens Burned:\n'
-                                        f'{"{:,}".format(api.get_x7r_balance(items.dead, "eth"))}\n'
+                                        f'{"{:,}".format(api.get_token_balance(items.dead, "eth", items.x7rca))}\n'
                                         f'{result}% of Supply\n\n\n\n',
                                         parse_mode='Markdown')
     if "rob the bank" in message:
@@ -3756,10 +3743,4 @@ if __name__ == '__main__':
         chat_id=items.main_id,
         name=str('WP Message'),
         data=variables.wptime*60*60)
-    application.job_queue.run_repeating(
-        twitter_message, variables.twittertime*60*60,
-        chat_id=items.main_id,
-        name=str('Twitter Message'),
-        data=variables.twittertime*60*60)
-
     application.run_polling()
