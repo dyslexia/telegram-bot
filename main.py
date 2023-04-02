@@ -593,7 +593,7 @@ async def ca_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "" or chain == "eth":
-        supply = api.get_balance(items.x7dca, "eth")
+        supply = api.get_native_balance(items.x7dca, "eth")
         holders = api.get_holders(items.x7dca)
         x7ddollar = float(supply) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
@@ -639,7 +639,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.etheraddress}{items.x7dca}#code')],
                  ]))
     if chain == "bsc" or chain == "bnb":
-        supply = api.get_balance(items.x7dca, "bnb")
+        supply = api.get_native_balance(items.x7dca, "bnb")
         x7ddollar = float(supply) * float(api.get_native_price("bnb")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7dlogo)
@@ -682,7 +682,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.bscaddress}{items.x7dca}#code')],
                  ]))
     if chain == "polygon" or chain == "poly":
-        x7damount = api.get_balance(items.x7dca, "poly")
+        x7damount = api.get_native_balance(items.x7dca, "poly")
         x7ddollar = float(x7damount) * float(api.get_native_price("matic")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7dlogo)
@@ -725,7 +725,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.polyaddress}{items.x7dca}#code')],
                  ]))
     if chain == "optimism" or chain == "opti":
-        x7damount = api.get_balance(items.x7dca, "opti")
+        x7damount = api.get_native_balance(items.x7dca, "opti")
         x7ddollar = float(x7damount) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7dlogo)
@@ -768,7 +768,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.optiaddress}{items.x7dca}#code')],
                  ]))
     if chain == "arbitrum" or chain == "arb":
-        x7damount = api.get_balance(items.lpreserveca, "arb")
+        x7damount = api.get_native_balance(items.lpreserveca, "arb")
         x7ddollar = float(x7damount) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7dlogo)
@@ -889,7 +889,7 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     owners = (data["collection"]["stats"]["num_owners"])
     price = round(data["collection"]["stats"]["average_price"], 2)
     volume = round(data["collection"]["stats"]["total_volume"], 2)
-    pioneerpool = api.get_balance(items.pioneerca, "eth")
+    pioneerpool = api.get_native_balance(items.pioneerca, "eth")
     totaldollar = float(pioneerpool) * float(api.get_native_price("eth")) / 1 ** 18
     if pioneerid == "":
         img = Image.open((random.choice(items.blackhole)))
@@ -974,15 +974,15 @@ async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    ethpool = api.get_balance(items.lpreserveca, "eth")
+    ethpool = api.get_native_balance(items.lpreserveca, "eth")
     pooldollar = float(ethpool) * float(api.get_native_price("eth")) / 1 ** 18
-    bscpool = api.get_balance(items.lpreserveca, "bsc")
+    bscpool = api.get_native_balance(items.lpreserveca, "bsc")
     bscpooldollar = float(bscpool) * float(api.get_native_price("bnb")) / 1 ** 18
-    arbpool = api.get_balance(items.lpreserveca, "arb")
+    arbpool = api.get_native_balance(items.lpreserveca, "arb")
     arbpooldollar = float(arbpool) * float(api.get_native_price("eth")) / 1 ** 18
-    polypool = api.get_balance(items.lpreserveca, "poly")
+    polypool = api.get_native_balance(items.lpreserveca, "poly")
     polypooldollar = float(polypool) * float(api.get_native_price("matic")) / 1 ** 18
-    optipool = api.get_balance(items.lpreserveca, "opti")
+    optipool = api.get_native_balance(items.lpreserveca, "opti")
     optipooldollar = float(optipool) * float(api.get_native_price("eth")) / 1 ** 18
     totaldollar = polypooldollar + bscpooldollar + optipooldollar + arbpooldollar + pooldollar
     if chain == "":
@@ -1863,10 +1863,11 @@ async def alumni_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    if api.cg["x7r"]["usd_24h_change"] is None:
-        api.cg["x7r"]["usd_24h_change"] = 0
+    price = api.get_cg_price("x7r")
+    if price["x7r"]["usd_24h_change"] is None:
+        price["x7r"]["usd_24h_change"] = 0
     if dollar:
-        amount = round(float(chain[1:]) / float(api.cg["x7r"]["usd"]), 2)
+        amount = round(float(chain[1:]) / float(price["usd"]), 2)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7rlogo)
         im1.paste(im2, (720, 20), im2)
@@ -1885,7 +1886,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'X7R (ETH) Tokens (Before Tax)\n\n{api.get_quote()}',
             parse_mode='Markdown')
     if chain.isdigit():
-        amount = float(chain) * float(api.cg["x7r"]["usd"])
+        amount = float(chain) * float(price["x7r"]["usd"])
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7rlogo)
         im1.paste(im2, (720, 20), im2)
@@ -1910,7 +1911,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7rtoken = float(x7r["reserve0"])
         x7rweth = float(x7r["reserve1"]) / 10 ** 18
         x7rwethdollar = float(x7rweth) * float(api.get_native_price("eth"))
-        x7rtokendollar = float(api.cg["x7r"]["usd"]) * float(x7rtoken) / 10 ** 18
+        x7rtokendollar = float(price["x7r"]["usd"]) * float(x7rtoken) / 10 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7rlogo)
         im1.paste(im2, (720, 20), im2)
@@ -1919,10 +1920,10 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1 = ImageDraw.Draw(im1)
         i1.text((26, 30),
                 f'X7R Info (ETH)\n\n'
-                f'X7R Price: ${api.cg["x7r"]["usd"]}\n'
-                f'24 Hour Change: {round(api.cg["x7r"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7r"]["usd"] * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7r"]["usd_24h_vol"])}\n'
+                f'X7R Price: ${price["x7r"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(price["x7r"]["usd"] * items.supply)}\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(price["x7r"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n'
                 f'Liquidity:\n'
                 f'{"{:0,.0f}".format(x7rtoken)[:4]}M X7R (${"{:0,.0f}".format(x7rtokendollar)})\n'
@@ -1934,10 +1935,10 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7R Info (ETH)*\nUse `/x7r [chain-name]` for other chains\n\n'
-                    f'X7R Price: ${api.cg["x7r"]["usd"]}\n'
-                    f'24 Hour Change: {round(api.cg["x7r"]["usd_24h_change"], 1)}%\n'
-                    f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7r"]["usd"]*items.supply)}\n'
-                    f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7r"]["usd_24h_vol"])}\n'
+                    f'X7R Price: ${price["x7r"]["usd"]}\n'
+                    f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n'
+                    f'Market Cap:  ${"{:0,.0f}".format(price["x7r"]["usd"]*items.supply)}\n'
+                    f'24 Hour Volume: ${"{:0,.0f}".format(price["x7r"]["usd_24h_vol"])}\n'
                     f'Holders: {holders}\n\n'
                     f'X7R Tokens Burned:\n'
                     f'{"{:,}".format(burn)}\n'
@@ -1997,10 +1998,11 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    if api.cg["x7dao"]["usd_24h_change"] is None:
-        api.cg["x7dao"]["usd_24h_change"] = 0
+    price = api.get_cg_price("x7dao")
+    if price["x7dao"]["usd_24h_change"] is None:
+        price["x7dao"]["usd_24h_change"] = 0
     if dollar:
-        amount = float(chain[1:]) / float(api.cg["x7dao"]["usd"])
+        amount = float(chain[1:]) / float(price["x7dao"]["usd"])
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7daologo)
         im1.paste(im2, (720, 20), im2)
@@ -2021,7 +2023,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "proposal":
         chain = "500000"
     if chain == "500000":
-        amount = float(chain) * float(api.cg["x7dao"]["usd"])
+        amount = float(chain) * float(price["x7dao"]["usd"])
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7daologo)
         im1.paste(im2, (720, 20), im2)
@@ -2042,7 +2044,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown')
         return
     if chain.isdigit():
-        amount = float(chain)*float(api.cg["x7dao"]["usd"])
+        amount = float(chain)*float(price["x7dao"]["usd"])
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7daologo)
         im1.paste(im2, (720, 20), im2)
@@ -2065,7 +2067,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7daotoken = float(x7dao["reserve0"])
         x7daoweth = float(x7dao["reserve1"]) / 10 ** 18
         x7daowethdollar = float(x7daoweth) * float(api.get_native_price("eth"))
-        x7daotokendollar = float(api.cg["x7dao"]["usd"]) * float(x7daotoken) / 10 ** 18
+        x7daotokendollar = float(price["x7dao"]["usd"]) * float(x7daotoken) / 10 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7daologo)
         im1.paste(im2, (720, 20), im2)
@@ -2073,10 +2075,10 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1 = ImageDraw.Draw(im1)
         i1.text((28, 36),
                 f'X7DAO Info (ETH)\n\n'
-                f'X7DAO Price: ${api.cg["x7dao"]["usd"]}\n'
-                f'24 Hour Change: {round(api.cg["x7dao"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7dao"]["usd"] * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7dao"]["usd_24h_vol"])}\n'
+                f'X7DAO Price: ${price["x7dao"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(price["x7dao"]["usd"] * items.supply)}\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(price["x7dao"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n'
                 f'Liquidity:\n'
                 f'{"{:0,.0f}".format(x7daotoken)[:4]}M X7DAO (${"{:0,.0f}".format(x7daotokendollar)})\n'
@@ -2088,10 +2090,10 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7DAO (ETH) Info*\n\n'
-            f'X7DAO Price: ${api.cg["x7dao"]["usd"]}\n'
-            f'24 Hour Change: {round(api.cg["x7dao"]["usd_24h_change"], 1)}%\n'
-            f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7dao"]["usd"] * items.supply)}\n'
-            f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7dao"]["usd_24h_vol"])}\n'
+            f'X7DAO Price: ${price["x7dao"]["usd"]}\n'
+            f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 1)}%\n'
+            f'Market Cap:  ${"{:0,.0f}".format(price["x7dao"]["usd"] * items.supply)}\n'
+            f'24 Hour Volume: ${"{:0,.0f}".format(price["x7dao"]["usd_24h_vol"])}\n'
             f'Holders: {holders}\n\n'
             f'Liquidity:\n'
             f'{"{:0,.0f}".format(x7daotoken)[:4]}M X7DAO (${"{:0,.0f}".format(x7daotokendollar)})\n'
@@ -2148,10 +2150,11 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    if api.cg["x7101"]["usd_24h_change"] is None:
-        api.cg["x7101"]["usd_24h_change"] = 0
+    price = api.get_cg_price("x7101")
+    if price["x7101"]["usd_24h_change"] is None:
+        price["x7101"]["usd_24h_change"] = 0
     if dollar:
-        amount = float(chain[1:]) / float(api.cg["x7101"]["usd"])
+        amount = float(chain[1:]) / float(price["x7101"]["usd"])
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7101logo)
         im1.paste(im2, (720, 20), im2)
@@ -2169,7 +2172,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'{chain} Is currently worth:\n\n{"{:0,.0f}".format(amount)}' 
                     f' X7101 (ETH) Tokens (before tax)\n\n{api.get_quote()}', parse_mode='Markdown')
     if chain.isdigit():
-        amount = float(chain)*float(api.cg["x7101"]["usd"])
+        amount = float(chain)*float(price["x7101"]["usd"])
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7101logo)
         im1.paste(im2, (720, 20), im2)
@@ -2195,10 +2198,10 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'X7101 Info (ETH)\n\n'
-                f'X7101 Price: ${api.cg["x7101"]["usd"]}\n'
-                f'24 Hour Change: {round(api.cg["x7101"]["usd_24h_change"]),1}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7101"]["usd"] * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7101"]["usd_24h_vol"])}\n'
+                f'X7101 Price: ${price["x7101"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7101"]["usd_24h_change"]),1}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(price["x7101"]["usd"] * items.supply)}\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(price["x7101"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2206,10 +2209,10 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7101 (ETH) Info*\nUse `/X7101 [chain-name]` for other chains\n\n'
-            f'X7101 Price: ${api.cg["x7101"]["usd"]}\n'
-            f'24 Hour Change: {round(api.cg["x7101"]["usd_24h_change"], 1)}%\n'
-            f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7101"]["usd"] * items.supply)}\n'
-            f'24 Hour Volume: ${round(api.cg["x7101"]["usd_24h_vol"])}\n'
+            f'X7101 Price: ${price["x7101"]["usd"]}\n'
+            f'24 Hour Change: {round(price["x7101"]["usd_24h_change"], 1)}%\n'
+            f'Market Cap:  ${"{:0,.0f}".format(price["x7101"]["usd"] * items.supply)}\n'
+            f'24 Hour Volume: ${round(price["x7101"]["usd_24h_vol"])}\n'
             f'Holders: {holders}\n\n'
             f'*X7101 Contract*\n`{items.x7101ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
@@ -2262,10 +2265,11 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    if api.cg["x7102"]["usd_24h_change"] is None:
-        api.cg["x7102"]["usd_24h_change"] = 0
+    price = api.get_cg_price("x7102")
+    if price["x7102"]["usd_24h_change"] is None:
+        price["x7102"]["usd_24h_change"] = 0
     if dollar:
-        amount = float(chain[1:]) / float(api.cg["x7102"]["usd"])
+        amount = float(chain[1:]) / float(price["x7102"]["usd"])
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7102logo)
         im1.paste(im2, (720, 20), im2)
@@ -2284,7 +2288,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f' X7102 (ETH) Tokens (before tax)\n\n{api.get_quote()}',
             parse_mode='Markdown')
     if chain.isdigit():
-        amount = float(chain) * float(api.cg["x7102"]["usd"])
+        amount = float(chain) * float(price["x7102"]["usd"])
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7102logo)
         im1.paste(im2, (720, 20), im2)
@@ -2310,10 +2314,10 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'X7102 Info (ETH)\n\n'
-                f'X7102 Price: ${api.cg["x7102"]["usd"]}\n'
-                f'24 Hour Change: {round(api.cg["x7102"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7102"]["usd"] * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7102"]["usd_24h_vol"])}\n'
+                f'X7102 Price: ${price["x7102"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7102"]["usd_24h_change"], 1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(price["x7102"]["usd"] * items.supply)}\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(price["x7102"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2321,10 +2325,10 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7102 (ETH) Info*\nUse `/x7102 [chain-name]` for other chains\n\n'
-                    f'X7102 Price: ${api.cg["x7102"]["usd"]}\n'
-                    f'24 Hour Change: {round(api.cg["x7102"]["usd_24h_change"], 1)}%\n'
-                    f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7102"]["usd"] * items.supply)}\n'
-                    f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7102"]["usd_24h_vol"])}\n'
+                    f'X7102 Price: ${price["x7102"]["usd"]}\n'
+                    f'24 Hour Change: {round(price["x7102"]["usd_24h_change"], 1)}%\n'
+                    f'Market Cap:  ${"{:0,.0f}".format(price["x7102"]["usd"] * items.supply)}\n'
+                    f'24 Hour Volume: ${"{:0,.0f}".format(price["x7102"]["usd_24h_vol"])}\n'
                     f'Holders: {holders}\n\n'
                     f'*X7102 Contract*\n`{items.x7102ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
@@ -2377,10 +2381,11 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    if api.cg["x7103"]["usd_24h_change"] is None:
-        api.cg["x7103"]["usd_24h_change"] = 0
+    price = api.get_cg_price("x7103")
+    if price["x7103"]["usd_24h_change"] is None:
+        price["x7103"]["usd_24h_change"] = 0
     if dollar:
-        amount = float(chain[1:]) / float(api.cg["x7103"]["usd"])
+        amount = float(chain[1:]) / float(price["x7103"]["usd"])
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7103logo)
         im1.paste(im2, (720, 20), im2)
@@ -2399,7 +2404,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f' X7103 (ETH) Tokens (before tax)\n\n{api.get_quote()}',
             parse_mode='Markdown')
     if chain.isdigit():
-        amount = round(float(chain) * float(api.cg["x7103"]["usd"]), 2)
+        amount = round(float(chain) * float(price["x7103"]["usd"]), 2)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7103logo)
         im1.paste(im2, (720, 20), im2)
@@ -2425,10 +2430,10 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'X7103 Info (ETH)\n\n'
-                f'X7103 Price: ${api.cg["x7103"]["usd"]}\n'
-                f'24 Hour Change: {round(api.cg["x7103"]["usd_24h_change"],1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7103"]["usd"] * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7103"]["usd_24h_vol"])}\n'
+                f'X7103 Price: ${price["x7103"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7103"]["usd_24h_change"],1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(price["x7103"]["usd"] * items.supply)}\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(price["x7103"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2436,10 +2441,10 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7103 (ETH) Info*\nUse `/x7103` [chain-name] for other chains\n\n'
-                    f'X7103 Price: ${api.cg["x7103"]["usd"]}\n'
-                    f'24 Hour Change: {round(api.cg["x7103"]["usd_24h_change"],1)}%\n'
-                    f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7103"]["usd"]*items.supply)}\n'
-                    f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7103"]["usd_24h_vol"])}\n'
+                    f'X7103 Price: ${price["x7103"]["usd"]}\n'
+                    f'24 Hour Change: {round(price["x7103"]["usd_24h_change"],1)}%\n'
+                    f'Market Cap:  ${"{:0,.0f}".format(price["x7103"]["usd"]*items.supply)}\n'
+                    f'24 Hour Volume: ${"{:0,.0f}".format(price["x7103"]["usd_24h_vol"])}\n'
                     f'Holders: {holders}\n\n'
                     f'*X7103 Contract*\n`{items.x7103ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
@@ -2492,10 +2497,11 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    if api.cg["x7104"]["usd_24h_change"] is None:
-        api.cg["x7104"]["usd_24h_change"] = 0
+    price = api.get_cg_price("x7104")
+    if price["x7104"]["usd_24h_change"] is None:
+        price["x7104"]["usd_24h_change"] = 0
     if dollar:
-        amount = float(chain[1:]) / float(api.cg["x7104"]["usd"])
+        amount = float(chain[1:]) / float(price["x7104"]["usd"])
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7104logo)
         im1.paste(im2, (720, 20), im2)
@@ -2514,7 +2520,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f' X7104 (ETH) Tokens (before tax)\n\n{api.get_quote()}',
             parse_mode='Markdown')
     if chain.isdigit():
-        amount = float(chain) * float(api.cg["x7104"]["usd"])
+        amount = float(chain) * float(price["x7104"]["usd"])
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7104logo)
         im1.paste(im2, (720, 20), im2)
@@ -2540,10 +2546,10 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1 = ImageDraw.Draw(im1)
         i1.text((28, 36),
                 f'X7104 Info (ETH)\n\n'
-                f'X7104 Price: ${api.cg["x7104"]["usd"]}\n'
-                f'24 Hour Change: {round(api.cg["x7104"]["usd_24h_change"],1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7104"]["usd"] * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7104"]["usd_24h_vol"])}\n'
+                f'X7104 Price: ${price["x7104"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7104"]["usd_24h_change"],1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(price["x7104"]["usd"] * items.supply)}\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(price["x7104"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2551,10 +2557,10 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7104 (ETH) Info*\n`Use /x7104 [chain-name]` for other chains\n\n'
-                    f'X7104 Price: ${api.cg["x7104"]["usd"]}\n'
-                    f'24 Hour Change: {round(api.cg["x7104"]["usd_24h_change"],1)}%\n'
-                    f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7104"]["usd"] * items.supply)}\n'
-                    f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7104"]["usd_24h_vol"])}\n'
+                    f'X7104 Price: ${price["x7104"]["usd"]}\n'
+                    f'24 Hour Change: {round(price["x7104"]["usd_24h_change"],1)}%\n'
+                    f'Market Cap:  ${"{:0,.0f}".format(price["x7104"]["usd"] * items.supply)}\n'
+                    f'24 Hour Volume: ${"{:0,.0f}".format(price["x7104"]["usd_24h_vol"])}\n'
                     f'Holders: {holders}\n\n'
                     f'*X7104 Contract*\n`{items.x7104ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
@@ -2607,10 +2613,11 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
-    if api.cg["x7105"]["usd_24h_change"] is None:
-        api.cg["x7105"]["usd_24h_change"] = 0
+    price = api.get_cg_price("x7105")
+    if price["x7105"]["usd_24h_change"] is None:
+        price["x7105"]["usd_24h_change"] = 0
     if dollar:
-        amount = float(chain[1:]) / float(api.cg["x7105"]["usd"])
+        amount = float(chain[1:]) / float(price["x7105"]["usd"])
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7105logo)
         im1.paste(im2, (720, 20), im2)
@@ -2629,7 +2636,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f' X7105 (ETH) Tokens (before tax)\n\n{api.get_quote()}',
             parse_mode='Markdown')
     if chain.isdigit():
-        amount = float(chain) * float(api.cg["x7105"]["usd"])
+        amount = float(chain) * float(price["x7105"]["usd"])
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7105logo)
         im1.paste(im2, (720, 20), im2)
@@ -2655,10 +2662,10 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1 = ImageDraw.Draw(im1)
         i1.text((28, 36),
                 f'X7105 Info (ETH)\n\n'
-                f'X7105 Price: ${api.cg["x7105"]["usd"]}\n'
-                f'24 Hour Change: {round(api.cg["x7105"]["usd_24h_change"],1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7105"]["usd"] * items.supply)}\n'
-                f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7105"]["usd_24h_vol"])}\n'
+                f'X7105 Price: ${price["x7105"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7105"]["usd_24h_change"],1)}%\n'
+                f'Market Cap:  ${"{:0,.0f}".format(price["x7105"]["usd"] * items.supply)}\n'
+                f'24 Hour Volume: ${"{:0,.0f}".format(price["x7105"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2666,10 +2673,10 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7105 (ETH) Info*\nUse `/x7105 [chain-name]` for other chains\n'
-                    f'X7105 Price: ${api.cg["x7105"]["usd"]}\n'
-                    f'24 Hour Change: {round(api.cg["x7105"]["usd_24h_change"],1)}%\n'
-                    f'Market Cap:  ${"{:0,.0f}".format(api.cg["x7105"]["usd"]*items.supply)}\n'
-                    f'24 Hour Volume: ${"{:0,.0f}".format(api.cg["x7105"]["usd_24h_vol"])}\n'
+                    f'X7105 Price: ${price["x7105"]["usd"]}\n'
+                    f'24 Hour Change: {round(price["x7105"]["usd_24h_change"],1)}%\n'
+                    f'Market Cap:  ${"{:0,.0f}".format(price["x7105"]["usd"]*items.supply)}\n'
+                    f'24 Hour Volume: ${"{:0,.0f}".format(price["x7105"]["usd_24h_vol"])}\n'
                     f'Holders: {holders}\n\n'
                     f'*X7105 Contract*\n`{items.x7105ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
@@ -2722,13 +2729,14 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     x7rsupply = items.supply - api.get_token_balance(items.dead, "eth", items.x7rca)
-    x7rcap = (api.cg["x7r"]["usd"]) * x7rsupply
-    x7daocap = (api.cg["x7dao"]["usd"]) * items.supply
-    x7101cap = (api.cg["x7101"]["usd"]) * items.supply
-    x7102cap = (api.cg["x7102"]["usd"]) * items.supply
-    x7103cap = (api.cg["x7103"]["usd"]) * items.supply
-    x7104cap = (api.cg["x7104"]["usd"]) * items.supply
-    x7105cap = (api.cg["x7105"]["usd"]) * items.supply
+    price = api.get_cg_price("x7r, x7dao, x7101, x7102, x7103, x7104, x7105")
+    x7rcap = (price["x7r"]["usd"]) * x7rsupply
+    x7daocap = (price["x7dao"]["usd"]) * items.supply
+    x7101cap = (price["x7101"]["usd"]) * items.supply
+    x7102cap = (price["x7102"]["usd"]) * items.supply
+    x7103cap = (price["x7103"]["usd"]) * items.supply
+    x7104cap = (price["x7104"]["usd"]) * items.supply
+    x7105cap = (price["x7105"]["usd"]) * items.supply
     conscap = x7101cap + x7102cap + x7103cap + x7104cap + x7105cap
     totalcap = x7rcap + x7daocap + x7101cap + x7102cap + x7103cap + x7104cap + x7105cap
     if chain == "":
@@ -2773,15 +2781,13 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     search = " ".join(context.args).lower()
-    basetokenurl = 'https://api.coingecko.com/api/v3/search?query='
-    tokenurl = basetokenurl + search
-    tokenresponse = requests.get(tokenurl)
-    token = tokenresponse.json()
+    token = api.cg_search(search)
     tokenid = token["coins"][0]["api_symbol"]
     symbol = token["coins"][0]["symbol"]
     thumb = token["coins"][0]["large"]
+    price = api.get_cg_price("x7r, x7dao")
     cg = CoinGeckoAPI()
-    tokenprice = cg.get_price(ids=tokenid, vs_currencies='usd', include_24hr_change='true', include_24hr_vol='true')
+    tokenprice = api.get_cg_price(tokenid)
     if search == "":
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(r'media\logo11.png')
@@ -2790,10 +2796,10 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'X7 Finance Token Price Info (ETH)\n\n'
-                f'X7R:      ${api.cg["x7r"]["usd"]}\n'
-                f'24 Hour Change: {round(api.cg["x7r"]["usd_24h_change"], 1)}%\n\n'
-                f'X7DAO:  ${api.cg["x7dao"]["usd"]}\n'
-                f'24 Hour Change: {round(api.cg["x7dao"]["usd_24h_change"], 0)}%\n\n\n\n\n\n'
+                f'X7R:      ${price["x7r"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n\n'
+                f'X7DAO:  ${price["x7dao"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 0)}%\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
@@ -2802,10 +2808,10 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7 Finance Token Price Info (ETH)*\n'
                     f'Use `/x7r [chain]` or `/x7dao [chain]` for all other details\n'
                     f'Use `/constellations` for constellations\n\n'
-                    f'X7R:      ${api.cg["x7r"]["usd"]}\n'
-                    f'24 Hour Change: {round(api.cg["x7r"]["usd_24h_change"], 1)}%\n\n'
-                    f'X7DAO:  ${api.cg["x7dao"]["usd"]}\n'
-                    f'24 Hour Change: {round(api.cg["x7dao"]["usd_24h_change"], 0)}%\n\n'
+                    f'X7R:      ${price["x7r"]["usd"]}\n'
+                    f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n\n'
+                    f'X7DAO:  ${price["x7dao"]["usd"]}\n'
+                    f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 0)}%\n\n'
                     f'{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
@@ -2923,7 +2929,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1 = ImageDraw.Draw(im1)
         i1.text((28, 36),
                 f'{symbol} price\n\n'
-                f'Price: ${"{:f}".format(float(tokenprice[tokenid]["usd"]))}\n'
+                f'Price: ${float(tokenprice[tokenid]["usd"])}\n'
                 f'24 Hour Change: {round(tokenprice[tokenid]["usd_24h_change"], 1)}%\n\n\n\n\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2931,7 +2937,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*{symbol} price*\n\n'
-                    f'Price: ${"{:f}".format(float(tokenprice[tokenid]["usd"]))}\n'
+                    f'Price: ${float(tokenprice[tokenid]["usd"])}\n'
                     f'24 Hour Change: {round(tokenprice[tokenid]["usd_24h_change"], 1)}%\n\n'
                     f'{api.get_quote()}',
             parse_mode='Markdown',
@@ -2941,45 +2947,46 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def constellations_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    x7101mc = api.cg["x7101"]["usd"] * items.supply
-    x7102mc = api.cg["x7102"]["usd"] * items.supply
-    x7103mc = api.cg["x7103"]["usd"] * items.supply
-    x7104mc = api.cg["x7104"]["usd"] * items.supply
-    x7105mc = api.cg["x7105"]["usd"] * items.supply
+    price = api.get_cg_price("x7101, x7102, x7103, x7104, x7105")
+    x7101mc = price["x7101"]["usd"] * items.supply
+    x7102mc = price["x7102"]["usd"] * items.supply
+    x7103mc = price["x7103"]["usd"] * items.supply
+    x7104mc = price["x7104"]["usd"] * items.supply
+    x7105mc = price["x7105"]["usd"] * items.supply
     constmc = x7101mc + x7102mc + x7103mc + x7104mc + x7105mc
-    if api.cg["x7101"]["usd_24h_change"] is None:
-        api.cg["x7101"]["usd_24h_change"] = 0
-    if api.cg["x7102"]["usd_24h_change"] is None:
-        api.cg["x7102"]["usd_24h_change"] = 0
-    if api.cg["x7103"]["usd_24h_change"] is None:
-        api.cg["x7103"]["usd_24h_change"] = 0
-    if api.cg["x7104"]["usd_24h_change"] is None:
-        api.cg["x7104"]["usd_24h_change"] = 0
-    if api.cg["x7105"]["usd_24h_change"] is None:
-        api.cg["x7105"]["usd_24h_change"] = 0
+    if price["x7101"]["usd_24h_change"] is None:
+        price["x7101"]["usd_24h_change"] = 0
+    if price["x7102"]["usd_24h_change"] is None:
+        price["x7102"]["usd_24h_change"] = 0
+    if price["x7103"]["usd_24h_change"] is None:
+        price["x7103"]["usd_24h_change"] = 0
+    if price["x7104"]["usd_24h_change"] is None:
+        price["x7104"]["usd_24h_change"] = 0
+    if price["x7105"]["usd_24h_change"] is None:
+        price["x7105"]["usd_24h_change"] = 0
     if chain == "":
         img = Image.open((random.choice(items.blackhole)))
         i1 = ImageDraw.Draw(img)
         myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 20)
         i1.text((28, 36),
                 f'X7 Finance Constellation Token Prices (ETH)\n\n'
-                f'X7101:      ${api.cg["x7101"]["usd"]}\n'
-                f'24 Hour Change: {round(api.cg["x7101"]["usd_24h_change"], 1)}%\n'
+                f'X7101:      ${price["x7101"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7101"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7101mc)}\n\n'
-                f'X7102:      ${api.cg["x7102"]["usd"]}\n'
-                f'24 Hour Change: {round(api.cg["x7102"]["usd_24h_change"], 1)}%\n'
+                f'X7102:      ${price["x7102"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7102"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7102mc)}\n\n'
-                f'X7103:      ${api.cg["x7103"]["usd"]}\n'
-                f'24 Hour Change: {round(api.cg["x7103"]["usd_24h_change"], 1)}%\n'
+                f'X7103:      ${price["x7103"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7103"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7103mc)}\n\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         i1.text((522, 90),
-                f'X7104:      ${api.cg["x7104"]["usd"]}\n'
-                f'24 Hour Change: {round(api.cg["x7104"]["usd_24h_change"], 1)}%\n'
+                f'X7104:      ${price["x7104"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7104"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7104mc)}\n\n'
-                f'X7105:      ${api.cg["x7105"]["usd"]}\n'
-                f'24 Hour Change: {round(api.cg["x7105"]["usd_24h_change"], 1)}%\n'
+                f'X7105:      ${price["x7105"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7105"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7105mc)}\n\n'
                 f'Combined Market Cap:\n${"{:0,.0f}".format(constmc)}\n',
                 font=myfont, fill=(255, 255, 255))
@@ -2988,24 +2995,24 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
             photo=open(r'media\blackhole.png', 'rb'),
             caption=f'*X7 Finance Constellation Token Prices (ETH)*\n\n'
                     f'For more info use `/x7tokenname`\n\n'
-                    f'X7101:      ${api.cg["x7101"]["usd"]}\n'
-                    f'24 Hour Change: {round(api.cg["x7101"]["usd_24h_change"], 1)}%\n'
+                    f'X7101:      ${price["x7101"]["usd"]}\n'
+                    f'24 Hour Change: {round(price["x7101"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7101mc)}\n'
                     f'CA: `{items.x7101ca}\n\n`'
-                    f'X7102:      ${api.cg["x7102"]["usd"]}\n'
-                    f'24 Hour Change: {round(api.cg["x7102"]["usd_24h_change"], 1)}%\n'
+                    f'X7102:      ${price["x7102"]["usd"]}\n'
+                    f'24 Hour Change: {round(price["x7102"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7102mc)}\n'
                     f'CA: `{items.x7102ca}\n\n`'
-                    f'X7103:      ${api.cg["x7103"]["usd"]}\n'
-                    f'24 Hour Change: {round(api.cg["x7103"]["usd_24h_change"], 1)}%\n'
+                    f'X7103:      ${price["x7103"]["usd"]}\n'
+                    f'24 Hour Change: {round(price["x7103"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7103mc)}\n'
                     f'CA: `{items.x7103ca}\n\n`'
-                    f'X7104:      ${api.cg["x7104"]["usd"]}\n'
-                    f'24 Hour Change: {round(api.cg["x7104"]["usd_24h_change"], 1)}%\n'
+                    f'X7104:      ${price["x7104"]["usd"]}\n'
+                    f'24 Hour Change: {round(price["x7104"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7104mc)}\n'
                     f'CA: `{items.x7104ca}\n\n`'
-                    f'X7105:      ${api.cg["x7105"]["usd"]}\n'
-                    f'24 Hour Change: {round(api.cg["x7105"]["usd_24h_change"], 1)}%\n'
+                    f'X7105:      ${price["x7105"]["usd"]}\n'
+                    f'24 Hour Change: {round(price["x7105"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7105mc)}\n'
                     f'CA: `{items.x7105ca}\n\n`'
                     f'Combined Market Cap: ${"{:0,.0f}".format(constmc)}\n\n'
@@ -3015,14 +3022,14 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
 async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "" or chain == "eth":
-        deveth = api.get_balance(items.devmultieth, "eth")
-        cometh = api.get_balance(items.commultieth, "eth")
-        pioneereth = api.get_balance(items.pioneerca, "eth")
+        deveth = api.get_native_balance(items.devmultieth, "eth")
+        cometh = api.get_native_balance(items.commultieth, "eth")
+        pioneereth = api.get_native_balance(items.pioneerca, "eth")
         devdollar = float(deveth) * float(api.get_native_price("eth")) / 1 ** 18
         comdollar = float(cometh) * float(api.get_native_price("eth")) / 1 ** 18
         pioneerdollar = float(pioneereth) * float(api.get_native_price("eth")) / 1 ** 18
         comx7r = api.get_token_balance(items.commultieth, "eth", items.x7rca)
-        comx7rprice = comx7r * api.cg["x7r"]["usd"]
+        comx7rprice = comx7r * api.get_cg_price("x7r")["x7r"]["usd"]
         comx7d = api.get_token_balance(items.commultieth, "eth", items.x7dca)
         comx7dprice = comx7d * api.get_native_price("eth")
         comtotal = comx7rprice + comdollar + comx7dprice
@@ -3061,8 +3068,8 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     text='Community Multisig Wallet', url=f'{items.etheraddress}{items.commultieth}')],
             ]))
     if chain == "bsc" or chain == "bnb":
-        deveth = api.get_balance(items.devmultibsc, "bsc")
-        cometh = api.get_balance(items.commultibsc, "bsc")
+        deveth = api.get_native_balance(items.devmultibsc, "bsc")
+        cometh = api.get_native_balance(items.commultibsc, "bsc")
         devdollar = float(deveth) * float(api.get_native_price("bnb")) / 1 ** 18
         comdollar = float(cometh) * float(api.get_native_price("bnb")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
@@ -3092,8 +3099,8 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       url=f'{items.bscaddress}{items.commultibsc}')],
             ]))
     if chain == "arbitrum" or chain == "arb":
-        devamount = api.get_balance(items.devmultiarb, "arb")
-        comamount = api.get_balance(items.devmultiarb, "arb")
+        devamount = api.get_native_balance(items.devmultiarb, "arb")
+        comamount = api.get_native_balance(items.devmultiarb, "arb")
         devdollar = float(devamount) * float(api.get_native_price("eth")) / 1 ** 18
         comdollar = float(comamount) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
@@ -3123,8 +3130,8 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       url=f'{items.arbaddress}{items.commultiarb}')],
             ]))
     if chain == "polygon" or chain == "poly":
-        devamount = api.get_balance(items.devmultipoly, "poly")
-        comamount = api.get_balance(items.commultipoly, "poly")
+        devamount = api.get_native_balance(items.devmultipoly, "poly")
+        comamount = api.get_native_balance(items.commultipoly, "poly")
         devdollar = float(devamount) * float(api.get_native_price("matic")) / 1 ** 18
         comdollar = float(comamount) * float(api.get_native_price("matic")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
@@ -3154,8 +3161,8 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       url=f'{items.polyaddress}{items.commultipoly}')],
             ]))
     if chain == "optimism" or chain == "opti":
-        devamount = api.get_balance(items.devmultiopti, "opti")
-        comamount = api.get_balance(items.commultiopti, "opti")
+        devamount = api.get_native_balance(items.devmultiopti, "opti")
+        comamount = api.get_native_balance(items.commultiopti, "opti")
         devdollar = float(devamount) * float(api.get_native_price("eth")) / 1 ** 18
         comdollar = float(comamount) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
@@ -3189,13 +3196,14 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "" or chain == "eth":
-        x7rprice = (api.cg["x7r"]["usd"])
-        x7daoprice = (api.cg["x7dao"]["usd"])
-        x7101price = (api.cg["x7101"]["usd"])
-        x7102price = (api.cg["x7102"]["usd"])
-        x7103price = (api.cg["x7103"]["usd"])
-        x7104price = (api.cg["x7104"]["usd"])
-        x7105price = (api.cg["x7105"]["usd"])
+        price = api.get_cg_price("x7r, x7dao, x7101, x7102, x7103, x7104, x7105")
+        x7rprice = (price["x7r"]["usd"])
+        x7daoprice = (price["x7dao"]["usd"])
+        x7101price = (price["x7101"]["usd"])
+        x7102price = (price["x7102"]["usd"])
+        x7103price = (price["x7103"]["usd"])
+        x7104price = (price["x7104"]["usd"])
+        x7105price = (price["x7105"]["usd"])
         x7r = api.get_liquidity(items.x7rpaireth)
         x7dao = api.get_liquidity(items.x7daopaireth)
         x7101 = api.get_liquidity(items.x7101paireth)
@@ -3280,9 +3288,9 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'Total Liquidity ${"{:0,.0f}".format(constellationswethdollar+constellationstokendollar)}\n\n'
                     f'{api.get_quote()}', parse_mode='Markdown')
     if chain == "bsc" or chain == "bnb":
-        x7ramount = api.get_balance(items.x7rliq, "bsc")
-        x7daoamount = api.get_balance(items.daoliq, "bsc")
-        x7consamount = api.get_balance(items.consliq, "bsc")
+        x7ramount = api.get_native_balance(items.x7rliq, "bsc")
+        x7daoamount = api.get_native_balance(items.daoliq, "bsc")
+        x7consamount = api.get_native_balance(items.consliq, "bsc")
         x7daodollar = float(x7daoamount) * float(api.get_native_price("bnb")) / 1 ** 18
         x7rdollar = float(x7ramount) * float(api.get_native_price("bnb")) / 1 ** 18
         x7consdollar = float(x7consamount) * float(api.get_native_price("bnb")) / 1 ** 18
@@ -3315,9 +3323,9 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       url=f'{items.bscaddress}{items.consliq}')],
             ]))
     if chain == "arbitrum" or chain == "arb":
-        x7ramount = api.get_balance(items.x7rliq, "arb")
-        x7daoamount = api.get_balance(items.daoliq, "arb")
-        x7consamount = api.get_balance(items.consliq, "arb")
+        x7ramount = api.get_native_balance(items.x7rliq, "arb")
+        x7daoamount = api.get_native_balance(items.daoliq, "arb")
+        x7consamount = api.get_native_balance(items.consliq, "arb")
         x7daodollar = float(x7daoamount) * float(api.get_native_price("eth")) / 1 ** 18
         x7rdollar = float(x7ramount) * float(api.get_native_price("eth")) / 1 ** 18
         x7consdollar = float(x7consamount) * float(api.get_native_price("eth")) / 1 ** 18
@@ -3350,9 +3358,9 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       url=f'{items.arbaddress}{items.consliq}')],
             ]))
     if chain == "optimism" or chain == "opti":
-        x7ramount = api.get_balance(items.x7rliq, "opti")
-        x7daoamount = api.get_balance(items.daoliq, "opti")
-        x7consamount = api.get_balance(items.consliq, "opti")
+        x7ramount = api.get_native_balance(items.x7rliq, "opti")
+        x7daoamount = api.get_native_balance(items.daoliq, "opti")
+        x7consamount = api.get_native_balance(items.consliq, "opti")
         x7daodollar = float(x7daoamount) * float(api.get_native_price("eth")) / 1 ** 18
         x7rdollar = float(x7ramount) * float(api.get_native_price("eth")) / 1 ** 18
         x7consdollar = float(x7consamount) * float(api.get_native_price("eth")) / 1 ** 18
@@ -3385,9 +3393,9 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       url=f'{items.optiaddress}{items.consliq}')],
             ]))
     if chain == "polygon" or chain == "poly":
-        x7ramount = api.get_balance(items.x7rliq, "poly")
-        x7daoamount = api.get_balance(items.daoliq, "poly")
-        x7consamount = api.get_balance(items.consliq, "poly")
+        x7ramount = api.get_native_balance(items.x7rliq, "poly")
+        x7daoamount = api.get_native_balance(items.daoliq, "poly")
+        x7consamount = api.get_native_balance(items.consliq, "poly")
         x7daodollar = float(x7daoamount) * float(api.get_native_price("matic")) / 1 ** 18
         x7rdollar = float(x7ramount) * float(api.get_native_price("matic")) / 1 ** 18
         x7consdollar = float(x7consamount) * float(api.get_native_price("matic")) / 1 ** 18
@@ -3426,7 +3434,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "" or chain == "eth":
         burn = api.get_token_balance(items.dead, "eth", items.x7rca)
         percent = round(burn / items.supply * 100, 2)
-        burndollar = api.cg["x7r"]["usd"] * float(burn)
+        burndollar = api.get_cg_price("x7r")["x7r"]["usd"] * float(burn)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.ethlogo)
         im1.paste(im2, (720, 20), im2)

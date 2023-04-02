@@ -6,10 +6,18 @@ import requests
 import random
 from datetime import datetime
 
+def cg_search(token):
+    basetokenurl = 'https://api.coingecko.com/api/v3/search?query='
+    tokenurl = basetokenurl + token
+    tokenresponse = requests.get(tokenurl)
+    result = tokenresponse.json()
+    return result
 
-coingecko = CoinGeckoAPI()
-cg = coingecko.get_price(ids=',x7r,x7dao,x7101,x7102,x7103,x7104,x7105', vs_currencies='usd',
+def get_cg_price(token):
+    coingecko = CoinGeckoAPI()
+    cg = coingecko.get_price(ids=token, vs_currencies='usd',
                          include_24hr_change='true', include_24hr_vol='true')
+    return cg
 
 # noinspection PyTypeChecker
 def get_liquidity(pair):
@@ -154,7 +162,7 @@ def get_token_balance(wallet, chain, token):
         amount = int(data["result"][:-18])
         return amount
 
-def get_balance(wallet, chain):
+def get_native_balance(wallet, chain):
     if chain == "opti":
         key = keys.opti
         link = 'https://api-optimistic.etherscan.io/' \
