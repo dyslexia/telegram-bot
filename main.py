@@ -134,7 +134,9 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'*Borrowing Maxi*\n{items.borrowpriceeth}\n'
                     f'Available - {100-int(api.get_holders_nft_eth(items.borrowca))}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
-                    f'*Magister*\n{items.magisterpriceeth}\n> 25% discount on X7100 tax\n'
+                    f'*Magister*\n{items.magisterpriceeth} - 49 Supply\n'
+                    f'Available - {49-int(api.get_holders_nft_eth(items.magisterca))}\n'
+                    f'> 25% discount on X7100 tax\n'        
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n*Pioneer*\n'
                     f' > 6% of profits that come into the X7 Treasury Splitter are now being allocated to the reward '
                     f'pool. Each X7 Pioneer NFT grants you a proportional share of this pool\n\n{api.get_quote()}',
@@ -187,7 +189,9 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'*Borrowing Maxi*\n{items.borrowpricearb}\n'
                     f'Available - {100-int(api.get_holders_nft_arb(items.borrowca))}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
-                    f'*Magister*\n{items.magisterpricearb}\n> 25% discount on X7100 tax\n'
+                    f'*Magister*\n{items.magisterpricearb} - 49 Supply\n'
+                    f'Available - {49-int(api.get_holders_nft_arb(items.magisterca))}\n'
+                    f'> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -215,7 +219,9 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'*Borrowing Maxi*\n{items.borrowpricepoly}\n'
                     f'Available - {100-int(api.get_holders_nft_poly(items.borrowca))}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
-                    f'*Magister*\n{items.magisterpricepoly}\n> 25% discount on X7100 tax\n'
+                    f'*Magister*\n{items.magisterpricepoly} - 49 Supply\n'
+                    f'Available - {49-int(api.get_holders_nft_poly(items.magisterca))}\n'
+                    f'> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -243,7 +249,9 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'*Borrowing Maxi*\n{items.borrowpriceopti}\n'
                     f'Available - {100-int(api.get_holders_nft_opti(items.borrowca))}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
-                    f'*Magister*\n{items.magisterpriceopti}\n> 25% discount on X7100 tax\n'
+                    f'*Magister*\n{items.magisterpriceopti} - 49 Supply\n'
+                    f'Available - {49-int(api.get_holders_nft_opti(items.magisterca))}\n'
+                    f'> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -2781,7 +2789,7 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     search = " ".join(context.args).lower()
-    token = api.cg_search(search)
+    token = api.get_cg_search(search)
     tokenid = token["coins"][0]["api_symbol"]
     symbol = token["coins"][0]["symbol"]
     thumb = token["coins"][0]["large"]
@@ -3674,6 +3682,13 @@ async def everyone_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def error(update, context):
     print(f'Update {update} caused error: {context.error}')
 
+async def test_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    url = 'https://api.ethplorer.io/getTokenInfo/' + items.magisterca + keys.ethplorer
+    response = requests.get(url)
+    data = response.json()
+    amount = data
+    await update.message.reply_text(f'{data}')
+
 
 # RUN
 if __name__ == '__main__':
@@ -3682,6 +3697,7 @@ if __name__ == '__main__':
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
     application.add_handler(CommandHandler('deployer', deployer_command))
+    application.add_handler(CommandHandler('test', test_command))
     application.add_handler(CommandHandler('links', links_command))
     application.add_handler(CommandHandler(['ca', 'contract', 'contracts'], ca_command))
     application.add_handler(CommandHandler('x7r', x7r_command))

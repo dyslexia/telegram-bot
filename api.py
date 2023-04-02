@@ -6,7 +6,7 @@ import requests
 import random
 from datetime import datetime
 
-def cg_search(token):
+def get_cg_search(token):
     basetokenurl = 'https://api.coingecko.com/api/v3/search?query='
     tokenurl = basetokenurl + token
     tokenresponse = requests.get(tokenurl)
@@ -16,7 +16,7 @@ def cg_search(token):
 def get_cg_price(token):
     coingecko = CoinGeckoAPI()
     cg = coingecko.get_price(ids=token, vs_currencies='usd',
-                         include_24hr_change='true', include_24hr_vol='true')
+                             include_24hr_change='true', include_24hr_vol='true')
     return cg
 
 # noinspection PyTypeChecker
@@ -61,7 +61,7 @@ def get_holders(token):
     url = 'https://api.ethplorer.io/getTokenInfo/' + token + keys.ethplorer
     response = requests.get(url)
     data = response.json()
-    amount = data["holdersCount"]
+    amount = data["totalSupply"]
     return amount
 
 def get_quote():
