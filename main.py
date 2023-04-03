@@ -917,7 +917,7 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Total Volume: {volume} ETH\n'
                 f'Total Sales: {sales}\n'
                 f'Number of Owners: {owners}\n'
-                f'Pioneers Unlocked: {traits}\n'
+                f'Pioneers Unlocked: {traits}\n\n'
                 f'Pioneer Pool: {pioneerpool[:3]} ETH (${"{:0,.0f}".format(totaldollar)})\n\n\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
