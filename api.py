@@ -61,7 +61,7 @@ def get_holders(token):
     url = 'https://api.ethplorer.io/getTokenInfo/' + token + keys.ethplorer
     response = requests.get(url)
     data = response.json()
-    amount = data["totalSupply"]
+    amount = data["holdersCount"]
     return amount
 
 def get_quote():
