@@ -23,6 +23,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 print('Bot Restarted')
 
+async def test_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    url = 'https://api.bscscan.com/api?module=stats&action=bnbprice&' + keys.bsc
+    response = requests.get(url)
+    data = response.json()
+    value = float(data)
+    print(value)
+
 
 # COMMANDS
 async def bot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -690,8 +697,8 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.bscaddress}{items.x7dca}#code')],
                  ]))
     if chain == "polygon" or chain == "poly":
-        x7damount = api.get_native_balance(items.x7dca, "poly")
-        x7ddollar = float(x7damount) * float(api.get_native_price("matic")) / 1 ** 18
+        supply = api.get_native_balance(items.x7dca, "poly")
+        x7ddollar = float(supply) * float(api.get_native_price("matic")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7dlogo)
         im1.paste(im2, (720, 20), im2)
@@ -699,7 +706,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
         i1.text((28, 36),
                 f'X7D (POLY) Info\n\n'
-                f'Supply: {x7damount[:4]}MATIC (${"{:0,.0f}".format(x7ddollar)})\n\n'
+                f'Supply: {supply[:4]}MATIC (${"{:0,.0f}".format(x7ddollar)})\n\n'
                 f'To receive X7D:\n\n'
                 '1. Send MATIC (Not Swap) to the Lending Pool Reserve Contract:\n'
                 f'{items.lpreserveca}\n\n'
@@ -715,7 +722,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7D (POLY) Info*\n\n'
-                    f'Supply: {x7damount[:4]}MATIC (${"{:0,.0f}".format(x7ddollar)})\n'
+                    f'Supply: {supply[:4]}MATIC (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'To receive X7D.\n\n'
                     '1. Send MATIC (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpreserveca}`\n\n'
@@ -733,8 +740,8 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.polyaddress}{items.x7dca}#code')],
                  ]))
     if chain == "optimism" or chain == "opti":
-        x7damount = api.get_native_balance(items.x7dca, "opti")
-        x7ddollar = float(x7damount) * float(api.get_native_price("eth")) / 1 ** 18
+        supply = api.get_native_balance(items.x7dca, "opti")
+        x7ddollar = float(supply) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7dlogo)
         im1.paste(im2, (720, 20), im2)
@@ -742,7 +749,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
         i1.text((28, 36),
                 f'*X7D (OPTIMISM) Info*\n\n'
-                f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n\n'
+                f'Supply: {supply[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n\n'
                 f'To receive X7D:\n\n'
                 '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                 f'{items.lpreserveca}\n\n'
@@ -758,7 +765,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7D (OPTIMISM) Info*\n\n'
-                    f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
+                    f'Supply: {supply[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'To receive X7D.\n\n'
                     '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpreserveca}`\n\n'
@@ -776,8 +783,8 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.optiaddress}{items.x7dca}#code')],
                  ]))
     if chain == "arbitrum" or chain == "arb":
-        x7damount = api.get_native_balance(items.lpreserveca, "arb")
-        x7ddollar = float(x7damount) * float(api.get_native_price("eth")) / 1 ** 18
+        supply = api.get_native_balance(items.lpreserveca, "arb")
+        x7ddollar = float(supply) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7dlogo)
         im1.paste(im2, (720, 20), im2)
@@ -785,7 +792,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
         i1.text((28, 36),
                 f'X7D (ARBITRUM) Info\n\n'
-                f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n\n'
+                f'Supply: {supply[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n\n'
                 f'To receive X7D.\n\n'
                 '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                 f'{items.lpreserveca}\n\n'
@@ -801,7 +808,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7D (ARBITRUM) Info*\n\n'
-                    f'Supply: {x7damount[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
+                    f'Supply: {supply[:4]}ETH (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'To receive X7D:\n\n'
                     '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpreserveca}`\n\n'
@@ -1021,6 +1028,8 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'TOTAL: ${"{:0,.0f}".format(totaldollar)}\n\n'
                     f'{api.get_quote()}', parse_mode='Markdown')
     if chain == "eth":
+        print(ethpool)
+        print(pooldollar)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.ethlogo)
         im1.paste(im2, (720, 20), im2)
@@ -1914,7 +1923,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "" or chain == "eth":
         holders = api.get_holders(items.x7rca)
         burn = api.get_token_balance(items.dead, "eth", items.x7rca)
-        burnpercent = round(((burn / items.supply) * 100), 6)
+        percent = round(((burn / items.supply) * 100), 6)
         x7r = api.get_liquidity(items.x7rpaireth)
         x7rtoken = float(x7r["reserve0"])
         x7rweth = float(x7r["reserve1"]) / 10 ** 18
@@ -1950,7 +1959,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'Holders: {holders}\n\n'
                     f'X7R Tokens Burned:\n'
                     f'{"{:,}".format(burn)}\n'
-                    f'{burnpercent}% of Supply\n\n'
+                    f'{percent}% of Supply\n\n'
                     f'Liquidity:\n'
                     f'{"{:0,.0f}".format(x7rtoken)[:4]}M X7R (${"{:0,.0f}".format(x7rtokendollar)})\n'
                     f'{"{:0,.0f}".format(x7rweth)} WETH (${"{:0,.0f}".format(x7rwethdollar)})\n'
@@ -2313,7 +2322,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'{chain} X7102 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n'
                     f'{api.get_quote()}',
             parse_mode='Markdown')
-    if chain == "":
+    if chain == "" or chain == "eth":
         holders = api.get_holders(items.x7102ca)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7102logo)
@@ -3681,13 +3690,6 @@ async def everyone_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def error(update, context):
     print(f'Update {update} caused error: {context.error}')
-
-async def test_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    url = 'https://api.ethplorer.io/getTokenInfo/' + items.magisterca + keys.ethplorer
-    response = requests.get(url)
-    data = response.json()
-    amount = data
-    await update.message.reply_text(f'{data}')
 
 
 # RUN
