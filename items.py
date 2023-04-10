@@ -188,14 +188,14 @@ ecopriceeth = '0.1 ETH - 500 Supply'
 liqpriceeth = '0.5ETH - 250 Supply'
 dexpriceeth = '0.5 ETH - 150 Supply'
 borrowpriceeth = '1 ETH - 100 Supply'
-magisterpriceeth = '50 Eth'
+magisterpriceeth = '50 ETH'
 
 # ARB
 ecopricearb = '0.1 ETH - 500 Supply'
 liqpricearb = '0.5 ETH - 250 Supply'
 dexpricearb = '0.5 ETH - 150 Supply'
 borrowpricearb = '1 ETH - 100 Supply'
-magisterpricearb = '50 Eth'
+magisterpricearb = '50 ETH'
 
 # OPTI
 ecopriceopti = '0.1 ETH - 500 Supply'

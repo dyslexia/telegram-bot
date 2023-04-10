@@ -14,7 +14,6 @@ import pyttsx3
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 import api
-from pycoingecko import CoinGeckoAPI
 
 localtime = pytz.timezone("Europe/London")
 
@@ -634,7 +633,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7D (ETH) Info*\n'
-                    f'For other chains use `/x7d [chainname]`\n\n'
+                    f'For other chains use `/x7d [chain-name]`\n\n'
                     f'Supply: {supply[:4]} ETH (${"{:0,.0f}".format(x7ddollar)})\n'
                     f'Holders: {holders}\n\n'
                     f'To receive X7D:\n\n'
@@ -855,7 +854,7 @@ async def buyevenly_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         '1.1. Press on "Contract" If it\'s not already selected.\n2. Press on "Write contract"\n'
         '3. Press on "Connect to Web3" and connect your desired wallet to the website. \n'
         '4. Deposit the desired values\n4.1. depositIntoX7SeriesTokens -> amount of ETH you want to spend (e.g. 0.5).\n'
-        '4.2. slippagePercent  -> desired slippage (e.g. 4)\n4.3 deadline -> Go to [epochconverter]'
+        '4.2. slippagePercent  -> desired slippage (e.g. 4)\n4.3 deadline -> Go to [epoch-converter]'
         '(https://www.epochconverter.com/) and add like 500 to the current epoch. Click "Timestamp to Human date" '
         'and verify that Relative is at least "In 1 minute" (e.g. 1667508502).\n'
         '4.4 Copy the epoch to the "deadline" field\n4.4 Press "Write" and confirm the transaction in your wallet.\n'
@@ -1199,7 +1198,7 @@ async def roadmap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'2. Pioneer NFT & Reward Pool ✅\n'
         f'3. DEX and Leveraged Initial Liquidity:\n'
         f'3.1. X7D token contract ✅\n'
-        f'3.2. A gnosis multisig wallet that will be used to manage the X7D token ownership prior to DAO '
+        f'3.2. A gnosis multi-sig wallet that will be used to manage the X7D token ownership prior to DAO '
         f'control turnover ✅\n'
         f'3.3. Lending pool reserve contract ✅\n'
         f'3.4. v1 lending pool contract ✅\n'
@@ -1610,7 +1609,7 @@ async def voting_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         '*Proposals and Voting*\n\nVoting will occur in multiple phases, each of which has either a minimum or maximum'
         ' time phase duration.\n\n*Phase 1: Quorum-seeking*\nX7DAO token holders will be able to stake their tokens as '
-        'X7sDAO, a non-transferrable staked version of X7DAO.\n\nA quorum is reached when more than 50% of circulating '
+        'X7sDAO, a non-transferable staked version of X7DAO.\n\nA quorum is reached when more than 50% of circulating '
         'X7DAO has been staked as X7sDAO.\n\nOnce a quorum is reached and a minimum quorum-seeking time period has '
         'passed, the X7sDAO tokens are temporarily locked (and no more X7DAO tokens may be staked until the next Quorum'
         ' seeking period) and the governance process moves to the next phase\n\n*Phase 2: Proposal creation*\nA '
@@ -1669,13 +1668,15 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*Eth Gas Prices:*\n'
+            caption=f'*ETH Gas Prices:*\n'
                     f'For other chains use `/gas [chain-name]`\n\n'
                     f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                     f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
                     f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
                     f'{api.get_quote()}',
-            parse_mode='Markdown')
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Etherscan Gas Tracker', url='https://etherscan.io/gastracker')], ]))
     if chain == "bsc":
         gasdata = api.get_gas("bsc")
         im1 = Image.open((random.choice(items.blackhole)))
@@ -1699,7 +1700,9 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
                     f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
                     f'{api.get_quote()}',
-            parse_mode='Markdown')
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='BSCscan Gas Tracker', url='https://bscscan.com/gastracker')], ]))
     if chain == "polygon" or chain == "poly":
         gasdata = api.get_gas("poly")
         im1 = Image.open((random.choice(items.blackhole)))
@@ -1723,7 +1726,9 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
                     f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n'
                     f'{api.get_quote()}',
-            parse_mode='Markdown')
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Polygon Gas Tracker', url='https://polygon.com/gastracker')], ]))
 
 
 async def count_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2773,7 +2778,7 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7105:       ${"{:0,.0f}".format(x7105cap)}\n\n'
                 f'Constellations Combined:\n'
                 f'${"{:0,.0f}".format(conscap)}\n\n'
-                f'Total Token Marketcap:\n'
+                f'Total Token Market Cap:\n'
                 f'${"{:0,.0f}".format(totalcap)}\n\n'
                 f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2790,7 +2795,7 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'X7105:       ${"{:0,.0f}".format(x7105cap)}\n\n'
                     f'Constellations Combined:\n'
                     f'${"{:0,.0f}".format(conscap)}\n\n'
-                    f'Total Token Marketcap:\n'
+                    f'Total Token Market Cap:\n'
                     f'${"{:0,.0f}".format(totalcap)}'
                     f'\n\n{api.get_quote()}',
             parse_mode="Markdown")
@@ -2803,7 +2808,8 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     symbol = token["coins"][0]["symbol"]
     thumb = token["coins"][0]["large"]
     price = api.get_cg_price("x7r, x7dao")
-    cg = CoinGeckoAPI()
+    x7rchange = price["x7r"]["usd_24h_change"]
+    x7daochange = price["x7dao"]["usd_24h_change"]
     tokenprice = api.get_cg_price(tokenid)
     if search == "":
         im1 = Image.open((random.choice(items.blackhole)))
@@ -2838,7 +2844,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.dextoolseth}{items.x7daopaireth}')], ]))
         return
     if search == "eth":
-        eth = (cg.get_price(ids='ethereum', vs_currencies='usd', include_24hr_change='true'))
+        eth = api.get_cg_price("ethereum")
         gasdata = api.get_gas("eth")
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(requests.get(thumb, stream=True).raw)
@@ -2870,8 +2876,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Chart', url=f'https://www.coingecko.com/en/coins/ethereum')], ]))
         return
     if search == "bnb":
-        bnb = (cg.get_price(ids='binancecoin', vs_currencies='usd', include_24hr_change='true',
-                            include_market_cap='true'))
+        bnb = api.get_cg_price("binancecoin")
         gasdata = api.get_gas("bsc")
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(requests.get(thumb, stream=True).raw)
@@ -2903,8 +2908,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Chart', url=f'https://www.coingecko.com/en/coins/bnb')], ]))
         return
     if search == "matic" or search == "poly" or search == "polygon":
-        matic = (cg.get_price(ids='matic-network', vs_currencies='usd', include_24hr_change='true',
-                              include_market_cap='true'))
+        matic = api.get_cg_price("matic-network")
         gasdata = api.get_gas("poly")
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(requests.get(thumb, stream=True).raw)
@@ -3080,7 +3084,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(
                     text='Treasury Splitter Contract', url=f'{items.etheraddress}{items.tsplitterca}')],
                 [InlineKeyboardButton(
-                    text='Developer Multisig Wallet', url=f'{items.etheraddress}{items.devmultieth}')],
+                    text='Developer Multi-sig Wallet', url=f'{items.etheraddress}{items.devmultieth}')],
                 [InlineKeyboardButton(
                     text='Community Multisig Wallet', url=f'{items.etheraddress}{items.commultieth}')],
             ]))
@@ -3110,9 +3114,9 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Treasury Splitter Contract',
                                       url=f'{items.bscaddress}{items.tsplitterca}')],
-                [InlineKeyboardButton(text='Developer Multisig Wallet',
+                [InlineKeyboardButton(text='Developer Multi-sig Wallet',
                                       url=f'{items.bscaddress}{items.devmultibsc}')],
-                [InlineKeyboardButton(text='Community Multisig Wallet',
+                [InlineKeyboardButton(text='Community Multi-sig Wallet',
                                       url=f'{items.bscaddress}{items.commultibsc}')],
             ]))
     if chain == "arbitrum" or chain == "arb":
@@ -3141,9 +3145,9 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Treasury Splitter Contract',
                                       url=f'{items.arbaddress}{items.tsplitterca}')],
-                [InlineKeyboardButton(text='Developer Multisig Wallet',
+                [InlineKeyboardButton(text='Developer Multi-sig Wallet',
                                       url=f'{items.arbaddress}{items.devmultiarb}')],
-                [InlineKeyboardButton(text='Community Multisig Wallet',
+                [InlineKeyboardButton(text='Community Multi-sig Wallet',
                                       url=f'{items.arbaddress}{items.commultiarb}')],
             ]))
     if chain == "polygon" or chain == "poly":
@@ -3172,9 +3176,9 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Treasury Splitter Contract',
                                       url=f'{items.polyaddress}{items.tsplitterca}')],
-                [InlineKeyboardButton(text='Developer Multisig Wallet',
+                [InlineKeyboardButton(text='Developer Multi-sig Wallet',
                                       url=f'{items.polyaddress}{items.devmultipoly}')],
-                [InlineKeyboardButton(text='Community Multisig Wallet',
+                [InlineKeyboardButton(text='Community Multi-sig Wallet',
                                       url=f'{items.polyaddress}{items.commultipoly}')],
             ]))
     if chain == "optimism" or chain == "opti":
@@ -3203,9 +3207,9 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Treasury Splitter Contract',
                                       url=f'{items.optiaddress}{items.tsplitterca}')],
-                [InlineKeyboardButton(text='Developer Multisig Wallet',
+                [InlineKeyboardButton(text='Developer Multi-sig Wallet',
                                       url=f'{items.optiaddress}{items.devmultiopti}')],
-                [InlineKeyboardButton(text='Community Multisig Wallet',
+                [InlineKeyboardButton(text='Community Multi-sig Wallet',
                                       url=f'{items.optiaddress}{items.commultiopti}')],
             ]))
 
@@ -3676,7 +3680,7 @@ async def admincommands_command(update: Update, context: ContextTypes.DEFAULT_TY
         await update.message.reply_text(
             f'{variables.admincommands}',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Rose Bot Antiflood', url='https://missrose.org/guide/antiflood/')], ]))
+                [InlineKeyboardButton(text='Rose Bot Anti-flood', url='https://missrose.org/guide/antiflood/')], ]))
     else:
         await update.message.reply_text(f'{variables.modsonly}')
 
