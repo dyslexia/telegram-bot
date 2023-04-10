@@ -22,13 +22,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 print('Bot Restarted')
 
-async def test_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    url = 'https://api.bscscan.com/api?module=stats&action=bnbprice&' + keys.bsc
-    response = requests.get(url)
-    data = response.json()
-    value = float(data)
-    print(value)
-
 
 # COMMANDS
 async def bot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1587,12 +1580,34 @@ async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    deployer = api.get_tx(items.deployer, "eth")
+    dev = api.get_tx(items.devmultieth, "eth")
+    date = deployer["result"][0]["block_timestamp"].split("-")
+    year = int(date[0])
+    month = int(date[1])
+    day = int(date[2][:2])
+    then = datetime(year, month, day)
+    now = datetime.now()
+    duration = now - then
+    duration_in_s = duration.total_seconds()
+    days = divmod(duration_in_s, 86400)
+    devdate = dev["result"][0]["block_timestamp"].split("-")
+    devyear = int(devdate[0])
+    devmonth = int(devdate[1])
+    devday = int(devdate[2][:2])
+    devthen = datetime(devyear, devmonth, devday)
+    devduration = now - devthen
+    devduration_in_s = devduration.total_seconds()
+    devdays = divmod(devduration_in_s, 86400)
     await update.message.reply_photo(
         photo=open((random.choice(items.logos)), 'rb'),
-        caption='*X7 Finance Deployer*\n\n'
-                'V2: https://etherscan.io/address/0x7000a09c425abf5173ff458df1370c25d1c58105\n\n'
-                'V1 DAO: https://etherscan.io/address/0x7565cE5E02d368BB3aEC044b7C3398911E27dB1E\n\n'
-                'V1 Protocol https://etherscan.io/address/0x8FE821FB171076B850A3048B9AAD7600BE8d0F30',
+        caption='*X7 Finance DAO Founders*\n\n'
+        '[Deployer Wallet](https://etherscan.io/address/0x7000a09c425abf5173ff458df1370c25d1c58105)\n'
+        f'Last TX -  {int(days[0])} days ago:\n'
+        f'https://etherscan.io/tx/{deployer["result"][0]["hash"]}\n\n'
+        f'[Developer Operations Wallet](https://etherscan.io/address/0x5CF4288Bf373BBe17f76948E39Baf33B9f6ac2e0)\n'
+        f'Last TX -  {int(devdays[0])} days ago:\n'
+        f'https://etherscan.io/tx/{dev["result"][0]["hash"]}\n\n{api.get_quote()}',
         parse_mode='Markdown')
 
 
@@ -3652,7 +3667,16 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                         parse_mode='Markdown')
     if "rob the bank" in message:
         await update.message.reply_text(f'`Rob The Bank (an outstanding community member and marketer)`\n\n'
-                                        f'`-X7Devs`', parse_mode='Markdown')
+                                        f'`-X7 DAO founders`', parse_mode='Markdown')
+    if "delay" in message:
+        await update.message.reply_text('To ensure our code is trusted and that the release is flawless, X7\'s '
+                                        'Leveraged DEX trading will not begin until we have published third party '
+                                        'security audits. In the meantime, our Stochastic Topological Offensive '
+                                        'Penetration, Probing, and Exploitation Researcher, STOPPER, has been '
+                                        'executing millions of transactions on our private test network to ensure '
+                                        'no edge case is missed.\n\n'
+                                        '`A delayed game is eventually good, a bad game is bad forever.\n\n'
+                                        '- Shigeru Miyamoto`', parse_mode="markdown")
     if "patience" in message:
         await update.message.reply_text('`Patience is bitter, but its fruit is sweet.\n\n- Aristotle`',
                                         parse_mode="markdown")
@@ -3685,9 +3709,9 @@ async def admincommands_command(update: Update, context: ContextTypes.DEFAULT_TY
         await update.message.reply_text(f'{variables.modsonly}')
 
 
-async def everyone_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def mods_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('@robthebank44 @Adz1doubleD @CoastCorn @cryptod0c @Phlux '
-                                    '@shillingtonlevy @SlumdOg_shillionaire2022'
+                                    '@SlumdOg_shillionaire2022'
                                     '@gazuga @Gavalars @MikeMurpher @KBCrypto11\n\n'
                                     'MODS ASSEMBLE!')
 
@@ -3702,9 +3726,8 @@ if __name__ == '__main__':
     job_queue = application.job_queue
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
-    application.add_handler(CommandHandler('deployer', deployer_command))
-    application.add_handler(CommandHandler('test', test_command))
-    application.add_handler(CommandHandler('links', links_command))
+    application.add_handler(CommandHandler(['deployer', 'devs'], deployer_command))
+    application.add_handler(CommandHandler(['links', 'socials'], links_command))
     application.add_handler(CommandHandler(['ca', 'contract', 'contracts'], ca_command))
     application.add_handler(CommandHandler('x7r', x7r_command))
     application.add_handler(CommandHandler(['x7dao', 'dao'], x7dao_command))
@@ -3737,9 +3760,9 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler(['tax', 'slippage'], tax_command))
     application.add_handler(CommandHandler(['swap', 'xchange', 'dex'], swap_command))
     application.add_handler(CommandHandler('giveaway', giveaway_command))
-    application.add_handler(CommandHandler(['mcap', 'marketcap'], mcap_command))
+    application.add_handler(CommandHandler(['mcap', 'marketcap', 'cap'], mcap_command))
     application.add_handler(CommandHandler('roadmap', roadmap_command))
-    application.add_handler(CommandHandler('time', time_command))
+    application.add_handler(CommandHandler(['time', 'clock'], time_command))
     application.add_handler(CommandHandler(['buybots', 'bobby', 'buybot'], buybots_command))
     application.add_handler(CommandHandler('joke', joke_command))
     application.add_handler(CommandHandler('faq', faq_command))
@@ -3759,7 +3782,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('announcements', announcements_command))
     application.add_handler(CommandHandler('say', say_command))
     application.add_handler(CommandHandler('liquidity', liquidity_command))
-    application.add_handler(CommandHandler('everyone', everyone_command))
+    application.add_handler(CommandHandler('mods', mods_command))
     application.add_handler(CommandHandler('voting', voting_command))
     application.add_handler(CommandHandler('gas', gas_command))
     application.add_handler(CommandHandler('wei', wei_command))

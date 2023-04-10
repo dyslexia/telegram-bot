@@ -84,7 +84,7 @@ admincommands = 'To be run in main chat\n\n' \
                 '/settings - Open the setting menu\n' \
                 '/setup - Setup the portal\n' \
                 '/difficulty - Set the CAPTCHA difficulty\n' \
-                '/antiflood - (Dis)Enable antiflood mode\n' \
+                '/antiflood - (Dis)Enable anti-flood mode\n' \
                 '/lock all - mutes chat\n' \
                 '/unlock all - unmute chat\n' \
                 '/start_auto [name_oneword] [time_in_minutes] [message] \n' \

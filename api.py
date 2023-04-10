@@ -24,6 +24,12 @@ def get_liquidity(pair):
     amount = evm_api.defi.get_pair_reserves(api_key=keys.moralis, params={"chain": "eth", "pair_address": pair})
     return amount
 
+def get_tx(address, chain):
+    result = evm_api.transaction.get_wallet_transactions(
+        api_key=keys.moralis, params={"address": address, "chain": chain})
+    return result
+
+
 def get_today():
     currentday = str(datetime.now().day)
     currentmonth = str(datetime.now().month)
@@ -208,3 +214,5 @@ def get_native_balance(wallet, chain):
         amountraw = float(data["result"][0]["balance"])
         amount = str(amountraw / 10 ** 18)
         return amount
+
+
