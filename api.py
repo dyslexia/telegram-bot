@@ -1,7 +1,6 @@
 from pycoingecko import CoinGeckoAPI
 from moralis import evm_api
 import keys
-import items
 import requests
 import random
 from datetime import datetime
@@ -18,6 +17,12 @@ def get_cg_price(token):
     cg = coingecko.get_price(ids=token, vs_currencies='usd',
                              include_24hr_change='true', include_24hr_vol='true')
     return cg
+
+# noinspection PyTypeChecker
+def get_nft(nft, chain):
+    result = evm_api.nft.get_nft_owners(
+        api_key=keys.moralis, params={"chain": chain, "format": "decimal", "address": nft})
+    return result
 
 # noinspection PyTypeChecker
 def get_liquidity(pair):
@@ -38,7 +43,7 @@ def get_today():
     data = response.json()
     return data
 
-def get_nft(slug):
+def get_os_nft(slug):
     slug = slug
     headers = {"X-API-KEY": keys.os}
     url = "https://api.opensea.io/api/v1/collection/" + slug
@@ -78,29 +83,8 @@ def get_quote():
     quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
     return quote
 
-def get_holders_nft_eth(nft):
-    url = 'https://api.blockspan.com/v1/collections/contract/' + nft + '?chain=eth-main'
-    response = requests.get(url, headers={"accept": "application/json", "X-API-KEY": keys.blockspan})
-    data = response.json()
-    amount = data["total_tokens"]
-    return amount
-
-def get_holders_nft_arb(nft):
-    url = 'https://api.blockspan.com/v1/collections/contract/' + nft + '?chain=arbitrum'
-    response = requests.get(url, headers={"accept": "application/json", "X-API-KEY": keys.blockspan})
-    data = response.json()
-    amount = data["total_tokens"]
-    return amount
-
-def get_holders_nft_poly(nft):
-    url = 'https://api.blockspan.com/v1/collections/contract/' + items.dexca + '?chain=poly-main'
-    response = requests.get(url, headers={"accept": "application/json", "X-API-KEY": keys.blockspan})
-    data = response.json()
-    amount = data["total_tokens"]
-    return amount
-
-def get_holders_nft_opti(nft):
-    url = 'https://api.blockspan.com/v1/collections/contract/' + nft + '?chain=optimism-main'
+def get_holders_nft(nft, chain):
+    url = 'https://api.blockspan.com/v1/collections/contract/' + nft + chain
     response = requests.get(url, headers={"accept": "application/json", "X-API-KEY": keys.blockspan})
     data = response.json()
     amount = data["total_tokens"]
@@ -214,5 +198,3 @@ def get_native_balance(wallet, chain):
         amountraw = float(data["result"][0]["balance"])
         amount = str(amountraw / 10 ** 18)
         return amount
-
-

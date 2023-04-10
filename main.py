@@ -115,26 +115,26 @@ async def links_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    if chain == "":
+    if chain == "" or chain == "eth":
         await update.message.reply_video(
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (ETH)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{items.ecopriceeth}\n'
-                    f'Available - {500-int(api.get_holders_nft_eth(items.ecoca))}\n'
+                    f'Available - {500-int(api.get_holders_nft(items.ecoca, "?chain=eth-main"))}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
                     f'Liquidity Maxi*\n{items.liqpriceeth}\n'
-                    f'Available - {250-int(api.get_holders_nft_eth(items.liqca))}\n'
+                    f'Available - {250-int(api.get_holders_nft(items.liqca, "?chain=eth-main"))}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
                     f'*Dex Maxi*\n{items.dexpriceeth}\n'
-                    f'Available - {150-int(api.get_holders_nft_eth(items.dexca))}\n'
+                    f'Available - {150-int(api.get_holders_nft(items.dexca, "?chain=eth-main"))}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
                     f'*Borrowing Maxi*\n{items.borrowpriceeth}\n'
-                    f'Available - {100-int(api.get_holders_nft_eth(items.borrowca))}\n'
+                    f'Available - {100-int(api.get_holders_nft(items.borrowca, "?chain=eth-main"))}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
                     f'*Magister*\n{items.magisterpriceeth} - 49 Supply\n'
-                    f'Available - {49-int(api.get_holders_nft_eth(items.magisterca))}\n'
+                    f'Available - {49-int(api.get_holders_nft(items.magisterca, "?chain=eth-main"))}\n'
                     f'> 25% discount on X7100 tax\n'        
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n*Pioneer*\n'
                     f' > 6% of profits that come into the X7 Treasury Splitter are now being allocated to the reward '
@@ -175,21 +175,21 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (ARBITRUM)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{items.ecopricearb}\n'
-                    f'Available - {500-int(api.get_holders_nft_arb(items.ecoca))}\n'
+                    f'Available - {500-int(api.get_holders_nft(items.ecoca, "?chain=arbitrum"))}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
                     f'Liquidity Maxi*\n{items.liqpricearb}\n'
-                    f'Available - {250-int(api.get_holders_nft_arb(items.liqca))}\n'
+                    f'Available - {250-int(api.get_holders_nft(items.liqca, "?chain=arbitrum"))}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
                     f'*Dex Maxi*\n{items.dexpricearb}\n'
-                    f'Available - {150-int(api.get_holders_nft_arb(items.dexca))}\n'
+                    f'Available - {150-int(api.get_holders_nft(items.dexca, "?chain=arbitrum"))}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
                     f'*Borrowing Maxi*\n{items.borrowpricearb}\n'
-                    f'Available - {100-int(api.get_holders_nft_arb(items.borrowca))}\n'
+                    f'Available - {100-int(api.get_holders_nft(items.borrowca, "?chain=arbitrum"))}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
                     f'*Magister*\n{items.magisterpricearb} - 49 Supply\n'
-                    f'Available - {49-int(api.get_holders_nft_arb(items.magisterca))}\n'
+                    f'Available - {49-int(api.get_holders_nft(items.magisterca, "?chain=arbitrum"))}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
             parse_mode='Markdown',
@@ -205,21 +205,21 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (POLYGON)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{items.ecopricepoly}\n'
-                    f'Available - {500-int(api.get_holders_nft_poly(items.ecoca))}\n'
+                    f'Available - {500-int(api.get_holders_nft(items.ecoca, "?chain=poly-main"))}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
                     f'Liquidity Maxi*\n{items.liqpricepoly}\n'
-                    f'Available - {250-int(api.get_holders_nft_poly(items.liqca))}\n'
+                    f'Available - {250-int(api.get_holders_nft(items.liqca, "?chain=poly-main"))}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
                     f'*Dex Maxi*\n{items.dexpricepoly}\n'
-                    f'Available - {150-int(api.get_holders_nft_poly(items.dexca))}\n'
+                    f'Available - {150-int(api.get_holders_nft(items.dexca, "?chain=poly-main"))}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
                     f'*Borrowing Maxi*\n{items.borrowpricepoly}\n'
-                    f'Available - {100-int(api.get_holders_nft_poly(items.borrowca))}\n'
+                    f'Available - {100-int(api.get_holders_nft(items.borrowca, "?chain=poly-main"))}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
                     f'*Magister*\n{items.magisterpricepoly} - 49 Supply\n'
-                    f'Available - {49-int(api.get_holders_nft_poly(items.magisterca))}\n'
+                    f'Available - {49-int(api.get_holders_nft(items.magisterca, "?chain=poly-main"))}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
             parse_mode='Markdown',
@@ -235,21 +235,21 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             video=open(items.nftlogo, 'rb'),
             caption=f'*X7 Finance NFT Information (OPTIMISM)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{items.ecopriceopti}\n'
-                    f'Available - {500-int(api.get_holders_nft_opti(items.ecoca))}\n'
+                    f'Available - {500-int(api.get_holders_nft(items.ecoca, "?chain=optimism-main"))}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
                     f'Liquidity Maxi*\n{items.liqpriceopti}\n'
-                    f'Available - {250-int(api.get_holders_nft_opti(items.liqca))}\n'
+                    f'Available - {250-int(api.get_holders_nft(items.liqca, "?chain=optimism-main"))}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
                     f'*Dex Maxi*\n{items.dexpriceopti}\n'
-                    f'Available - {150-int(api.get_holders_nft_opti(items.dexca))}\n'
+                    f'Available - {150-int(api.get_holders_nft(items.dexca, "?chain=optimism-main"))}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
                     f'*Borrowing Maxi*\n{items.borrowpriceopti}\n'
-                    f'Available - {100-int(api.get_holders_nft_opti(items.borrowca))}\n'
+                    f'Available - {100-int(api.get_holders_nft(items.borrowca, "?chain=optimism-main"))}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
                     f'*Magister*\n{items.magisterpriceopti} - 49 Supply\n'
-                    f'Available - {49-int(api.get_holders_nft_opti(items.magisterca))}\n'
+                    f'Available - {49-int(api.get_holders_nft(items.magisterca, "?chain=optimism-main"))}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
             parse_mode='Markdown',
@@ -888,7 +888,7 @@ async def buybots_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pioneerid = " ".join(context.args)
-    data = api.get_nft("/x7-pioneer")
+    data = api.get_os_nft("/x7-pioneer")
     floor = (data["collection"]["stats"]["floor_price"])
     traits = (data["collection"]["traits"]["Transfer Lock Status"]["unlocked"])
     cap = round(data["collection"]["stats"]["market_cap"], 2)
@@ -1894,6 +1894,79 @@ async def alumni_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'@WoxieX - Creator of the OG dashboard -  x7community.space\n\n'
                 f'@Zaratustra  - Defi extraordinaire and protocol prophet\n\n'
                 f'{api.get_quote()}', parse_mode='Markdown')
+
+async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chain = " ".join(context.args).lower()
+    if chain == "eth" or chain == "":
+        response = api.get_nft(items.magisterca, "eth")
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption='*X7 Finance Magister Holders (ETH)*\n'
+                    'Use `/magisters [chain-name]` or other chains\n\n'
+                    f'[Magister 0]({items.etheraddress}{response["result"][0]["owner_of"]})\n'
+                    f'[Magister 1]({items.etheraddress}{response["result"][1]["owner_of"]})\n'
+                    f'[Magister 2]({items.etheraddress}{response["result"][2]["owner_of"]})\n'
+                    f'[Magister 3]({items.etheraddress}{response["result"][3]["owner_of"]})\n'
+                    f'[Magister 4]({items.etheraddress}{response["result"][4]["owner_of"]})\n'
+                    f'[Magister 5]({items.etheraddress}{response["result"][5]["owner_of"]})\n'
+                    f'[Magister 6]({items.etheraddress}{response["result"][6]["owner_of"]})\n\n{api.get_quote()}',
+            parse_mode='Markdown')
+    if chain == "bsc" or chain == "bnb":
+        response = api.get_nft(items.magisterca, "bsc")
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption='*X7 Finance Magister Holders (BSC)*\n'
+                    'Use `/magisters [chain-name]` or other chains\n\n'
+                    f'[Magister 0]({items.bscaddress}{response["result"][0]["owner_of"]})\n'
+                    f'[Magister 1]({items.bscaddress}{response["result"][1]["owner_of"]})\n'
+                    f'[Magister 2]({items.bscaddress}{response["result"][2]["owner_of"]})\n'
+                    f'[Magister 3]({items.bscaddress}{response["result"][3]["owner_of"]})\n'
+                    f'[Magister 4]({items.bscaddress}{response["result"][4]["owner_of"]})\n'
+                    f'[Magister 5]({items.bscaddress}{response["result"][5]["owner_of"]})\n'
+                    f'[Magister 6]({items.bscaddress}{response["result"][6]["owner_of"]})\n\n{api.get_quote()}',
+            parse_mode='Markdown')
+    if chain == "polygon" or chain == "poly":
+        response = api.get_nft(items.magisterca, "polygon")
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption='*X7 Finance Magister Holders (POLYGON)*\n'
+                    'Use `/magisters [chain-name]` or other chains\n\n'
+                    f'[Magister 0]({items.polyaddress}{response["result"][0]["owner_of"]})\n'
+                    f'[Magister 1]({items.polyaddress}{response["result"][1]["owner_of"]})\n'
+                    f'[Magister 2]({items.polyaddress}{response["result"][2]["owner_of"]})\n'
+                    f'[Magister 3]({items.polyaddress}{response["result"][3]["owner_of"]})\n'
+                    f'[Magister 4]({items.polyaddress}{response["result"][4]["owner_of"]})\n'
+                    f'[Magister 5]({items.polyaddress}{response["result"][5]["owner_of"]})\n'
+                    f'[Magister 6]({items.polyaddress}{response["result"][6]["owner_of"]})\n\n{api.get_quote()}',
+            parse_mode='Markdown')
+    if chain == "optimism" or chain == "opti":
+        response = api.get_nft(items.magisterca, "optimism")
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption='*X7 Finance Magister Holders (OPTIMISM)*\n'
+                    'Use `/magisters [chain-name]` or other chains\n\n'
+                    f'[Magister 0]({items.optiaddress}{response["result"][0]["owner_of"]})\n'
+                    f'[Magister 1]({items.optiaddress}{response["result"][1]["owner_of"]})\n'
+                    f'[Magister 2]({items.optiaddress}{response["result"][2]["owner_of"]})\n'
+                    f'[Magister 3]({items.optiaddress}{response["result"][3]["owner_of"]})\n'
+                    f'[Magister 4]({items.optiaddress}{response["result"][4]["owner_of"]})\n'
+                    f'[Magister 5]({items.optiaddress}{response["result"][5]["owner_of"]})\n'
+                    f'[Magister 6]({items.optiaddress}{response["result"][6]["owner_of"]})\n\n{api.get_quote()}',
+            parse_mode='Markdown')
+    if chain == "arbitrum" or chain == "arb":
+        response = api.get_nft(items.magisterca, "arbitrum")
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption='*X7 Finance Magister Holders (ARB)*\n'
+                    'Use `/magisters [chain-name]` or other chains\n\n'
+                    f'[Magister 0]({items.arbaddress}{response["result"][0]["owner_of"]})\n'
+                    f'[Magister 1]({items.arbaddress}{response["result"][1]["owner_of"]})\n'
+                    f'[Magister 2]({items.arbaddress}{response["result"][2]["owner_of"]})\n'
+                    f'[Magister 3]({items.arbaddress}{response["result"][3]["owner_of"]})\n'
+                    f'[Magister 4]({items.arbaddress}{response["result"][4]["owner_of"]})\n'
+                    f'[Magister 5]({items.arbaddress}{response["result"][5]["owner_of"]})\n'
+                    f'[Magister 6]({items.arbaddress}{response["result"][6]["owner_of"]})\n\n{api.get_quote()}',
+            parse_mode='Markdown')
 
 
 # CG COMMANDS
@@ -3726,6 +3799,7 @@ if __name__ == '__main__':
     job_queue = application.job_queue
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
+    application.add_handler(CommandHandler('magisters', magisters_command))
     application.add_handler(CommandHandler(['deployer', 'devs'], deployer_command))
     application.add_handler(CommandHandler(['links', 'socials'], links_command))
     application.add_handler(CommandHandler(['ca', 'contract', 'contracts'], ca_command))
