@@ -5,6 +5,12 @@ import requests
 import random
 from datetime import datetime
 
+def get_signers(wallet):
+    url = f'https://safe-transaction-mainnet.safe.global/api/v1/safes/{wallet}/'
+    response = requests.get(url)
+    result = response.json()
+    return result
+
 def get_cg_search(token):
     basetokenurl = 'https://api.coingecko.com/api/v3/search?query='
     tokenurl = basetokenurl + token

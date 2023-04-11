@@ -1895,6 +1895,7 @@ async def alumni_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'@Zaratustra  - Defi extraordinaire and protocol prophet\n\n'
                 f'{api.get_quote()}', parse_mode='Markdown')
 
+
 async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "eth" or chain == "":
@@ -1946,6 +1947,75 @@ async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption='*X7 Finance Magister Holders (ARB)*\n'
                     'Use `/magisters [chain-name]` or other chains\n\n'
                     f'`{address}`\n\n{api.get_quote()}',
+            parse_mode='Markdown')
+
+
+async def signers_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chain = " ".join(context.args).lower()
+    if chain == "eth" or chain == "":
+        devresponse = api.get_signers(items.devmultieth)
+        comresponse = api.get_signers(items.commultieth)
+        devlist = devresponse["owners"]
+        devaddress = '\n\n'.join(map(str, devlist))
+        comlist = comresponse["owners"]
+        comaddress = '\n\n'.join(map(str, comlist))
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption=f'*X7 Finance Multi-Sig Singers (ETH)*\n'
+                    'Use `/signers [chain-name]` or other chains\n\n'
+                    f'*Developer*\n{devaddress}\n\n*Community*\n{comaddress}',
+            parse_mode='Markdown')
+    if chain == "poly" or chain == "polygon":
+        devresponse = api.get_signers(items.devmultipoly)
+        comresponse = api.get_signers(items.commultipoly)
+        devlist = devresponse["owners"]
+        devaddress = '\n\n'.join(map(str, devlist))
+        comlist = comresponse["owners"]
+        comaddress = '\n\n'.join(map(str, comlist))
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption=f'*X7 Finance Multi-Sig Singers (POLYGON)*\n'
+                    'Use `/signers [chain-name]` or other chains\n\n'
+                    f'*Developer*\n{devaddress}\n\n*Community*\n{comaddress}',
+            parse_mode='Markdown')
+    if chain == "bsc" or chain == "bnb":
+        devresponse = api.get_signers(items.devmultibsc)
+        comresponse = api.get_signers(items.commultibsc)
+        devlist = devresponse["owners"]
+        devaddress = '\n\n'.join(map(str, devlist))
+        comlist = comresponse["owners"]
+        comaddress = '\n\n'.join(map(str, comlist))
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption=f'*X7 Finance Multi-Sig Singers (BSC)*\n'
+                    'Use `/signers [chain-name]` or other chains\n\n'
+                    f'*Developer*\n{devaddress}\n\n*Community*\n{comaddress}',
+            parse_mode='Markdown')
+    if chain == "arb" or chain == "arbitrum":
+        devresponse = api.get_signers(items.devmultiarb)
+        comresponse = api.get_signers(items.commultiarb)
+        devlist = devresponse["owners"]
+        devaddress = '\n\n'.join(map(str, devlist))
+        comlist = comresponse["owners"]
+        comaddress = '\n\n'.join(map(str, comlist))
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption=f'*X7 Finance Multi-Sig Singers (ARB)*\n'
+                    'Use `/signers [chain-name]` or other chains\n\n'
+                    f'*Developer*\n{devaddress}\n\n*Community*\n{comaddress}',
+            parse_mode='Markdown')
+    if chain == "opti" or chain == "optimism":
+        devresponse = api.get_signers(items.devmultiopti)
+        comresponse = api.get_signers(items.commultiopti)
+        devlist = devresponse["owners"]
+        devaddress = '\n\n'.join(map(str, devlist))
+        comlist = comresponse["owners"]
+        comaddress = '\n\n'.join(map(str, comlist))
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption=f'*X7 Finance Multi-Sig Singers (OPTI)*\n'
+                    'Use `/signers [chain-name]` or other chains\n\n'
+                    f'*Developer*\n{devaddress}\n\n*Community*\n{comaddress}',
             parse_mode='Markdown')
 
 
@@ -3779,6 +3849,7 @@ if __name__ == '__main__':
     job_queue = application.job_queue
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
+    application.add_handler(CommandHandler('signers', signers_command))
     application.add_handler(CommandHandler('magisters', magisters_command))
     application.add_handler(CommandHandler(['deployer', 'devs'], deployer_command))
     application.add_handler(CommandHandler(['links', 'socials'], links_command))

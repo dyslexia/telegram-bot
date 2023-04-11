@@ -51,6 +51,8 @@ commands = '/about - Welcome to X7 Finance\n' \
            '/liquidity - Liquidity Info\n' \
            '/treasury - Treasury Details\n' \
            '/pool - Lending Pool Info\n' \
+           '/magisters - Track Magister Holders\n' \
+           '/signers - List of X7 Signer Wallets\n' \
            '/loans - Loan Term Info\n' \
            '/burn - X7R Burn \n' \
            '/holders - Token Holder Info\n' \
