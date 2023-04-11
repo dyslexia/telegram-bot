@@ -1897,10 +1897,10 @@ async def alumni_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    if chain == "eth" or chain  == "":
+    if chain == "eth" or chain == "":
         response = api.get_nft(items.magisterca, "eth")
-        magisters = list(map(lambda x : x['owner_of'], response["result"]))
-        address = '\n\n'.join(map(str,magisters))
+        magisters = list(map(lambda x: x['owner_of'], response["result"]))
+        address = '\n\n'.join(map(str, magisters))
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption='*X7 Finance Magister Holders (ETH)*\n'
