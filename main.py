@@ -1897,75 +1897,55 @@ async def alumni_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    if chain == "eth" or chain == "":
+    if chain == "eth" or chain  == "":
         response = api.get_nft(items.magisterca, "eth")
+        magisters = list(map(lambda x : x['owner_of'], response["result"]))
+        address = '\n\n'.join(map(str,magisters))
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption='*X7 Finance Magister Holders (ETH)*\n'
                     'Use `/magisters [chain-name]` or other chains\n\n'
-                    f'[Magister 0]({items.etheraddress}{response["result"][0]["owner_of"]})\n'
-                    f'[Magister 1]({items.etheraddress}{response["result"][1]["owner_of"]})\n'
-                    f'[Magister 2]({items.etheraddress}{response["result"][2]["owner_of"]})\n'
-                    f'[Magister 3]({items.etheraddress}{response["result"][3]["owner_of"]})\n'
-                    f'[Magister 4]({items.etheraddress}{response["result"][4]["owner_of"]})\n'
-                    f'[Magister 5]({items.etheraddress}{response["result"][5]["owner_of"]})\n'
-                    f'[Magister 6]({items.etheraddress}{response["result"][6]["owner_of"]})\n\n{api.get_quote()}',
+                    f'`{address}`\n\n{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "bsc" or chain == "bnb":
         response = api.get_nft(items.magisterca, "bsc")
+        magisters = list(map(lambda x: x['owner_of'], response["result"]))
+        address = '\n\n'.join(map(str, magisters))
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption='*X7 Finance Magister Holders (BSC)*\n'
                     'Use `/magisters [chain-name]` or other chains\n\n'
-                    f'[Magister 0]({items.bscaddress}{response["result"][0]["owner_of"]})\n'
-                    f'[Magister 1]({items.bscaddress}{response["result"][1]["owner_of"]})\n'
-                    f'[Magister 2]({items.bscaddress}{response["result"][2]["owner_of"]})\n'
-                    f'[Magister 3]({items.bscaddress}{response["result"][3]["owner_of"]})\n'
-                    f'[Magister 4]({items.bscaddress}{response["result"][4]["owner_of"]})\n'
-                    f'[Magister 5]({items.bscaddress}{response["result"][5]["owner_of"]})\n'
-                    f'[Magister 6]({items.bscaddress}{response["result"][6]["owner_of"]})\n\n{api.get_quote()}',
+                    f'`{address}`\n\n{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "polygon" or chain == "poly":
         response = api.get_nft(items.magisterca, "polygon")
+        magisters = list(map(lambda x: x['owner_of'], response["result"]))
+        address = '\n\n'.join(map(str, magisters))
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
-            caption='*X7 Finance Magister Holders (POLYGON)*\n'
+            caption='*X7 Finance Magister Holders (POLY)*\n'
                     'Use `/magisters [chain-name]` or other chains\n\n'
-                    f'[Magister 0]({items.polyaddress}{response["result"][0]["owner_of"]})\n'
-                    f'[Magister 1]({items.polyaddress}{response["result"][1]["owner_of"]})\n'
-                    f'[Magister 2]({items.polyaddress}{response["result"][2]["owner_of"]})\n'
-                    f'[Magister 3]({items.polyaddress}{response["result"][3]["owner_of"]})\n'
-                    f'[Magister 4]({items.polyaddress}{response["result"][4]["owner_of"]})\n'
-                    f'[Magister 5]({items.polyaddress}{response["result"][5]["owner_of"]})\n'
-                    f'[Magister 6]({items.polyaddress}{response["result"][6]["owner_of"]})\n\n{api.get_quote()}',
+                    f'`{address}`\n\n{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "optimism" or chain == "opti":
         response = api.get_nft(items.magisterca, "optimism")
+        magisters = list(map(lambda x: x['owner_of'], response["result"]))
+        address = '\n\n'.join(map(str, magisters))
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
-            caption='*X7 Finance Magister Holders (OPTIMISM)*\n'
+            caption='*X7 Finance Magister Holders (OPTI)*\n'
                     'Use `/magisters [chain-name]` or other chains\n\n'
-                    f'[Magister 0]({items.optiaddress}{response["result"][0]["owner_of"]})\n'
-                    f'[Magister 1]({items.optiaddress}{response["result"][1]["owner_of"]})\n'
-                    f'[Magister 2]({items.optiaddress}{response["result"][2]["owner_of"]})\n'
-                    f'[Magister 3]({items.optiaddress}{response["result"][3]["owner_of"]})\n'
-                    f'[Magister 4]({items.optiaddress}{response["result"][4]["owner_of"]})\n'
-                    f'[Magister 5]({items.optiaddress}{response["result"][5]["owner_of"]})\n'
-                    f'[Magister 6]({items.optiaddress}{response["result"][6]["owner_of"]})\n\n{api.get_quote()}',
+                    f'`{address}`\n\n{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "arbitrum" or chain == "arb":
         response = api.get_nft(items.magisterca, "arbitrum")
+        magisters = list(map(lambda x: x['owner_of'], response["result"]))
+        address = '\n\n'.join(map(str, magisters))
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
             caption='*X7 Finance Magister Holders (ARB)*\n'
                     'Use `/magisters [chain-name]` or other chains\n\n'
-                    f'[Magister 0]({items.arbaddress}{response["result"][0]["owner_of"]})\n'
-                    f'[Magister 1]({items.arbaddress}{response["result"][1]["owner_of"]})\n'
-                    f'[Magister 2]({items.arbaddress}{response["result"][2]["owner_of"]})\n'
-                    f'[Magister 3]({items.arbaddress}{response["result"][3]["owner_of"]})\n'
-                    f'[Magister 4]({items.arbaddress}{response["result"][4]["owner_of"]})\n'
-                    f'[Magister 5]({items.arbaddress}{response["result"][5]["owner_of"]})\n'
-                    f'[Magister 6]({items.arbaddress}{response["result"][6]["owner_of"]})\n\n{api.get_quote()}',
+                    f'`{address}`\n\n{api.get_quote()}',
             parse_mode='Markdown')
 
 
