@@ -22,6 +22,32 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 print('Bot Restarted')
 
+# TEMP COMMANDS
+async def shanghai_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    rawtime = datetime(2023, 4, 12, 23, 30, 00)
+    local_giveaway = localtime.localize(rawtime, is_dst=None)
+    updatetime = local_giveaway.astimezone(pytz.utc)
+    now = datetime.now(timezone.utc)
+    duration = updatetime - now
+    duration_in_s = duration.total_seconds()
+    days = divmod(duration_in_s, 86400)
+    hours = divmod(days[1], 3600)
+    minutes = divmod(hours[1], 60)
+    if duration < timedelta(0):
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption=f'Shanghai Update completed!'
+            f'\n\n{api.get_quote()}', parse_mode="Markdown")
+    else:
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption=f'Shanghai Update due:\n\n{updatetime.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
+                    f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
+                    f'{api.get_quote()}', parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='Info Here', url='https://www.blocknative.com/shanghai-upgrade-countdown')],
+                ]))
+
 
 # COMMANDS
 async def bot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1602,13 +1628,17 @@ async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(items.logos)), 'rb'),
         caption='*X7 Finance DAO Founders*\n\n'
-        '[Deployer Wallet](https://etherscan.io/address/0x7000a09c425abf5173ff458df1370c25d1c58105)\n'
-        f'Last TX -  {int(days[0])} days ago:\n'
+        f'Deployer Wallet last TX -  {int(days[0])} days ago:\n'
         f'https://etherscan.io/tx/{deployer["result"][0]["hash"]}\n\n'
-        f'[Developer Operations Wallet](https://etherscan.io/address/0x5CF4288Bf373BBe17f76948E39Baf33B9f6ac2e0)\n'
-        f'Last TX -  {int(devdays[0])} days ago:\n'
+        f'Developer Multi-Sig Wallet last TX -  {int(devdays[0])} days ago:\n'
         f'https://etherscan.io/tx/{dev["result"][0]["hash"]}\n\n{api.get_quote()}',
-        parse_mode='Markdown')
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='X7 Deployer Wallet',
+                                       url=f'{items.etheraddress}{items.deployer}')],
+                 [InlineKeyboardButton(text='X7 Developer Multi-Sig',
+                                       url=f'{items.etheraddress}{items.devmultieth}')],
+                 ]))
 
 
 async def announcements_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1906,8 +1936,12 @@ async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open((random.choice(items.logos)), 'rb'),
             caption='*X7 Finance Magister Holders (ETH)*\n'
                     'Use `/magisters [chain-name]` or other chains\n\n'
+                    f'Holders - {api.get_holders_nft(items.magisterca, "?chain=eth-main")}\n\n'
                     f'`{address}`\n\n{api.get_quote()}',
-            parse_mode='Markdown')
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(
+                    text='Magister Holder List', url=f'{items.ethertoken}{items.magisterca}#balances')], ]))
     if chain == "bsc" or chain == "bnb":
         response = api.get_nft(items.magisterca, "bsc")
         magisters = list(map(lambda x: x['owner_of'], response["result"]))
@@ -1917,7 +1951,10 @@ async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption='*X7 Finance Magister Holders (BSC)*\n'
                     'Use `/magisters [chain-name]` or other chains\n\n'
                     f'`{address}`\n\n{api.get_quote()}',
-            parse_mode='Markdown')
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(
+                    text='Magister Holder List', url=f'{items.bsctoken}{items.magisterca}#balances')], ]))
     if chain == "polygon" or chain == "poly":
         response = api.get_nft(items.magisterca, "polygon")
         magisters = list(map(lambda x: x['owner_of'], response["result"]))
@@ -1926,8 +1963,12 @@ async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open((random.choice(items.logos)), 'rb'),
             caption='*X7 Finance Magister Holders (POLY)*\n'
                     'Use `/magisters [chain-name]` or other chains\n\n'
+                    f'Holders - {api.get_holders_nft(items.magisterca, "?chain=poly-main")}\n\n'
                     f'`{address}`\n\n{api.get_quote()}',
-            parse_mode='Markdown')
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(
+                    text='Magister Holder List', url=f'{items.polytoken}{items.magisterca}#balances')], ]))
     if chain == "optimism" or chain == "opti":
         response = api.get_nft(items.magisterca, "optimism")
         magisters = list(map(lambda x: x['owner_of'], response["result"]))
@@ -1936,8 +1977,12 @@ async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open((random.choice(items.logos)), 'rb'),
             caption='*X7 Finance Magister Holders (OPTI)*\n'
                     'Use `/magisters [chain-name]` or other chains\n\n'
+                    f'Holders - {api.get_holders_nft(items.magisterca, "?chain=optimism-main")}\n\n'
                     f'`{address}`\n\n{api.get_quote()}',
-            parse_mode='Markdown')
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(
+                    text='Magister Holder List', url=f'{items.optitoken}{items.magisterca}#balances')], ]))
     if chain == "arbitrum" or chain == "arb":
         response = api.get_nft(items.magisterca, "arbitrum")
         magisters = list(map(lambda x: x['owner_of'], response["result"]))
@@ -1946,8 +1991,12 @@ async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open((random.choice(items.logos)), 'rb'),
             caption='*X7 Finance Magister Holders (ARB)*\n'
                     'Use `/magisters [chain-name]` or other chains\n\n'
+                    f'Holders - {api.get_holders_nft(items.magisterca, "?chain=arbitrum")}\n\n'
                     f'`{address}`\n\n{api.get_quote()}',
-            parse_mode='Markdown')
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(
+                    text='Magister Holder List', url=f'{items.arbtoken}{items.magisterca}#balances')], ]))
 
 
 async def signers_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1963,8 +2012,14 @@ async def signers_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Multi-Sig Singers (ETH)*\n'
                     'Use `/signers [chain-name]` or other chains\n\n'
-                    f'*Developer*\n{devaddress}\n\n*Community*\n{comaddress}',
-            parse_mode='Markdown')
+                    f'*Developer Signers*\n`{devaddress}`\n\n*Community Signers*\n`{comaddress}`\n\n{api.get_quote()}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='X7 Developer Multi-Sig',
+                                       url=f'{items.etheraddress}{items.devmultieth}')],
+                 [InlineKeyboardButton(text='X7 Community Multi-Sig',
+                                       url=f'{items.etheraddress}{items.commultieth}')],
+                 ]))
     if chain == "poly" or chain == "polygon":
         devresponse = api.get_signers(items.devmultipoly)
         comresponse = api.get_signers(items.commultipoly)
@@ -1976,8 +2031,15 @@ async def signers_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Multi-Sig Singers (POLYGON)*\n'
                     'Use `/signers [chain-name]` or other chains\n\n'
-                    f'*Developer*\n{devaddress}\n\n*Community*\n{comaddress}',
-            parse_mode='Markdown')
+                    f'*Developer Signers*\n`{devaddress}`\n\n*Community Signers*\n`{comaddress}`\n\n{api.get_quote()}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='X7 Developer Multi-Sig',
+                                       url=f'{items.polyaddress}{items.devmultipoly}')],
+                 [InlineKeyboardButton(text='X7 Community Multi-Sig',
+                                       url=f'{items.polyaddress}{items.commultipoly}')],
+                 ]))
+
     if chain == "bsc" or chain == "bnb":
         devresponse = api.get_signers(items.devmultibsc)
         comresponse = api.get_signers(items.commultibsc)
@@ -1989,8 +2051,14 @@ async def signers_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Multi-Sig Singers (BSC)*\n'
                     'Use `/signers [chain-name]` or other chains\n\n'
-                    f'*Developer*\n{devaddress}\n\n*Community*\n{comaddress}',
-            parse_mode='Markdown')
+                    f'*Developer Signers*\n`{devaddress}`\n\n*Community Signers*\n`{comaddress}`\n\n{api.get_quote()}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='X7 Developer Multi-Sig',
+                                       url=f'{items.bscaddress}{items.devmultibsc}')],
+                 [InlineKeyboardButton(text='X7 Community Multi-Sig',
+                                       url=f'{items.bscaddress}{items.commultibsc}')],
+                 ]))
     if chain == "arb" or chain == "arbitrum":
         devresponse = api.get_signers(items.devmultiarb)
         comresponse = api.get_signers(items.commultiarb)
@@ -2002,8 +2070,14 @@ async def signers_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Multi-Sig Singers (ARB)*\n'
                     'Use `/signers [chain-name]` or other chains\n\n'
-                    f'*Developer*\n{devaddress}\n\n*Community*\n{comaddress}',
-            parse_mode='Markdown')
+                    f'*Developer Signers*\n`{devaddress}`\n\n*Community Signers*\n`{comaddress}`\n\n{api.get_quote()}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='X7 Developer Multi-Sig',
+                                       url=f'{items.arbaddress}{items.devmultiarb}')],
+                 [InlineKeyboardButton(text='X7 Community Multi-Sig',
+                                       url=f'{items.arbaddress}{items.commultiarb}')],
+                 ]))
     if chain == "opti" or chain == "optimism":
         devresponse = api.get_signers(items.devmultiopti)
         comresponse = api.get_signers(items.commultiopti)
@@ -2015,9 +2089,14 @@ async def signers_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open((random.choice(items.logos)), 'rb'),
             caption=f'*X7 Finance Multi-Sig Singers (OPTI)*\n'
                     'Use `/signers [chain-name]` or other chains\n\n'
-                    f'*Developer*\n{devaddress}\n\n*Community*\n{comaddress}',
-            parse_mode='Markdown')
-
+                    f'*Developer Signers*\n`{devaddress}`\n\n*Community Signers*\n`{comaddress}`\n\n{api.get_quote()}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='X7 Developer Multi-Sig',
+                                       url=f'{items.optiaddress}{items.devmultiopti}')],
+                 [InlineKeyboardButton(text='X7 Community Multi-Sig',
+                                       url=f'{items.optiaddress}{items.commultiopti}')],
+                 ]))
 
 # CG COMMANDS
 async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3224,7 +3303,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(
                     text='Developer Multi-sig Wallet', url=f'{items.etheraddress}{items.devmultieth}')],
                 [InlineKeyboardButton(
-                    text='Community Multisig Wallet', url=f'{items.etheraddress}{items.commultieth}')],
+                    text='Community Multi-sig Wallet', url=f'{items.etheraddress}{items.commultieth}')],
             ]))
     if chain == "bsc" or chain == "bnb":
         deveth = api.get_native_balance(items.devmultibsc, "bsc")
@@ -3849,6 +3928,7 @@ if __name__ == '__main__':
     job_queue = application.job_queue
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
+    application.add_handler(CommandHandler('shanghai', shanghai_command))
     application.add_handler(CommandHandler('signers', signers_command))
     application.add_handler(CommandHandler('magisters', magisters_command))
     application.add_handler(CommandHandler(['deployer', 'devs'], deployer_command))
