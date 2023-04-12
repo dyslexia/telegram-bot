@@ -24,7 +24,7 @@ print('Bot Restarted')
 
 # TEMP COMMANDS
 async def shanghai_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    rawtime = datetime(2023, 4, 12, 23, 30, 00)
+    rawtime = datetime(2023, 4, 12, 23, 27, 00)
     local_giveaway = localtime.localize(rawtime, is_dst=None)
     updatetime = local_giveaway.astimezone(pytz.utc)
     now = datetime.now(timezone.utc)
@@ -36,7 +36,7 @@ async def shanghai_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if duration < timedelta(0):
         await update.message.reply_photo(
             photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'Shanghai Update completed!'
+            caption=f'Shanghai Update completed at {updatetime.strftime("%A %B %d %Y %I:%M %p")} (UTC)'
             f'\n\n{api.get_quote()}', parse_mode="Markdown")
     else:
         await update.message.reply_photo(
@@ -646,7 +646,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 'Note:\n'
                 'Do not interact directly with the X7D contract\n'
                 'Do not send from a CEX\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -691,7 +691,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 'Note:\n'
                 'Do not interact directly with the X7D contract\n'
                 'Do not send from a CEX\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -734,7 +734,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 'Note:\n'
                 'Do not interact directly with the X7D contract\n'
                 'Do not send from a CEX\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -777,7 +777,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 'Note:\n'
                 'Do not interact directly with the X7D contract\n'
                 'Do not send from a CEX\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -820,7 +820,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 'Note:\n'
                 'Do not interact directly with the X7D contract\n'
                 'Do not send from a CEX\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -937,7 +937,7 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Number of Owners: {owners}\n'
                 f'Pioneers Unlocked: {traits}\n\n'
                 f'Pioneer Pool: {pioneerpool[:3]} ETH (${"{:0,.0f}".format(totaldollar)})\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -1032,7 +1032,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'BSC: {bscpool[:4]} BNB (${"{:0,.0f}".format(bscpooldollar)})\n'
                 f'POLY: {polypool[:6]} MATIC (${"{:0,.0f}".format(polypooldollar)})\n\n'
                 f'TOTAL: ${"{:0,.0f}".format(totaldollar)}\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -1046,8 +1046,6 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'TOTAL: ${"{:0,.0f}".format(totaldollar)}\n\n'
                     f'{api.get_quote()}', parse_mode='Markdown')
     if chain == "eth":
-        print(ethpool)
-        print(pooldollar)
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.ethlogo)
         im1.paste(im2, (720, 20), im2)
@@ -1056,7 +1054,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((28, 36),
                 f'X7 Finance Lending Pool Info (ETH)\n\n'
                 f'{ethpool[:5]} ETH (${"{:0,.0f}".format(pooldollar)})\n\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -1079,7 +1077,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((28, 36),
                 f'X7 Finance Lending Pool Info (BSC)\n\n'
                 f'{bscpool[:4]} BNB (${"{:0,.0f}".format(bscpooldollar)})\n\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -1102,7 +1100,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((28, 36),
                 f'X7 Finance Lending Pool Info (ARB)\n\n'
                 f'{arbpool[:4]} ETH (${"{:0,.0f}".format(arbpooldollar)})\n\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -1125,7 +1123,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((28, 36),
                 f'X7 Finance Lending Pool Info (OPTIMISM)\n\n'
                 f'{optipool[:4]} ETH (${"{:0,.0f}".format(optipooldollar)})\n\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -1148,7 +1146,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((28, 36),
                 f'X7 Finance Lending Pool Info (POLYGON)\n\n'
                 f'{polypool[:6]} MATIC (${"{:0,.0f}".format(polypooldollar)})\n\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -1708,7 +1706,7 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                 f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
                 f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -1734,7 +1732,7 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                 f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
                 f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -1760,7 +1758,7 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                 f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
                 f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -1904,7 +1902,7 @@ async def holders_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f'X7 Finance Token Holders (ETH)\n\n'
             f'X7R Holders: {x7rholders}\n'
             f'X7DAO Holders: {x7daoholders}\n\n\n\n\n\n\n\n\n'
-            f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
             font=myfont, fill=(255, 255, 255))
     img.save(r"media\blackhole.png")
     await update.message.reply_photo(
@@ -2116,7 +2114,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7R Info (ETH)\n\n'
                 f'{chain} is currently worth:\n\n{"{:0,.0f}".format(amount)} '
                 f'X7R (ETH) Tokens (before tax)\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2134,7 +2132,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((26, 30),
                 f'X7R Info (ETH)\n\n'
                 f'{chain} X7R (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2168,7 +2166,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'{"{:0,.0f}".format(x7rtoken)[:4]}M X7R (${"{:0,.0f}".format(x7rtokendollar)})\n'
                 f'{"{:0,.0f}".format(x7rweth)} WETH (${"{:0,.0f}".format(x7rwethdollar)})\n'
                 f'Total Liquidity ${"{:0,.0f}".format(x7rwethdollar + x7rtokendollar)}\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2251,7 +2249,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7DAO Info (ETH)\n\n'
                 f'{chain} is currently worth:\n\n{"{:0,.0f}".format(amount)} '
                 f'X7R (ETH) Tokens (before tax)\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2273,7 +2271,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Holding {chain} X7DAO Tokens will earn you\n'
                 f'the right to make proposals on X7 DAO dApp\n\n'
                 f'{chain} X7DAO (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2292,7 +2290,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((26, 30),
                 f'X7DAO Info (ETH)\n\n'
                 f'{chain} X7DAO (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2323,7 +2321,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'{"{:0,.0f}".format(x7daotoken)[:4]}M X7DAO (${"{:0,.0f}".format(x7daotokendollar)})\n'
                 f'{"{:0,.0f}".format(x7daoweth)} WETH (${"{:0,.0f}".format(x7daowethdollar)})\n'
                 f'Total Liquidity ${"{:0,.0f}".format(x7daowethdollar + x7daotokendollar)}\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2403,7 +2401,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7101 Info (ETH)\n\n'
                 f'{chain} is currently worth:\n\n{"{:0,.0f}".format(amount)} '
                 f'X7101 (ETH) Tokens (before tax)\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2420,7 +2418,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((26, 30),
                 f'X7101 Info (ETH)\n\n'
                 f'{chain} X7101 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2442,7 +2440,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Market Cap:  ${"{:0,.0f}".format(price["x7101"]["usd"] * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7101"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2518,7 +2516,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7102 Info (ETH)\n\n'
                 f'{chain} is currently worth:\n\n{"{:0,.0f}".format(amount)} '
                 f'X102 (ETH) Tokens (before tax)\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2536,7 +2534,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((26, 30),
                 f'X7102 Info (ETH)\n\n'
                 f'{chain} X7102 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2558,7 +2556,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Market Cap:  ${"{:0,.0f}".format(price["x7102"]["usd"] * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7102"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2634,7 +2632,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7103 Info (ETH)\n\n'
                 f'{chain} is currently worth:\n\n{"{:0,.0f}".format(amount)} '
                 f'X7103 (ETH) Tokens (before tax)\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2652,7 +2650,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((26, 30),
                 f'X7103 Info (ETH)\n\n'
                 f'{chain} X7103 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2674,7 +2672,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Market Cap:  ${"{:0,.0f}".format(price["x7103"]["usd"] * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7103"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2750,7 +2748,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7104 Info (ETH)\n\n'
                 f'{chain} is currently worth:\n\n{"{:0,.0f}".format(amount)} '
                 f'X7104 (ETH) Tokens (before tax)\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2768,7 +2766,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((26, 30),
                 f'X7104 Info (ETH)\n\n'
                 f'{chain} X7104 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2790,7 +2788,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Market Cap:  ${"{:0,.0f}".format(price["x7104"]["usd"] * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7104"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2866,7 +2864,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7105 Info (ETH)\n\n'
                 f'{chain} is currently worth:\n\n{"{:0,.0f}".format(amount)} '
                 f'X7105 (ETH) Tokens (before tax)\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2884,7 +2882,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((26, 30),
                 f'X7105 Info (ETH)\n\n'
                 f'{chain} X7105 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2906,7 +2904,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Market Cap:  ${"{:0,.0f}".format(price["x7105"]["usd"] * items.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7105"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -2997,7 +2995,7 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'${"{:0,.0f}".format(conscap)}\n\n'
                 f'Total Token Market Cap:\n'
                 f'${"{:0,.0f}".format(totalcap)}\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3040,7 +3038,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n\n'
                 f'X7DAO:  ${price["x7dao"]["usd"]}\n'
                 f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 0)}%\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3076,7 +3074,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                 f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
                 f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3108,7 +3106,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                 f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
                 f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3140,7 +3138,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Low: {gasdata["result"]["SafeGasPrice"]} Gwei\n'
                 f'Average: {gasdata["result"]["ProposeGasPrice"]} Gwei\n'
                 f'High: {gasdata["result"]["FastGasPrice"]} Gwei\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3169,7 +3167,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'{symbol} price\n\n'
                 f'Price: ${float(tokenprice[tokenid]["usd"])}\n'
                 f'24 Hour Change: {round(tokenprice[tokenid]["usd_24h_change"], 1)}%\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png", quality=95)
         await update.message.reply_photo(
@@ -3217,7 +3215,7 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
                 f'X7103:      ${price["x7103"]["usd"]}\n'
                 f'24 Hour Change: {round(price["x7103"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(x7103mc)}\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         i1.text((522, 90),
                 f'X7104:      ${price["x7104"]["usd"]}\n'
@@ -3284,7 +3282,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'{comx7d} X7D (${"{:0,.0f}".format(comx7dprice)})\n'
                 f'{"{:0,.0f}".format(comx7r)} X7R (${"{:0,.0f}".format(comx7rprice)})\n'
                 f'Total: (${"{:0,.0f}".format(comtotal)})\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3319,7 +3317,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 'X7 Finance Treasury (BSC)\n\n'
                 f'Developer Wallet:\n{deveth[:4]}BNB (${"{:0,.0f}".format(devdollar)})\n\n'
                 f'Community Wallet:\n{cometh[:4]}BNB (${"{:0,.0f}".format(comdollar)})\n\n\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3350,7 +3348,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 'X7 Finance Treasury (ARBITRUM)\n\n'
                 f'Developer Wallet:\n{devamount[:4]}ETH (${"{:0,.0f}".format(devdollar)})\n\n'
                 f'Community Wallet:\n{comamount[:4]}ETH (${"{:0,.0f}".format(comdollar)})\n\n\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3381,7 +3379,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 'X7 Finance Treasury (POLY)\n\n'
                 f'Developer Wallet:\n{devamount[:4]}MATIC (${"{:0,.0f}".format(devdollar)})\n\n'
                 f'Community Wallet:\n{comamount[:4]}MATIC (${"{:0,.0f}".format(comdollar)})\n\n\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3412,7 +3410,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 'X7 Finance Treasury (OPTI)\n\n'
                 f'Developer Wallet:\n{devamount[:4]}ETH (${"{:0,.0f}".format(devdollar)})\n\n'
                 f'Community Wallet:\n{comamount[:4]}ETH (${"{:0,.0f}".format(comdollar)})\n\n\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3502,7 +3500,7 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'{"{:0,.0f}".format(constellationsweth)} WETH '
                 f'(${"{:0,.0f}".format(constellationswethdollar)})\n'
                 f'Total Liquidity ${"{:0,.0f}".format(constellationswethdollar+constellationstokendollar)}\n'
-                f'\nUTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'\nUTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3542,7 +3540,7 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7R:\n{x7ramount} BNB (${"{:0,.0f}".format(x7rdollar)})\n\n'
                 f'X7DAO:\n{x7daoamount} BNB (${"{:0,.0f}".format(x7daodollar)})\n\n'
                 f'X7100:\n{x7consamount} BNB (${"{:0,.0f}".format(x7consdollar)})\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3577,7 +3575,7 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7R:\n{x7ramount} ETH (${"{:0,.0f}".format(x7rdollar)})\n\n'
                 f'X7DAO:\n{x7daoamount} ETH (${"{:0,.0f}".format(x7daodollar)})\n\n'
                 f'X7100:\n{x7consamount} ETH (${"{:0,.0f}".format(x7consdollar)})\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3612,7 +3610,7 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7R:\n{x7ramount} ETH (${"{:0,.0f}".format(x7rdollar)})\n\n'
                 f'X7DAO:\n{x7daoamount} ETH (${"{:0,.0f}".format(x7daodollar)})\n\n'
                 f'X7100:\n{x7consamount} ETH (${"{:0,.0f}".format(x7consdollar)})\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3647,7 +3645,7 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7R:\n{x7ramount} MATIC (${"{:0,.0f}".format(x7rdollar)})\n\n'
                 f'X7DAO:\n{x7daoamount} MATIC (${"{:0,.0f}".format(x7daodollar)})\n\n'
                 f'X7100:\n{x7consamount} MATIC (${"{:0,.0f}".format(x7consdollar)})\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3682,7 +3680,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7R (ETH) Tokens Burned:\n\n'
                 f'{"{:0,.0f}".format(float(burn))} (${"{:0,.0f}".format(float(burndollar))})\n'
                 f'{percent}% of Supply\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3706,7 +3704,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7R (BSC) Tokens Burned:\n\n'
                 f'{"{:,}".format(amount)}\n'
                 f'{percent}% of Supply\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3730,7 +3728,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7R (POLYGON) Tokens Burned:\n\n'
                 f'{"{:,}".format(amount)}\n'
                 f'{percent}% of Supply\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3754,7 +3752,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7R (ARBITRUM) Tokens Burned:\n\n'
                 f'{"{:,}".format(amount)}\n'
                 f'{percent}% of Supply\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
@@ -3778,7 +3776,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7R (OPTIMISM) Tokens Burned:\n\n'
                 f'{"{:,}".format(amount)}\n'
                 f'{percent}% of Supply\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
         await update.message.reply_photo(
