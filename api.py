@@ -12,10 +12,9 @@ def get_signers(wallet):
     return result
 
 def get_cg_search(token):
-    basetokenurl = 'https://api.coingecko.com/api/v3/search?query='
-    tokenurl = basetokenurl + token
-    tokenresponse = requests.get(tokenurl)
-    result = tokenresponse.json()
+    url = 'https://api.coingecko.com/api/v3/search?query=' + token
+    response = requests.get(url)
+    result = response.json()
     return result
 
 def get_cg_price(token):
@@ -40,11 +39,10 @@ def get_tx(address, chain):
         api_key=keys.moralis, params={"address": address, "chain": chain})
     return result
 
-
 def get_today():
-    currentday = str(datetime.now().day)
-    currentmonth = str(datetime.now().month)
-    url = f'http://history.muffinlabs.com/date/{currentmonth}/{currentday}'
+    current_day = str(datetime.now().day)
+    current_month = str(datetime.now().month)
+    url = f'http://history.muffinlabs.com/date/{current_month}/{current_day}'
     response = requests.get(url)
     data = response.json()
     return data
@@ -82,11 +80,11 @@ def get_holders(token):
     return amount
 
 def get_quote():
-    quoteresponse = requests.get('https://type.fit/api/quotes')
-    quotedata = quoteresponse.json()
-    quoteraw = (random.choice(quotedata))
-    quote = quoteraw["text"] + quoteraw["author"]
-    quote = f'`"{quoteraw["text"]}"\n\n-{quoteraw["author"]}`'
+    response = requests.get('https://type.fit/api/quotes')
+    data = response.json()
+    quote_raw = (random.choice(data))
+    quote = quote_raw["text"] + quote_raw["author"]
+    quote = f'`"{quote_raw["text"]}"\n\n-{quote_raw["author"]}`'
     return quote
 
 def get_holders_nft(nft, chain):
@@ -165,8 +163,8 @@ def get_native_balance(wallet, chain):
                'api?module=account&action=balancemulti&address='
         response = requests.get(link + wallet + '&tag=latest' + key)
         data = response.json()
-        amountraw = float(data["result"][0]["balance"])
-        amount = str(amountraw / 10 ** 18)
+        amount_raw = float(data["result"][0]["balance"])
+        amount = str(amount_raw / 10 ** 18)
         return amount
     if chain == "eth":
         key = keys.ether
@@ -174,8 +172,8 @@ def get_native_balance(wallet, chain):
                'api?module=account&action=balancemulti&address='
         response = requests.get(link + wallet + '&tag=latest' + key)
         data = response.json()
-        amountraw = float(data["result"][0]["balance"])
-        amount = str(amountraw / 10 ** 18)
+        amount_raw = float(data["result"][0]["balance"])
+        amount = str(amount_raw / 10 ** 18)
         return amount
     if chain == "arb":
         key = keys.arb
@@ -183,8 +181,8 @@ def get_native_balance(wallet, chain):
                'api?module=account&action=balancemulti&address='
         response = requests.get(link + wallet + '&tag=latest' + key)
         data = response.json()
-        amountraw = float(data["result"][0]["balance"])
-        amount = str(amountraw / 10 ** 18)
+        amount_raw = float(data["result"][0]["balance"])
+        amount = str(amount_raw / 10 ** 18)
         return amount
     if chain == "bsc":
         key = keys.bsc
@@ -192,8 +190,8 @@ def get_native_balance(wallet, chain):
                "api?module=account&action=balancemulti&address="
         response = requests.get(link + wallet + '&tag=latest' + key)
         data = response.json()
-        amountraw = float(data["result"][0]["balance"])
-        amount = str(amountraw / 10 ** 18)
+        amount_raw = float(data["result"][0]["balance"])
+        amount = str(amount_raw / 10 ** 18)
         return amount
     if chain == "poly":
         key = keys.poly
@@ -201,6 +199,6 @@ def get_native_balance(wallet, chain):
                "api?module=account&action=balancemulti&address="
         response = requests.get(link + wallet + '&tag=latest' + key)
         data = response.json()
-        amountraw = float(data["result"][0]["balance"])
-        amount = str(amountraw / 10 ** 18)
+        amount_raw = float(data["result"][0]["balance"])
+        amount = str(amount_raw / 10 ** 18)
         return amount

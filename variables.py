@@ -1,27 +1,21 @@
 from datetime import datetime
 
 # AUTO TIMES HOURS
-wptime = 1
-twittertime = 6
-airdroptime = 1
-
+wp_time = 1
 
 # SPACES                Y   M   D   H   M  S
-spacestime = datetime(2023, 3, 28, 20, 00, 00)
-spaceslink = "https://twitter.com/i/spaces/1RDGlanOvMkJL?s=20"
+spaces_time = datetime(2023, 3, 28, 20, 00, 00)
+spaces_link = "https://twitter.com/i/spaces/1RDGlanOvMkJL?s=20"
 
 # GIVEAWAY               Y   M   D   H   M  S
-giveawaytime = datetime(2023, 3, 30, 20, 30, 00)
-snapshot1 = datetime(2023, 3, 9, 20, 30, 00)
-snapshot2 = datetime(2023, 3, 29, 20, 30, 00)
-giveawayupdate = datetime(2023, 3, 29, 21, 30, 00)
+giveaway_time = datetime(2024, 3, 30, 20, 30, 00)
+snapshot1 = datetime(2024, 3, 9, 20, 30, 00)
+snapshot2 = datetime(2024, 3, 29, 20, 30, 00)
+giveaway_update = datetime(2023, 3, 29, 21, 30, 00)
 
-# TWITTER
-tweetid = 1625541579074158607
-tweetlink = "https://twitter.com/X7_Finance/status/1625541579074158607?s=20&t=h25BT4ivN34G70MIZCrHVQ"
 
 # COMMANDS
-modsonly = "You do not have permission to do this. #trustnoone"
+mods_only = "You do not have permission to do this. #trustnoone"
 
 commands = '/about - Welcome to X7 Finance\n' \
            '/ecosystem - Token Overview\n' \
@@ -43,7 +37,7 @@ commands = '/about - Welcome to X7 Finance\n' \
            '/buyevenly - A Guide to buying constellation series evenly\n' \
            '/contract - Token Contract Addresses\n' \
            '/chart - Chart Links\n' \
-           '/price - [anytoken]  CG Price Info\n' \
+           '/price - [any-token]  CG Price Info\n' \
            '/buy - Buy Links\n' \
            '/wp - Whitepaper\n' \
            '/tax - Token Tax and Slippage Info\n' \
@@ -59,7 +53,7 @@ commands = '/about - Welcome to X7 Finance\n' \
            '/airdrop - Airdrop/Snapshot Info\n' \
            '/nft - NFT Details\n' \
            'opensea - Opensea Links\n' \
-           '/pioneer -  [tokenid] Pioneer NFT Stats\n' \
+           '/pioneer -  [token-id] Pioneer NFT Stats\n' \
            '/discount - discount committee NFT Info\n' \
            '/smart - Smart Contract Details\n' \
            '/faq - X7 Finance FAQs\n' \
@@ -89,8 +83,7 @@ admincommands = 'To be run in main chat\n\n' \
                 '/antiflood - (Dis)Enable anti-flood mode\n' \
                 '/lock all - mutes chat\n' \
                 '/unlock all - unmute chat\n' \
-                '/start_auto [name_oneword] [time_in_minutes] [message] \n' \
+                '/start_auto [name-one-word] [time-in-minutes] [message] \n' \
                 '/stop_auto [name]\n' \
                 '/view_auto\n\n' \
-                f'wp quote will trigger every {wptime} hour\n' \
-                f'twitter "RT everything" message will trigger every {twittertime}'
+                f'wp quote will trigger every {wp_time} hour\n'
