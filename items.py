@@ -1,7 +1,6 @@
 main_id = '-1001780235511'
 test_id = '-1001867816945'
 
-
 # TOKEN CA
 x7r_ca = '0x70008F18Fc58928dcE982b0A69C2c21ff80Dca54'
 x7dao_ca = '0x7105E64bF67ECA3Ae9b123F0e5Ca2b83b2eF2dA0'
@@ -264,7 +263,6 @@ bsc_logo = r'media\bsc.png'
 opti_logo = r'media\optimism.png'
 eth_logo = r'media\ethereum.png'
 raffle_logo = r'media\raffle.jpg'
-
 
 # STICKERS
 gm = 'CAACAgQAAxkBAAEGsh9jjfZUfCKtJjaLGZbNFuzVgb9VOQAC6g4AAsII4FH2AAFleY-pPhorBA'

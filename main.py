@@ -2106,7 +2106,6 @@ async def signers_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  [InlineKeyboardButton(text='X7 Community Multi-Sig',
                                        url=f'{items.poly_address}{items.com_multi_poly}')],
                  ]))
-
     if chain == "bsc" or chain == "bnb":
         dev_response = api.get_signers(items.dev_multi_bsc)
         com_response = api.get_signers(items.com_multi_bsc)
@@ -2167,6 +2166,38 @@ async def signers_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  [InlineKeyboardButton(text='X7 Community Multi-Sig',
                                        url=f'{items.opti_address}{items.com_multi_opti}')],
                  ]))
+
+
+async def launch_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    launch_raw = datetime(2022, 8, 13, 14, 10, 17)
+    migration_raw = datetime(2022, 9, 25, 5, 10, 11)
+    launch = launch_raw.astimezone(pytz.utc)
+    migration = migration_raw.astimezone(pytz.utc)
+    now = datetime.now(timezone.utc)
+    launch_duration = now - launch
+    launch_duration_in_s = launch_duration.total_seconds()
+    launch_days = divmod(launch_duration_in_s, 86400)
+    launch_hours = divmod(launch_days[1], 3600)
+    launch_minutes = divmod(launch_hours[1], 60)
+    migration_duration = now - migration
+    migration_duration_in_s = migration_duration.total_seconds()
+    migration_days = divmod(migration_duration_in_s, 86400)
+    migration_hours = divmod(migration_days[1], 3600)
+    migration_minutes = divmod(migration_hours[1], 60)
+    await update.message.reply_photo(
+        photo=open((random.choice(items.logos)), 'rb'),
+        caption=f'*X7 Finance Launch Info*\n\nX7M105 Stealth Launch\n{launch.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n'
+                f'{int(launch_days[0])} days, {int(launch_hours[0])} hours and {int(launch_minutes[0])} minutes ago\n\n'
+                f'V2 Migration\n{migration.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n'
+                f'{int(migration_days[0])} days, {int(migration_hours[0])} hours and '
+                f'{int(migration_minutes[0])} minutes ago\n\n'
+                f'{api.get_quote()}',
+        parse_mode="Markdown",
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text='X7M105 Launch TX', url=f'https://etherscan.io/tx/'
+                                        f'0x11ff5b6a860170eaac5b33930680bf79dbf0656292cac039805dbcf34e8abdbf')],
+             [InlineKeyboardButton(text='Migration Go Live TX', url=f'https://etherscan.io/tx/'
+                                        f'0x13e8ed59bcf97c5948837c8069f1d61e3b0f817d6912015427e468a77056fe41')], ]))
 
 # CG COMMANDS
 async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3985,7 +4016,7 @@ async def admin_commands_command(update: Update, context: ContextTypes.DEFAULT_T
 
 async def mods_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('@robthebank44 @Adz1doubleD @CoastCorn @cryptod0c @Phlux '
-                                    '@SlumdOg_shillionaire2022'
+                                    '@SlumdOg_shillionaire2022 @DallasX7'
                                     '@gazuga @Gavalars @MikeMurpher @KBCrypto11\n\n'
                                     'MODS ASSEMBLE!')
 
@@ -4000,6 +4031,7 @@ if __name__ == '__main__':
     job_queue = application.job_queue
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
+    application.add_handler(CommandHandler('launch', launch_command))
     application.add_handler(CommandHandler('shanghai', shanghai_command))
     application.add_handler(CommandHandler('signers', signers_command))
     application.add_handler(CommandHandler('magisters', magisters_command))
