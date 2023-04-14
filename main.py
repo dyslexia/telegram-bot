@@ -698,7 +698,7 @@ async def ca_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "" or chain == "eth":
-        supply = api.get_native_balance(items.x7d_ca, "eth")
+        supply = api.get_native_balance(items.lpool_reserve_ca, "eth")
         holders = api.get_holders(items.x7d_ca)
         x7d_dollar = float(supply) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
@@ -708,7 +708,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
         i1.text((28, 36),
                 f'X7D (ETH) Info\n\n'
-                f'Supply: {supply[:4]} ETH (${"{:0,.0f}".format(x7d_dollar)})\n'
+                f'Supply: {supply[:5]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
                 f'Holders: {holders}\n\n'
                 f'To receive X7D:\n'
                 '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
@@ -725,7 +725,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7D (ETH) Info*\n'
                     f'For other chains use `/x7d [chain-name]`\n\n'
-                    f'Supply: {supply[:4]} ETH (${"{:0,.0f}".format(x7d_dollar)})\n'
+                    f'Supply: {supply[:5]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
                     f'Holders: {holders}\n\n'
                     f'To receive X7D:\n\n'
                     '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
@@ -744,7 +744,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.ether_address}{items.x7d_ca}#code')],
                  ]))
     if chain == "bsc" or chain == "bnb":
-        supply = api.get_native_balance(items.x7d_ca, "bnb")
+        supply = api.get_native_balance(items.lpool_reserve_ca, "bnb")
         x7d_dollar = float(supply) * float(api.get_native_price("bnb")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7d_logo)
@@ -753,7 +753,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
         i1.text((28, 36),
                 f'X7D (BSC) Info\n\n'
-                f'Supply: {supply[:4]}BNB (${"{:0,.0f}".format(x7d_dollar)})\n\n'
+                f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n\n'
                 f'To receive X7D:\n\n'
                 '1. Send BNB (Not Swap) to the Lending Pool Reserve Contract:\n'
                 f'{items.lpool_reserve_ca}\n\n'
@@ -769,7 +769,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7D (BSC) Info*\n\n'
-                    f'Supply: {supply[:4]}BNB (${"{:0,.0f}".format(x7d_dollar)})\n'
+                    f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
                     f'To receive X7D:\n\n'
                     '1. Send BNB (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpool_reserve_ca}`\n\n'
@@ -787,7 +787,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.bsc_address}{items.x7d_ca}#code')],
                  ]))
     if chain == "polygon" or chain == "poly":
-        supply = api.get_native_balance(items.x7d_ca, "poly")
+        supply = api.get_native_balance(items.lpool_reserve_ca, "poly")
         x7d_dollar = float(supply) * float(api.get_native_price("matic")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7d_logo)
@@ -796,7 +796,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
         i1.text((28, 36),
                 f'X7D (POLY) Info\n\n'
-                f'Supply: {supply[:4]}MATIC (${"{:0,.0f}".format(x7d_dollar)})\n\n'
+                f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n\n'
                 f'To receive X7D:\n\n'
                 '1. Send MATIC (Not Swap) to the Lending Pool Reserve Contract:\n'
                 f'{items.lpool_reserve_ca}\n\n'
@@ -812,7 +812,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7D (POLY) Info*\n\n'
-                    f'Supply: {supply[:4]}MATIC (${"{:0,.0f}".format(x7d_dollar)})\n'
+                    f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
                     f'To receive X7D.\n\n'
                     '1. Send MATIC (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpool_reserve_ca}`\n\n'
@@ -830,7 +830,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                        url=f'{items.poly_address}{items.x7d_ca}#code')],
                  ]))
     if chain == "optimism" or chain == "opti":
-        supply = api.get_native_balance(items.x7d_ca, "opti")
+        supply = api.get_native_balance(items.lpool_reserve_ca, "opti")
         x7d_dollar = float(supply) * float(api.get_native_price("eth")) / 1 ** 18
         im1 = Image.open((random.choice(items.blackhole)))
         im2 = Image.open(items.x7d_logo)
@@ -839,7 +839,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
         i1.text((28, 36),
                 f'*X7D (OPTIMISM) Info*\n\n'
-                f'Supply: {supply[:4]}ETH (${"{:0,.0f}".format(x7d_dollar)})\n\n'
+                f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n\n'
                 f'To receive X7D:\n\n'
                 '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                 f'{items.lpool_reserve_ca}\n\n'
@@ -855,7 +855,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7D (OPTIMISM) Info*\n\n'
-                    f'Supply: {supply[:4]}ETH (${"{:0,.0f}".format(x7d_dollar)})\n'
+                    f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
                     f'To receive X7D.\n\n'
                     '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpool_reserve_ca}`\n\n'
@@ -882,7 +882,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
         i1.text((28, 36),
                 f'X7D (ARBITRUM) Info\n\n'
-                f'Supply: {supply[:4]}ETH (${"{:0,.0f}".format(x7d_dollar)})\n\n'
+                f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n\n'
                 f'To receive X7D.\n\n'
                 '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                 f'{items.lpool_reserve_ca}\n\n'
@@ -898,7 +898,7 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7D (ARBITRUM) Info*\n\n'
-                    f'Supply: {supply[:4]}ETH (${"{:0,.0f}".format(x7d_dollar)})\n'
+                    f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
                     f'To receive X7D:\n\n'
                     '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
                     f'`{items.lpool_reserve_ca}`\n\n'
@@ -1903,14 +1903,14 @@ async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     dubai = datetime.now(dubai_raw)
     dubai_time = dubai.strftime("%I:%M %p")
     await update.message.reply_text(f'GM or GN Wherever you are...\n\n'
-                                    f'UTC: {datetime.now(timezone.utc).strftime("%A %B %d %Y")}\n'
-                                    f'{datetime.now(timezone.utc).strftime("%I:%M %p")}\n\n'
-                                    f'PST:       {west_coast_time}\n'
-                                    f'EST:       {east_coast_time}\n'
-                                    f'UK:         {london_time}\n'
-                                    f'EU:         {berlin_time}\n'
-                                    f'Dubai:   {dubai_time}\n'
-                                    f'Tokyo:   {tokyo_time}\n',
+                                    f'{datetime.now(timezone.utc).strftime("%A %B %d %Y")}\n'
+                                    f'{datetime.now(timezone.utc).strftime("%I:%M %p")} - UTC\n\n'
+                                    f'{west_coast_time} - PST\n'
+                                    f'{east_coast_time} - EST\n'
+                                    f'{london_time} - GMT\n'
+                                    f'{berlin_time} - CET\n'
+                                    f'{dubai_time} - GST\n'
+                                    f'{tokyo_time} - JST\n',
                                     parse_mode="Markdown")
 
 
@@ -2170,7 +2170,7 @@ async def signers_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def launch_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     launch_raw = datetime(2022, 8, 13, 14, 10, 17)
-    migration_raw = datetime(2022, 9, 25, 5, 10, 11)
+    migration_raw = datetime(2022, 9, 25, 5, 00, 11)
     launch = launch_raw.astimezone(pytz.utc)
     migration = migration_raw.astimezone(pytz.utc)
     now = datetime.now(timezone.utc)
@@ -2198,6 +2198,14 @@ async def launch_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                         f'0x11ff5b6a860170eaac5b33930680bf79dbf0656292cac039805dbcf34e8abdbf')],
              [InlineKeyboardButton(text='Migration Go Live TX', url=f'https://etherscan.io/tx/'
                                         f'0x13e8ed59bcf97c5948837c8069f1d61e3b0f817d6912015427e468a77056fe41')], ]))
+
+async def potw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_photo(
+        photo=open((random.choice(items.logos)), 'rb'),
+        caption='*Pioneer of the week*\n\n'
+                'The following Pioneers have shown exemplary contributions towards X7 Finance\n\n'
+                'Week 15 - @Ahmed812007', parse_mode="Markdown")
+
 
 # CG COMMANDS
 async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3791,7 +3799,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'\n\nX7R (ETH) Tokens Burned:\nUse `/burn [chain-name]` for other chains\n\n'
-                    f'{burn} (${burn_dollar})\n'
+                    f'{burn} (${"{:0,.0f}".format(float(burn_dollar))})\n'
                     f'{percent}% of Supply\n\n{api.get_quote()}',
             parse_mode="markdown",
             reply_markup=InlineKeyboardMarkup(
@@ -4031,6 +4039,7 @@ if __name__ == '__main__':
     job_queue = application.job_queue
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
+    application.add_handler(CommandHandler('potw', potw_command))
     application.add_handler(CommandHandler('launch', launch_command))
     application.add_handler(CommandHandler('shanghai', shanghai_command))
     application.add_handler(CommandHandler('signers', signers_command))
