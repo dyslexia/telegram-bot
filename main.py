@@ -988,12 +988,17 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pioneer_id = " ".join(context.args)
     data = api.get_os_nft("/x7-pioneer")
     floor = (data["collection"]["stats"]["floor_price"])
+    floor_dollar = floor * float(api.get_native_price("eth")) / 1 ** 18
+    floor_dollar = floor * float(api.get_native_price("eth")) / 1 ** 18
     traits = (data["collection"]["traits"]["Transfer Lock Status"]["unlocked"])
     cap = round(data["collection"]["stats"]["market_cap"], 2)
+    cap_dollar = cap * float(api.get_native_price("eth")) / 1 ** 18
     sales = (data["collection"]["stats"]["total_sales"])
     owners = (data["collection"]["stats"]["num_owners"])
     price = round(data["collection"]["stats"]["average_price"], 2)
+    price_dollar = price * float(api.get_native_price("eth")) / 1 ** 18
     volume = round(data["collection"]["stats"]["total_volume"], 2)
+    volume_dollar = volume * float(api.get_native_price("eth")) / 1 ** 18
     pioneer_pool = api.get_native_balance(items.pioneer_ca, "eth")
     total_dollar = float(pioneer_pool) * float(api.get_native_price("eth")) / 1 ** 18
     if pioneer_id == "":
@@ -1001,24 +1006,23 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1 = ImageDraw.Draw(img)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
-                f'X7 Pioneer NFT Info\n\nFloor Price: {floor} ETH (including locked pioneers)\n'
-                f'Average Price: {price} ETH\n'
-                f'Market Cap: {cap} ETH\n'
-                f'Total Volume: {volume} ETH\n'
+                f'X7 Pioneer NFT Info\n\nFloor Price: {floor} ETH (${"{:0,.0f}".format(floor_dollar)})\n'
+                f'Average Price: {price} ETH (${"{:0,.0f}".format(price_dollar)})\n'
+                f'Market Cap: {cap} ETH (${"{:0,.0f}".format(cap_dollar)})\n'
+                f'Total Volume: {volume} ETH (${"{:0,.0f}".format(volume_dollar)})\n'
                 f'Total Sales: {sales}\n'
                 f'Number of Owners: {owners}\n'
-                f'Pioneers Unlocked: {traits}\n\n'
-                f'Pioneer Pool: {pioneer_pool[:3]} ETH (${"{:0,.0f}".format(total_dollar)})\n\n\n\n'
+                f'Pioneers Unlocked: {traits}\n\n\n'
+                f'Pioneer Pool: {pioneer_pool[:3]} ETH (${"{:0,.0f}".format(total_dollar)})\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*X7 Pioneer NFT Info*\n\nFloor Price: {floor} ETH (including locked pioneers)\n'
-                    f'Average Price: {price} ETH\n'
-                    f'Market Cap: {cap} ETH\n'
-                    f'Total Volume: {volume} ETH\n'
-                    f'Total Sales: {sales}\n'
+            caption=f'*X7 Pioneer NFT Info*\n\nFloor Price: {floor} ETH (${"{:0,.0f}".format(floor_dollar)})\n'
+                    f'Average Price: {price} ETH (${"{:0,.0f}".format(price_dollar)})\n'
+                    f'Market Cap: {cap} ETH (${"{:0,.0f}".format(cap_dollar)})\n'
+                    f'Total Volume: {volume} ETH (${"{:0,.0f}".format(volume_dollar)})\n'
                     f'Number of Owners: {owners}\n'
                     f'Pioneers Unlocked: {traits}\n\n'
                     f'Pioneer Pool: {pioneer_pool[:3]} ETH (${"{:0,.0f}".format(total_dollar)})\n\n'
