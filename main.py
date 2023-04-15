@@ -1676,7 +1676,6 @@ async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     deployer = api.get_tx(items.deployer, "eth")
-    dev = api.get_tx(items.dev_multi_eth, "eth")
     date = deployer["result"][0]["block_timestamp"].split("-")
     year = int(date[0])
     month = int(date[1])
@@ -1686,28 +1685,21 @@ async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     duration = now - then
     duration_in_s = duration.total_seconds()
     days = divmod(duration_in_s, 86400)
-    dev_date = dev["result"][0]["block_timestamp"].split("-")
-    dev_year = int(dev_date[0])
-    dev_month = int(dev_date[1])
-    dev_day = int(dev_date[2][:2])
-    dev_then = datetime(dev_year, dev_month, dev_day)
-    dev_duration = now - dev_then
-    dev_duration_in_s = dev_duration.total_seconds()
-    dev_days = divmod(dev_duration_in_s, 86400)
-    await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
-        caption='*X7 Finance DAO Founders*\n\n'
-        f'Deployer Wallet last TX -  {int(days[0])} days ago:\n'
-        f'https://etherscan.io/tx/{deployer["result"][0]["hash"]}\n\n'
-        f'Developer Multi-Sig Wallet last TX -  {int(dev_days[0])} days ago:\n'
-        f'https://etherscan.io/tx/{dev["result"][0]["hash"]}\n\n{api.get_quote()}',
-        parse_mode='Markdown',
-        reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Deployer Wallet',
-                                       url=f'{items.ether_address}{items.deployer}')],
-                 [InlineKeyboardButton(text='X7 Developer Multi-Sig',
-                                       url=f'{items.ether_address}{items.dev_multi_eth}')],
-                 ]))
+    if deployer["result"][0]['to_address'] == "0x000000000000000000000000000000000000dEaD" or \
+            deployer["result"][0]['to_address'] == items.deployer:
+        message = bytes.fromhex(api.get_tx(items.deployer, "eth")["result"][0]["input"][2:]).decode('utf-8')
+        await update.message.reply_text(
+            '*X7 Finance DAO Founders*\n\n'
+            f'Deployer Wallet last TX -  {int(days[0])} days ago:\n\n'
+            f'`{message}`\n\n{items.ether_tx}{deployer["result"][0]["hash"]}',
+            parse_mode='Markdown')
+    else:
+        await update.message.reply_photo(
+            photo=open((random.choice(items.logos)), 'rb'),
+            caption='*X7 Finance DAO Founders*\n\n'
+                    f'Deployer Wallet last TX -  {int(days[0])} days ago:\n\n'
+                    f'{items.ether_tx}{deployer["result"][0]["hash"]}\n\n{api.get_quote()}',
+            parse_mode='Markdown')
 
 
 async def announcements_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2203,6 +2195,7 @@ async def launch_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text='Migration Go Live TX', url=f'https://etherscan.io/tx/'
                                         f'0x13e8ed59bcf97c5948837c8069f1d61e3b0f817d6912015427e468a77056fe41')], ]))
 
+
 async def potw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(items.logos)), 'rb'),
@@ -2210,6 +2203,7 @@ async def potw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 'The following Pioneers have shown exemplary contributions towards X7 Finance\n\n'
                 'Week 15 - @Ahmed812007\n\n'
                 f'{api.get_quote()}', parse_mode="Markdown")
+
 
 async def supply_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     prices = api.get_cg_price("x7r, x7dao, x7101, x7102, x7103, x7104, x7105")
@@ -2267,6 +2261,7 @@ async def supply_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'*X7105*\n'
                     f'{"{:0,.0f}".format(x7105)} X7105 (${"{:0,.0f}".format(x7105_dollar)}) {x7105_percent}%\n\n'
                     f'{api.get_quote()}', parse_mode="Markdown")
+
 
 # CG COMMANDS
 async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -4106,7 +4101,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('shanghai', shanghai_command))
     application.add_handler(CommandHandler('signers', signers_command))
     application.add_handler(CommandHandler('magisters', magisters_command))
-    application.add_handler(CommandHandler(['deployer', 'devs'], deployer_command))
+    application.add_handler(CommandHandler(['on_chain', 'deployer', 'devs'], deployer_command))
     application.add_handler(CommandHandler(['links', 'socials'], links_command))
     application.add_handler(CommandHandler(['ca', 'contract', 'contracts'], ca_command))
     application.add_handler(CommandHandler('x7r', x7r_command))
