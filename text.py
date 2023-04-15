@@ -1,287 +1,129 @@
-main_id = '-1001780235511'
-test_id = '-1001867816945'
+# TEXT
+import variables
 
-# TOKEN CA
-x7r_ca = '0x70008F18Fc58928dcE982b0A69C2c21ff80Dca54'
-x7dao_ca = '0x7105E64bF67ECA3Ae9b123F0e5Ca2b83b2eF2dA0'
-x7101_ca = '0x7101a9392eac53b01e7c07ca3baca945a56ee105'
-x7102_ca = '0x7102dc82ef61bfb0410b1b1bf8ea74575bf0a105'
-x7103_ca = '0x7103eBdbF1f89be2d53EFF9B3CF996C9E775c105'
-x7104_ca = '0x7104D1f179Cc9cc7fb5c79Be6Da846E3FBC4C105'
-x7105_ca = '0x7105FAA4a26eD1c67B8B2b41BEc98F06Ee21D105'
-x7d_ca = '0x7D000a1B9439740692F8942A296E1810955F5000'
-pioneer_ca = '0x70000299ee8910ccacd97b1bb560e34f49c9e4f7'
-eco_ca = '0x7000cae2c1016e7de45ec9b54f1835b966bca4f7'
-liq_ca = '0x7000f8270b955377e047da8202ae3c408186b4f7'
-dex_ca = '0x7000b3B5e4e126610A7b7d1Af2D2DE8685c7C4f7'
-borrow_ca = '0x7000D5d7707Bf86b317deC635e459E47b9aBD4F7'
-magister_ca = '0x7dA0bb55E4097FC2d78a1822105057F36C5F360d'
+mods_only = "You do not have permission to do this. #trustnoone"
 
-# SMART CA
-ca_directory = 'https://medium.com/@mikemurpher/x7-finance-contracts-directory-fe3a9fee7b3c'
-lpool_reserve_ca = '0x7Ca54e9Aa3128bF15f764fa0f0f93e72b5267000'
-treasury_splitter_ca = '0x70006B785AA87821331a974C3d5af81CdE5BB999'
-cons_liq_ca = '0x7102407afa5d6581AAb694FEB03fEB0e7Cf69ebb'
-x7r_liq_hub_ca = '0x712E87520f35a0a17A49bcCA4D87c201F0A46EBb'
-x7dao_liq_hub_ca = '0x7da0e45ce7fd8359544be00a6618215770851ebb'
-burner_ca = '0x70008F0B06060A31515733DB6dCB515c64f3DeAd'
-cons_discount_ca = '0x7100AAcC6047281b105201cb9e0DEcF9Ae5431DA'
-x7r_discount_ca = '0x712bC6ddcd97A776B2482531058C629456B93eda'
-x7dao_discount_ca = '0x7da05D75f51056f3B83b43F397668Cf6A5051cDa'
-time_lock_ca = '0x7000F4Cddca46FB77196466C3833Be4E89ab810C'
-eco_splitter_ca = '0x70001BA1BA4d85739E7B6A7C646B8aba5ed6c888'
-xchange_discount_ca = '0x7de8ab0dd777561ce98b7ef413f6fd564e89c1da'
-lending_discount_ca = '0x74001e463b3c7dc95d96a1fdbe621678c24d47da'
-router_ca = '0x7DE8063E9fB43321d2100e8Ddae5167F56A50060'
-discount_router_ca = '0x7de802dfc36dac738ddf2681dbfb37b30bb80060'
-lpool_ca = '0x740015c39da5d148fca25a467399d00bce10c001'
-factory_ca = '0x7de800467aFcE442019884f51A4A1B9143a34fAc'
+commands = '/about - Welcome to X7 Finance\n' \
+           '/ecosystem - Token Overview\n' \
+           '/links - Official Links\n' \
+           '/dashboard - X7 Finance community dashboard\n' \
+           '/twitter - Latest X7 Finance tweet\n' \
+           '/swap - Xchange DEX Info\n' \
+           '/roadmap - Whats coming next\n' \
+           '/website - Official Website\n' \
+           '/x7r - X7R Info\n' \
+           '/x7dao - X7DAO Info\n' \
+           '/x7d  - X7Deposit Info\n' \
+           '/x7101 - X7101 Info\n' \
+           '/x7102 - X7102 Info\n' \
+           '/x7103 - X7103 Info\n' \
+           '/x7104 - X7104 Info\n' \
+           '/x7105 - X7105 \n' \
+           '/constellations - X7 Constellation Info\n' \
+           '/buyevenly - A Guide to buying constellation series evenly\n' \
+           '/contract - Token Contract Addresses\n' \
+           '/chart - Chart Links\n' \
+           '/price - [any-token]  CG Price Info\n' \
+           '/buy - Buy Links\n' \
+           '/wp - Whitepaper\n' \
+           '/tax - Token Tax and Slippage Info\n' \
+           '/mcap - Market Cap Info\n' \
+           '/liquidity - Liquidity Info\n' \
+           '/treasury - Treasury Details\n' \
+           '/pool - Lending Pool Info\n' \
+           '/magisters - Track Magister Holders\n' \
+           '/signers - List of X7 Signer Wallets\n' \
+           '/loans - Loan Term Info\n' \
+           '/burn - X7R Burn \n' \
+           '/holders - Token Holder Info\n' \
+           '/airdrop - Airdrop/Snapshot Info\n' \
+           '/nft - NFT Details\n' \
+           'opensea - Opensea Links\n' \
+           '/pioneer -  [token-id] Pioneer NFT Stats\n' \
+           '/discount - discount committee NFT Info\n' \
+           '/smart - Smart Contract Details\n' \
+           '/faq - X7 Finance FAQs\n' \
+           '/deployer  - X7 Finance Deployer Info\n' \
+           '/withdraw  - How to withdraw X7D\n' \
+           '/giveaway - Giveaway Details\n' \
+           '/spaces  - Twitter Space Info\n' \
+           '/gas - Gas Info\n' \
+           '/wei - amount convert to ETH\n' \
+           '/fg - Market fg Info\n' \
+           '/time - World Time Info\n' \
+           '/search - [keyword] Search the web\n' \
+           '/joke - Tell a joke\n' \
+           '/quote - Inspirational quote\n' \
+           '/day - On this day in history\n' \
+           '/say - Text to speech\n' \
+           '/channels - List of X7 Finance Community TG Channels\n' \
+           '/announcements - X7 Finance Announcements TG Channel\n' \
+           '/media - TG Stickers and Emojis\n' \
+           '/bobby - Bobby BuyBot Channels\n' \
+           '/alumni - X7 Finance Alumni\n'
 
-# LIQ LOCKS
-x7dao_liq_lock_ca = "0x7da0aaD0f0b1Af993Df722567B045105fbbf510C"
-x7r_liq_lock_ca = "0x7125c4105d728359Cd3073d567f366926f5cA10C"
-cons_liq_lock_ca = "0x71009A7eE233Af8fb42EeE5DbE61ea92Ea55b10c"
-
-# WALLETS
-dev_multi_eth = '0x5CF4288Bf373BBe17f76948E39Baf33B9f6ac2e0'
-com_multi_eth = '0x7063E83dF5349833A21f744398fD39D42fbC00f8'
-
-dev_multi_bsc = '0x90Deb623F32CB5319E99418c98faf52651f8B45E'
-com_multi_bsc = '0xCFbdBe32e60be5B35973a0F13E8dA2892c320f02'
-
-dev_multi_poly = '0x793444C1aC56BBaa74ae6c4b5d929FFE59304934'
-com_multi_poly = '0x3B4313E1a8A9beFCf34491a20F0991f22b4f1461'
-
-dev_multi_arb = '0xCeb944684a9c6bAE0d0c4628078c5B3F8432D75b'
-com_multi_arb = '0x8b8122Cc806615D50287b5c7CF6636033E38f0Dc'
-
-dev_multi_opti = '0xBC534678E9ab8Bf1009fE6Ca4De8B02C091c9ca8'
-com_multi_opti = '0xc8804440275c0B60a081e832bb027DDaAE4A2daa'
-
-deployer = '0x7000a09c425abf5173ff458df1370c25d1c58105'
-
-
-# URLS
-xchange_buy = 'https://app.x7.finance/#/swap?outputCurrency='
-ether_token = 'https://etherscan.io/token/'
-ether_address = 'https://etherscan.io/address/'
-ether_tx = 'https://etherscan.io/tx/'
-bsc_token = 'https://bscscan.com/token/'
-bsc_address = 'https://bscscan.com/address/'
-bsc_tx = 'https://bscscan.com/tx/'
-poly_token = 'https://polygonscan.com/token/'
-poly_address = 'https://polygonscan.com/address/'
-poly_tx = 'https://polygonscan.com/tx/'
-arb_token = 'https://arbiscan.io/token/'
-arb_address = 'https://arbiscan.io/address/'
-arb_tx = 'https://arbiscan.io/tx/'
-opti_token = 'https://optimistic.etherscan.io/token/'
-opti_address = 'https://optimistic.etherscan.io/address/'
-opti_tx = 'https://optimistic.etherscan.io/tx/'
-dex_tools_eth = 'https://www.dextools.io/app/ether/pair-explorer/'
-dex_tools_bsc = 'https://www.dextools.io/app/bnb/pair-explorer/'
-dex_tools_poly = 'https://www.dextools.io/app/polygon/pair-explorer/'
-dex_tools_arb = 'https://www.dextools.io/app/arbitrum/pair-explorer/'
-dex_tools_opti = 'https://www.dextools.io/app/optimism/pair-explorer/'
+admin_commands = 'To be run in main chat\n\n' \
+                '/settings - Open the setting menu\n' \
+                '/setup - Setup the portal\n' \
+                '/difficulty - Set the CAPTCHA difficulty\n' \
+                '/antiflood - (Dis)Enable anti-flood mode\n' \
+                '/lock all - mutes chat\n' \
+                '/unlock all - unmute chat\n' \
+                '/start_auto [name-one-word] [time-in-minutes] [message] \n' \
+                '/stop_auto [name]\n' \
+                '/view_auto\n\n' \
+                f'wp quote will trigger every {variables.wp_time} hour\n'
 
 
-# PAIRS
-# ETH
-x7r_pair_eth = '0x6139240a5907e4ce74673257c320ea366c521aea'
-x7dao_pair_eth = '0x75311ee016c82e7770e4aca73a0d142f96ddb969'
-x7101_pair_eth = '0x81b786ed4b2f1118e0fa0343ad4760e15448e3e8'
-x7102_pair_eth = '0x49c838c60170c36e90cfa6021a57f2268dda3254'
-x7103_pair_eth = '0xcecf54edc42c5c9f6ee10cb1efcc23e49f7d5a5d'
-x7104_pair_eth = '0x7d0d7c088233cbc08ee2400b96d10bf24c40e93a'
-x7105_pair_eth = '0x6d9d1b6b4d53f090639ae8d9e9c83b796da694ee'
+ecosystem = '*X7 Finance Ecosystem*\n\n• *X7R*\nX7\'s original launched token. Hodl as a percentage of all ' \
+        'transaction fees are used to buy and burn tokens, reducing total supply of available tokens.\n\n' \
+        '• *X7DAO*\nHolders of X7DAO tokens will be able to vote on fee rates, loan terms, funding terms, ' \
+        'tradable token tax terms, distribution of capital flows and any additional settings on and off chain. ' \
+        'This includes the establishment of committees and other foundational efforts off chain.\n\n' \
+        '• *X7100 Constellation (X7101 - X7105)*\n' \
+        'A novel - eventually price consistent collection of five tokens. These act as the backstop to the ' \
+        'Lending Pool. The X7100 series of tokens are burned on every transaction. While continually raising its ' \
+        'floor price - it also provides further opportunities to mint new X7Deposit tokens.\n\n' \
+        '• *X7 NFTs*\nNFTs within the ecosystem will be used to provide opportunities for staking, lending, ' \
+        'discounts, rewards, access to higher governance privileges & much more.\n\n' \
+        '• *X7Deposit*\nWith insurance of the investor at heart - individuals and ' \
+        'institutions will hold these tokens ' \
+        'just as they would underwrite treasury bills and other stable assets. Holders of X7D will be able to ' \
+        'mint a time-based interest-bearing NFT. X7D is always exchangeable with Ethereum at a 1-to-1 ratio.\n' \
+        'The X7 Finance protocol will only permit minting of new X7 Deposit tokens when on-chain reserves permit.'
 
-# BSC
-x7r_pair_bsc = '0x70008F18Fc58928dcE982b0A69C2c21ff80Dca54'
-x7dao_pair_bsc = '0x7105E64bF67ECA3Ae9b123F0e5Ca2b83b2eF2dA0'
-x7101_pair_bsc = '0x7101a9392eac53b01e7c07ca3baca945a56ee105'
-x7102_pair_bsc = '0x7102dc82ef61bfb0410b1b1bf8ea74575bf0a105'
-x7103_pair_bsc = '0x7103eBdbF1f89be2d53EFF9B3CF996C9E775c105'
-x7104_pair_bsc = '0x7104D1f179Cc9cc7fb5c79Be6Da846E3FBC4C105'
-x7105_pair_bsc = '0x7105FAA4a26eD1c67B8B2b41BEc98F06Ee21D105'
+about = '*Welcome to X7 Finance*\n\nX7 is an ecosystem of innovative smart contracts that provide those with ' \
+        'visionary ideas access to leveraged seed capital (e.g. Initial Liquidity Offerings, or ILOs) without ' \
+        'lenders incurring the risk of losing the principal. This invention has massive implications not just ' \
+        'for our users, but for all of DeFi \n\n' \
+        '• At its core, leveraged ILOs means anyone with a good idea can raise 10-1000X the amount of Eth in ' \
+        'their wallet to launch projects on XChange, our world-class DEX.\n\n' \
+        '• Over time, the network effect of product launches will result in billions of dollars in trading ' \
+        'volume on our Decentralized Exchange.\n\n' \
+        '• The protocol will extend to other use case including but not limited to lending/borrowing, leveraged ' \
+        'trading, liquidity locks, & more.\n\n' \
+        '• A novel DAO governance structure + IPFS website ensures complete decentralization and ' \
+        'censorship-resistance. #LongLiveDefi\n\n' \
+        '• Our Telegram and Twitter are community-run, in the spirit of decentralization\n\n' \
+        '• We will consider this project a success once it captures at least 1% of the $100b daily trading ' \
+        'volume on Eth.\n\n' \
+        '• There are many innovative technical and governance applications in this platform so we encourage you ' \
+        'to dig and hop on this rocket ship!\n\n' \
+        'As the first Initial Leveraged Liquidity DEX to launch Developers will be able to borrow initial liquidity ' \
+        'to launch with for a small fee. This means projects ' \
+        'can launch with more liquidity and will be very attractive for investors at the beginning.\n\n• The ' \
+        'amount you will be able to borrow, depends on how much your capital is. The more you have, the more ' \
+        'you will be able to borrow from the Lending Pool.\n\n• This is like a decentralized Bank on the ' \
+        'Blockchain. Borrowing money for new projects without a risk, that profits everyone.\n\n• Everyone will be ' \
+        'able to loan to the Lending Pool. Lock your ETH in the Lending Pool for 1 month RISK FREE and gain a ' \
+        'specific %  as reward on top of that when ' \
+        'claiming that back (Just for example). This in turn makes the Lending Pool more liquid and helps with' \
+        ' its growth and success.\n\n• All profit from the DEX, goes back into the ecosystem (Tokens, Lending ' \
+        f'Pool, Future Development etc.). Pumping your bag!\n\n' \
+        f'`"X7’s founding team believes that capital should be available to those with great ideas and that the ' \
+        'unflinching reliability of code and distributed consensus can provide capital while eliminating ' \
+        'significant downside risk."\n\n- X7DAO Founding Team`'
 
-# ARB
-x7r_pair_arb = '0x70008F18Fc58928dcE982b0A69C2c21ff80Dca54'
-x7dao_pair_arb = '0x7105E64bF67ECA3Ae9b123F0e5Ca2b83b2eF2dA0'
-x7101_pair_arb = '0x7101a9392eac53b01e7c07ca3baca945a56ee105'
-x7102_pair_arb = '0x7102dc82ef61bfb0410b1b1bf8ea74575bf0a105'
-x7103_pair_arb = '0x7103eBdbF1f89be2d53EFF9B3CF996C9E775c105'
-x7104_pair_arb = '0x7104D1f179Cc9cc7fb5c79Be6Da846E3FBC4C105'
-x7105_pair_arb = '0x7105FAA4a26eD1c67B8B2b41BEc98F06Ee21D105'
-
-# OPTI
-x7r_pair_opti = '0x70008F18Fc58928dcE982b0A69C2c21ff80Dca54'
-x7dao_pair_opti = '0x7105E64bF67ECA3Ae9b123F0e5Ca2b83b2eF2dA0'
-x7101_pair_opti = '0x7101a9392eac53b01e7c07ca3baca945a56ee105'
-x7102_pair_opti = '0x7102dc82ef61bfb0410b1b1bf8ea74575bf0a105'
-x7103_pair_opti = '0x7103eBdbF1f89be2d53EFF9B3CF996C9E775c105'
-x7104_pair_opti = '0x7104D1f179Cc9cc7fb5c79Be6Da846E3FBC4C105'
-x7105_pair_opti = '0x7105FAA4a26eD1c67B8B2b41BEc98F06Ee21D105'
-
-# POLY
-x7r_pair_poly = '0x70008F18Fc58928dcE982b0A69C2c21ff80Dca54'
-x7dao_pair_poly = '0x7105E64bF67ECA3Ae9b123F0e5Ca2b83b2eF2dA0'
-x7101_pair_poly = '0x7101a9392eac53b01e7c07ca3baca945a56ee105'
-x7102_pair_poly = '0x7102dc82ef61bfb0410b1b1bf8ea74575bf0a105'
-x7103_pair_poly = '0x7103eBdbF1f89be2d53EFF9B3CF996C9E775c105'
-x7104_pair_poly = '0x7104D1f179Cc9cc7fb5c79Be6Da846E3FBC4C105'
-x7105_pair_poly = '0x7105FAA4a26eD1c67B8B2b41BEc98F06Ee21D105'
-
-# LOANS
-ill001_name = 'X7 Initial Liquidity Loan Term (001) - X7ILL001'
-ill001_terms = '---> Min Loan: 0.5 ETH\n' \
-              '---> Max Loan: 5 ETH\n' \
-              '---> Leverage: (4x leverage)\n' \
-              '---> Number of repayment periods: 1\n' \
-              '---> Number of premium periods: 0\n' \
-              '---> Min Loan Duration: 1\n' \
-              '---> Max Loan Duration: 7\n' \
-              '---> Loan Origination Fee: 25% of borrowed capital, payable within the transaction for adding' \
-              ' initial liquidity\n' \
-              '---> Loan Retention Premium Fee Schedule: No interest payment\n' \
-              '---> Principal Repayment Condition: 100% principal must be returned by the end of the loan term.\n' \
-              '---> Liquidation conditions: Failure of full repayment of principal by the end of the loan term will ' \
-              'make the loan eligible for liquidation.\n' \
-              '---> Liquidator reward: 5% of the loan origination fee will be reserved for a liquidation bounty'
-ill001_ca = "0x7400165e167479a3c81c8fc8cc3df3d2a92e9017"
-
-ill003_name = "X7 Initial Liquidity Loan Term (003) - X7ILL003"
-ill003_terms = \
-    "---> Min: 0.5 ETH\n" \
-    "---> Max: 5 ETH\n" \
-    "---> Leverage: (6.66x leverage)\n" \
-    "---> Number of repayment periods: 1\n" \
-    "---> Number of premium periods: 4\n" \
-    "---> Loan Retention Premium: 6.25% in premiums due by the end of each quarter of the loan term\n" \
-    "---> Min Loan Duration: 1\n" \
-    "---> Max Loan Duration: 7" \
-    "---> Loan Origination Fee: 15% of borrowed capital, payable within the transaction for adding initial" \
-    " liquidity\n" \
-    "---> Loan Retention Premium Fee Schedule: 6.25% of borrowed capital payable by the end of each quarter " \
-    "of the loan term for a total retention premium fee of 25% of borrowed capital\n" \
-    "---> Principal Repayment Condition: 100% principal must be returned by the end of the loan term.\n" \
-    "---> Liquidation conditions: Failure to pay a premium payment by its due date or repay the" \
-    " principal by the end of the loan term will make the loan eligible for liquidation. \n" \
-    "---> Liquidator reward: 10% of the loan origination fee will be reserved for a liquidation bounty"
-ill003_ca = "0x74001c747b6cc9091ee63bc9424dff633fbac617"
-
-ill002_name = "X7 Initial Liquidity Loan Term (002) - X7ILL002"
-ill002_terms = \
-    "---> Min Loan: 0.5 ETH\n" \
-    "---> Max Loan: 5 ETH\n" \
-    "---> Leverage: (10x leverage)\n" \
-    "---> Number of repayment periods: 4\n" \
-    "---> Number of premium periods: 4\n" \
-    "---> Min Loan Duration: 1\n" \
-    "---> Max Loan Duration: 7" \
-    "---> Loan Origination Fee: 10% of borrowed capital, payable within the transaction for adding " \
-    "initial liquidity\n" \
-    "---> Loan Retention Premium Fee Schedule: 6.25% of borrowed capital payable by the end of each quarter " \
-    "of the loan term for a total retention premium fee of 25% of borrowed capital\n" \
-    "---> Principal Repayment Condition: 25% of the capital must be repaid on each quarter\n" \
-    "---> Liquidation conditions: Failure to pay a premium + principal payment by its due date or repay the" \
-    " principal by the end of the loan term will make the loan eligible for liquidation. \n" \
-    "---> Liquidator reward: 5% of the loan origination fee will be reserved for a liquidation bounty"
-ill002_ca = "0x740019a6b3a9cf3bd193986a560b05726143b217"
-
-
-# NFTs
-# ETH
-eco_price_eth = '0.1 ETH - 500 Supply'
-liq_price_eth = '0.5ETH - 250 Supply'
-dex_price_eth = '0.5 ETH - 150 Supply'
-borrow_price_eth = '1 ETH - 100 Supply'
-magister_price_eth = '50 ETH - 49 Supply'
-
-# ARB
-eco_price_arb = '0.1 ETH - 500 Supply'
-liq_price_arb = '0.5 ETH - 250 Supply'
-dex_price_arb = '0.5 ETH - 150 Supply'
-borrow_price_arb = '1 ETH - 100 Supply'
-magister_price_arb = '50 ETH - 49 Supply'
-
-# OPTI
-eco_price_opti = '0.1 ETH - 500 Supply'
-liq_price_opti = '0.5 ETH - 250 Supply'
-dex_price_opti = '0.5 ETH - 150 Supply'
-borrow_price_opti = '1 ETH - 100 Supply'
-magister_price_opti = '50 ETH - 49 Supply'
-
-# BSC
-eco_price_bsc = '0.5 BNB - 500 Supply'
-liq_price_bsc = '2.5 BNB - 250 Supply'
-dex_price_bsc = '2.5 BNB - 150 Supply'
-borrow_price_bsc = '5 BNB - 100 Supply'
-magister_price_bsc = '150 BNB - 49 Supply'
-
-# POLY
-eco_price_poly = '130 MATIC - 500 Supply'
-liq_price_poly = '650 MATIC - 250 Supply'
-dex_price_poly = '650 MATIC - 150 Supply'
-borrow_price_poly = '1300 MATIC - 100 Supply'
-magister_price_poly = '45000 MATIC - 49 Supply'
-
-# LINKS
-website = 'https://x7.finance'
-dashboard = 'https://www.x7finance.org/'
-linktree = 'https://linktr.ee/X7_Finance'
-medium = 'https://medium.com/@X7Finance'
-dune = 'https://dune.com/0xawesomedata/x7r'
-twitter = 'https://twitter.com/x7_finance'
-discord = 'https://discord.gg/x7finance'
-reddit = 'https://www.reddit.com/r/x7finance'
-youtube = 'https://youtube.com/channel/UCYnIyBwiomfUUAnjCbNFkqw'
-wp_link = 'https://x7.finance/whitepaper'
-short_wp_link = 'https://x7community.space/wp-short.pdf'
-dac = 'http://shorturl.at/ehnr9'
-github = 'https://github.com/x7finance/'
-
-# OTHER
-dead = '0x000000000000000000000000000000000000dEaD'
-supply = 100000000
-
-# MEDIA
-blackhole = [r'media\blackhole1.jpg', r'media\blackhole2.jpg', r'media\blackhole3.jpg', r'media\blackhole4.jpg',
-             r'media\blackhole5.jpg', r'media\blackhole6.jpg', r'media\blackhole7.jpg']
-logos = [r'media\logo1.png', r'media\logo2.png', r'media\logo3.png', r'media\logo4.png', r'media\logo4.png',
-         r'media\logo5.png', r'media\logo6.png', r'media\logo7.png', r'media\logo8.png', r'media\logo9.png',
-         r'media\logo10.png', r'media\logo11.png']
-x7r_logo = r'media\X7R_LOGO_black_back_200_x_200_px.png'
-x7dao_logo = r'media\X7_DAO_LOGO_black_back_200_x_200_px.png'
-x7101_logo = r'media\X7101_LOGO_black_back_200_x_200_px.png'
-x7102_logo = r'media\X7102_LOGO_black_back_200_x_200_px.png'
-x7103_logo = r'media\X7103_LOGO_black_back_200_x_200_px.png'
-x7104_logo = r'media\X7104_LOGO_black_back_200_x_200_px.png'
-x7105_logo = r'media\X7105_LOGO_black_back_200_x_200_px.png'
-x7d_logo = r'media\X7D_LOGO_black_back_200_x_200_px.png'
-pioneer_logo = r'C:media\pioneer.png'
-constellations_logo = r'media\constellation.mp4'
-nft_logo = r'media\NFTvid.mp4'
-opensea_logo = r'media\Logomark-Blue.png'
-arb_logo = r'media\arbitrum.png'
-poly_logo = r'media\polygon.png'
-bsc_logo = r'media\bsc.png'
-opti_logo = r'media\optimism.png'
-eth_logo = r'media\ethereum.png'
-raffle_logo = r'media\raffle.jpg'
-
-# STICKERS
-gm = 'CAACAgQAAxkBAAEGsh9jjfZUfCKtJjaLGZbNFuzVgb9VOQAC6g4AAsII4FH2AAFleY-pPhorBA'
-chain = 'CAACAgQAAxkBAAEHmZ5j3-6c-UmyaBeo8WoJWxVIdYhdpQACVw8AAjplAAFTpVrzzHehGDwuBA'
-lfg = 'CAACAgQAAxkBAAEHmZpj3-55QLwZfqy3p2iysq0AAc6oVWQAAjMNAAIewAFTQS1_l5sHCWkuBA'
-goat = 'CAACAgQAAxkBAAEb8-ZjwE_aHjXYhuYHZ8o-zsgWrl2R1QACUg8AAjy7eFGTdK4Wetlymy0E'
-smashed = 'CAACAgQAAxkBAAEb8-1jwFB-tznpCjitxMeEwBILewPlKgAC_w8AAmImeFEsfFj5FXaTSS0E'
-wagmi = 'CAACAgQAAxkBAAEb8_FjwFCk9FJjHSGdCnce1ZH7j6K3EQACxw4AAnWQeVEr1ddRXYlhJy0E'
-slapped = 'CAACAgQAAxkBAAEb8_NjwFDCsQty5_9GX3SbSV6ahU8ZLwAClg4AAua7eVGpQ1Ca9nCzgC0E'
-swap = 'CAACAgQAAxkBAAEHHOljtGK7xrzmlC9qN7AmgKoBhAJLXwACDQ4AAqKzeVFIjNSV7JEj4S0E'
-twitter_sticker = 'CAACAgQAAxkBAAEHrclj52kCC979YY_5-gABEcCAl1XXYD0AArgOAAJdngABU3ZS7IcNZTCTLgQ'
-chains = 'CAACAgQAAxkBAAEHreBj521n_bltFEecQcvESwiRiNbI0AACBBAAAhZeAAFTqemxnCjIxMwuBA'
-
-# REPLIES
 twitter_replies = ["Raid!", "LFG", "Send it!", "Twitter raid!", "Like and Retweet!", "GO GO GO!", "X7 Force!",
                    "Raid it Fam!", 'Blow it up!', "Full force!", "Light it up!", "Shill time!", "Smash it!", "Slap it!",
                    "Send it!", "If Phlux says it, You do it!", "Phlux it up!", "Full Send!", "Hit it Hard!",

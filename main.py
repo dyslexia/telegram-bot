@@ -7,68 +7,33 @@ import pytz
 import wikipediaapi
 import random
 import requests
-import items
+import ca
 import variables
 import tweepy
 import pyttsx3
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 import api
+import media
+import url
+import text
+import loans
+import nft
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 print('Bot Restarted')
 
-# TEMP COMMANDS
-async def shanghai_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    raw_time = datetime(2023, 4, 12, 23, 27, 00)
-    update_time = raw_time.astimezone(pytz.utc)
-    now = datetime.now(timezone.utc)
-    duration = update_time - now
-    duration_in_s = duration.total_seconds()
-    days = divmod(duration_in_s, 86400)
-    hours = divmod(days[1], 3600)
-    minutes = divmod(hours[1], 60)
-    if duration < timedelta(0):
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'Shanghai Update completed at {update_time.strftime("%A %B %d %Y %I:%M %p")} (UTC)'
-            f'\n\n{api.get_quote()}', parse_mode="Markdown")
-    else:
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'Shanghai Update due:\n\n{update_time.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
-                    f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
-                    f'{api.get_quote()}', parse_mode="Markdown",
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Info Here', url='https://www.blocknative.com/shanghai-upgrade-countdown')],
-                ]))
-
 
 # COMMANDS
 async def bot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(f'{variables.commands}')
+    await update.message.reply_text(f'{text.commands}')
 
 
 async def ecosystem_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        '*X7 Finance Ecosystem*\n\n• *X7R*\nX7\'s original launched token. Hodl as a percentage of all '
-        'transaction fees are used to buy and burn tokens, reducing total supply of available tokens.\n\n'
-        '• *X7DAO*\nHolders of X7DAO tokens will be able to vote on fee rates, loan terms, funding terms, '
-        'tradable token tax terms, distribution of capital flows and any additional settings on and off chain. '
-        'This includes the establishment of committees and other foundational efforts off chain.\n\n'
-        '• *X7100 Constellation (X7101 - X7105)*\n'
-        'A novel - eventually price consistent collection of five tokens. These act as the backstop to the '
-        'Lending Pool. The X7100 series of tokens are burned on every transaction. While continually raising its '
-        'floor price - it also provides further opportunities to mint new X7Deposit tokens.\n\n'
-        '• *X7 NFTs*\nNFTs within the ecosystem will be used to provide opportunities for staking, lending, '
-        'discounts, rewards, access to higher governance privileges & much more.\n\n'
-        '• *X7Deposit*\nWith insurance of the investor at heart - individuals and '
-        'institutions will hold these tokens '
-        'just as they would underwrite treasury bills and other stable assets. Holders of X7D will be able to '
-        'mint a time-based interest-bearing NFT. X7D is always exchangeable with Ethereum at a 1-to-1 ratio.\n'
-        'The X7 Finance protocol will only permit minting of new X7 Deposit tokens when on-chain reserves permit.'
+        f'{text.ecosystem}'
         f'\n\n{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
@@ -80,84 +45,54 @@ async def ecosystem_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def about_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        '*Welcome to X7 Finance*\n\nX7 is an ecosystem of innovative smart contracts that provide those with '
-        'visionary ideas access to leveraged seed capital (e.g. Initial Liquidity Offerings, or ILOs) without '
-        'lenders incurring the risk of losing the principal. This invention has massive implications not just '
-        'for our users, but for all of DeFi \n\n'
-        '• At its core, leveraged ILOs means anyone with a good idea can raise 10-1000X the amount of Eth in '
-        'their wallet to launch projects on XChange, our world-class DEX.\n\n'
-        '• Over time, the network effect of product launches will result in billions of dollars in trading '
-        'volume on our Decentralized Exchange.\n\n'
-        '• The protocol will extend to other use case including but not limited to lending/borrowing, leveraged '
-        'trading, liquidity locks, & more.\n\n'
-        '• A novel DAO governance structure + IPFS website ensures complete decentralization and '
-        'censorship-resistance. #LongLiveDefi\n\n'
-        '• Our Telegram and Twitter are community-run, in the spirit of decentralization\n\n'
-        '• We will consider this project a success once it captures at least 1% of the $100b daily trading '
-        'volume on Eth.\n\n'
-        '• There are many innovative technical and governance applications in this platform so we encourage you '
-        'to dig and hop on this rocket ship!\n\n'
-        'As the first Initial Leveraged Liquidity DEX to launch Developers will be able to borrow initial liquidity '
-        'to launch with for a small fee. This means projects '
-        'can launch with more liquidity and will be very attractive for investors at the beginning.\n\n• The '
-        'amount you will be able to borrow, depends on how much your capital is. The more you have, the more '
-        'you will be able to borrow from the Lending Pool.\n\n• This is like a decentralized Bank on the '
-        'Blockchain. Borrowing money for new projects without a risk, that profits everyone.\n\n• Everyone will be '
-        'able to loan to the Lending Pool. Lock your ETH in the Lending Pool for 1 month RISK FREE and gain a '
-        'specific %  as reward on top of that when '
-        'claiming that back (Just for example). This in turn makes the Lending Pool more liquid and helps with'
-        ' its growth and success.\n\n• All profit from the DEX, goes back into the ecosystem (Tokens, Lending '
-        f'Pool, Future Development etc.). Pumping your bag!\n\n'
-        f'`"X7’s founding team believes that capital should be available to those with great ideas and that the '
-        'unflinching reliability of code and distributed consensus can provide capital while eliminating '
-        'significant downside risk."\n\n- X7DAO Founding Team`',
+        f'{text.about}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Website', url=f'{items.website}')],
-            [InlineKeyboardButton(text='Community Dashboard', url=f'{items.dashboard}')],
-            [InlineKeyboardButton(text='Linktree', url=f'{items.linktree}')],
-            [InlineKeyboardButton(text='Medium', url=f'{items.twitter}')], ]))
+            [InlineKeyboardButton(text='Website', url=f'{url.website}')],
+            [InlineKeyboardButton(text='Community Dashboard', url=f'{url.dashboard}')],
+            [InlineKeyboardButton(text='Linktree', url=f'{url.linktree}')],
+            [InlineKeyboardButton(text='Medium', url=f'{url.twitter}')], ]))
 
 
 async def links_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance links*\n\n{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Website', url=f'{items.website}')],
-            [InlineKeyboardButton(text='Community Dashboard', url=f'{items.dashboard}')],
-            [InlineKeyboardButton(text='Linktree', url=f'{items.linktree}')],
-            [InlineKeyboardButton(text='Medium', url=f'{items.medium}')],
-            [InlineKeyboardButton(text='Twitter', url=f'{items.twitter}')],
-            [InlineKeyboardButton(text='Discord', url=f'{items.discord}')],
-            [InlineKeyboardButton(text='Reddit', url=f'{items.reddit}')],
-            [InlineKeyboardButton(text='Youtube', url=f'{items.youtube}')],
-            [InlineKeyboardButton(text='Github', url=f'{items.github}')], ]))
+            [InlineKeyboardButton(text='Website', url=f'{url.website}')],
+            [InlineKeyboardButton(text='Community Dashboard', url=f'{url.dashboard}')],
+            [InlineKeyboardButton(text='Linktree', url=f'{url.linktree}')],
+            [InlineKeyboardButton(text='Medium', url=f'{url.medium}')],
+            [InlineKeyboardButton(text='Twitter', url=f'{url.twitter}')],
+            [InlineKeyboardButton(text='Discord', url=f'{url.discord}')],
+            [InlineKeyboardButton(text='Reddit', url=f'{url.reddit}')],
+            [InlineKeyboardButton(text='Youtube', url=f'{url.youtube}')],
+            [InlineKeyboardButton(text='Github', url=f'{url.github}')], ]))
 
 
 async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "" or chain == "eth":
         await update.message.reply_video(
-            video=open(items.nft_logo, 'rb'),
+            video=open(media.nft_logo, 'rb'),
             caption=f'*X7 Finance NFT Information (ETH)*\nUse `/nft [chain-name]` for other chains\n\n'
-                    f'*Ecosystem Maxi*\n{items.eco_price_eth}\n'
-                    f'Available - {500-int(api.get_holders_nft(items.eco_ca, "?chain=eth-main"))}\n'
+                    f'*Ecosystem Maxi*\n{nft.eco_price_eth}\n'
+                    f'Available - {500-int(api.get_holders_nft(ca.eco_ca, "?chain=eth-main"))}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
-                    f'Liquidity Maxi*\n{items.liq_price_eth}\n'
-                    f'Available - {250-int(api.get_holders_nft(items.liq_ca, "?chain=eth-main"))}\n'
+                    f'Liquidity Maxi*\n{nft.liq_price_eth}\n'
+                    f'Available - {250-int(api.get_holders_nft(ca.liq_ca, "?chain=eth-main"))}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
-                    f'*Dex Maxi*\n{items.dex_price_eth}\n'
-                    f'Available - {150-int(api.get_holders_nft(items.dex_ca, "?chain=eth-main"))}\n'
+                    f'*Dex Maxi*\n{nft.dex_price_eth}\n'
+                    f'Available - {150-int(api.get_holders_nft(ca.dex_ca, "?chain=eth-main"))}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{items.borrow_price_eth}\n'
-                    f'Available - {100-int(api.get_holders_nft(items.borrow_ca, "?chain=eth-main"))}\n'
+                    f'*Borrowing Maxi*\n{nft.borrow_price_eth}\n'
+                    f'Available - {100-int(api.get_holders_nft(ca.borrow_ca, "?chain=eth-main"))}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
-                    f'*Magister*\n{items.magister_price_eth}\n'
-                    f'Available - {49-int(api.get_holders_nft(items.magister_ca, "?chain=eth-main"))}\n'
+                    f'*Magister*\n{nft.magister_price_eth}\n'
+                    f'Available - {49-int(api.get_holders_nft(ca.magister_ca, "?chain=eth-main"))}\n'
                     f'> 25% discount on X7100 tax\n'        
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n*Pioneer*\n'
                     f' > 6% of profits that come into the X7 Treasury Splitter are now being allocated to the reward '
@@ -165,132 +100,132 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Mint Here', url='https://x7.finance/x/nft/mint')],
-                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.ether_token}{items.eco_ca}')],
-                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.ether_token}{items.liq_ca}')],
-                [InlineKeyboardButton(text='DEX Maxi', url=f'{items.ether_token}{items.dex_ca}')],
-                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.ether_token}{items.borrow_ca}')],
-                [InlineKeyboardButton(text='Magister', url=f'{items.ether_token}{items.magister_ca}')],
-                [InlineKeyboardButton(text='Pioneer', url=f'{items.ether_token}{items.pioneer_ca}')], ]))
+                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{url.ether_token}{ca.eco_ca}')],
+                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{url.ether_token}{ca.liq_ca}')],
+                [InlineKeyboardButton(text='DEX Maxi', url=f'{url.ether_token}{ca.dex_ca}')],
+                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{url.ether_token}{ca.borrow_ca}')],
+                [InlineKeyboardButton(text='Magister', url=f'{url.ether_token}{ca.magister_ca}')],
+                [InlineKeyboardButton(text='Pioneer', url=f'{url.ether_token}{ca.pioneer_ca}')], ]))
     if chain == "bsc" or chain == "bnb":
         await update.message.reply_video(
-            video=open(items.nft_logo, 'rb'),
+            video=open(media.nft_logo, 'rb'),
             caption=f'*X7 Finance NFT Information (BSC)*\nUse `/nft [chain-name]` for other chains\n\n'
-                    f'*Ecosystem Maxi*\n{items.eco_price_bsc}\n'
+                    f'*Ecosystem Maxi*\n{nft.eco_price_bsc}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n'
-                    f'{items.liq_price_bsc}\n'
+                    f'{nft.liq_price_bsc}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
-                    f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{items.dex_price_bsc}\n'
+                    f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{nft.dex_price_bsc}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{items.borrow_price_bsc}\n> Fee discounts for borrowing funds for ILO on X7 '
+                    f'*Borrowing Maxi*\n{nft.borrow_price_bsc}\n> Fee discounts for borrowing funds for ILO on X7 '
                     f'DEX\n\n'
-                    f'*Magister*\n{items.magister_price_bsc}\n> 25% discount on X7100 tax\n'
+                    f'*Magister*\n{nft.magister_price_bsc}\n> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Mint Here', url='https://www.x7finance.org/nfts/')],
-                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.bsc_token}{items.eco_ca}')],
-                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.bsc_token}{items.liq_ca}')],
-                [InlineKeyboardButton(text='DEX Maxi', url=f'{items.bsc_token}{items.dex_ca}')],
-                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.bsc_token}{items.borrow_ca}')],
-                [InlineKeyboardButton(text='Magister', url=f'{items.bsc_token}{items.magister_ca}')], ]))
+                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{url.bsc_token}{ca.eco_ca}')],
+                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{url.bsc_token}{ca.liq_ca}')],
+                [InlineKeyboardButton(text='DEX Maxi', url=f'{url.bsc_token}{ca.dex_ca}')],
+                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{url.bsc_token}{ca.borrow_ca}')],
+                [InlineKeyboardButton(text='Magister', url=f'{url.bsc_token}{ca.magister_ca}')], ]))
     if chain == "arbitrum" or chain == "arb":
         await update.message.reply_video(
-            video=open(items.nft_logo, 'rb'),
+            video=open(media.nft_logo, 'rb'),
             caption=f'*X7 Finance NFT Information (ARBITRUM)*\nUse `/nft [chain-name]` for other chains\n\n'
-                    f'*Ecosystem Maxi*\n{items.eco_price_arb}\n'
-                    f'Available - {500-int(api.get_holders_nft(items.eco_ca, "?chain=arbitrum"))}\n'
+                    f'*Ecosystem Maxi*\n{nft.eco_price_arb}\n'
+                    f'Available - {500-int(api.get_holders_nft(ca.eco_ca, "?chain=arbitrum"))}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
-                    f'Liquidity Maxi*\n{items.liq_price_arb}\n'
-                    f'Available - {250-int(api.get_holders_nft(items.liq_ca, "?chain=arbitrum"))}\n'
+                    f'Liquidity Maxi*\n{nft.liq_price_arb}\n'
+                    f'Available - {250-int(api.get_holders_nft(ca.liq_ca, "?chain=arbitrum"))}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
-                    f'*Dex Maxi*\n{items.dex_price_arb}\n'
-                    f'Available - {150-int(api.get_holders_nft(items.dex_ca, "?chain=arbitrum"))}\n'
+                    f'*Dex Maxi*\n{nft.dex_price_arb}\n'
+                    f'Available - {150-int(api.get_holders_nft(ca.dex_ca, "?chain=arbitrum"))}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{items.borrow_price_arb}\n'
-                    f'Available - {100-int(api.get_holders_nft(items.borrow_ca, "?chain=arbitrum"))}\n'
+                    f'*Borrowing Maxi*\n{nft.borrow_price_arb}\n'
+                    f'Available - {100-int(api.get_holders_nft(ca.borrow_ca, "?chain=arbitrum"))}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
-                    f'*Magister*\n{items.magister_price_arb} - 49 Supply\n'
-                    f'Available - {49-int(api.get_holders_nft(items.magister_ca, "?chain=arbitrum"))}\n'
+                    f'*Magister*\n{nft.magister_price_arb} - 49 Supply\n'
+                    f'Available - {49-int(api.get_holders_nft(ca.magister_ca, "?chain=arbitrum"))}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Mint Here', url='https://www.x7finance.org/nfts/')],
-                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.arb_token}{items.eco_ca}')],
-                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.arb_token}{items.liq_ca}')],
-                [InlineKeyboardButton(text='DEX Maxi', url=f'{items.arb_token}{items.dex_ca}')],
-                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.arb_token}{items.borrow_ca}')],
-                [InlineKeyboardButton(text='Magister', url=f'{items.arb_token}{items.magister_ca}')], ]))
+                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{url.arb_token}{ca.eco_ca}')],
+                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{url.arb_token}{ca.liq_ca}')],
+                [InlineKeyboardButton(text='DEX Maxi', url=f'{url.arb_token}{ca.dex_ca}')],
+                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{url.arb_token}{ca.borrow_ca}')],
+                [InlineKeyboardButton(text='Magister', url=f'{url.arb_token}{ca.magister_ca}')], ]))
     if chain == "polygon" or chain == "poly":
         await update.message.reply_video(
-            video=open(items.nft_logo, 'rb'),
+            video=open(media.nft_logo, 'rb'),
             caption=f'*X7 Finance NFT Information (POLYGON)*\nUse `/nft [chain-name]` for other chains\n\n'
-                    f'*Ecosystem Maxi*\n{items.eco_price_poly}\n'
-                    f'Available - {500-int(api.get_holders_nft(items.eco_ca, "?chain=poly-main"))}\n'
+                    f'*Ecosystem Maxi*\n{nft.eco_price_poly}\n'
+                    f'Available - {500-int(api.get_holders_nft(ca.eco_ca, "?chain=poly-main"))}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
-                    f'Liquidity Maxi*\n{items.liq_price_poly}\n'
-                    f'Available - {250-int(api.get_holders_nft(items.liq_ca, "?chain=poly-main"))}\n'
+                    f'Liquidity Maxi*\n{nft.liq_price_poly}\n'
+                    f'Available - {250-int(api.get_holders_nft(ca.liq_ca, "?chain=poly-main"))}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
-                    f'*Dex Maxi*\n{items.dex_price_poly}\n'
-                    f'Available - {150-int(api.get_holders_nft(items.dex_ca, "?chain=poly-main"))}\n'
+                    f'*Dex Maxi*\n{nft.dex_price_poly}\n'
+                    f'Available - {150-int(api.get_holders_nft(ca.dex_ca, "?chain=poly-main"))}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{items.borrow_price_poly}\n'
-                    f'Available - {100-int(api.get_holders_nft(items.borrow_ca, "?chain=poly-main"))}\n'
+                    f'*Borrowing Maxi*\n{nft.borrow_price_poly}\n'
+                    f'Available - {100-int(api.get_holders_nft(ca.borrow_ca, "?chain=poly-main"))}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
-                    f'*Magister*\n{items.magister_price_poly}\n'
-                    f'Available - {49-int(api.get_holders_nft(items.magister_ca, "?chain=poly-main"))}\n'
+                    f'*Magister*\n{nft.magister_price_poly}\n'
+                    f'Available - {49-int(api.get_holders_nft(ca.magister_ca, "?chain=poly-main"))}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Mint Here', url='https://www.x7finance.org/nfts/')],
-                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.poly_token}{items.eco_ca}')],
-                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.poly_token}{items.liq_ca}')],
-                [InlineKeyboardButton(text='DEX Maxi', url=f'{items.poly_token}{items.dex_ca}')],
-                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.poly_token}{items.borrow_ca}')],
-                [InlineKeyboardButton(text='Magister', url=f'{items.poly_token}{items.magister_ca}')], ]))
+                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{url.poly_token}{ca.eco_ca}')],
+                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{url.poly_token}{ca.liq_ca}')],
+                [InlineKeyboardButton(text='DEX Maxi', url=f'{url.poly_token}{ca.dex_ca}')],
+                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{url.poly_token}{ca.borrow_ca}')],
+                [InlineKeyboardButton(text='Magister', url=f'{url.poly_token}{ca.magister_ca}')], ]))
     if chain == "optimism" or chain == "opti":
         await update.message.reply_video(
-            video=open(items.nft_logo, 'rb'),
+            video=open(media.nft_logo, 'rb'),
             caption=f'*X7 Finance NFT Information (OPTIMISM)*\nUse `/nft [chain-name]` for other chains\n\n'
-                    f'*Ecosystem Maxi*\n{items.eco_price_opti}\n'
-                    f'Available - {500-int(api.get_holders_nft(items.eco_ca, "?chain=optimism-main"))}\n'
+                    f'*Ecosystem Maxi*\n{nft.eco_price_opti}\n'
+                    f'Available - {500-int(api.get_holders_nft(ca.eco_ca, "?chain=optimism-main"))}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
-                    f'Liquidity Maxi*\n{items.liq_price_opti}\n'
-                    f'Available - {250-int(api.get_holders_nft(items.liq_ca, "?chain=optimism-main"))}\n'
+                    f'Liquidity Maxi*\n{nft.liq_price_opti}\n'
+                    f'Available - {250-int(api.get_holders_nft(ca.liq_ca, "?chain=optimism-main"))}\n'
                     f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
-                    f'*Dex Maxi*\n{items.dex_price_opti}\n'
-                    f'Available - {150-int(api.get_holders_nft(items.dex_ca, "?chain=optimism-main"))}\n'
+                    f'*Dex Maxi*\n{nft.dex_price_opti}\n'
+                    f'Available - {150-int(api.get_holders_nft(ca.dex_ca, "?chain=optimism-main"))}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{items.borrow_price_opti}\n'
-                    f'Available - {100-int(api.get_holders_nft(items.borrow_ca, "?chain=optimism-main"))}\n'
+                    f'*Borrowing Maxi*\n{nft.borrow_price_opti}\n'
+                    f'Available - {100-int(api.get_holders_nft(ca.borrow_ca, "?chain=optimism-main"))}\n'
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
-                    f'*Magister*\n{items.magister_price_opti}\n'
-                    f'Available - {49-int(api.get_holders_nft(items.magister_ca, "?chain=optimism-main"))}\n'
+                    f'*Magister*\n{nft.magister_price_opti}\n'
+                    f'Available - {49-int(api.get_holders_nft(ca.magister_ca, "?chain=optimism-main"))}\n'
                     f'> 25% discount on X7100 tax\n'
                     f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Mint Here', url='https://www.x7finance.org/nfts/')],
-                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{items.opti_token}{items.eco_ca}')],
-                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{items.opti_token}{items.liq_ca}')],
-                [InlineKeyboardButton(text='DEX Maxi', url=f'{items.opti_token}{items.dex_ca}')],
-                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{items.opti_token}{items.borrow_ca}')],
-                [InlineKeyboardButton(text='Magister', url=f'{items.opti_token}{items.magister_ca}')], ]))
+                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{url.opti_token}{ca.eco_ca}')],
+                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{url.opti_token}{ca.liq_ca}')],
+                [InlineKeyboardButton(text='DEX Maxi', url=f'{url.opti_token}{ca.dex_ca}')],
+                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{url.opti_token}{ca.borrow_ca}')],
+                [InlineKeyboardButton(text='Magister', url=f'{url.opti_token}{ca.magister_ca}')], ]))
 
 
 async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "" or chain == "eth":
         await update.message.reply_photo(
-            photo=open(items.opensea_logo, 'rb'),
+            photo=open(media.opensea_logo, 'rb'),
             caption=f'*X7 Finance Opensea Links (ETH)*\nUse `/nft [chain-name]` for other chains\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -302,7 +237,7 @@ async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text='Pioneer', url='https://opensea.io/collection/x7-pioneer')], ]))
     if chain == "arb" or chain == "arbitrum":
         await update.message.reply_photo(
-            photo=open(items.opensea_logo, 'rb'),
+            photo=open(media.opensea_logo, 'rb'),
             caption=f'*X7 Finance Opensea Links (ARB)*\nUse `/nft [chain-name]` for other chains\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -318,7 +253,7 @@ async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       url='https://opensea.io/collection/x7-magister-arbitrum')], ]))
     if chain == "optimism" or chain == "opti":
         await update.message.reply_photo(
-            photo=open(items.opensea_logo, 'rb'),
+            photo=open(media.opensea_logo, 'rb'),
             caption=f'*X7 Finance Opensea Links (OPTI)*\nUse `/nft [chain-name]` for other chains\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -334,7 +269,7 @@ async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       url='https://opensea.io/collection/x7-magister-optimism')], ]))
     if chain == "bnb" or chain == "bsc" or chain == "binance":
         await update.message.reply_photo(
-            photo=open(items.opensea_logo, 'rb'),
+            photo=open(media.opensea_logo, 'rb'),
             caption=f'*X7 Finance Opensea Links (BSC)*\nUse `/nft [chain-name]` for other chains\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -350,7 +285,7 @@ async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       url='https://opensea.io/collection/x7-magister-binance')], ]))
     if chain == "poly" or chain == "polygon":
         await update.message.reply_photo(
-            photo=open(items.opensea_logo, 'rb'),
+            photo=open(media.opensea_logo, 'rb'),
             caption=f'*X7 Finance Opensea Links (POLYGON)*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'{api.get_quote()}',
             parse_mode='Markdown',
@@ -369,557 +304,252 @@ async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def website_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Website Links*\n\n{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Website', url=f'{items.website}')],
-            [InlineKeyboardButton(text='Community Dashboard', url=f'{items.dashboard}')], ]))
+            [InlineKeyboardButton(text='Website', url=f'{url.website}')],
+            [InlineKeyboardButton(text='Community Dashboard', url=f'{url.dashboard}')], ]))
 
 
 async def wp_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        text=f'*X7 Finance Whitepaper Quote*\n\n{random.choice(items.quotes)}',
+        text=f'*X7 Finance Whitepaper Quote*\n\n{random.choice(text.quotes)}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Website', url=f'{items.website}')],
-            [InlineKeyboardButton(text='Full WP', url=f'{items.wp_link}')],
-            [InlineKeyboardButton(text='Short WP', url=f'{items.short_wp_link}')], ]))
+            [InlineKeyboardButton(text='Website', url=f'{url.website}')],
+            [InlineKeyboardButton(text='Full WP', url=f'{url.wp_link}')],
+            [InlineKeyboardButton(text='Short WP', url=f'{url.short_wp_link}')], ]))
 
 
 async def buy_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Buy Links*\nUse `/x7token-name` for all other details\n'
                 f'Use `/constellations` for constellations\n\n{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='X7R - Rewards Token', url=f'{items.xchange_buy}{items.x7r_ca}')],
-            [InlineKeyboardButton(text='X7DAO - Governance Token', url=f'{items.xchange_buy}{items.x7dao_ca}')], ]))
+            [InlineKeyboardButton(text='X7R - Rewards Token', url=f'{url.xchange_buy}{ca.x7r_ca}')],
+            [InlineKeyboardButton(text='X7DAO - Governance Token', url=f'{url.xchange_buy}{ca.x7dao_ca}')], ]))
 
 
 async def chart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "":
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((random.choice(media.logos)), 'rb'),
             caption='*X7 Finance Chart Links (ETH)*\nUse `/chart [chain-name]` for other chains\n'
                     f'Use `/constellations` for constellations\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='X7R - Rewards Token',
-                                      url=f'{items.dex_tools_eth}{items.x7r_pair_eth}')],
+                                      url=f'{url.dex_tools_eth}{ca.x7r_pair_eth}')],
                 [InlineKeyboardButton(text='X7DAO - Governance Token',
-                                      url=f'{items.dex_tools_eth}{items.x7dao_pair_eth}')], ]))
+                                      url=f'{url.dex_tools_eth}{ca.x7dao_pair_eth}')], ]))
     if chain == "opti" or chain == "optimism":
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((random.choice(media.logos)), 'rb'),
             caption='*X7 Finance Chart Links (OPTIMISM)*\nUse `/chart [chain-name]` for other chains\n'
                     f'Use `/constellations` for constellations\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='X7R - Rewards Token',
-                                      url=f'{items.dex_tools_opti}{items.x7r_pair_opti}')],
+                                      url=f'{url.dex_tools_opti}{ca.x7r_pair_opti}')],
                 [InlineKeyboardButton(text='X7DAO - Governance Token',
-                                      url=f'{items.dex_tools_opti}{items.x7dao_pair_opti}')], ]))
+                                      url=f'{url.dex_tools_opti}{ca.x7dao_pair_opti}')], ]))
     if chain == "bsc" or chain == "bnb":
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((random.choice(media.logos)), 'rb'),
             caption='*X7 Finance Chart Links (BSC)*\nUse `/chart [chain-name]` for other chains\n'
                     f'Use `/constellations` for constellations\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='X7R - Rewards Token',
-                                      url=f'{items.dex_tools_bsc}{items.x7r_pair_bsc}')],
+                                      url=f'{url.dex_tools_bsc}{ca.x7r_pair_bsc}')],
                 [InlineKeyboardButton(text='X7DAO - Governance Token',
-                                      url=f'{items.dex_tools_bsc}{items.x7dao_pair_bsc}')], ]))
+                                      url=f'{url.dex_tools_bsc}{ca.x7dao_pair_bsc}')], ]))
     if chain == "poly" or chain == "polygon":
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((random.choice(media.logos)), 'rb'),
             caption='*X7 Finance Chart Links (POLYGON)*\nUse `/chart [chain-name]` for other chains\n'
                     f'Use `/constellations` for constellations\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='X7R - Rewards Token',
-                                      url=f'{items.dex_tools_poly}{items.x7r_pair_poly}')],
+                                      url=f'{url.dex_tools_poly}{ca.x7r_pair_poly}')],
                 [InlineKeyboardButton(text='X7DAO - Governance Token',
-                                      url=f'{items.dex_tools_poly}{items.x7dao_pair_poly}')], ]))
+                                      url=f'{url.dex_tools_poly}{ca.x7dao_pair_poly}')], ]))
     if chain == "arb" or chain == "arbitrum":
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((random.choice(media.logos)), 'rb'),
             caption='*X7 Finance Chart Links (ARBITRUM)*\nUse `/chart [chain-name]` for other chains\n'
                     f'Use `/constellations` for constellations\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='X7R - Rewards Token',
-                                      url=f'{items.dex_tools_arb}{items.x7r_pair_arb}')],
+                                      url=f'{url.dex_tools_arb}{ca.x7r_pair_arb}')],
                 [InlineKeyboardButton(text='X7DAO - Governance Token',
-                                      url=f'{items.dex_tools_arb}{items.x7dao_pair_arb}')], ]))
+                                      url=f'{url.dex_tools_arb}{ca.x7dao_pair_arb}')], ]))
 
 
 async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    if chain == "":
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Smart Contracts (ETH)*\nUse `/smart [chain-name]` or other chains\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher',
-                                      url=f'{items.ca_directory}')],
-                [InlineKeyboardButton(text='X7100 Liquidity Hub',
-                                      url=f'{items.ether_address}{items.cons_liq_ca}')],
-                [InlineKeyboardButton(text='X7R Liquidity Hub',
-                                      url=f'{items.ether_address}{items.x7r_liq_hub_ca}')],
-                [InlineKeyboardButton(text='X7DAO Liquidity Hub',
-                                      url=f'{items.ether_address}{items.x7dao_liq_hub_ca}')],
-                [InlineKeyboardButton(text='X7 Token Burner',
-                                      url=f'{items.ether_address}{items.burner_ca}')],
-                [InlineKeyboardButton(text='X7100 Discount Authority',
-                                      url=f'{items.ether_address}{items.cons_discount_ca}')],
-                [InlineKeyboardButton(text='X7R Discount Authority',
-                                      url=f'{items.ether_address}{items.x7r_discount_ca}')],
-                [InlineKeyboardButton(text='X7DAO Discount Authority',
-                                      url=f'{items.ether_address}{items.x7dao_discount_ca}')],
-                [InlineKeyboardButton(text='X7 Token Time Lock',
-                                      url=f'{items.ether_address}{items.time_lock_ca}')],
-                [InlineKeyboardButton(text='X7 Ecosystem Splitter',
-                                      url=f'{items.ether_address}{items.eco_splitter_ca}')],
-                [InlineKeyboardButton(text='X7 Treasury Splitter',
-                                      url=f'{items.ether_address}{items.treasury_splitter_ca}')],
-                [InlineKeyboardButton(text='X7 Lending Pool Reserve',
-                                      url=f'{items.ether_address}{items.lpool_reserve_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Discount Authority',
-                                      url=f'{items.ether_address}{items.xchange_discount_ca}')],
-                [InlineKeyboardButton(text='X7 Lending Discount Authority',
-                                      url=f'{items.ether_address}{items.lending_discount_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Router',
-                                      url=f'{items.ether_address}{items.router_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Router with Discounts',
-                                      url=f'{items.ether_address}{items.discount_router_ca}')],
-                [InlineKeyboardButton(text='X7 Lending Pool Contract',
-                                      url=f'{items.ether_address}{items.lpool_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Factory',
-                                      url=f'{items.ether_address}{items.factory_ca}')],
-            ]))
+    chain_name = ""
+    chain_url = ""
+    if chain == "" or chain == "eth":
+        chain_name = "(ETH)"
+        chain_url = url.ether_address
     if chain == "arbitrum" or chain == "arb":
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Smart Contracts (ETH)*\nUse `/smart [chain-name]` or other chains\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher',
-                                      url=f'{items.ca_directory}')],
-                [InlineKeyboardButton(text='X7100 Liquidity Hub',
-                                      url=f'{items.arb_address}{items.cons_liq_ca}')],
-                [InlineKeyboardButton(text='X7R Liquidity Hub',
-                                      url=f'{items.arb_address}{items.x7r_liq_hub_ca}')],
-                [InlineKeyboardButton(text='X7DAO Liquidity Hub',
-                                      url=f'{items.arb_address}{items.x7dao_liq_hub_ca}')],
-                [InlineKeyboardButton(text='X7 Token Burner',
-                                      url=f'{items.arb_address}{items.burner_ca}')],
-                [InlineKeyboardButton(text='X7100 Discount Authority',
-                                      url=f'{items.arb_address}{items.cons_discount_ca}')],
-                [InlineKeyboardButton(text='X7R Discount Authority',
-                                      url=f'{items.arb_address}{items.x7r_discount_ca}')],
-                [InlineKeyboardButton(text='X7DAO Discount Authority',
-                                      url=f'{items.arb_address}{items.x7dao_discount_ca}')],
-                [InlineKeyboardButton(text='X7 Token Time Lock',
-                                      url=f'{items.arb_address}{items.time_lock_ca}')],
-                [InlineKeyboardButton(text='X7 Ecosystem Splitter',
-                                      url=f'{items.arb_address}{items.eco_splitter_ca}')],
-                [InlineKeyboardButton(text='X7 Treasury Splitter',
-                                      url=f'{items.arb_address}{items.treasury_splitter_ca}')],
-                [InlineKeyboardButton(text='X7 Lending Pool Reserve',
-                                      url=f'{items.arb_address}{items.lpool_reserve_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Discount Authority',
-                                      url=f'{items.arb_address}{items.xchange_discount_ca}')],
-                [InlineKeyboardButton(text='X7 Lending Discount Authority',
-                                      url=f'{items.arb_address}{items.lending_discount_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Router',
-                                      url=f'{items.arb_address}{items.router_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Router with Discounts',
-                                      url=f'{items.arb_address}{items.discount_router_ca}')],
-                [InlineKeyboardButton(text='X7 Lending Pool Contract',
-                                      url=f'{items.arb_address}{items.lpool_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Factory',
-                                      url=f'{items.arb_address}{items.factory_ca}')],
-            ]))
-    if chain == "polygon" or chain == "poly":
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Smart Contracts (ETH)*\nUse `/smart [chain-name]` or other chains\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher',
-                                      url=f'{items.ca_directory}')],
-                [InlineKeyboardButton(text='X7100 Liquidity Hub',
-                                      url=f'{items.poly_address}{items.cons_liq_ca}')],
-                [InlineKeyboardButton(text='X7R Liquidity Hub',
-                                      url=f'{items.poly_address}{items.x7r_liq_hub_ca}')],
-                [InlineKeyboardButton(text='X7DAO Liquidity Hub',
-                                      url=f'{items.poly_address}{items.x7dao_liq_hub_ca}')],
-                [InlineKeyboardButton(text='X7 Token Burner',
-                                      url=f'{items.poly_address}{items.burner_ca}')],
-                [InlineKeyboardButton(text='X7100 Discount Authority',
-                                      url=f'{items.poly_address}{items.cons_discount_ca}')],
-                [InlineKeyboardButton(text='X7R Discount Authority',
-                                      url=f'{items.poly_address}{items.x7r_discount_ca}')],
-                [InlineKeyboardButton(text='X7DAO Discount Authority',
-                                      url=f'{items.poly_address}{items.x7dao_discount_ca}')],
-                [InlineKeyboardButton(text='X7 Token Time Lock', url=f'{items.poly_address}{items.time_lock_ca}')],
-                [InlineKeyboardButton(text='X7 Ecosystem Splitter',
-                                      url=f'{items.poly_address}{items.eco_splitter_ca}')],
-                [InlineKeyboardButton(text='X7 Treasury Splitter',
-                                      url=f'{items.poly_address}{items.treasury_splitter_ca}')],
-                [InlineKeyboardButton(text='X7 Lending Pool Reserve',
-                                      url=f'{items.poly_address}{items.lpool_reserve_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Discount Authority',
-                                      url=f'{items.poly_address}{items.xchange_discount_ca}')],
-                [InlineKeyboardButton(text='X7 Lending Discount Authority',
-                                      url=f'{items.poly_address}{items.lending_discount_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Router',
-                                      url=f'{items.poly_address}{items.router_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Router with Discounts',
-                                      url=f'{items.arb_address}{items.discount_router_ca}')],
-                [InlineKeyboardButton(text='X7 Lending Pool Contract',
-                                      url=f'{items.poly_address}{items.lpool_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Factory',
-                                      url=f'{items.poly_address}{items.factory_ca}')],
-            ]))
+        chain_name = "(ARB)"
+        chain_url = url.arb_address
+    if chain == "poly" or chain == "polygon":
+        chain_name = "(POLYGON)"
+        chain_url = url.poly_address
     if chain == "bsc" or chain == "bnb":
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Smart Contracts (ETH)*\nUse `/smart [chain-name]` or other chains\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher',
-                                      url=f'{items.ca_directory}')],
-                [InlineKeyboardButton(text='X7100 Liquidity Hub',
-                                      url=f'{items.bsc_address}{items.cons_liq_ca}')],
-                [InlineKeyboardButton(text='X7R Liquidity Hub',
-                                      url=f'{items.bsc_address}{items.x7r_liq_hub_ca}')],
-                [InlineKeyboardButton(text='X7DAO Liquidity Hub',
-                                      url=f'{items.bsc_address}{items.x7dao_liq_hub_ca}')],
-                [InlineKeyboardButton(text='X7 Token Burner',
-                                      url=f'{items.bsc_address}{items.burner_ca}')],
-                [InlineKeyboardButton(text='X7100 Discount Authority',
-                                      url=f'{items.bsc_address}{items.cons_discount_ca}')],
-                [InlineKeyboardButton(text='X7R Discount Authority',
-                                      url=f'{items.bsc_address}{items.x7r_discount_ca}')],
-                [InlineKeyboardButton(text='X7DAO Discount Authority',
-                                      url=f'{items.bsc_address}{items.x7dao_discount_ca}')],
-                [InlineKeyboardButton(text='X7 Token Time Lock',
-                                      url=f'{items.bsc_address}{items.time_lock_ca}')],
-                [InlineKeyboardButton(text='X7 Ecosystem Splitter',
-                                      url=f'{items.bsc_address}{items.eco_splitter_ca}')],
-                [InlineKeyboardButton(text='X7 Treasury Splitter',
-                                      url=f'{items.bsc_address}{items.treasury_splitter_ca}')],
-                [InlineKeyboardButton(text='X7 Lending Pool Reserve',
-                                      url=f'{items.bsc_address}{items.lpool_reserve_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Discount Authority',
-                                      url=f'{items.bsc_address}{items.xchange_discount_ca}')],
-                [InlineKeyboardButton(text='X7 Lending Discount Authority',
-                                      url=f'{items.bsc_address}{items.lending_discount_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Router',
-                                      url=f'{items.bsc_address}{items.router_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Router with Discounts',
-                                      url=f'{items.bsc_address}{items.discount_router_ca}')],
-                [InlineKeyboardButton(text='X7 Lending Pool Contract',
-                                      url=f'{items.bsc_address}{items.lpool_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Factory',
-                                      url=f'{items.bsc_address}{items.factory_ca}')],
-            ]))
-    if chain == "optimism" or chain == "opti":
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Smart Contracts (ETH)*\nUse `/smart [chain-name]` or other chains\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher',
-                                      url=f'{items.ca_directory}')],
-                [InlineKeyboardButton(text='X7100 Liquidity Hub',
-                                      url=f'{items.opti_address}{items.cons_liq_ca}')],
-                [InlineKeyboardButton(text='X7R Liquidity Hub',
-                                      url=f'{items.opti_address}{items.x7r_liq_hub_ca}')],
-                [InlineKeyboardButton(text='X7DAO Liquidity Hub',
-                                      url=f'{items.opti_address}{items.x7dao_liq_hub_ca}')],
-                [InlineKeyboardButton(text='X7 Token Burner',
-                                      url=f'{items.opti_address}{items.burner_ca}')],
-                [InlineKeyboardButton(text='X7100 Discount Authority',
-                                      url=f'{items.opti_address}{items.cons_discount_ca}')],
-                [InlineKeyboardButton(text='X7R Discount Authority',
-                                      url=f'{items.opti_address}{items.x7r_discount_ca}')],
-                [InlineKeyboardButton(text='X7DAO Discount Authority',
-                                      url=f'{items.opti_address}{items.x7dao_discount_ca}')],
-                [InlineKeyboardButton(text='X7 Token Time Lock',
-                                      url=f'{items.opti_address}{items.time_lock_ca}')],
-                [InlineKeyboardButton(text='X7 Ecosystem Splitter',
-                                      url=f'{items.opti_address}{items.eco_splitter_ca}')],
-                [InlineKeyboardButton(text='X7 Treasury Splitter',
-                                      url=f'{items.opti_address}{items.treasury_splitter_ca}')],
-                [InlineKeyboardButton(text='X7 Lending Pool Reserve',
-                                      url=f'{items.opti_address}{items.lpool_reserve_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Discount Authority',
-                                      url=f'{items.opti_address}{items.xchange_discount_ca}')],
-                [InlineKeyboardButton(text='X7 Lending Discount Authority',
-                                      url=f'{items.opti_address}{items.lending_discount_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Router',
-                                      url=f'{items.opti_address}{items.router_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Router with Discounts',
-                                      url=f'{items.opti_address}{items.discount_router_ca}')],
-                [InlineKeyboardButton(text='X7 Lending Pool Contract',
-                                      url=f'{items.opti_address}{items.lpool_ca}')],
-                [InlineKeyboardButton(text='X7 Xchange Factory',
-                                      url=f'{items.opti_address}{items.factory_ca}')],
-            ]))
+        chain_name = "(BSC)"
+        chain_url = url.bsc_address
+    if chain == "op" or chain == "optimism" or chain == "opti":
+        chain_name = "(OP)"
+        chain_url = url.opti_address
+    await update.message.reply_photo(
+        photo=open((random.choice(media.logos)), 'rb'),
+        caption=f'*X7 Finance Smart Contracts {chain_name}*\nUse `/smart [chain-name]` or other chains\n\n'
+                f'{api.get_quote()}',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='Contracts Directory - by MikeMurpher',
+                                  url=f'{url.ca_directory}')],
+            [InlineKeyboardButton(text='X7100 Liquidity Hub',
+                                  url=f'{chain_url}{ca.cons_liq_ca}')],
+            [InlineKeyboardButton(text='X7R Liquidity Hub',
+                                  url=f'{chain_url}{ca.x7r_liq_hub_ca}')],
+            [InlineKeyboardButton(text='X7DAO Liquidity Hub',
+                                  url=f'{chain_url}{ca.x7dao_liq_hub_ca}')],
+            [InlineKeyboardButton(text='X7 Token Burner',
+                                  url=f'{chain_url}{ca.burner_ca}')],
+            [InlineKeyboardButton(text='X7100 Discount Authority',
+                                  url=f'{chain_url}{ca.cons_discount_ca}')],
+            [InlineKeyboardButton(text='X7R Discount Authority',
+                                  url=f'{chain_url}{ca.x7r_discount_ca}')],
+            [InlineKeyboardButton(text='X7DAO Discount Authority',
+                                  url=f'{chain_url}{ca.x7dao_discount_ca}')],
+            [InlineKeyboardButton(text='X7 Token Time Lock',
+                                  url=f'{chain_url}{ca.time_lock_ca}')],
+            [InlineKeyboardButton(text='X7 Ecosystem Splitter',
+                                  url=f'{chain_url}{ca.eco_splitter_ca}')],
+            [InlineKeyboardButton(text='X7 Treasury Splitter',
+                                  url=f'{chain_url}{ca.treasury_splitter_ca}')],
+            [InlineKeyboardButton(text='X7 Lending Pool Reserve',
+                                  url=f'{chain_url}{ca.lpool_reserve_ca}')],
+            [InlineKeyboardButton(text='X7 Xchange Discount Authority',
+                                  url=f'{chain_url}{ca.xchange_discount_ca}')],
+            [InlineKeyboardButton(text='X7 Lending Discount Authority',
+                                  url=f'{chain_url}{ca.lending_discount_ca}')],
+            [InlineKeyboardButton(text='X7 Xchange Router',
+                                  url=f'{chain_url}{ca.router_ca}')],
+            [InlineKeyboardButton(text='X7 Xchange Router with Discounts',
+                                  url=f'{chain_url}{ca.discount_router_ca}')],
+            [InlineKeyboardButton(text='X7 Lending Pool Contract',
+                                  url=f'{chain_url}{ca.lpool_ca}')],
+            [InlineKeyboardButton(text='X7 Xchange Factory',
+                                  url=f'{chain_url}{ca.factory_ca}')],
+        ]))
 
 
 async def ca_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Contract Addresses for all chains*\n\n'
-                f'*X7R*\n`{items.x7r_ca}`\n\n'
-                f'*X7DAO*\n`{items.x7dao_ca}`\n\n'
-                f'*X7101*\n`{items.x7101_ca}`\n\n'
-                f'*X7102*\n`{items.x7102_ca}`\n\n'
-                f'*X7103*\n`{items.x7103_ca}`\n\n'
-                f'*X7104*\n`{items.x7104_ca}`\n\n'
-                f'*X7105*\n`{items.x7105_ca}`\n\n'
-                f'*X7D*\n`{items.x7d_ca}`\n\n{api.get_quote()}',
+                f'*X7R*\n`{ca.x7r_ca}`\n\n'
+                f'*X7DAO*\n`{ca.x7dao_ca}`\n\n'
+                f'*X7101*\n`{ca.x7101_ca}`\n\n'
+                f'*X7102*\n`{ca.x7102_ca}`\n\n'
+                f'*X7103*\n`{ca.x7103_ca}`\n\n'
+                f'*X7104*\n`{ca.x7104_ca}`\n\n'
+                f'*X7105*\n`{ca.x7105_ca}`\n\n'
+                f'*X7D*\n`{ca.x7d_ca}`\n\n{api.get_quote()}',
         parse_mode='Markdown')
 
 
 async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
+    supply = ""
+    holders = ""
+    x7d_dollar = ""
+    chain_name = ""
+    chain_url = ""
     if chain == "" or chain == "eth":
-        supply = api.get_native_balance(items.lpool_reserve_ca, "eth")
-        holders = api.get_holders(items.x7d_ca)
+        supply = api.get_native_balance(ca.lpool_reserve_ca, "eth")
+        holders = api.get_holders(ca.x7d_ca)
         x7d_dollar = float(supply) * float(api.get_native_price("eth")) / 1 ** 18
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7d_logo)
-        im1.paste(im2, (720, 20), im2)
-        i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
-        i1.text((28, 36),
-                f'X7D (ETH) Info\n\n'
+        chain_name = "(ETH)"
+        chain_url = url.ether_address
+    if chain == "bsc" or chain == "bnb":
+        supply = api.get_native_balance(ca.lpool_reserve_ca, "bnb")
+        x7d_dollar = float(supply) * float(api.get_native_price("bnb")) / 1 ** 18
+        chain_name = "(BSC)"
+        chain_url = url.bsc_address
+    if chain == "polygon" or chain == "poly":
+        supply = api.get_native_balance(ca.lpool_reserve_ca, "poly")
+        x7d_dollar = float(supply) * float(api.get_native_price("matic")) / 1 ** 18
+        chain_name = "(POLYGON)"
+        chain_url = url.poly_address
+    if chain == "optimism" or chain == "opti":
+        supply = api.get_native_balance(ca.lpool_reserve_ca, "opti")
+        x7d_dollar = float(supply) * float(api.get_native_price("eth")) / 1 ** 18
+        chain_name = "(OPTIMISM)"
+        chain_url = url.opti_address
+    if chain == "arbitrum" or chain == "arb":
+        supply = api.get_native_balance(ca.lpool_reserve_ca, "arb")
+        x7d_dollar = float(supply) * float(api.get_native_price("eth")) / 1 ** 18
+        chain_name = "(ARB)"
+        chain_url = url.arb_address
+    im1 = Image.open((random.choice(media.blackhole)))
+    im2 = Image.open(media.x7d_logo)
+    im1.paste(im2, (720, 20), im2)
+    i1 = ImageDraw.Draw(im1)
+    myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
+    i1.text((28, 36),
+            f'X7D {chain_name} Info\n\n'
+            f'Supply: {supply[:5]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
+            f'Holders: {holders}\n\n'
+            f'To receive X7D:\n'
+            '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
+            f'{ca.lpool_reserve_ca}\n\n'
+            '2. Import the X7D contract address to your custom tokens in your wallet\nto see your tokens:\n'
+            f'{ca.x7d_ca}\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
+            'Note:\n'
+            'Do not interact directly with the X7D contract\n'
+            'Do not send from a CEX\n\n'
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont, fill=(255, 255, 255))
+    im1.save(r"media\blackhole.png")
+    await update.message.reply_photo(
+        photo=open(r"media\blackhole.png", 'rb'),
+        caption=f'*X7D {chain_name} Info*\n'
+                f'For other chains use `/x7d [chain-name]`\n\n'
                 f'Supply: {supply[:5]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
                 f'Holders: {holders}\n\n'
-                f'To receive X7D:\n'
-                '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
-                f'{items.lpool_reserve_ca}\n\n'
-                '2. Import the X7D contract address to your custom tokens in your wallet\nto see your tokens:\n'
-                f'{items.x7d_ca}\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
-                'Note:\n'
-                'Do not interact directly with the X7D contract\n'
-                'Do not send from a CEX\n\n'
-                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        im1.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*X7D (ETH) Info*\n'
-                    f'For other chains use `/x7d [chain-name]`\n\n'
-                    f'Supply: {supply[:5]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
-                    f'Holders: {holders}\n\n'
-                    f'To receive X7D:\n\n'
-                    '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
-                    f'`{items.lpool_reserve_ca}`\n\n'
-                    '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
-                    f'`{items.x7d_ca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
-                    'Note:\n'
-                    'Do not interact directly with the X7D contract\n'
-                    'Do not send from a CEX\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Lending Pool Reserve Contract',
-                                       url=f'{items.ether_address}{items.lpool_reserve_ca}#code')],
-                 [InlineKeyboardButton(text='X7 Deposit Contract',
-                                       url=f'{items.ether_address}{items.x7d_ca}#code')],
-                 ]))
-    if chain == "bsc" or chain == "bnb":
-        supply = api.get_native_balance(items.lpool_reserve_ca, "bnb")
-        x7d_dollar = float(supply) * float(api.get_native_price("bnb")) / 1 ** 18
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7d_logo)
-        im1.paste(im2, (720, 20), im2)
-        i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
-        i1.text((28, 36),
-                f'X7D (BSC) Info\n\n'
-                f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n\n'
-                f'To receive X7D:\n\n'
-                '1. Send BNB (Not Swap) to the Lending Pool Reserve Contract:\n'
-                f'{items.lpool_reserve_ca}\n\n'
-                '2. Import the X7D contract address to your custom tokens in your\n'
-                'wallet to see your tokens:\n'
-                f'{items.x7d_ca}\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:BNB\n\n'
-                'Note:\n'
-                'Do not interact directly with the X7D contract\n'
-                'Do not send from a CEX\n\n'
-                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        im1.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*X7D (BSC) Info*\n\n'
-                    f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
-                    f'To receive X7D:\n\n'
-                    '1. Send BNB (Not Swap) to the Lending Pool Reserve Contract:\n'
-                    f'`{items.lpool_reserve_ca}`\n\n'
-                    '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
-                    f'`{items.x7d_ca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:BNB\n\n'
-                    'Note:\n'
-                    'Do not interact directly with the X7D contract\n'
-                    'Do not send from a CEX\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Lending Pool Reserve Contract',
-                                       url=f'{items.bsc_address}{items.lpool_reserve_ca}#code')],
-                 [InlineKeyboardButton(text='X7 Deposit Contract',
-                                       url=f'{items.bsc_address}{items.x7d_ca}#code')],
-                 ]))
-    if chain == "polygon" or chain == "poly":
-        supply = api.get_native_balance(items.lpool_reserve_ca, "poly")
-        x7d_dollar = float(supply) * float(api.get_native_price("matic")) / 1 ** 18
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7d_logo)
-        im1.paste(im2, (720, 20), im2)
-        i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
-        i1.text((28, 36),
-                f'X7D (POLY) Info\n\n'
-                f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n\n'
-                f'To receive X7D:\n\n'
-                '1. Send MATIC (Not Swap) to the Lending Pool Reserve Contract:\n'
-                f'{items.lpool_reserve_ca}\n\n'
-                '2. Import the X7D contract address to your custom tokens in your wallet\n'
-                'to see your tokens:\n'
-                f'{items.x7d_ca}\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:MATIC\n\n'
-                'Note:\n'
-                'Do not interact directly with the X7D contract\n'
-                'Do not send from a CEX\n\n'
-                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        im1.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*X7D (POLY) Info*\n\n'
-                    f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
-                    f'To receive X7D.\n\n'
-                    '1. Send MATIC (Not Swap) to the Lending Pool Reserve Contract:\n'
-                    f'`{items.lpool_reserve_ca}`\n\n'
-                    '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
-                    f'`{items.x7d_ca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:MATIC\n\n'
-                    'Note:\n'
-                    'Do not interact directly with the X7D contract\n'
-                    'Do not send from a CEX\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Lending Pool Reserve Contract',
-                                       url=f'{items.poly_address}{items.lpool_reserve_ca}#code')],
-                 [InlineKeyboardButton(text='X7 Deposit Contract',
-                                       url=f'{items.poly_address}{items.x7d_ca}#code')],
-                 ]))
-    if chain == "optimism" or chain == "opti":
-        supply = api.get_native_balance(items.lpool_reserve_ca, "opti")
-        x7d_dollar = float(supply) * float(api.get_native_price("eth")) / 1 ** 18
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7d_logo)
-        im1.paste(im2, (720, 20), im2)
-        i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
-        i1.text((28, 36),
-                f'*X7D (OPTIMISM) Info*\n\n'
-                f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n\n'
                 f'To receive X7D:\n\n'
                 '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
-                f'{items.lpool_reserve_ca}\n\n'
-                '2. Import the X7D contract address to your custom tokens in your wallet'
-                '\nto see your tokens:\n'
-                f'{items.x7d_ca}\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
+                f'`{ca.lpool_reserve_ca}`\n\n'
+                '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
+                f'`{ca.x7d_ca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
                 'Note:\n'
                 'Do not interact directly with the X7D contract\n'
                 'Do not send from a CEX\n\n'
-                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        im1.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*X7D (OPTIMISM) Info*\n\n'
-                    f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
-                    f'To receive X7D.\n\n'
-                    '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
-                    f'`{items.lpool_reserve_ca}`\n\n'
-                    '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
-                    f'`{items.x7d_ca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
-                    'Note:\n'
-                    'Do not interact directly with the X7D contract\n'
-                    'Do not send from a CEX\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Lending Pool Reserve Contract',
-                                       url=f'{items.opti_address}{items.lpool_reserve_ca}#code')],
-                 [InlineKeyboardButton(text='X7 Deposit Contract',
-                                       url=f'{items.opti_address}{items.x7d_ca}#code')],
-                 ]))
-    if chain == "arbitrum" or chain == "arb":
-        supply = api.get_native_balance(items.lpool_reserve_ca, "arb")
-        x7d_dollar = float(supply) * float(api.get_native_price("eth")) / 1 ** 18
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7d_logo)
-        im1.paste(im2, (720, 20), im2)
-        i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
-        i1.text((28, 36),
-                f'X7D (ARBITRUM) Info\n\n'
-                f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n\n'
-                f'To receive X7D.\n\n'
-                '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
-                f'{items.lpool_reserve_ca}\n\n'
-                '2. Import the X7D contract address to your custom tokens in your wallet\n'
-                'to see your tokens:\n'
-                f'{items.x7d_ca}\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
-                'Note:\n'
-                'Do not interact directly with the X7D contract\n'
-                'Do not send from a CEX\n\n'
-                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        im1.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*X7D (ARBITRUM) Info*\n\n'
-                    f'Supply: {supply[:4]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
-                    f'To receive X7D:\n\n'
-                    '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
-                    f'`{items.lpool_reserve_ca}`\n\n'
-                    '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
-                    f'`{items.x7d_ca}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
-                    'Note:\n'
-                    'Do not interact directly with the X7D contract\n'
-                    'Do not send from a CEX\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Lending Pool Reserve Contract',
-                                       url=f'{items.arb_address}{items.lpool_reserve_ca}#code')],
-                 [InlineKeyboardButton(text='X7 Deposit Contract',
-                                       url=f'{items.arb_address}{items.x7d_ca}#code')],
-                 ]))
+                f'{api.get_quote()}',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text='X7 Lending Pool Reserve Contract',
+                                   url=f'{chain_url}{ca.lpool_reserve_ca}#code')],
+                [InlineKeyboardButton(text='X7 Deposit Contract',
+                                      url=f'{chain_url}{ca.x7d_ca}#code')], ]))
 
 
 async def media_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Media Links*\n\n{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
@@ -963,7 +593,7 @@ async def buy_evenly_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 async def channels_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Community TG Channels*\n\n{api.get_quote()}', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text='Community Chat', url='https://t.me/X7m105portal')],
@@ -975,7 +605,7 @@ async def channels_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def buy_bots_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Bobby Buy Bot Channels*\n\n{api.get_quote()}', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text='Arbitrum', url='https://t.me/x7arbbuybots')],
@@ -999,10 +629,10 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     price_dollar = price * float(api.get_native_price("eth")) / 1 ** 18
     volume = round(data["collection"]["stats"]["total_volume"], 2)
     volume_dollar = volume * float(api.get_native_price("eth")) / 1 ** 18
-    pioneer_pool = api.get_native_balance(items.pioneer_ca, "eth")
+    pioneer_pool = api.get_native_balance(ca.pioneer_ca, "eth")
     total_dollar = float(pioneer_pool) * float(api.get_native_price("eth")) / 1 ** 18
     if pioneer_id == "":
-        img = Image.open((random.choice(items.blackhole)))
+        img = Image.open((random.choice(media.blackhole)))
         i1 = ImageDraw.Draw(img)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
@@ -1033,7 +663,7 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  [InlineKeyboardButton(text='Opensea', url='https://opensea.io/collection/x7-pioneer')], ]))
     else:
         baseurl = "https://api.opensea.io/api/v1/asset/"
-        slug = items.pioneer_ca + "/"
+        slug = ca.pioneer_ca + "/"
         headers = {"X-API-KEY": keys.os}
         single_url = baseurl + slug + pioneer_id + "/"
         single_response = requests.get(single_url, headers=headers)
@@ -1056,11 +686,11 @@ async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     page_py = wiki.page(keyword)
     if keyword == "":
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((random.choice(media.logos)), 'rb'),
             caption='Please follow the command with your search')
     if page_py.exists():
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((random.choice(media.logos)), 'rb'),
             caption=f'Your search: {page_py.title}\n\n'
                     f'{(page_py.summary[0:800])}'
                     f'....[continue reading on wiki]({page_py.fullurl})\n\n'
@@ -1072,7 +702,7 @@ async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     else:
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((random.choice(media.logos)), 'rb'),
             caption=f'Your search: {keyword}\n\nNo description available\n\n'
                     f'[Google](https://www.google.com/search?q={keyword})\n'
                     f'[Twitter](https://twitter.com/search?q={keyword}&src=typed_query)\n'
@@ -1083,20 +713,22 @@ async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    eth_pool = api.get_native_balance(items.lpool_reserve_ca, "eth")
+    chain_name = ""
+    chain_url = ""
+    eth_pool = api.get_native_balance(ca.lpool_reserve_ca, "eth")
     pool_dollar = float(eth_pool) * float(api.get_native_price("eth")) / 1 ** 18
-    bsc_pool = api.get_native_balance(items.lpool_reserve_ca, "bsc")
+    bsc_pool = api.get_native_balance(ca.lpool_reserve_ca, "bsc")
     bsc_pool_dollar = float(bsc_pool) * float(api.get_native_price("bnb")) / 1 ** 18
-    arb_pool = api.get_native_balance(items.lpool_reserve_ca, "arb")
+    arb_pool = api.get_native_balance(ca.lpool_reserve_ca, "arb")
     arb_pool_dollar = float(arb_pool) * float(api.get_native_price("eth")) / 1 ** 18
-    poly_pool = api.get_native_balance(items.lpool_reserve_ca, "poly")
+    poly_pool = api.get_native_balance(ca.lpool_reserve_ca, "poly")
     poly_pool_dollar = float(poly_pool) * float(api.get_native_price("matic")) / 1 ** 18
-    opti_pool = api.get_native_balance(items.lpool_reserve_ca, "opti")
+    opti_pool = api.get_native_balance(ca.lpool_reserve_ca, "opti")
     opti_pool_dollar = float(opti_pool) * float(api.get_native_price("eth")) / 1 ** 18
     total_dollar = poly_pool_dollar + bsc_pool_dollar + opti_pool_dollar + arb_pool_dollar + pool_dollar
     if chain == "":
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7d_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7d_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -1122,8 +754,8 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'TOTAL: ${"{:0,.0f}".format(total_dollar)}\n\n'
                     f'{api.get_quote()}', parse_mode='Markdown')
     if chain == "eth":
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.eth_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.eth_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -1141,12 +773,12 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='Lending Pool Reserve Contract',
-                                       url=f'{items.ether_address}{items.lpool_reserve_ca}')],
+                                       url=f'{url.ether_address}{ca.lpool_reserve_ca}')],
                  [InlineKeyboardButton(text='X7 Deposit Contract',
-                                       url=f'{items.ether_address}{items.x7d_ca}#code')], ]))
+                                       url=f'{url.ether_address}{ca.x7d_ca}#code')], ]))
     if chain == "bsc" or chain == "bnb":
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.bsc_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.bsc_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -1164,12 +796,12 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='Lending Pool Reserve Contract',
-                                       url=f'{items.bsc_address}{items.lpool_reserve_ca}')],
+                                       url=f'{url.bsc_address}{ca.lpool_reserve_ca}')],
                  [InlineKeyboardButton(text='X7 Deposit Contract',
-                                       url=f'{items.bsc_address}{items.x7d_ca}#code')], ]))
+                                       url=f'{url.bsc_address}{ca.x7d_ca}#code')], ]))
     if chain == "arbitrum" or chain == "arb":
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.arb_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.arb_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -1187,12 +819,12 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='Lending Pool Reserve Contract',
-                                       url=f'{items.arb_address}{items.lpool_reserve_ca}')],
+                                       url=f'{url.arb_address}{ca.lpool_reserve_ca}')],
                  [InlineKeyboardButton(text='X7 Deposit Contract',
-                                       url=f'{items.arb_address}{items.x7d_ca}#code')], ]))
+                                       url=f'{url.arb_address}{ca.x7d_ca}#code')], ]))
     if chain == "optimism" or chain == "opti":
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.opti_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.opti_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -1210,12 +842,12 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='Lending Pool Reserve Contract',
-                                       url=f'{items.opti_address}{items.lpool_reserve_ca}')],
+                                       url=f'{url.opti_address}{ca.lpool_reserve_ca}')],
                  [InlineKeyboardButton(text='X7 Deposit Contract',
-                                       url=f'{items.opti_address}{items.x7d_ca}#code')], ]))
+                                       url=f'{url.opti_address}{ca.x7d_ca}#code')], ]))
     if chain == "polygon" or chain == "poly":
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.poly_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.poly_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -1233,14 +865,14 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='Lending Pool Reserve Contract',
-                                       url=f'{items.poly_address}{items.lpool_reserve_ca}')],
+                                       url=f'{url.poly_address}{ca.lpool_reserve_ca}')],
                  [InlineKeyboardButton(text='X7 Deposit Contract',
-                                       url=f'{items.poly_address}{items.x7d_ca}#code')], ]))
+                                       url=f'{url.poly_address}{ca.x7d_ca}#code')], ]))
 
 
 async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Tax Info*\n\n'
                 f'X7R: 6%\nX7DAO: 6%\n'
                 f'X7101-X7105: 2%\n\n'
@@ -1253,7 +885,7 @@ async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def swap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_sticker(
-        sticker=items.swap,
+        sticker=media.swap,
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text='Xchange', url='https://app.x7.finance/#/swap')],
              [InlineKeyboardButton(text='Feedback', url='https://discord.com/channels/101665704'
@@ -1270,11 +902,11 @@ async def spaces_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     minutes = divmod(hours[1], 60)
     if duration < timedelta(0):
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((random.choice(media.logos)), 'rb'),
             caption=f'X7 Finance Twitter space\n\nPlease check back for more details'
             f'\n\n{api.get_quote()}', parse_mode="Markdown")
     else:
-        await update.message.reply_sticker(sticker=items.twitter_sticker)
+        await update.message.reply_sticker(sticker=media.twitter_sticker)
         await update.message.reply_text(
             text=f'Next X7 Finance Twitter space is:\n\n{then.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
                  f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
@@ -1338,13 +970,13 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     minutes = divmod(hours[1], 60)
     if duration < timedelta(0):
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((random.choice(media.logos)), 'rb'),
             caption=f'X7 Finance Giveaway is now closed\n\nPlease check back for more details'
             f'\n\n{api.get_quote()}', parse_mode="Markdown")
     else:
         if ext == "":
             await update.message.reply_photo(
-                photo=open((random.choice(items.logos)), 'rb'),
+                photo=open((random.choice(media.logos)), 'rb'),
                 caption=f'*X7 Finance 20,000 X7R Giveaway!*\n\n'
                         f'X7 Finance Giveaway ends:\n\n{giveaway_time.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
                         f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
@@ -1362,7 +994,7 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if ext == "entries":
             update_utc = variables.giveaway_update.astimezone(pytz.utc)
             await update.message.reply_photo(
-                photo=open((random.choice(items.logos)), 'rb'),
+                photo=open((random.choice(media.logos)), 'rb'),
                 caption=f'The following addresses are in the draw, weighted by minted amount'
                         f' (last 5 digits only):\n\n{last5}\n\nLast updated: '
                         f'{update_utc.strftime("%A %B %d %Y %I:%M %p")} UTC\n\n'
@@ -1372,14 +1004,14 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_admins = await update.effective_chat.get_administrators()
             if update.effective_user in (admin.user for admin in chat_admins):
                 await update.message.reply_photo(
-                    photo=open((random.choice(items.logos)), 'rb'),
+                    photo=open((random.choice(media.logos)), 'rb'),
                     caption=f'*X7 Finance 20,000 X7R Giveaway!*\n\n'
                             f'The winner of the *X7 Finance 20,000 X7R Giveaway!* is:\n\n'
                             f'{random.choice(last5)} (last 5 digits only)\n\n'
                             f'Trust no one, trust code. Long live Defi!\n\n{api.get_quote()}',
                     parse_mode="Markdown")
             else:
-                await update.message.reply_text(f'{variables.mods_only}')
+                await update.message.reply_text(f'{text.mods_only}')
 
 
 async def joke_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1387,12 +1019,12 @@ async def joke_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     joke = joke_response.json()
     if joke["type"] == "single":
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((random.choice(media.logos)), 'rb'),
             caption=f'`{joke["joke"]}`',
             parse_mode="Markdown")
     else:
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((random.choice(media.logos)), 'rb'),
             caption=f'`{joke["setup"]}\n\n{joke["delivery"]}`',
             parse_mode="Markdown")
 
@@ -1401,7 +1033,7 @@ async def today_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = api.get_today()
     today = (random.choice(data["data"]["Events"]))
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f'`On this day in {today["year"]}:\n\n{today["text"]}`',
         parse_mode="Markdown")
 
@@ -1451,13 +1083,16 @@ async def fg_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def quote_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f'{api.get_quote()}',
         parse_mode="Markdown")
 
 
 async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     loan_type = " ".join(context.args).lower()
+    loan_name = ""
+    chain_url = ""
+    loan_terms = ""
     if loan_type == "":
         await update.message.reply_text(
             '*X7 Finance Loan Terms*\n\n'
@@ -1476,45 +1111,45 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f'{api.get_quote()}',
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Finance Whitepaper', url=f'{items.wp_link}')], ]))
+                [[InlineKeyboardButton(text='X7 Finance Whitepaper', url=f'{url.wp_link}')], ]))
     if loan_type == "ill001":
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'{items.ill001_name}\n\n'
-                    f'{items.ill001_terms}\n\n',
+            photo=open((random.choice(media.logos)), 'rb'),
+            caption=f'{loans.ill001_name}\n\n'
+                    f'{loans.ill001_terms}\n\n',
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text=f'Ethereum', url=f'{items.ether_address}{items.ill001_ca}')],
-                 [InlineKeyboardButton(text=f'BSC', url=f'{items.bsc_address}{items.ill001_ca}')],
-                 [InlineKeyboardButton(text=f'Polygon', url=f'{items.poly_address}{items.ill001_ca}')],
-                 [InlineKeyboardButton(text=f'Arbitrum', url=f'{items.arb_address}{items.ill001_ca}')],
-                 [InlineKeyboardButton(text=f'Optimism', url=f'{items.opti_address}{items.ill001_ca}')],
+                [[InlineKeyboardButton(text=f'Ethereum', url=f'{url.ether_address}{ca.ill001_ca}')],
+                 [InlineKeyboardButton(text=f'BSC', url=f'{url.bsc_address}{ca.ill001_ca}')],
+                 [InlineKeyboardButton(text=f'Polygon', url=f'{url.poly_address}{ca.ill001_ca}')],
+                 [InlineKeyboardButton(text=f'Arbitrum', url=f'{url.arb_address}{ca.ill001_ca}')],
+                 [InlineKeyboardButton(text=f'Optimism', url=f'{url.opti_address}{ca.ill001_ca}')],
                  ]))
     if loan_type == "ill002":
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'{items.ill002_name}\n\n'
-                    f'{items.ill002_terms}\n\n',
+            photo=open((random.choice(media.logos)), 'rb'),
+            caption=f'{loans.ill002_name}\n\n'
+                    f'{loans.ill002_terms}\n\n',
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text=f'Ethereum', url=f'{items.ether_address}{items.ill002_ca}')],
-                 [InlineKeyboardButton(text=f'BSC', url=f'{items.bsc_address}{items.ill002_ca}')],
-                 [InlineKeyboardButton(text=f'Polygon', url=f'{items.poly_address}{items.ill002_ca}')],
-                 [InlineKeyboardButton(text=f'Arbitrum', url=f'{items.arb_address}{items.ill002_ca}')],
-                 [InlineKeyboardButton(text=f'Optimism', url=f'{items.opti_address}{items.ill002_ca}')],
+                [[InlineKeyboardButton(text=f'Ethereum', url=f'{url.ether_address}{ca.ill002_ca}')],
+                 [InlineKeyboardButton(text=f'BSC', url=f'{url.bsc_address}{ca.ill002_ca}')],
+                 [InlineKeyboardButton(text=f'Polygon', url=f'{url.poly_address}{ca.ill002_ca}')],
+                 [InlineKeyboardButton(text=f'Arbitrum', url=f'{url.arb_address}{ca.ill002_ca}')],
+                 [InlineKeyboardButton(text=f'Optimism', url=f'{url.opti_address}{ca.ill002_ca}')],
                  ]))
     if loan_type == "ill003":
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'{items.ill003_name}\n\n'
-                    f'{items.ill003_terms}\n\n',
+            photo=open((random.choice(media.logos)), 'rb'),
+            caption=f'{loans.ill003_name}\n\n'
+                    f'{loans.ill003_terms}\n\n',
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text=f'Ethereum', url=f'{items.ether_address}{items.ill003_ca}')],
-                 [InlineKeyboardButton(text=f'BSC', url=f'{items.bsc_address}{items.ill003_ca}')],
-                 [InlineKeyboardButton(text=f'Polygon', url=f'{items.poly_address}{items.ill003_ca}')],
-                 [InlineKeyboardButton(text=f'Arbitrum', url=f'{items.arb_address}{items.ill003_ca}')],
-                 [InlineKeyboardButton(text=f'Optimism', url=f'{items.opti_address}{items.ill003_ca}')],
+                [[InlineKeyboardButton(text=f'Ethereum', url=f'{url.ether_address}{ca.ill003_ca}')],
+                 [InlineKeyboardButton(text=f'BSC', url=f'{url.bsc_address}{ca.ill003_ca}')],
+                 [InlineKeyboardButton(text=f'Polygon', url=f'{url.poly_address}{ca.ill003_ca}')],
+                 [InlineKeyboardButton(text=f'Arbitrum', url=f'{url.arb_address}{ca.ill003_ca}')],
+                 [InlineKeyboardButton(text=f'Optimism', url=f'{url.opti_address}{ca.ill003_ca}')],
                  ]))
 
 
@@ -1526,11 +1161,11 @@ async def twitter_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     client = tweepy.API(auth)
     tweet = client.user_timeline(screen_name=username, count=1)
     if ext == "":
-        await update.message.reply_sticker(sticker=items.twitter_sticker)
+        await update.message.reply_sticker(sticker=media.twitter_sticker)
         await update.message.reply_text(
             f'Latest X7 Finance Tweet\n\n{tweet[0].text}\n\n'
             f'https://twitter.com/X7_Finance/status/{tweet[0].id}\n\n'
-            f'{random.choice(items.twitter_replies)}')
+            f'{random.choice(text.twitter_replies)}')
     if ext == "count":
         chat_admins = await update.effective_chat.get_administrators()
         if update.effective_user in (admin.user for admin in chat_admins):
@@ -1542,13 +1177,13 @@ async def twitter_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             status = twitterapi.get_status(tweet[0].id)
             retweet_count = status.retweet_count
             count = '\n'.join(str(p) for p in response.data)
-            await update.message.reply_sticker(sticker=items.twitter_sticker)
+            await update.message.reply_sticker(sticker=media.twitter_sticker)
             await update.message.reply_text(
                 f'Latest X7 Finance Tweet\n\n{tweet[0].text}\n\n'
                 f'https://twitter.com/X7_Finance/status/{tweet[0].id}\n\n'
                 f'Retweeted {retweet_count} times, by the following members:\n\n{count}')
         else:
-            await update.message.reply_text(f'{variables.mods_only}')
+            await update.message.reply_text(f'{text.mods_only}')
 
 
 async def discount_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1578,93 +1213,44 @@ async def discount_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'origination later.\n\nThese sliding scales can be modified to ensure they have optimal market fit.',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text='Discount Application', url=items.dac)],
+            [[InlineKeyboardButton(text='Discount Application', url=url.dac)],
              [InlineKeyboardButton(text='X7 Lending Discount Contract',
-                                   url=f'{items.ether_address}{items.lending_discount_ca}#code')], ]))
+                                   url=f'{url.ether_address}{ca.lending_discount_ca}#code')], ]))
 
 
 async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
+    chain_name = ""
+    chain_url = ""
     if chain == "eth" or chain == "":
-        await update.message.reply_text(
-            '*X7D Withdrawal (ETH)*\n'
-            'For other chains use `/withdraw [chain-name]`\n\n'
-            'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
-            '1. Write Contract\n'
-            '2. Connect to Web3 (This will connect via your chosen wallet)\n'
-            '3. Select Function `13. withdrawETH`\n'
-            '3. Input your desired amount in wei\n'
-            '4. Write\n'
-            '5. Confirm TX in chosen wallet\n\n'
-            'Note: use command `/wei [amount]` in TG to quickly convert into wei division',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
-                                       url=f'{items.ether_address}{items.lpool_reserve_ca}#code')], ]))
+        chain_name = "(ETH)"
+        chain_url = url.ether_address
     if chain == "poly" or chain == "polygon":
-        await update.message.reply_text(
-            '*X7D Withdrawal (POLYGON)*\n'
-            'For other chains use `/withdraw [chain-name]`\n\n'
-            'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
-            '1. Write Contract\n'
-            '2. Connect to Web3 (This will connect via your chosen wallet)\n'
-            '3. Select Function `13. withdrawETH`\n'
-            '3. Input your desired amount in wei\n'
-            '4. Write\n'
-            '5. Confirm TX in chosen wallet\n\n'
-            'Note: use command `/wei [amount]` in TG to quickly convert into wei division',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
-                                       url=f'{items.poly_address}{items.lpool_reserve_ca}#code')], ]))
+        chain_name = "(POLYGON)"
+        chain_url = url.poly_address
     if chain == "arb" or chain == "arbitrum":
-        await update.message.reply_text(
-            '*X7D Withdrawal (ARBITRUM)*\n'
-            'For other chains use `/withdraw [chain-name]`\n\n'
-            'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
-            '1. Write Contract\n'
-            '2. Connect to Web3 (This will connect via your chosen wallet)\n'
-            '3. Select Function `13. withdrawETH`\n'
-            '3. Input your desired amount in wei\n'
-            '4. Write\n'
-            '5. Confirm TX in chosen wallet\n\n'
-            'Note: use command `/wei [amount]` in TG to quickly convert into wei division',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
-                                       url=f'{items.arb_address}{items.lpool_reserve_ca}#code')], ]))
+        chain_name = "(ARB)"
+        chain_url = url.arb_address
     if chain == "opti" or chain == "optimism":
-        await update.message.reply_text(
-            '*X7D Withdrawal (OPTIMISM)*\n'
-            'For other chains use `/withdraw [chain-name]`\n\n'
-            'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
-            '1. Write Contract\n'
-            '2. Connect to Web3 (This will connect via your chosen wallet)\n'
-            '3. Select Function `13. withdrawETH`\n'
-            '3. Input your desired amount in wei\n'
-            '4. Write\n'
-            '5. Confirm TX in chosen wallet\n\n'
-            'Note: use command `/wei [amount]` in TG to quickly convert into wei division',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
-                                       url=f'{items.opti_address}{items.lpool_reserve_ca}#code')], ]))
+        chain_name = "(OPTIMISM)"
+        chain_url = url.opti_address
     if chain == "bsc" or chain == "bnb":
-        await update.message.reply_text(
-            '*X7D Withdrawal (BSC)*\n'
-            'For other chains use `/withdraw [chain-name]`\n\n'
-            'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
-            '1. Write Contract\n'
-            '2. Connect to Web3 (This will connect via your chosen wallet)\n'
-            '3. Select Function `13. withdrawETH`\n'
-            '3. Input your desired amount in wei\n'
-            '4. Write\n'
-            '5. Confirm TX in chosen wallet\n\n'
-            'Note: use command `/wei [amount]` in TG to quickly convert into wei division',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Lending Pool Reserve',
-                                       url=f'{items.bsc_address}{items.lpool_reserve_ca}#code')], ]))
+        chain_name = "(BSC)"
+        chain_url = url.bsc_address
+    await update.message.reply_text(
+        f'*X7D Withdrawal {chain_name}*\n'
+        'For other chains use `/withdraw [chain-name]`\n\n'
+        'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
+        '1. Write Contract\n'
+        '2. Connect to Web3 (This will connect via your chosen wallet)\n'
+        '3. Select Function `13. withdrawETH`\n'
+        '3. Input your desired amount in wei\n'
+        '4. Write\n'
+        '5. Confirm TX in chosen wallet\n\n'
+        'Note: use command `/wei [amount]` in TG to quickly convert into wei division',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text='X7 Lending Pool Reserve', url=f'{chain_url}{ca.lpool_reserve_ca}#code')], ]))
 
 
 async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1675,7 +1261,7 @@ async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    deployer = api.get_tx(items.deployer, "eth")
+    deployer = api.get_tx(ca.deployer, "eth")
     date = deployer["result"][0]["block_timestamp"].split("-")
     year = int(date[0])
     month = int(date[1])
@@ -1686,25 +1272,25 @@ async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     duration_in_s = duration.total_seconds()
     days = divmod(duration_in_s, 86400)
     if deployer["result"][0]['to_address'] == "0x000000000000000000000000000000000000dEaD" or \
-            deployer["result"][0]['to_address'] == items.deployer:
-        message = bytes.fromhex(api.get_tx(items.deployer, "eth")["result"][0]["input"][2:]).decode('utf-8')
+            deployer["result"][0]['to_address'] == ca.deployer:
+        message = bytes.fromhex(api.get_tx(ca.deployer, "eth")["result"][0]["input"][2:]).decode('utf-8')
         await update.message.reply_text(
             '*X7 Finance DAO Founders*\n\n'
             f'Deployer Wallet last TX -  {int(days[0])} days ago:\n\n'
-            f'`{message}`\n\n{items.ether_tx}{deployer["result"][0]["hash"]}',
+            f'`{message}`\n\n{url.ether_tx}{deployer["result"][0]["hash"]}',
             parse_mode='Markdown')
     else:
         await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
+            photo=open((random.choice(media.logos)), 'rb'),
             caption='*X7 Finance DAO Founders*\n\n'
                     f'Deployer Wallet last TX -  {int(days[0])} days ago:\n\n'
-                    f'{items.ether_tx}{deployer["result"][0]["hash"]}\n\n{api.get_quote()}',
+                    f'{url.ether_tx}{deployer["result"][0]["hash"]}\n\n{api.get_quote()}',
             parse_mode='Markdown')
 
 
 async def announcements_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption='Check out the link below for the announcement channel',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
@@ -1739,7 +1325,7 @@ async def voting_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def snapshot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_sticker(sticker=items.chains)
+    await update.message.reply_sticker(sticker=media.chains)
     await update.message.reply_text(
         f'*X7 Finance Airdrop Information*\n\nThe rollout of the Ecosystem Contracts on BNB Smart Chain, Polygon ' 
         f'(MATIC), Arbitrum, and Optimism has begun.\n\n'
@@ -1757,84 +1343,48 @@ async def snapshot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
+    chain_name = ""
+    chain_url = ""
+    gas_data = ""
+    im2 = ""
     if chain == "" or chain == "eth":
         gas_data = api.get_gas("eth")
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.eth_logo)
-        im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
-        i1 = ImageDraw.Draw(im1)
-        i1.text((26, 30),
-                f'ETH Gas Prices:\n\n'
-                f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
-                f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
-                f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        im1.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*ETH Gas Prices:*\n'
-                    f'For other chains use `/gas [chain-name]`\n\n'
-                    f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
-                    f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
-                    f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Etherscan Gas Tracker', url='https://etherscan.io/gastracker')], ]))
+        im2 = Image.open(media.eth_logo)
+        chain_name = "(ETH)"
+        chain_url = "https://etherscan.io/gastracker"
     if chain == "bsc":
         gas_data = api.get_gas("bsc")
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.bsc_logo)
-        im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
-        i1 = ImageDraw.Draw(im1)
-        i1.text((26, 30),
-                f'BSC Gas Prices:\n\n'
-                f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
-                f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
-                f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        im1.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*BSC Gas Prices:*\n'
-                    f'For other chains use `/gas [chain-name]`\n\n'
-                    f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
-                    f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
-                    f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='BSCscan Gas Tracker', url='https://bscscan.com/gastracker')], ]))
+        im2 = Image.open(media.bsc_logo)
+        chain_name = "(BSC)"
+        chain_url = "https://bscscan.com/gastracker"
     if chain == "polygon" or chain == "poly":
         gas_data = api.get_gas("poly")
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.poly_logo)
-        im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
-        i1 = ImageDraw.Draw(im1)
-        i1.text((26, 30),
-                f'POLYGON Gas Prices:\n\n'
+        im2 = Image.open(media.poly_logo)
+        chain_name = "(POLYGON)"
+        chain_url = 'https://polygon.com/gastracker'
+    im1 = Image.open((random.choice(media.blackhole)))
+    im1.paste(im2, (720, 20), im2)
+    myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+    i1 = ImageDraw.Draw(im1)
+    i1.text((26, 30),
+            f'{chain_name} Gas Prices:\n\n'
+            f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
+            f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
+            f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n\n'
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont, fill=(255, 255, 255))
+    im1.save(r"media\blackhole.png")
+    await update.message.reply_photo(
+        photo=open(r"media\blackhole.png", 'rb'),
+        caption=f'*{chain_name} Gas Prices:*\n'
+                f'For other chains use `/gas [chain-name]`\n\n'
                 f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
                 f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
-                f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n\n'
-                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        im1.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*POLYGON Gas Prices:*\n'
-                    f'For other chains use `/gas [chain-name]`\n\n'
-                    f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
-                    f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
-                    f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Polygon Gas Tracker', url='https://polygon.com/gastracker')], ]))
+                f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n'
+                f'{api.get_quote()}',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text=f'{chain_name} Gas Tracker', url=f'{chain_url}')], ]))
 
 
 async def count_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1850,7 +1400,7 @@ async def count_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     status = twitterapi.get_status(tweet_id)
     retweet_count = status.retweet_count
     rt_names = '\n'.join(str(p) for p in rt_response.data)
-    await update.message.reply_sticker(sticker=items.twitter_sticker)
+    await update.message.reply_sticker(sticker=media.twitter_sticker)
     await update.message.reply_text(
         f'Retweeted {retweet_count} times, by the following members:\n\n{rt_names}')
 
@@ -1870,13 +1420,13 @@ async def draw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         status = twitterapi.get_status(tweet_id)
         retweet_count = status.retweet_count
         count = '\n'.join(str(p) for p in response.data)
-        await update.message.reply_sticker(sticker=items.twitter_sticker)
+        await update.message.reply_sticker(sticker=media.twitter_sticker)
         await update.message.reply_text(
             f'{retweet_count} Entries:\n\n{count}')
         await update.message.reply_text(f'The Winner is....\n\n{random.choice(response.data)}\n\n'
                                         f'Congratulations, Please DM @X7_Finance to verify your account')
     else:
-        await update.message.reply_text(f'{variables.mods_only}')
+        await update.message.reply_text(f'{text.mods_only}')
 
 
 async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1922,7 +1472,7 @@ async def wei_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def dashboard_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Dashboard*\n\n{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
@@ -1940,7 +1490,7 @@ async def dashboard_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def faq_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance FAQ*\n\n{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
@@ -1956,9 +1506,9 @@ async def faq_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def holders_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    x7dao_holders = api.get_holders(items.x7dao_ca)
-    x7r_holders = api.get_holders(items.x7r_ca)
-    img = Image.open((random.choice(items.blackhole)))
+    x7dao_holders = api.get_holders(ca.x7dao_ca)
+    x7r_holders = api.get_holders(ca.x7r_ca)
+    img = Image.open((random.choice(media.blackhole)))
     i1 = ImageDraw.Draw(img)
     myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
     i1.text((28, 36),
@@ -1979,7 +1529,7 @@ async def holders_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def alumni_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Alumni*\n\n'
                 f'@Callmelandlord - The Godfather of the X7 Finance community, the OG, the creator - X7 God\n\n'
                 f'@WoxieX - Creator of the OG dashboard -  x7community.space\n\n'
@@ -1989,179 +1539,93 @@ async def alumni_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
+    chain_name = ""
+    chain_url = ""
+    response = ""
+    holders = ""
     if chain == "eth" or chain == "":
-        response = api.get_nft(items.magister_ca, "eth")
-        magisters = list(map(lambda x: x['owner_of'], response["result"]))
-        address = '\n\n'.join(map(str, magisters))
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption='*X7 Finance Magister Holders (ETH)*\n'
-                    'Use `/magisters [chain-name]` or other chains\n\n'
-                    f'Holders - {api.get_holders_nft(items.magister_ca, "?chain=eth-main")}\n\n'
-                    f'`{address}`\n\n{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(
-                    text='Magister Holder List', url=f'{items.ether_token}{items.magister_ca}#balances')], ]))
+        response = api.get_nft(ca.magister_ca, "eth")
+        chain_name = "(ETH)"
+        chain_url = url.ether_address
+        holders = api.get_holders_nft(ca.magister_ca, "?chain=eth-main")
     if chain == "bsc" or chain == "bnb":
-        response = api.get_nft(items.magister_ca, "bsc")
-        magisters = list(map(lambda x: x['owner_of'], response["result"]))
-        address = '\n\n'.join(map(str, magisters))
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption='*X7 Finance Magister Holders (BSC)*\n'
-                    'Use `/magisters [chain-name]` or other chains\n\n'
-                    f'`{address}`\n\n{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(
-                    text='Magister Holder List', url=f'{items.bsc_token}{items.magister_ca}#balances')], ]))
+        response = api.get_nft(ca.magister_ca, "bsc")
+        chain_name = "(BSC)"
+        chain_url = url.bsc_address
     if chain == "polygon" or chain == "poly":
-        response = api.get_nft(items.magister_ca, "polygon")
-        magisters = list(map(lambda x: x['owner_of'], response["result"]))
-        address = '\n\n'.join(map(str, magisters))
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption='*X7 Finance Magister Holders (POLY)*\n'
-                    'Use `/magisters [chain-name]` or other chains\n\n'
-                    f'Holders - {api.get_holders_nft(items.magister_ca, "?chain=poly-main")}\n\n'
-                    f'`{address}`\n\n{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(
-                    text='Magister Holder List', url=f'{items.poly_token}{items.magister_ca}#balances')], ]))
+        response = api.get_nft(ca.magister_ca, "polygon")
+        chain_name = "(POLYGON)"
+        chain_url = url.poly_address
+        holders = api.get_holders_nft(ca.magister_ca, "?chain=poly-main")
     if chain == "optimism" or chain == "opti":
-        response = api.get_nft(items.magister_ca, "optimism")
-        magisters = list(map(lambda x: x['owner_of'], response["result"]))
-        address = '\n\n'.join(map(str, magisters))
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption='*X7 Finance Magister Holders (OPTI)*\n'
-                    'Use `/magisters [chain-name]` or other chains\n\n'
-                    f'Holders - {api.get_holders_nft(items.magister_ca, "?chain=optimism-main")}\n\n'
-                    f'`{address}`\n\n{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(
-                    text='Magister Holder List', url=f'{items.opti_token}{items.magister_ca}#balances')], ]))
+        response = api.get_nft(ca.magister_ca, "optimism")
+        chain_name = "(OPTIMISM)"
+        chain_url = url.opti_address
+        holders = api.get_holders_nft(ca.magister_ca, "?chain=optimism-main")
     if chain == "arbitrum" or chain == "arb":
-        response = api.get_nft(items.magister_ca, "arbitrum")
-        magisters = list(map(lambda x: x['owner_of'], response["result"]))
-        address = '\n\n'.join(map(str, magisters))
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption='*X7 Finance Magister Holders (ARB)*\n'
-                    'Use `/magisters [chain-name]` or other chains\n\n'
-                    f'Holders - {api.get_holders_nft(items.magister_ca, "?chain=arbitrum")}\n\n'
-                    f'`{address}`\n\n{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(
-                    text='Magister Holder List', url=f'{items.arb_token}{items.magister_ca}#balances')], ]))
+        response = api.get_nft(ca.magister_ca, "arbitrum")
+        chain_name = "(ARB)"
+        chain_url = url.arb_address
+        holders = api.get_holders_nft(ca.magister_ca, "?chain=arbitrum")
+    magisters = list(map(lambda x: x['owner_of'], response["result"]))
+    address = '\n\n'.join(map(str, magisters))
+    await update.message.reply_photo(
+        photo=open((random.choice(media.logos)), 'rb'),
+        caption=f'*X7 Finance Magister Holders {chain_name}*\n'
+                'Use `/magisters [chain-name]` or other chains\n\n'
+                f'Holders - {holders}\n\n'
+                f'`{address}`\n\n{api.get_quote()}',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(
+                text='Magister Holder List', url=f'{chain_url}{ca.magister_ca}#balances')], ]))
 
 
 async def signers_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
+    dev_response = api.get_signers(ca.dev_multi_eth)
+    com_response = api.get_signers(ca.com_multi_eth)
+    chain_name = ""
+    chain_url = ""
     if chain == "eth" or chain == "":
-        dev_response = api.get_signers(items.dev_multi_eth)
-        com_response = api.get_signers(items.com_multi_eth)
-        dev_list = dev_response["owners"]
-        dev_address = '\n\n'.join(map(str, dev_list))
-        com_list = com_response["owners"]
-        com_address = '\n\n'.join(map(str, com_list))
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Multi-Sig Singers (ETH)*\n'
-                    'Use `/signers [chain-name]` or other chains\n\n'
-                    f'*Developer Signers*\n`{dev_address}`\n\n*Community Signers*\n`{com_address}`\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Developer Multi-Sig',
-                                       url=f'{items.ether_address}{items.dev_multi_eth}')],
-                 [InlineKeyboardButton(text='X7 Community Multi-Sig',
-                                       url=f'{items.ether_address}{items.com_multi_eth}')],
-                 ]))
+        dev_response = api.get_signers(ca.dev_multi_eth)
+        com_response = api.get_signers(ca.com_multi_eth)
+        chain_name = "(ETH)"
+        chain_url = url.ether_address
     if chain == "poly" or chain == "polygon":
-        dev_response = api.get_signers(items.dev_multi_poly)
-        com_response = api.get_signers(items.com_multi_poly)
-        dev_list = dev_response["owners"]
-        dev_address = '\n\n'.join(map(str, dev_list))
-        com_list = com_response["owners"]
-        com_address = '\n\n'.join(map(str, com_list))
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Multi-Sig Singers (POLYGON)*\n'
-                    'Use `/signers [chain-name]` or other chains\n\n'
-                    f'*Developer Signers*\n`{dev_address}`\n\n*Community Signers*\n`{com_address}`\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Developer Multi-Sig',
-                                       url=f'{items.poly_address}{items.dev_multi_poly}')],
-                 [InlineKeyboardButton(text='X7 Community Multi-Sig',
-                                       url=f'{items.poly_address}{items.com_multi_poly}')],
-                 ]))
+        dev_response = api.get_signers(ca.dev_multi_poly)
+        com_response = api.get_signers(ca.com_multi_poly)
+        chain_name = "(POLYGON)"
+        chain_url = url.poly_address
     if chain == "bsc" or chain == "bnb":
-        dev_response = api.get_signers(items.dev_multi_bsc)
-        com_response = api.get_signers(items.com_multi_bsc)
-        dev_list = dev_response["owners"]
-        dev_address = '\n\n'.join(map(str, dev_list))
-        com_list = com_response["owners"]
-        com_address = '\n\n'.join(map(str, com_list))
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Multi-Sig Singers (BSC)*\n'
-                    'Use `/signers [chain-name]` or other chains\n\n'
-                    f'*Developer Signers*\n`{dev_address}`\n\n*Community Signers*\n`{com_address}`\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Developer Multi-Sig',
-                                       url=f'{items.bsc_address}{items.dev_multi_bsc}')],
-                 [InlineKeyboardButton(text='X7 Community Multi-Sig',
-                                       url=f'{items.bsc_address}{items.com_multi_bsc}')],
-                 ]))
+        dev_response = api.get_signers(ca.dev_multi_bsc)
+        com_response = api.get_signers(ca.com_multi_bsc)
+        chain_name = "(BSC)"
+        chain_url = url.poly_address
     if chain == "arb" or chain == "arbitrum":
-        dev_response = api.get_signers(items.dev_multi_arb)
-        com_response = api.get_signers(items.com_multi_arb)
-        dev_list = dev_response["owners"]
-        dev_address = '\n\n'.join(map(str, dev_list))
-        com_list = com_response["owners"]
-        com_address = '\n\n'.join(map(str, com_list))
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Multi-Sig Singers (ARB)*\n'
-                    'Use `/signers [chain-name]` or other chains\n\n'
-                    f'*Developer Signers*\n`{dev_address}`\n\n*Community Signers*\n`{com_address}`\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Developer Multi-Sig',
-                                       url=f'{items.arb_address}{items.dev_multi_arb}')],
-                 [InlineKeyboardButton(text='X7 Community Multi-Sig',
-                                       url=f'{items.arb_address}{items.com_multi_arb}')],
-                 ]))
+        dev_response = api.get_signers(ca.dev_multi_arb)
+        com_response = api.get_signers(ca.com_multi_arb)
+        chain_name = "(ARB)"
+        chain_url = url.arb_address
     if chain == "opti" or chain == "optimism":
-        dev_response = api.get_signers(items.dev_multi_opti)
-        com_response = api.get_signers(items.com_multi_opti)
-        dev_list = dev_response["owners"]
-        dev_address = '\n\n'.join(map(str, dev_list))
-        com_list = com_response["owners"]
-        com_address = '\n\n'.join(map(str, com_list))
-        await update.message.reply_photo(
-            photo=open((random.choice(items.logos)), 'rb'),
-            caption=f'*X7 Finance Multi-Sig Singers (OPTI)*\n'
-                    'Use `/signers [chain-name]` or other chains\n\n'
-                    f'*Developer Signers*\n`{dev_address}`\n\n*Community Signers*\n`{com_address}`\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Developer Multi-Sig',
-                                       url=f'{items.opti_address}{items.dev_multi_opti}')],
-                 [InlineKeyboardButton(text='X7 Community Multi-Sig',
-                                       url=f'{items.opti_address}{items.com_multi_opti}')],
-                 ]))
+        dev_response = api.get_signers(ca.dev_multi_opti)
+        com_response = api.get_signers(ca.com_multi_opti)
+        chain_name = "(OPTIMISM)"
+        chain_url = url.opti_address
+    dev_list = dev_response["owners"]
+    dev_address = '\n\n'.join(map(str, dev_list))
+    com_list = com_response["owners"]
+    com_address = '\n\n'.join(map(str, com_list))
+    await update.message.reply_photo(
+        photo=open((random.choice(media.logos)), 'rb'),
+        caption=f'*X7 Finance Multi-Sig Singers {chain_name}*\n'
+                'Use `/signers [chain-name]` or other chains\n\n'
+                f'*Developer Signers*\n`{dev_address}`\n\n*Community Signers*\n`{com_address}`\n\n'
+                f'{api.get_quote()}',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text='X7 Developer Multi-Sig', url=f'{chain_url}{ca.dev_multi_eth}')],
+             [InlineKeyboardButton(text='X7 Community Multi-Sig', url=f'{chain_url}{ca.com_multi_eth}')], ]))
 
 
 async def launch_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2181,7 +1645,7 @@ async def launch_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     migration_hours = divmod(migration_days[1], 3600)
     migration_minutes = divmod(migration_hours[1], 60)
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Launch Info*\n\nX7M105 Stealth Launch\n{launch.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n'
                 f'{int(launch_days[0])} days, {int(launch_hours[0])} hours and {int(launch_minutes[0])} minutes ago\n\n'
                 f'V2 Migration\n{migration.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n'
@@ -2198,7 +1662,7 @@ async def launch_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def potw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption='*Pioneer of the week*\n\n'
                 'The following Pioneers have shown exemplary contributions towards X7 Finance\n\n'
                 'Week 15 - @Ahmed812007\n\n'
@@ -2207,13 +1671,13 @@ async def potw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def supply_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     prices = api.get_cg_price("x7r, x7dao, x7101, x7102, x7103, x7104, x7105")
-    x7r = api.get_token_balance(items.x7r_pair_eth, "eth", items.x7r_ca)
-    x7dao = api.get_token_balance(items.x7dao_pair_eth, "eth", items.x7dao_ca)
-    x7101 = api.get_token_balance(items.x7101_pair_eth, "eth", items.x7101_ca)
-    x7102 = api.get_token_balance(items.x7102_pair_eth, "eth", items.x7102_ca)
-    x7103 = api.get_token_balance(items.x7103_pair_eth, "eth", items.x7103_ca)
-    x7104 = api.get_token_balance(items.x7104_pair_eth, "eth", items.x7104_ca)
-    x7105 = api.get_token_balance(items.x7105_pair_eth, "eth", items.x7105_ca)
+    x7r = api.get_token_balance(ca.x7r_pair_eth, "eth", ca.x7r_ca)
+    x7dao = api.get_token_balance(ca.x7dao_pair_eth, "eth", ca.x7dao_ca)
+    x7101 = api.get_token_balance(ca.x7101_pair_eth, "eth", ca.x7101_ca)
+    x7102 = api.get_token_balance(ca.x7102_pair_eth, "eth", ca.x7102_ca)
+    x7103 = api.get_token_balance(ca.x7103_pair_eth, "eth", ca.x7103_ca)
+    x7104 = api.get_token_balance(ca.x7104_pair_eth, "eth", ca.x7104_ca)
+    x7105 = api.get_token_balance(ca.x7105_pair_eth, "eth", ca.x7105_ca)
     x7r_dollar = x7r * prices["x7r"]["usd"]
     x7dao_dollar = x7dao * prices["x7dao"]["usd"]
     x7101_dollar = x7101 * prices["x7101"]["usd"]
@@ -2221,14 +1685,14 @@ async def supply_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7103_dollar = x7103 * prices["x7103"]["usd"]
     x7104_dollar = x7104 * prices["x7104"]["usd"]
     x7105_dollar = x7105 * prices["x7105"]["usd"]
-    x7r_percent = round(x7r / items.supply * 100, 2)
-    x7dao_percent = round(x7dao / items.supply * 100, 2)
-    x7101_percent = round(x7101 / items.supply * 100, 2)
-    x7102_percent = round(x7102 / items.supply * 100, 2)
-    x7103_percent = round(x7103 / items.supply * 100, 2)
-    x7104_percent = round(x7104 / items.supply * 100, 2)
-    x7105_percent = round(x7105 / items.supply * 100, 2)
-    img = Image.open((random.choice(items.blackhole)))
+    x7r_percent = round(x7r / ca.supply * 100, 2)
+    x7dao_percent = round(x7dao / ca.supply * 100, 2)
+    x7101_percent = round(x7101 / ca.supply * 100, 2)
+    x7102_percent = round(x7102 / ca.supply * 100, 2)
+    x7103_percent = round(x7103 / ca.supply * 100, 2)
+    x7104_percent = round(x7104 / ca.supply * 100, 2)
+    x7105_percent = round(x7105 / ca.supply * 100, 2)
+    img = Image.open((random.choice(media.blackhole)))
     i1 = ImageDraw.Draw(img)
     myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 22)
     i1.text((28, 36),
@@ -2272,8 +1736,8 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         price["x7r"]["usd_24h_change"] = 0
     if dollar:
         amount = round(float(chain[1:]) / float(price["usd"]), 2)
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7r_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7r_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -2291,8 +1755,8 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown')
     if chain.isdigit():
         amount = float(chain) * float(price["x7r"]["usd"])
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7r_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7r_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -2308,16 +1772,16 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'\n\n{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
-        holders = api.get_holders(items.x7r_ca)
-        burn = api.get_token_balance(items.dead, "eth", items.x7r_ca)
-        percent = round(((burn / items.supply) * 100), 6)
-        x7r = api.get_liquidity(items.x7r_pair_eth)
+        holders = api.get_holders(ca.x7r_ca)
+        burn = api.get_token_balance(ca.dead, "eth", ca.x7r_ca)
+        percent = round(((burn / ca.supply) * 100), 6)
+        x7r = api.get_liquidity(ca.x7r_pair_eth)
         x7r_token = float(x7r["reserve0"])
         x7r_weth = float(x7r["reserve1"]) / 10 ** 18
         x7r_weth_dollar = float(x7r_weth) * float(api.get_native_price("eth"))
         x7r_token_dollar = float(price["x7r"]["usd"]) * float(x7r_token) / 10 ** 18
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7r_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7r_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
         im1.save(r"media\blackhole.png", quality=95)
@@ -2326,7 +1790,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7R Info (ETH)\n\n'
                 f'X7R Price: ${price["x7r"]["usd"]}\n'
                 f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(price["x7r"]["usd"] * items.supply)}\n'
+                f'Market Cap:  ${"{:0,.0f}".format(price["x7r"]["usd"] * ca.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7r"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n'
                 f'Liquidity:\n'
@@ -2341,7 +1805,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7R Info (ETH)*\nUse `/x7r [chain-name]` for other chains\n\n'
                     f'X7R Price: ${price["x7r"]["usd"]}\n'
                     f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n'
-                    f'Market Cap:  ${"{:0,.0f}".format(price["x7r"]["usd"]*items.supply)}\n'
+                    f'Market Cap:  ${"{:0,.0f}".format(price["x7r"]["usd"] * ca.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(price["x7r"]["usd_24h_vol"])}\n'
                     f'Holders: {holders}\n\n'
                     f'X7R Tokens Burned:\n'
@@ -2351,52 +1815,52 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{"{:0,.0f}".format(x7r_token)[:4]}M X7R (${"{:0,.0f}".format(x7r_token_dollar)})\n'
                     f'{"{:0,.0f}".format(x7r_weth)} WETH (${"{:0,.0f}".format(x7r_weth_dollar)})\n'
                     f'Total Liquidity ${"{:0,.0f}".format(x7r_weth_dollar + x7r_token_dollar)}\n\n'
-                    f'Contract Address:\n`{items.x7r_ca}`\n\n{api.get_quote()}',
+                    f'Contract Address:\n`{ca.x7r_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Etherscan', url=f'{items.ether_token}{items.x7r_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_eth}{items.x7r_pair_eth}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7r_ca}')], ]))
+                [InlineKeyboardButton(text='Etherscan', url=f'{url.ether_token}{ca.x7r_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{ca.x7r_pair_eth}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7r_ca}')], ]))
     if chain == "arb" or chain == "arbitrum":
         await update.message.reply_photo(
-            photo=open(items.x7r_logo, 'rb'),
+            photo=open(media.x7r_logo, 'rb'),
             caption=f'*X7R Info (ARBITRUM)*\nUse `/x7r [chain-name]` for other chains\n\n'
-                    f'Contract Address:\n`{items.x7r_ca}`\n\n{api.get_quote()}',
+                    f'Contract Address:\n`{ca.x7r_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Arbiscan', url=f'{items.arb_token}{items.x7r_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_arb}{items.x7r_pair_arb}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7r_ca}')], ]))
+                [InlineKeyboardButton(text='Arbiscan', url=f'{url.arb_token}{ca.x7r_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_arb}{ca.x7r_pair_arb}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7r_ca}')], ]))
     if chain == "poly" or chain == "polygon":
         await update.message.reply_photo(
-            photo=open(items.x7r_logo, 'rb'),
+            photo=open(media.x7r_logo, 'rb'),
             caption=f'*X7R Info (POLYGON)*\nUse `/x7r [chain-name]` for other chains\n\n'
-                    f'Contract Address:\n`{items.x7r_ca}`\n\n{api.get_quote()}',
+                    f'Contract Address:\n`{ca.x7r_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Polygonscan', url=f'{items.poly_token}{items.x7r_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_poly}{items.x7r_pair_poly}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7r_ca}')], ]))
+                [InlineKeyboardButton(text='Polygonscan', url=f'{url.poly_token}{ca.x7r_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_poly}{ca.x7r_pair_poly}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7r_ca}')], ]))
     if chain == "bsc" or chain == "bnb":
         await update.message.reply_photo(
-            photo=open(items.x7r_logo, 'rb'),
+            photo=open(media.x7r_logo, 'rb'),
             caption=f'*X7R Info (BSC)*\nUse `/x7r [chain-name]` for other chains\n\n'
-                    f'Contract Address:\n`{items.x7r_ca}`\n\n{api.get_quote()}',
+                    f'Contract Address:\n`{ca.x7r_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='BSCscan', url=f'{items.bsc_token}{items.x7r_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_bsc}{items.x7r_pair_bsc}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7r_ca}')], ]))
+                [InlineKeyboardButton(text='BSCscan', url=f'{url.bsc_token}{ca.x7r_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_bsc}{ca.x7r_pair_bsc}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7r_ca}')], ]))
     if chain == "opti" or chain == "optimism":
         await update.message.reply_photo(
-            photo=open(items.x7r_logo, 'rb'),
+            photo=open(media.x7r_logo, 'rb'),
             caption=f'*X7R Info (OPTIMISM)*\nUse `/x7r [chain-name]` for other chains\n\n'
-                    f'Contract Address:\n`{items.x7r_ca}`\n\n{api.get_quote()}',
+                    f'Contract Address:\n`{ca.x7r_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{items.opti_token}{items.x7r_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_opti}{items.x7r_pair_opti}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7r_ca}')], ]))
+                [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{url.opti_token}{ca.x7r_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_opti}{ca.x7r_pair_opti}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7r_ca}')], ]))
 
 
 async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2407,8 +1871,8 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         price["x7dao"]["usd_24h_change"] = 0
     if dollar:
         amount = float(chain[1:]) / float(price["x7dao"]["usd"])
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7dao_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7dao_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -2428,8 +1892,8 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chain = "500000"
     if chain == "500000":
         amount = float(chain) * float(price["x7dao"]["usd"])
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7dao_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7dao_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -2449,8 +1913,8 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     if chain.isdigit():
         amount = float(chain)*float(price["x7dao"]["usd"])
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7dao_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7dao_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -2466,14 +1930,14 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
-        holders = api.get_holders(items.x7dao_ca)
-        x7dao = api.get_liquidity(items.x7dao_pair_eth)
+        holders = api.get_holders(ca.x7dao_ca)
+        x7dao = api.get_liquidity(ca.x7dao_pair_eth)
         x7dao_token = float(x7dao["reserve0"])
         x7dao_weth = float(x7dao["reserve1"]) / 10 ** 18
         x7dao_weth_dollar = float(x7dao_weth) * float(api.get_native_price("eth"))
         x7dao_token_dollar = float(price["x7dao"]["usd"]) * float(x7dao_token) / 10 ** 18
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7dao_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7dao_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -2481,7 +1945,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7DAO Info (ETH)\n\n'
                 f'X7DAO Price: ${price["x7dao"]["usd"]}\n'
                 f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(price["x7dao"]["usd"] * items.supply)}\n'
+                f'Market Cap:  ${"{:0,.0f}".format(price["x7dao"]["usd"] * ca.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7dao"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n'
                 f'Liquidity:\n'
@@ -2496,59 +1960,59 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7DAO (ETH) Info*\n\n'
             f'X7DAO Price: ${price["x7dao"]["usd"]}\n'
             f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 1)}%\n'
-            f'Market Cap:  ${"{:0,.0f}".format(price["x7dao"]["usd"] * items.supply)}\n'
+            f'Market Cap:  ${"{:0,.0f}".format(price["x7dao"]["usd"] * ca.supply)}\n'
             f'24 Hour Volume: ${"{:0,.0f}".format(price["x7dao"]["usd_24h_vol"])}\n'
             f'Holders: {holders}\n\n'
             f'Liquidity:\n'
             f'{"{:0,.0f}".format(x7dao_token)[:4]}M X7DAO (${"{:0,.0f}".format(x7dao_token_dollar)})\n'
             f'{"{:0,.0f}".format(x7dao_weth)} WETH (${"{:0,.0f}".format(x7dao_weth_dollar)})\n'
             f'Total Liquidity ${"{:0,.0f}".format(x7dao_weth_dollar + x7dao_token_dollar)}\n\n'
-            f'Contract Address:\n`{items.x7dao_ca}`\n\n{api.get_quote()}',
+            f'Contract Address:\n`{ca.x7dao_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Etherscan', url=f'{items.ether_token}{items.x7dao_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_eth}{items.x7dao_pair_eth}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7dao_ca}')], ]))
+                [InlineKeyboardButton(text='Etherscan', url=f'{url.ether_token}{ca.x7dao_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{ca.x7dao_pair_eth}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7dao_ca}')], ]))
     if chain == "bsc" or chain == "bnb":
         await update.message.reply_photo(
-            photo=open(items.x7dao_logo, 'rb'),
+            photo=open(media.x7dao_logo, 'rb'),
             caption=f'*X7DAO (BSC) Info*\nUse `/x7dao [chain-name]` for other chains\n\n'
-            f'Contract Address:\n`{items.x7dao_ca}`\n\n{api.get_quote()}',
+            f'Contract Address:\n`{ca.x7dao_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='BSCscan', url=f'{items.bsc_token}{items.x7dao_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_bsc}{items.x7dao_pair_bsc}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7dao_ca}')], ]))
+                [InlineKeyboardButton(text='BSCscan', url=f'{url.bsc_token}{ca.x7dao_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_bsc}{ca.x7dao_pair_bsc}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7dao_ca}')], ]))
     if chain == "opti" or chain == "optimism":
         await update.message.reply_photo(
-            photo=open(items.x7dao_logo, 'rb'),
+            photo=open(media.x7dao_logo, 'rb'),
             caption=f'*X7DAO (OPTIMISM) Info*\nUse `/x7dao [chain-name]` for other chains\n\n'
-            f'Contract Address:\n`{items.x7dao_ca}`\n\n{api.get_quote()}',
+            f'Contract Address:\n`{ca.x7dao_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{items.opti_token}{items.x7dao_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_opti}{items.x7dao_pair_opti}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7dao_ca}')], ]))
+                [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{url.opti_token}{ca.x7dao_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_opti}{ca.x7dao_pair_opti}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7dao_ca}')], ]))
     if chain == "arb" or chain == "arbitrum":
         await update.message.reply_photo(
-            photo=open(items.x7dao_logo, 'rb'),
+            photo=open(media.x7dao_logo, 'rb'),
             caption=f'*X7DAO (ARBITRUM) Info*\nUse `/x7dao [chain-name]` for other chains\n\n'
-            f'Contract Address:\n`{items.x7dao_ca}`\n\n{api.get_quote()}',
+            f'Contract Address:\n`{ca.x7dao_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Arbiscan', url=f'{items.arb_token}{items.x7dao_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_arb}{items.x7dao_pair_arb}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7dao_ca}')], ]))
+                [InlineKeyboardButton(text='Arbiscan', url=f'{url.arb_token}{ca.x7dao_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_arb}{ca.x7dao_pair_arb}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7dao_ca}')], ]))
     if chain == "poly" or chain == "polygon":
         await update.message.reply_photo(
-            photo=open(items.x7dao_logo, 'rb'),
+            photo=open(media.x7dao_logo, 'rb'),
             caption=f'*X7DAO (POLYGON) Info*\nUse `/x7dao [chain-name]` for other chains\n\n'
-            f'Contract Address:\n`{items.x7dao_ca}`\n\n{api.get_quote()}',
+            f'Contract Address:\n`{ca.x7dao_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Polygonscan', url=f'{items.poly_token}{items.x7dao_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_poly}{items.x7dao_pair_poly}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7dao_ca}')], ]))
+                [InlineKeyboardButton(text='Polygonscan', url=f'{url.poly_token}{ca.x7dao_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_poly}{ca.x7dao_pair_poly}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7dao_ca}')], ]))
 
 
 async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2559,8 +2023,8 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         price["x7101"]["usd_24h_change"] = 0
     if dollar:
         amount = float(chain[1:]) / float(price["x7101"]["usd"])
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7101_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7101_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -2577,8 +2041,8 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f' X7101 (ETH) Tokens (before tax)\n\n{api.get_quote()}', parse_mode='Markdown')
     if chain.isdigit():
         amount = float(chain)*float(price["x7101"]["usd"])
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7101_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7101_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -2594,9 +2058,9 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
-        holders = api.get_holders(items.x7101_ca)
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7101_logo)
+        holders = api.get_holders(ca.x7101_ca)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7101_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -2604,7 +2068,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7101 Info (ETH)\n\n'
                 f'X7101 Price: ${price["x7101"]["usd"]}\n'
                 f'24 Hour Change: {round(price["x7101"]["usd_24h_change"]),1}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(price["x7101"]["usd"] * items.supply)}\n'
+                f'Market Cap:  ${"{:0,.0f}".format(price["x7101"]["usd"] * ca.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7101"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
@@ -2615,55 +2079,55 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7101 (ETH) Info*\nUse `/X7101 [chain-name]` for other chains\n\n'
             f'X7101 Price: ${price["x7101"]["usd"]}\n'
             f'24 Hour Change: {round(price["x7101"]["usd_24h_change"], 1)}%\n'
-            f'Market Cap:  ${"{:0,.0f}".format(price["x7101"]["usd"] * items.supply)}\n'
+            f'Market Cap:  ${"{:0,.0f}".format(price["x7101"]["usd"] * ca.supply)}\n'
             f'24 Hour Volume: ${round(price["x7101"]["usd_24h_vol"])}\n'
             f'Holders: {holders}\n\n'
-            f'*X7101 Contract*\n`{items.x7101_ca}`\n\n{api.get_quote()}',
+            f'*X7101 Contract*\n`{ca.x7101_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Etherscan', url=f'{items.ether_token}{items.x7101_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_eth}{items.x7101_pair_eth}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7101_ca}')], ]))
+                [InlineKeyboardButton(text='Etherscan', url=f'{url.ether_token}{ca.x7101_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{ca.x7101_pair_eth}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7101_ca}')], ]))
     if chain == "arb" or chain == "arbitrum":
         await update.message.reply_photo(
-            photo=open(items.x7101_logo, 'rb'),
+            photo=open(media.x7101_logo, 'rb'),
             caption=f'*X7101 (ARBITRUM) Info*\nUse `/X7101 [chain-name]` for other chains\n\n'
-            f'*X7101 Contract*\n`{items.x7101_ca}`\n\n{api.get_quote()}',
+            f'*X7101 Contract*\n`{ca.x7101_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Arbiscan', url=f'{items.arb_token}{items.x7101_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_arb}{items.x7101_pair_arb}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7101_ca}')], ]))
+                [InlineKeyboardButton(text='Arbiscan', url=f'{url.arb_token}{ca.x7101_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_arb}{ca.x7101_pair_arb}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7101_ca}')], ]))
     if chain == "poly" or chain == "polygon":
         await update.message.reply_photo(
-            photo=open(items.x7101_logo, 'rb'),
+            photo=open(media.x7101_logo, 'rb'),
             caption=f'*X7101 (POLYGON) Info*\nUse `/X7101 [chain-name]` for other chains\n\n'
-            f'*X7101 Contract*\n`{items.x7101_ca}`\n\n{api.get_quote()}',
+            f'*X7101 Contract*\n`{ca.x7101_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Polygonscan', url=f'{items.poly_token}{items.x7101_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_poly}{items.x7101_pair_poly}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7101_ca}')], ]))
+                [InlineKeyboardButton(text='Polygonscan', url=f'{url.poly_token}{ca.x7101_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_poly}{ca.x7101_pair_poly}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7101_ca}')], ]))
     if chain == "bsc" or chain == "bnb":
         await update.message.reply_photo(
-            photo=open(items.x7101_logo, 'rb'),
+            photo=open(media.x7101_logo, 'rb'),
             caption=f'*X7101 (BSC) Info*\nUse `/X7101 [chain-name]` for other chains\n\n'
-            f'*X7101 Contract*\n`{items.x7101_ca}`\n\n{api.get_quote()}',
+            f'*X7101 Contract*\n`{ca.x7101_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='BSCscan', url=f'{items.bsc_token}{items.x7101_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_bsc}{items.x7101_pair_bsc}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7101_ca}')], ]))
+                [InlineKeyboardButton(text='BSCscan', url=f'{url.bsc_token}{ca.x7101_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_bsc}{ca.x7101_pair_bsc}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7101_ca}')], ]))
     if chain == "opti" or chain == "optimism":
         await update.message.reply_photo(
-            photo=open(items.x7101_logo, 'rb'),
+            photo=open(media.x7101_logo, 'rb'),
             caption=f'*X7101 (OPTIMISM) Info*\nUse `/X7101 [chain-name]` for other chains\n\n'
-            f'*X7101 Contract*\n`{items.x7101_ca}`\n\n{api.get_quote()}',
+            f'*X7101 Contract*\n`{ca.x7101_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{items.opti_token}{items.x7101_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_opti}{items.x7101_pair_opti}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7101_ca}')], ]))
+                [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{url.opti_token}{ca.x7101_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_opti}{ca.x7101_pair_opti}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7101_ca}')], ]))
 
 
 async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2674,8 +2138,8 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         price["x7102"]["usd_24h_change"] = 0
     if dollar:
         amount = float(chain[1:]) / float(price["x7102"]["usd"])
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7102_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7102_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -2693,8 +2157,8 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown')
     if chain.isdigit():
         amount = float(chain) * float(price["x7102"]["usd"])
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7102_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7102_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -2710,9 +2174,9 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
-        holders = api.get_holders(items.x7102_ca)
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7102_logo)
+        holders = api.get_holders(ca.x7102_ca)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7102_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -2720,7 +2184,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7102 Info (ETH)\n\n'
                 f'X7102 Price: ${price["x7102"]["usd"]}\n'
                 f'24 Hour Change: {round(price["x7102"]["usd_24h_change"], 1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(price["x7102"]["usd"] * items.supply)}\n'
+                f'Market Cap:  ${"{:0,.0f}".format(price["x7102"]["usd"] * ca.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7102"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
@@ -2731,55 +2195,55 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7102 (ETH) Info*\nUse `/x7102 [chain-name]` for other chains\n\n'
                     f'X7102 Price: ${price["x7102"]["usd"]}\n'
                     f'24 Hour Change: {round(price["x7102"]["usd_24h_change"], 1)}%\n'
-                    f'Market Cap:  ${"{:0,.0f}".format(price["x7102"]["usd"] * items.supply)}\n'
+                    f'Market Cap:  ${"{:0,.0f}".format(price["x7102"]["usd"] * ca.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(price["x7102"]["usd_24h_vol"])}\n'
                     f'Holders: {holders}\n\n'
-                    f'*X7102 Contract*\n`{items.x7102_ca}`\n\n{api.get_quote()}',
+                    f'*X7102 Contract*\n`{ca.x7102_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Etherscan', url=f'{items.ether_token}{items.x7102_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_eth}{items.x7102_pair_eth}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7102_ca}')], ]))
+                [InlineKeyboardButton(text='Etherscan', url=f'{url.ether_token}{ca.x7102_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{ca.x7102_pair_eth}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7102_ca}')], ]))
     if chain == "bsc" or chain == "bnb":
         await update.message.reply_photo(
-            photo=open(items.x7102_logo, 'rb'),
+            photo=open(media.x7102_logo, 'rb'),
             caption=f'*X7102 (BSC) Info*\nUse `/x7102 [chain-name]` for other chains\n\n'
-                    f'*X7102 Contract*\n`{items.x7102_ca}`\n\n{api.get_quote()}',
+                    f'*X7102 Contract*\n`{ca.x7102_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='BSCscan', url=f'{items.bsc_token}{items.x7102_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_bsc}{items.x7102_pair_bsc}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7102_ca}')], ]))
+                [InlineKeyboardButton(text='BSCscan', url=f'{url.bsc_token}{ca.x7102_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_bsc}{ca.x7102_pair_bsc}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7102_ca}')], ]))
     if chain == "opti" or chain == "optimism":
         await update.message.reply_photo(
-            photo=open(items.x7102_logo, 'rb'),
+            photo=open(media.x7102_logo, 'rb'),
             caption=f'*X7102 (OPTIMISM) Info*\nUse `/x7102 [chain-name]` for other chains\n\n'
-                    f'*X7102 Contract*\n`{items.x7102_ca}`\n\n{api.get_quote()}',
+                    f'*X7102 Contract*\n`{ca.x7102_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{items.opti_token}{items.x7102_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_opti}{items.x7102_pair_opti}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7102_ca}')], ]))
+                [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{url.opti_token}{ca.x7102_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_opti}{ca.x7102_pair_opti}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7102_ca}')], ]))
     if chain == "poly" or chain == "polygon":
         await update.message.reply_photo(
-            photo=open(items.x7102_logo, 'rb'),
+            photo=open(media.x7102_logo, 'rb'),
             caption=f'*X7102 (POLYGON) Info*\nUse `/x7102 [chain-name]` for other chains\n\n'
-                    f'*X7102 Contract*\n`{items.x7102_ca}`\n\n{api.get_quote()}',
+                    f'*X7102 Contract*\n`{ca.x7102_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Polygonscan', url=f'{items.poly_token}{items.x7102_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_poly}{items.x7102_pair_poly}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7102_ca}')], ]))
+                [InlineKeyboardButton(text='Polygonscan', url=f'{url.poly_token}{ca.x7102_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_poly}{ca.x7102_pair_poly}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7102_ca}')], ]))
     if chain == "arb" or chain == "arbitrum":
         await update.message.reply_photo(
-            photo=open(items.x7102_logo, 'rb'),
+            photo=open(media.x7102_logo, 'rb'),
             caption=f'*X7102 (ARBITRUM) Info*\nUse `/x7102 [chain-name]` for other chains\n\n'
-                    f'*X7102 Contract*\n`{items.x7102_ca}`\n\n{api.get_quote()}',
+                    f'*X7102 Contract*\n`{ca.x7102_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Arbiscan', url=f'{items.arb_token}{items.x7102_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_arb}{items.x7102_pair_arb}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7102_ca}')], ]))
+                [InlineKeyboardButton(text='Arbiscan', url=f'{url.arb_token}{ca.x7102_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_arb}{ca.x7102_pair_arb}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7102_ca}')], ]))
 
 
 async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2790,8 +2254,8 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         price["x7103"]["usd_24h_change"] = 0
     if dollar:
         amount = float(chain[1:]) / float(price["x7103"]["usd"])
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7103_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7103_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -2809,8 +2273,8 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown')
     if chain.isdigit():
         amount = round(float(chain) * float(price["x7103"]["usd"]), 2)
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7103_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7103_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -2826,9 +2290,9 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
-        holders = api.get_holders(items.x7103_ca)
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7103_logo)
+        holders = api.get_holders(ca.x7103_ca)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7103_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -2836,7 +2300,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7103 Info (ETH)\n\n'
                 f'X7103 Price: ${price["x7103"]["usd"]}\n'
                 f'24 Hour Change: {round(price["x7103"]["usd_24h_change"],1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(price["x7103"]["usd"] * items.supply)}\n'
+                f'Market Cap:  ${"{:0,.0f}".format(price["x7103"]["usd"] * ca.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7103"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
@@ -2847,55 +2311,55 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7103 (ETH) Info*\nUse `/x7103` [chain-name] for other chains\n\n'
                     f'X7103 Price: ${price["x7103"]["usd"]}\n'
                     f'24 Hour Change: {round(price["x7103"]["usd_24h_change"],1)}%\n'
-                    f'Market Cap:  ${"{:0,.0f}".format(price["x7103"]["usd"]*items.supply)}\n'
+                    f'Market Cap:  ${"{:0,.0f}".format(price["x7103"]["usd"] * ca.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(price["x7103"]["usd_24h_vol"])}\n'
                     f'Holders: {holders}\n\n'
-                    f'*X7103 Contract*\n`{items.x7103_ca}`\n\n{api.get_quote()}',
+                    f'*X7103 Contract*\n`{ca.x7103_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Etherscan', url=f'{items.ether_token}{items.x7103_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_eth}{items.x7103_pair_eth}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7103_ca}')], ]))
+                [InlineKeyboardButton(text='Etherscan', url=f'{url.ether_token}{ca.x7103_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{ca.x7103_pair_eth}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7103_ca}')], ]))
     if chain == "bsc" or chain == "bnb":
         await update.message.reply_photo(
-            photo=open(items.x7103_logo, 'rb'),
+            photo=open(media.x7103_logo, 'rb'),
             caption=f'*X7103 (BSC) Info*\nUse `/x7103` [chain-name] for other chains\n\n'
-                    f'*X7103 Contract*\n`{items.x7103_ca}`\n\n{api.get_quote()}',
+                    f'*X7103 Contract*\n`{ca.x7103_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='BSCscan', url=f'{items.bsc_token}{items.x7103_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_bsc}{items.x7103_pair_bsc}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7103_ca}')], ]))
+                [InlineKeyboardButton(text='BSCscan', url=f'{url.bsc_token}{ca.x7103_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_bsc}{ca.x7103_pair_bsc}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7103_ca}')], ]))
     if chain == "polygon" or chain == "poly":
         await update.message.reply_photo(
-            photo=open(items.x7103_logo, 'rb'),
+            photo=open(media.x7103_logo, 'rb'),
             caption=f'*X7103 (POLYGON) Info*\nUse `/x7103` [chain-name] for other chains\n\n'
-                    f'*X7103 Contract*\n`{items.x7103_ca}`\n\n{api.get_quote()}',
+                    f'*X7103 Contract*\n`{ca.x7103_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Polygonscan', url=f'{items.poly_token}{items.x7103_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_poly}{items.x7103_pair_poly}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7103_ca}')], ]))
+                [InlineKeyboardButton(text='Polygonscan', url=f'{url.poly_token}{ca.x7103_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_poly}{ca.x7103_pair_poly}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7103_ca}')], ]))
     if chain == "arb" or chain == "arbitrum":
         await update.message.reply_photo(
-            photo=open(items.x7103_logo, 'rb'),
+            photo=open(media.x7103_logo, 'rb'),
             caption=f'*X7103 (ARBITRUM) Info*\nUse `/x7103` [chain-name] for other chains\n\n'
-                    f'*X7103 Contract*\n`{items.x7103_ca}`\n\n{api.get_quote()}',
+                    f'*X7103 Contract*\n`{ca.x7103_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Arbiscan', url=f'{items.arb_token}{items.x7103_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_arb}{items.x7103_pair_arb}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7103_ca}')], ]))
+                [InlineKeyboardButton(text='Arbiscan', url=f'{url.arb_token}{ca.x7103_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_arb}{ca.x7103_pair_arb}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7103_ca}')], ]))
     if chain == "opti" or chain == "optimism":
         await update.message.reply_photo(
-            photo=open(items.x7103_logo, 'rb'),
+            photo=open(media.x7103_logo, 'rb'),
             caption=f'*X7103 (OPTIMISM) Info*\nUse `/x7103` [chain-name] for other chains\n\n'
-                    f'*X7103 Contract*\n`{items.x7103_ca}`\n\n{api.get_quote()}',
+                    f'*X7103 Contract*\n`{ca.x7103_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{items.opti_token}{items.x7103_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_opti}{items.x7103_pair_opti}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7103_ca}')], ]))
+                [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{url.opti_token}{ca.x7103_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_opti}{ca.x7103_pair_opti}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7103_ca}')], ]))
 
 
 async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2906,8 +2370,8 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         price["x7104"]["usd_24h_change"] = 0
     if dollar:
         amount = float(chain[1:]) / float(price["x7104"]["usd"])
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7104_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7104_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -2925,8 +2389,8 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown')
     if chain.isdigit():
         amount = float(chain) * float(price["x7104"]["usd"])
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7104_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7104_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -2942,9 +2406,9 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
-        holders = api.get_holders(items.x7104_ca)
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7104_logo)
+        holders = api.get_holders(ca.x7104_ca)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7104_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -2952,7 +2416,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7104 Info (ETH)\n\n'
                 f'X7104 Price: ${price["x7104"]["usd"]}\n'
                 f'24 Hour Change: {round(price["x7104"]["usd_24h_change"],1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(price["x7104"]["usd"] * items.supply)}\n'
+                f'Market Cap:  ${"{:0,.0f}".format(price["x7104"]["usd"] * ca.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7104"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
@@ -2963,55 +2427,55 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7104 (ETH) Info*\n`Use /x7104 [chain-name]` for other chains\n\n'
                     f'X7104 Price: ${price["x7104"]["usd"]}\n'
                     f'24 Hour Change: {round(price["x7104"]["usd_24h_change"],1)}%\n'
-                    f'Market Cap:  ${"{:0,.0f}".format(price["x7104"]["usd"] * items.supply)}\n'
+                    f'Market Cap:  ${"{:0,.0f}".format(price["x7104"]["usd"] * ca.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(price["x7104"]["usd_24h_vol"])}\n'
                     f'Holders: {holders}\n\n'
-                    f'*X7104 Contract*\n`{items.x7104_ca}`\n\n{api.get_quote()}',
+                    f'*X7104 Contract*\n`{ca.x7104_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Etherscan', url=f'{items.ether_token}{items.x7104_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_eth}{items.x7104_pair_eth}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7104_ca}')], ]))
+                [InlineKeyboardButton(text='Etherscan', url=f'{url.ether_token}{ca.x7104_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{ca.x7104_pair_eth}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7104_ca}')], ]))
     if chain == "bsc" or chain == "bnb":
         await update.message.reply_photo(
-            photo=open(items.x7104_logo, 'rb'),
+            photo=open(media.x7104_logo, 'rb'),
             caption=f'*X7104 (BSC) Info*\n`Use /x7104 [chain-name]` for other chains\n\n'
-                    f'*X7104 Contract*\n`{items.x7104_ca}`\n\n{api.get_quote()}',
+                    f'*X7104 Contract*\n`{ca.x7104_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='BSCscan', url=f'{items.bsc_token}{items.x7104_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_bsc}{items.x7104_pair_bsc}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7104_ca}')], ]))
+                [InlineKeyboardButton(text='BSCscan', url=f'{url.bsc_token}{ca.x7104_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_bsc}{ca.x7104_pair_bsc}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7104_ca}')], ]))
     if chain == "poly" or chain == "polygon":
         await update.message.reply_photo(
-            photo=open(items.x7104_logo, 'rb'),
+            photo=open(media.x7104_logo, 'rb'),
             caption=f'*X7104 (POLYGON) Info*\n`Use /x7104 [chain-name]` for other chains\n\n'
-                    f'*X7104 Contract*\n`{items.x7104_ca}`\n\n{api.get_quote()}',
+                    f'*X7104 Contract*\n`{ca.x7104_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Polygonscan', url=f'{items.poly_token}{items.x7104_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_poly}{items.x7104_pair_poly}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7104_ca}')], ]))
+                [InlineKeyboardButton(text='Polygonscan', url=f'{url.poly_token}{ca.x7104_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_poly}{ca.x7104_pair_poly}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7104_ca}')], ]))
     if chain == "arb" or chain == "arbitrum":
         await update.message.reply_photo(
-            photo=open(items.x7104_logo, 'rb'),
+            photo=open(media.x7104_logo, 'rb'),
             caption=f'*X7104 (ARBITRUM) Info*\n`Use /x7104 [chain-name]` for other chains\n\n'
-                    f'*X7104 Contract*\n`{items.x7104_ca}`\n\n{api.get_quote()}',
+                    f'*X7104 Contract*\n`{ca.x7104_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Arbiscan', url=f'{items.arb_token}{items.x7104_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_arb}{items.x7104_pair_arb}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7104_ca}')], ]))
+                [InlineKeyboardButton(text='Arbiscan', url=f'{url.arb_token}{ca.x7104_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_arb}{ca.x7104_pair_arb}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7104_ca}')], ]))
     if chain == "opti" or chain == "optimism":
         await update.message.reply_photo(
-            photo=open(items.x7104_logo, 'rb'),
+            photo=open(media.x7104_logo, 'rb'),
             caption=f'*X7104 (OPTIMISM) Info*\n`Use /x7104 [chain-name]` for other chains\n\n'
-                    f'*X7104 Contract*\n`{items.x7104_ca}`\n\n{api.get_quote()}',
+                    f'*X7104 Contract*\n`{ca.x7104_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{items.opti_token}{items.x7104_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_opti}{items.x7104_pair_opti}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7104_ca}')], ]))
+                [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{url.opti_token}{ca.x7104_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_opti}{ca.x7104_pair_opti}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7104_ca}')], ]))
 
 
 async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3022,8 +2486,8 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         price["x7105"]["usd_24h_change"] = 0
     if dollar:
         amount = float(chain[1:]) / float(price["x7105"]["usd"])
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7105_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7105_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -3041,8 +2505,8 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown')
     if chain.isdigit():
         amount = float(chain) * float(price["x7105"]["usd"])
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7105_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7105_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -3058,9 +2522,9 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
-        holders = api.get_holders(items.x7105_ca)
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.x7105_logo)
+        holders = api.get_holders(ca.x7105_ca)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.x7105_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1 = ImageDraw.Draw(im1)
@@ -3068,7 +2532,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'X7105 Info (ETH)\n\n'
                 f'X7105 Price: ${price["x7105"]["usd"]}\n'
                 f'24 Hour Change: {round(price["x7105"]["usd_24h_change"],1)}%\n'
-                f'Market Cap:  ${"{:0,.0f}".format(price["x7105"]["usd"] * items.supply)}\n'
+                f'Market Cap:  ${"{:0,.0f}".format(price["x7105"]["usd"] * ca.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7105"]["usd_24h_vol"])}\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
@@ -3079,73 +2543,73 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7105 (ETH) Info*\nUse `/x7105 [chain-name]` for other chains\n'
                     f'X7105 Price: ${price["x7105"]["usd"]}\n'
                     f'24 Hour Change: {round(price["x7105"]["usd_24h_change"],1)}%\n'
-                    f'Market Cap:  ${"{:0,.0f}".format(price["x7105"]["usd"]*items.supply)}\n'
+                    f'Market Cap:  ${"{:0,.0f}".format(price["x7105"]["usd"] * ca.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(price["x7105"]["usd_24h_vol"])}\n'
                     f'Holders: {holders}\n\n'
-                    f'*X7105 Contract*\n`{items.x7105_ca}`\n\n{api.get_quote()}',
+                    f'*X7105 Contract*\n`{ca.x7105_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Etherscan', url=f'{items.ether_token}{items.x7105_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_eth}{items.x7105_pair_eth}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7105_ca}')], ]))
+                [InlineKeyboardButton(text='Etherscan', url=f'{url.ether_token}{ca.x7105_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{ca.x7105_pair_eth}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7105_ca}')], ]))
     if chain == "bsc" or chain == "bnb":
         await update.message.reply_photo(
-            photo=open(items.x7105_logo, 'rb'),
+            photo=open(media.x7105_logo, 'rb'),
             caption=f'*X7105 (BSC) Info*\n`Use /x7104 [chain-name]` for other chains\n\n'
-                    f'*X7105 Contract*\n`{items.x7105_ca}`\n\n{api.get_quote()}',
+                    f'*X7105 Contract*\n`{ca.x7105_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='BSCscan', url=f'{items.bsc_token}{items.x7105_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_bsc}{items.x7105_pair_bsc}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7105_ca}')], ]))
+                [InlineKeyboardButton(text='BSCscan', url=f'{url.bsc_token}{ca.x7105_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_bsc}{ca.x7105_pair_bsc}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7105_ca}')], ]))
     if chain == "poly" or chain == "polygon":
         await update.message.reply_photo(
-            photo=open(items.x7105_logo, 'rb'),
+            photo=open(media.x7105_logo, 'rb'),
             caption=f'*X7105 (POLYGON) Info*\n`Use /x7104 [chain-name]` for other chains\n\n'
-                    f'*X7105 Contract*\n`{items.x7105_ca}`\n\n{api.get_quote()}',
+                    f'*X7105 Contract*\n`{ca.x7105_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Polygonscan', url=f'{items.poly_token}{items.x7105_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_poly}{items.x7105_pair_poly}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7105_ca}')], ]))
+                [InlineKeyboardButton(text='Polygonscan', url=f'{url.poly_token}{ca.x7105_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_poly}{ca.x7105_pair_poly}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7105_ca}')], ]))
     if chain == "arb" or chain == "arbitrum":
         await update.message.reply_photo(
-            photo=open(items.x7105_logo, 'rb'),
+            photo=open(media.x7105_logo, 'rb'),
             caption=f'*X7105 (ARBITRUM) Info*\n`Use /x7104 [chain-name]` for other chains\n\n'
-                    f'*X7105 Contract*\n`{items.x7105_ca}`\n\n{api.get_quote()}',
+                    f'*X7105 Contract*\n`{ca.x7105_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Arbiscan', url=f'{items.arb_token}{items.x7105_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_arb}{items.x7105_pair_arb}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7105_ca}')], ]))
+                [InlineKeyboardButton(text='Arbiscan', url=f'{url.arb_token}{ca.x7105_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_arb}{ca.x7105_pair_arb}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7105_ca}')], ]))
     if chain == "opti" or chain == "optimism":
         await update.message.reply_photo(
-            photo=open(items.x7105_logo, 'rb'),
+            photo=open(media.x7105_logo, 'rb'),
             caption=f'*X7105 (OPTIMISM) Info*\n`Use /x7104 [chain-name]` for other chains\n\n'
-                    f'*X7105 Contract*\n`{items.x7105_ca}`\n\n{api.get_quote()}',
+                    f'*X7105 Contract*\n`{ca.x7105_ca}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{items.opti_token}{items.x7105_ca}')],
-                [InlineKeyboardButton(text='Chart', url=f'{items.dex_tools_opti}{items.x7105_pair_opti}')],
-                [InlineKeyboardButton(text='Buy', url=f'{items.xchange_buy}{items.x7105_ca}')], ]))
+                [InlineKeyboardButton(text='Optimistic.etherscan', url=f'{url.opti_token}{ca.x7105_ca}')],
+                [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_opti}{ca.x7105_pair_opti}')],
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7105_ca}')], ]))
 
 
 async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    x7r_supply = items.supply - api.get_token_balance(items.dead, "eth", items.x7r_ca)
+    x7r_supply = ca.supply - api.get_token_balance(ca.dead, "eth", ca.x7r_ca)
     price = api.get_cg_price("x7r, x7dao, x7101, x7102, x7103, x7104, x7105")
     x7r_cap = price["x7r"]["usd"] * x7r_supply
-    x7dao_cap = price["x7dao"]["usd"] * items.supply
-    x7101_cap = price["x7101"]["usd"] * items.supply
-    x7102_cap = price["x7102"]["usd"] * items.supply
-    x7103_cap = price["x7103"]["usd"] * items.supply
-    x7104_cap = price["x7104"]["usd"] * items.supply
-    x7105_cap = price["x7105"]["usd"] * items.supply
+    x7dao_cap = price["x7dao"]["usd"] * ca.supply
+    x7101_cap = price["x7101"]["usd"] * ca.supply
+    x7102_cap = price["x7102"]["usd"] * ca.supply
+    x7103_cap = price["x7103"]["usd"] * ca.supply
+    x7104_cap = price["x7104"]["usd"] * ca.supply
+    x7105_cap = price["x7105"]["usd"] * ca.supply
     cons_cap = x7101_cap + x7102_cap + x7103_cap + x7104_cap + x7105_cap
     total_cap = x7r_cap + x7dao_cap + x7101_cap + x7102_cap + x7103_cap + x7104_cap + x7105_cap
     if chain == "":
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.eth_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.eth_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 22)
         i1 = ImageDraw.Draw(im1)
@@ -3194,7 +2658,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7dao_change = price["x7dao"]["usd_24h_change"]
     token_price = api.get_cg_price(token_id)
     if search == "":
-        im1 = Image.open((random.choice(items.blackhole)))
+        im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(r'media\logo11.png')
         im1.paste(im2, (740, 20), im2)
         i1 = ImageDraw.Draw(im1)
@@ -3221,14 +2685,14 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7R Chart - Rewards Token',
-                                       url=f'{items.dex_tools_eth}{items.x7r_pair_eth}')],
+                                       url=f'{url.dex_tools_eth}{ca.x7r_pair_eth}')],
                  [InlineKeyboardButton(text='X7DAO Chart - Governance Token',
-                                       url=f'{items.dex_tools_eth}{items.x7dao_pair_eth}')], ]))
+                                       url=f'{url.dex_tools_eth}{ca.x7dao_pair_eth}')], ]))
         return
     if search == "eth":
         eth = api.get_cg_price("ethereum")
         gas_data = api.get_gas("eth")
-        im1 = Image.open((random.choice(items.blackhole)))
+        im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(requests.get(thumb, stream=True).raw)
         im1.paste(im2, (680, 20), im2)
         i1 = ImageDraw.Draw(im1)
@@ -3260,7 +2724,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if search == "bnb":
         bnb = api.get_cg_price("binancecoin")
         gas_data = api.get_gas("bsc")
-        im1 = Image.open((random.choice(items.blackhole)))
+        im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(requests.get(thumb, stream=True).raw)
         im1.paste(im2, (680, 20), im2)
         i1 = ImageDraw.Draw(im1)
@@ -3292,7 +2756,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if search == "matic" or search == "poly" or search == "polygon":
         matic = api.get_cg_price("matic-network")
         gas_data = api.get_gas("poly")
-        im1 = Image.open((random.choice(items.blackhole)))
+        im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(requests.get(thumb, stream=True).raw)
         im1.paste(im2, (680, 20), im2)
         i1 = ImageDraw.Draw(im1)
@@ -3325,7 +2789,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         img = Image.open(requests.get(thumb, stream=True).raw)
         result = img.convert('RGBA')
         result.save(r'media\cgtokenlogo.png')
-        im1 = Image.open((random.choice(items.blackhole)))
+        im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(r'media\cgtokenlogo.png')
         im1.paste(im2, (680, 20), im2)
         myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
@@ -3351,11 +2815,11 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def constellations_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     price = api.get_cg_price("x7101, x7102, x7103, x7104, x7105")
-    x7101mc = price["x7101"]["usd"] * items.supply
-    x7102mc = price["x7102"]["usd"] * items.supply
-    x7103mc = price["x7103"]["usd"] * items.supply
-    x7104mc = price["x7104"]["usd"] * items.supply
-    x7105mc = price["x7105"]["usd"] * items.supply
+    x7101mc = price["x7101"]["usd"] * ca.supply
+    x7102mc = price["x7102"]["usd"] * ca.supply
+    x7103mc = price["x7103"]["usd"] * ca.supply
+    x7104mc = price["x7104"]["usd"] * ca.supply
+    x7105mc = price["x7105"]["usd"] * ca.supply
     const_mc = x7101mc + x7102mc + x7103mc + x7104mc + x7105mc
     if price["x7101"]["usd_24h_change"] is None:
         price["x7101"]["usd_24h_change"] = 0
@@ -3368,7 +2832,7 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
     if price["x7105"]["usd_24h_change"] is None:
         price["x7105"]["usd_24h_change"] = 0
     if chain == "":
-        img = Image.open((random.choice(items.blackhole)))
+        img = Image.open((random.choice(media.blackhole)))
         i1 = ImageDraw.Draw(img)
         myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 20)
         i1.text((28, 36),
@@ -3401,23 +2865,23 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
                     f'X7101:      ${price["x7101"]["usd"]}\n'
                     f'24 Hour Change: {round(price["x7101"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7101mc)}\n'
-                    f'CA: `{items.x7101_ca}\n\n`'
+                    f'CA: `{ca.x7101_ca}\n\n`'
                     f'X7102:      ${price["x7102"]["usd"]}\n'
                     f'24 Hour Change: {round(price["x7102"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7102mc)}\n'
-                    f'CA: `{items.x7102_ca}\n\n`'
+                    f'CA: `{ca.x7102_ca}\n\n`'
                     f'X7103:      ${price["x7103"]["usd"]}\n'
                     f'24 Hour Change: {round(price["x7103"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7103mc)}\n'
-                    f'CA: `{items.x7103_ca}\n\n`'
+                    f'CA: `{ca.x7103_ca}\n\n`'
                     f'X7104:      ${price["x7104"]["usd"]}\n'
                     f'24 Hour Change: {round(price["x7104"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7104mc)}\n'
-                    f'CA: `{items.x7104_ca}\n\n`'
+                    f'CA: `{ca.x7104_ca}\n\n`'
                     f'X7105:      ${price["x7105"]["usd"]}\n'
                     f'24 Hour Change: {round(price["x7105"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(x7105mc)}\n'
-                    f'CA: `{items.x7105_ca}\n\n`'
+                    f'CA: `{ca.x7105_ca}\n\n`'
                     f'Combined Market Cap: ${"{:0,.0f}".format(const_mc)}\n\n'
                     f'{api.get_quote()}', parse_mode="Markdown")
 
@@ -3425,19 +2889,19 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
 async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "" or chain == "eth":
-        dev_eth = api.get_native_balance(items.dev_multi_eth, "eth")
-        com_eth = api.get_native_balance(items.com_multi_eth, "eth")
-        pioneer_eth = api.get_native_balance(items.pioneer_ca, "eth")
+        dev_eth = api.get_native_balance(ca.dev_multi_eth, "eth")
+        com_eth = api.get_native_balance(ca.com_multi_eth, "eth")
+        pioneer_eth = api.get_native_balance(ca.pioneer_ca, "eth")
         dev_dollar = float(dev_eth) * float(api.get_native_price("eth")) / 1 ** 18
         com_dollar = float(com_eth) * float(api.get_native_price("eth")) / 1 ** 18
         pioneer_dollar = float(pioneer_eth) * float(api.get_native_price("eth")) / 1 ** 18
-        com_x7r = api.get_token_balance(items.com_multi_eth, "eth", items.x7r_ca)
+        com_x7r = api.get_token_balance(ca.com_multi_eth, "eth", ca.x7r_ca)
         com_x7r_price = com_x7r * api.get_cg_price("x7r")["x7r"]["usd"]
-        com_x7d = api.get_token_balance(items.com_multi_eth, "eth", items.x7d_ca)
+        com_x7d = api.get_token_balance(ca.com_multi_eth, "eth", ca.x7d_ca)
         com_x7d_price = com_x7d * api.get_native_price("eth")
         com_total = com_x7r_price + com_dollar + com_x7d_price
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.eth_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.eth_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 20)
         i1 = ImageDraw.Draw(im1)
@@ -3464,19 +2928,19 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(
-                    text='Treasury Splitter Contract', url=f'{items.ether_address}{items.treasury_splitter_ca}')],
+                    text='Treasury Splitter Contract', url=f'{url.ether_address}{ca.treasury_splitter_ca}')],
                 [InlineKeyboardButton(
-                    text='Developer Multi-sig Wallet', url=f'{items.ether_address}{items.dev_multi_eth}')],
+                    text='Developer Multi-sig Wallet', url=f'{url.ether_address}{ca.dev_multi_eth}')],
                 [InlineKeyboardButton(
-                    text='Community Multi-sig Wallet', url=f'{items.ether_address}{items.com_multi_eth}')],
+                    text='Community Multi-sig Wallet', url=f'{url.ether_address}{ca.com_multi_eth}')],
             ]))
     if chain == "bsc" or chain == "bnb":
-        dev_eth = api.get_native_balance(items.dev_multi_bsc, "bsc")
-        com_eth = api.get_native_balance(items.com_multi_bsc, "bsc")
+        dev_eth = api.get_native_balance(ca.dev_multi_bsc, "bsc")
+        com_eth = api.get_native_balance(ca.com_multi_bsc, "bsc")
         dev_dollar = float(dev_eth) * float(api.get_native_price("bnb")) / 1 ** 18
         com_dollar = float(com_eth) * float(api.get_native_price("bnb")) / 1 ** 18
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.bsc_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.bsc_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 20)
         i1 = ImageDraw.Draw(im1)
@@ -3495,19 +2959,19 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Treasury Splitter Contract',
-                                      url=f'{items.bsc_address}{items.treasury_splitter_ca}')],
+                                      url=f'{url.bsc_address}{ca.treasury_splitter_ca}')],
                 [InlineKeyboardButton(text='Developer Multi-sig Wallet',
-                                      url=f'{items.bsc_address}{items.dev_multi_bsc}')],
+                                      url=f'{url.bsc_address}{ca.dev_multi_bsc}')],
                 [InlineKeyboardButton(text='Community Multi-sig Wallet',
-                                      url=f'{items.bsc_address}{items.com_multi_bsc}')],
+                                      url=f'{url.bsc_address}{ca.com_multi_bsc}')],
             ]))
     if chain == "arbitrum" or chain == "arb":
-        dev_amount = api.get_native_balance(items.dev_multi_arb, "arb")
-        com_amount = api.get_native_balance(items.dev_multi_arb, "arb")
+        dev_amount = api.get_native_balance(ca.dev_multi_arb, "arb")
+        com_amount = api.get_native_balance(ca.dev_multi_arb, "arb")
         dev_dollar = float(dev_amount) * float(api.get_native_price("eth")) / 1 ** 18
         com_dollar = float(com_amount) * float(api.get_native_price("eth")) / 1 ** 18
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.arb_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.arb_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 20)
         i1 = ImageDraw.Draw(im1)
@@ -3526,19 +2990,19 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Treasury Splitter Contract',
-                                      url=f'{items.arb_address}{items.treasury_splitter_ca}')],
+                                      url=f'{url.arb_address}{ca.treasury_splitter_ca}')],
                 [InlineKeyboardButton(text='Developer Multi-sig Wallet',
-                                      url=f'{items.arb_address}{items.dev_multi_arb}')],
+                                      url=f'{url.arb_address}{ca.dev_multi_arb}')],
                 [InlineKeyboardButton(text='Community Multi-sig Wallet',
-                                      url=f'{items.arb_address}{items.com_multi_arb}')],
+                                      url=f'{url.arb_address}{ca.com_multi_arb}')],
             ]))
     if chain == "polygon" or chain == "poly":
-        dev_amount = api.get_native_balance(items.dev_multi_poly, "poly")
-        com_amount = api.get_native_balance(items.com_multi_poly, "poly")
+        dev_amount = api.get_native_balance(ca.dev_multi_poly, "poly")
+        com_amount = api.get_native_balance(ca.com_multi_poly, "poly")
         dev_dollar = float(dev_amount) * float(api.get_native_price("matic")) / 1 ** 18
         com_dollar = float(com_amount) * float(api.get_native_price("matic")) / 1 ** 18
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.poly_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.poly_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 20)
         i1 = ImageDraw.Draw(im1)
@@ -3557,19 +3021,19 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Treasury Splitter Contract',
-                                      url=f'{items.poly_address}{items.treasury_splitter_ca}')],
+                                      url=f'{url.poly_address}{ca.treasury_splitter_ca}')],
                 [InlineKeyboardButton(text='Developer Multi-sig Wallet',
-                                      url=f'{items.poly_address}{items.dev_multi_poly}')],
+                                      url=f'{url.poly_address}{ca.dev_multi_poly}')],
                 [InlineKeyboardButton(text='Community Multi-sig Wallet',
-                                      url=f'{items.poly_address}{items.com_multi_poly}')],
+                                      url=f'{url.poly_address}{ca.com_multi_poly}')],
             ]))
     if chain == "optimism" or chain == "opti":
-        dev_amount = api.get_native_balance(items.dev_multi_opti, "opti")
-        com_amount = api.get_native_balance(items.com_multi_opti, "opti")
+        dev_amount = api.get_native_balance(ca.dev_multi_opti, "opti")
+        com_amount = api.get_native_balance(ca.com_multi_opti, "opti")
         dev_dollar = float(dev_amount) * float(api.get_native_price("eth")) / 1 ** 18
         com_dollar = float(com_amount) * float(api.get_native_price("eth")) / 1 ** 18
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.opti_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.opti_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 20)
         i1 = ImageDraw.Draw(im1)
@@ -3588,11 +3052,11 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Treasury Splitter Contract',
-                                      url=f'{items.opti_address}{items.treasury_splitter_ca}')],
+                                      url=f'{url.opti_address}{ca.treasury_splitter_ca}')],
                 [InlineKeyboardButton(text='Developer Multi-sig Wallet',
-                                      url=f'{items.opti_address}{items.dev_multi_opti}')],
+                                      url=f'{url.opti_address}{ca.dev_multi_opti}')],
                 [InlineKeyboardButton(text='Community Multi-sig Wallet',
-                                      url=f'{items.opti_address}{items.com_multi_opti}')],
+                                      url=f'{url.opti_address}{ca.com_multi_opti}')],
             ]))
 
 
@@ -3607,13 +3071,13 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7103_price = (price["x7103"]["usd"])
         x7104_price = (price["x7104"]["usd"])
         x7105_price = (price["x7105"]["usd"])
-        x7r = api.get_liquidity(items.x7r_pair_eth)
-        x7dao = api.get_liquidity(items.x7dao_pair_eth)
-        x7101 = api.get_liquidity(items.x7101_pair_eth)
-        x7102 = api.get_liquidity(items.x7102_pair_eth)
-        x7103 = api.get_liquidity(items.x7103_pair_eth)
-        x7104 = api.get_liquidity(items.x7104_pair_eth)
-        x7105 = api.get_liquidity(items.x7105_pair_eth)
+        x7r = api.get_liquidity(ca.x7r_pair_eth)
+        x7dao = api.get_liquidity(ca.x7dao_pair_eth)
+        x7101 = api.get_liquidity(ca.x7101_pair_eth)
+        x7102 = api.get_liquidity(ca.x7102_pair_eth)
+        x7103 = api.get_liquidity(ca.x7103_pair_eth)
+        x7104 = api.get_liquidity(ca.x7104_pair_eth)
+        x7105 = api.get_liquidity(ca.x7105_pair_eth)
         x7r_token = float(x7r["reserve0"])
         x7r_weth = float(x7r["reserve1"]) / 10 ** 18
         x7r_weth_dollar = float(x7r_weth) * float(api.get_native_price("eth"))
@@ -3648,8 +3112,8 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             x7101_weth_dollar+x7102_weth_dollar+x7103_weth_dollar+x7104_weth_dollar+x7105_weth_dollar
         constellations_token_dollar = \
             x7101_token_dollar+x7102_token_dollar+x7103_token_dollar+x7104_token_dollar+x7105_token_dollar
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.eth_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.eth_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 20)
@@ -3693,14 +3157,14 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'Total Liquidity ${"{:0,.0f}".format(constellations_weth_dollar+constellations_token_dollar)}\n\n'
                     f'{api.get_quote()}', parse_mode='Markdown')
     if chain == "bsc" or chain == "bnb":
-        x7r_amount = api.get_native_balance(items.x7r_liq_lock_ca, "bsc")
-        x7dao_amount = api.get_native_balance(items.x7dao_liq_lock_ca, "bsc")
-        cons_amount = api.get_native_balance(items.cons_liq_lock_ca, "bsc")
+        x7r_amount = api.get_native_balance(ca.x7r_liq_lock_ca, "bsc")
+        x7dao_amount = api.get_native_balance(ca.x7dao_liq_lock_ca, "bsc")
+        cons_amount = api.get_native_balance(ca.cons_liq_lock_ca, "bsc")
         x7dao_dollar = float(x7dao_amount) * float(api.get_native_price("bnb")) / 1 ** 18
         x7r_dollar = float(x7r_amount) * float(api.get_native_price("bnb")) / 1 ** 18
         cons_dollar = float(cons_amount) * float(api.get_native_price("bnb")) / 1 ** 18
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.bsc_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.bsc_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
@@ -3721,21 +3185,21 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='X7R Initial Liquidity',
-                                      url=f'{items.bsc_address}{items.x7r_liq_lock_ca}')],
+                                      url=f'{url.bsc_address}{ca.x7r_liq_lock_ca}')],
                 [InlineKeyboardButton(text='X7DAO Initial Liquidity',
-                                      url=f'{items.bsc_address}{items.x7dao_liq_lock_ca}')],
+                                      url=f'{url.bsc_address}{ca.x7dao_liq_lock_ca}')],
                 [InlineKeyboardButton(text='X7100 Initial Liquidity',
-                                      url=f'{items.bsc_address}{items.cons_liq_lock_ca}')],
+                                      url=f'{url.bsc_address}{ca.cons_liq_lock_ca}')],
             ]))
     if chain == "arbitrum" or chain == "arb":
-        x7r_amount = api.get_native_balance(items.x7r_liq_lock_ca, "arb")
-        x7dao_amount = api.get_native_balance(items.x7dao_liq_lock_ca, "arb")
-        cons_amount = api.get_native_balance(items.cons_liq_lock_ca, "arb")
+        x7r_amount = api.get_native_balance(ca.x7r_liq_lock_ca, "arb")
+        x7dao_amount = api.get_native_balance(ca.x7dao_liq_lock_ca, "arb")
+        cons_amount = api.get_native_balance(ca.cons_liq_lock_ca, "arb")
         x7dao_dollar = float(x7dao_amount) * float(api.get_native_price("eth")) / 1 ** 18
         x7r_dollar = float(x7r_amount) * float(api.get_native_price("eth")) / 1 ** 18
         cons_dollar = float(cons_amount) * float(api.get_native_price("eth")) / 1 ** 18
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.arb_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.arb_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
@@ -3756,21 +3220,21 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='X7R Initial Liquidity',
-                                      url=f'{items.arb_address}{items.x7r_liq_lock_ca}')],
+                                      url=f'{url.arb_address}{ca.x7r_liq_lock_ca}')],
                 [InlineKeyboardButton(text='X7DAO Initial Liquidity',
-                                      url=f'{items.arb_address}{items.x7dao_liq_lock_ca}')],
+                                      url=f'{url.arb_address}{ca.x7dao_liq_lock_ca}')],
                 [InlineKeyboardButton(text='X7100 Initial Liquidity',
-                                      url=f'{items.arb_address}{items.cons_liq_lock_ca}')],
+                                      url=f'{url.arb_address}{ca.cons_liq_lock_ca}')],
             ]))
     if chain == "optimism" or chain == "opti":
-        x7r_amount = api.get_native_balance(items.x7r_liq_lock_ca, "opti")
-        x7dao_amount = api.get_native_balance(items.x7dao_liq_lock_ca, "opti")
-        cons_amount = api.get_native_balance(items.cons_liq_lock_ca, "opti")
+        x7r_amount = api.get_native_balance(ca.x7r_liq_lock_ca, "opti")
+        x7dao_amount = api.get_native_balance(ca.x7dao_liq_lock_ca, "opti")
+        cons_amount = api.get_native_balance(ca.cons_liq_lock_ca, "opti")
         x7dao_dollar = float(x7dao_amount) * float(api.get_native_price("eth")) / 1 ** 18
         x7r_dollar = float(x7r_amount) * float(api.get_native_price("eth")) / 1 ** 18
         cons_dollar = float(cons_amount) * float(api.get_native_price("eth")) / 1 ** 18
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.opti_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.opti_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
@@ -3791,21 +3255,21 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='X7R Initial Liquidity',
-                                      url=f'{items.opti_address}{items.x7r_liq_lock_ca}')],
+                                      url=f'{url.opti_address}{ca.x7r_liq_lock_ca}')],
                 [InlineKeyboardButton(text='X7DAO Initial Liquidity',
-                                      url=f'{items.opti_address}{items.x7dao_liq_lock_ca}')],
+                                      url=f'{url.opti_address}{ca.x7dao_liq_lock_ca}')],
                 [InlineKeyboardButton(text='X7100 Initial Liquidity',
-                                      url=f'{items.opti_address}{items.cons_liq_lock_ca}')],
+                                      url=f'{url.opti_address}{ca.cons_liq_lock_ca}')],
             ]))
     if chain == "polygon" or chain == "poly":
-        x7r_amount = api.get_native_balance(items.x7r_liq_lock_ca, "poly")
-        x7dao_amount = api.get_native_balance(items.x7dao_liq_lock_ca, "poly")
-        cons_amount = api.get_native_balance(items.cons_liq_lock_ca, "poly")
+        x7r_amount = api.get_native_balance(ca.x7r_liq_lock_ca, "poly")
+        x7dao_amount = api.get_native_balance(ca.x7dao_liq_lock_ca, "poly")
+        cons_amount = api.get_native_balance(ca.cons_liq_lock_ca, "poly")
         x7dao_dollar = float(x7dao_amount) * float(api.get_native_price("matic")) / 1 ** 18
         x7r_dollar = float(x7r_amount) * float(api.get_native_price("matic")) / 1 ** 18
         cons_dollar = float(cons_amount) * float(api.get_native_price("matic")) / 1 ** 18
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.poly_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.poly_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
@@ -3826,22 +3290,22 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='X7R Initial Liquidity',
-                                      url=f'{items.poly_address}{items.x7r_liq_lock_ca}')],
+                                      url=f'{url.poly_address}{ca.x7r_liq_lock_ca}')],
                 [InlineKeyboardButton(text='X7DAO Initial Liquidity',
-                                      url=f'{items.poly_address}{items.x7dao_liq_lock_ca}')],
+                                      url=f'{url.poly_address}{ca.x7dao_liq_lock_ca}')],
                 [InlineKeyboardButton(text='X7100 Initial Liquidity',
-                                      url=f'{items.poly_address}{items.cons_liq_lock_ca}')],
+                                      url=f'{url.poly_address}{ca.cons_liq_lock_ca}')],
             ]))
 
 
 async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "" or chain == "eth":
-        burn = api.get_token_balance(items.dead, "eth", items.x7r_ca)
-        percent = round(burn / items.supply * 100, 2)
+        burn = api.get_token_balance(ca.dead, "eth", ca.x7r_ca)
+        percent = round(burn / ca.supply * 100, 2)
         burn_dollar = api.get_cg_price("x7r")["x7r"]["usd"] * float(burn)
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.eth_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.eth_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -3860,12 +3324,12 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="markdown",
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='Etherscan Burn Wallet',
-                                       url=f'{items.ether_token}{items.x7r_ca}?a={items.dead}')], ]))
+                                       url=f'{url.ether_token}{ca.x7r_ca}?a={ca.dead}')], ]))
     if chain == "bsc" or chain == "bnb":
-        amount = api.get_token_balance(items.dead, "bsc", items.x7r_ca)
-        percent = round(((amount / items.supply) * 100), 6)
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.bsc_logo)
+        amount = api.get_token_balance(ca.dead, "bsc", ca.x7r_ca)
+        percent = round(((amount / ca.supply) * 100), 6)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.bsc_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -3884,12 +3348,12 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="markdown",
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='Etherscan Burn Wallet',
-                                       url=f'{items.bsc_token}{items.x7r_ca}?a={items.dead}')], ]))
+                                       url=f'{url.bsc_token}{ca.x7r_ca}?a={ca.dead}')], ]))
     if chain == "polygon" or chain == "poly":
-        amount = api.get_token_balance(items.dead, "poly", items.x7r_ca)
-        percent = round(((amount / items.supply) * 100), 6)
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.poly_logo)
+        amount = api.get_token_balance(ca.dead, "poly", ca.x7r_ca)
+        percent = round(((amount / ca.supply) * 100), 6)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.poly_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -3908,12 +3372,12 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="markdown",
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='Etherscan Burn Wallet',
-                                       url=f'{items.poly_token}{items.x7r_ca}?a={items.dead}')], ]))
+                                       url=f'{url.poly_token}{ca.x7r_ca}?a={ca.dead}')], ]))
     if chain == "arbitrum" or chain == "arb":
-        amount = api.get_token_balance(items.dead, "arb", items.x7r_ca)
-        percent = round(((amount / items.supply) * 100), 6)
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.arb_logo)
+        amount = api.get_token_balance(ca.dead, "arb", ca.x7r_ca)
+        percent = round(((amount / ca.supply) * 100), 6)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.arb_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -3932,12 +3396,12 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="markdown",
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='Etherscan Burn Wallet',
-                                       url=f'{items.arb_token}{items.x7r_ca}?a={items.dead}')], ]))
+                                       url=f'{url.arb_token}{ca.x7r_ca}?a={ca.dead}')], ]))
     if chain == "optimism" or chain == "arb":
-        amount = api.get_token_balance(items.dead, "opti", items.x7r_ca)
-        percent = round(((amount / items.supply) * 100), 6)
-        im1 = Image.open((random.choice(items.blackhole)))
-        im2 = Image.open(items.opti_logo)
+        amount = api.get_token_balance(ca.dead, "opti", ca.x7r_ca)
+        percent = round(((amount / ca.supply) * 100), 6)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(media.opti_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
@@ -3956,7 +3420,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="markdown",
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='Etherscan Burn Wallet',
-                                       url=f'{items.opti_token}{items.x7r_ca}?a={items.dead}')], ]))
+                                       url=f'{url.opti_token}{ca.x7r_ca}?a={ca.dead}')], ]))
 
 
 # AUTO MESSAGES
@@ -3964,18 +3428,18 @@ async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
     await context.bot.send_message(
         job.chat_id,
-        text=f'*X7 Finance Whitepaper Quote*\n\n{random.choice(items.quotes)}',
+        text=f'*X7 Finance Whitepaper Quote*\n\n{random.choice(text.quotes)}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Website', url=f'{items.website}')],
-            [InlineKeyboardButton(text='Whitepaper', url=f'{items.wp_link}')], ]))
+            [InlineKeyboardButton(text='Website', url=f'{url.website}')],
+            [InlineKeyboardButton(text='Whitepaper', url=f'{url.wp_link}')], ]))
 
 
 async def auto_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
     await context.bot.send_photo(
         job.chat_id,
-        photo=open((random.choice(items.logos)), 'rb'),
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f"{job.data}")
 
 
@@ -3986,7 +3450,7 @@ async def show_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) 
         await update.message.reply_text(f'X7 Finance Auto Messages set:\n\n{job_names}\n\nUse /stop_auto "name" '
                                         f'to stop')
     else:
-        await update.message.reply_text(f'{variables.mods_only}')
+        await update.message.reply_text(f'{text.mods_only}')
 
 
 async def auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -4004,7 +3468,7 @@ async def auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         await update.effective_message.reply_text(f"X7 Finance Auto Message: '{name}'\n\nSet every {due} "
                                                   f"Hours\n\n{message}\n\nby {user}")
     else:
-        await update.message.reply_text(f'{variables.mods_only}')
+        await update.message.reply_text(f'{text.mods_only}')
 
 
 async def stop_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -4017,7 +3481,7 @@ async def stop_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) 
         else:
             await update.message.reply_text(f"No active message named {context.args}.")
     else:
-        await update.message.reply_text(f'{variables.mods_only}')
+        await update.message.reply_text(f'{text.mods_only}')
 
 
 # GENERAL MESSAGES
@@ -4026,12 +3490,12 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'{update.effective_message.from_user.username} says "{message}" in: '
           f'{update.effective_message.chat.title}')
     if "@devs" in message:
-        result = round(((api.get_token_balance(items.dead, "eth", items.x7r_ca) / items.supply) * 100), 6)
+        result = round(((api.get_token_balance(ca.dead, "eth", ca.x7r_ca) / ca.supply) * 100), 6)
         await update.message.reply_text(f'Please send 1000 X7R to the burn wallet:\n\n'
                                         f'`0x000000000000000000000000000000000000dEaD`\n\nThank you for your '
                                         f'contribution {update.message.from_user.username}\n\n'
                                         f'X7R (ETH) Tokens Burned:\n'
-                                        f'{"{:,}".format(api.get_token_balance(items.dead, "eth", items.x7r_ca))}\n'
+                                        f'{"{:,}".format(api.get_token_balance(ca.dead, "eth", ca.x7r_ca))}\n'
                                         f'{result}% of Supply\n\n\n\n',
                                         parse_mode='Markdown')
     if "rob the bank" in message:
@@ -4050,32 +3514,32 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text('`Patience is bitter, but its fruit is sweet.\n\n- Aristotle`',
                                         parse_mode="markdown")
     if "https://twitter" in message:
-        await update.message.reply_text(f'{random.choice(items.twitter_replies)}')
+        await update.message.reply_text(f'{random.choice(text.twitter_replies)}')
     if message.startswith("gm"):
-        await update.message.reply_sticker(sticker=items.gm)
+        await update.message.reply_sticker(sticker=media.gm)
     if "new on chain message" in message:
-        await update.message.reply_sticker(sticker=items.chain)
+        await update.message.reply_sticker(sticker=media.chain)
     if "lfg" in message:
-        await update.message.reply_sticker(sticker=items.lfg)
+        await update.message.reply_sticker(sticker=media.lfg)
     if "goat" in message:
-        await update.message.reply_sticker(sticker=items.goat)
+        await update.message.reply_sticker(sticker=media.goat)
     if "smashed" in message:
-        await update.message.reply_sticker(sticker=items.smashed)
+        await update.message.reply_sticker(sticker=media.smashed)
     if "wagmi" in message:
-        await update.message.reply_sticker(sticker=items.wagmi)
+        await update.message.reply_sticker(sticker=media.wagmi)
     if "slapped" in message:
-        await update.message.reply_sticker(sticker=items.slapped)
+        await update.message.reply_sticker(sticker=media.slapped)
 
 
 async def admin_commands_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_admins = await update.effective_chat.get_administrators()
     if update.effective_user in (admin.user for admin in chat_admins):
         await update.message.reply_text(
-            f'{variables.admincommands}',
+            f'{text.admin_commands}',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Rose Bot Anti-flood', url='https://missrose.org/guide/antiflood/')], ]))
     else:
-        await update.message.reply_text(f'{variables.mods_only}')
+        await update.message.reply_text(f'{text.mods_only}')
 
 
 async def mods_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -4098,7 +3562,6 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('supply', supply_command))
     application.add_handler(CommandHandler('potw', potw_command))
     application.add_handler(CommandHandler('launch', launch_command))
-    application.add_handler(CommandHandler('shanghai', shanghai_command))
     application.add_handler(CommandHandler('signers', signers_command))
     application.add_handler(CommandHandler('magisters', magisters_command))
     application.add_handler(CommandHandler(['on_chain', 'deployer', 'devs'], deployer_command))
@@ -4168,7 +3631,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler(['admin_commands', 'admin', 'admincommands'], admin_commands_command))
     application.job_queue.run_repeating(
         wp_message, variables.wp_time * 60 * 60,
-        chat_id=items.main_id,
+        chat_id=ca.main_id,
         name=str('WP Message'),
         data=variables.wp_time * 60 * 60)
     application.run_polling()
