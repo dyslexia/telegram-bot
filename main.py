@@ -3428,23 +3428,14 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                         f'contribution {update.message.from_user.username}\n\n'
                                         f'X7R (ETH) Tokens Burned:\n'
                                         f'{"{:,}".format(api.get_token_balance(ca.dead, "eth", ca.x7r))}\n'
-                                        f'{result}% of Supply\n\n\n\n',
+                                        f'{result}% of Supply',
                                         parse_mode='Markdown')
     if "rob the bank" in message:
-        await update.message.reply_text(f'`Rob The Bank (an outstanding community member and marketer)`\n\n'
-                                        f'`-X7 DAO founders`', parse_mode='Markdown')
+        await update.message.reply_text(f'{text.rob}', parse_mode='Markdown')
     if "delay" in message:
-        await update.message.reply_text('To ensure our code is trusted and that the release is flawless, X7\'s '
-                                        'Leveraged DEX trading will not begin until we have published third party '
-                                        'security audits. In the meantime, our Stochastic Topological Offensive '
-                                        'Penetration, Probing, and Exploitation Researcher, STOPPER, has been '
-                                        'executing millions of transactions on our private test network to ensure '
-                                        'no edge case is missed.\n\n'
-                                        '`A delayed game is eventually good, a bad game is bad forever.\n\n'
-                                        '- Shigeru Miyamoto`', parse_mode="markdown")
+        await update.message.reply_text(f'{text.delay}', parse_mode="markdown")
     if "patience" in message:
-        await update.message.reply_text('`Patience is bitter, but its fruit is sweet.\n\n- Aristotle`',
-                                        parse_mode="markdown")
+        await update.message.reply_text(f'{text.patience}', parse_mode="markdown")
     if "https://twitter" in message:
         await update.message.reply_text(f'{random.choice(text.twitter_replies)}')
     if message.startswith("gm"):
@@ -3475,10 +3466,7 @@ async def admin_commands_command(update: Update, context: ContextTypes.DEFAULT_T
 
 
 async def mods_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('@robthebank44 @Adz1doubleD @CoastCorn @cryptod0c @Phlux '
-                                    '@SlumdOg_shillionaire2022 @DallasX7'
-                                    '@gazuga @Gavalars @MikeMurpher @KBCrypto11\n\n'
-                                    'MODS ASSEMBLE!')
+    await update.message.reply_text(f'{text.mods}')
 
 
 async def error(update, context):

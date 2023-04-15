@@ -2,7 +2,8 @@
 import variables
 
 mods_only = "You do not have permission to do this. #trustnoone"
-
+mods = '@robthebank44 @Adz1doubleD @CoastCorn @cryptod0c @Phlux @SlumdOg_shillionaire2022 @DallasX7 ' \
+       '@gazuga @Gavalars @MikeMurpher @KBCrypto11\n\nMODS ASSEMBLE!'
 commands = '/about - Welcome to X7 Finance\n' \
            '/ecosystem - Token Overview\n' \
            '/links - Official Links\n' \
@@ -61,7 +62,16 @@ commands = '/about - Welcome to X7 Finance\n' \
            '/media - TG Stickers and Emojis\n' \
            '/bobby - Bobby BuyBot Channels\n' \
            '/alumni - X7 Finance Alumni\n'
-
+delay = "To ensure our code is trusted and that the release is flawless, X7\'s " \
+        'Leveraged DEX trading will not begin until we have published third party ' \
+        'security audits. In the meantime, our Stochastic Topological Offensive ' \
+        'Penetration, Probing, and Exploitation Researcher, STOPPER, has been ' \
+        'executing millions of transactions on our private test network to ensure ' \
+        'no edge case is missed.\n\n' \
+        '`A delayed game is eventually good, a bad game is bad forever.\n\n' \
+        '- Shigeru Miyamoto`'
+patience = '`Patience is bitter, but its fruit is sweet.\n\n- Aristotle`'
+rob = '`Rob The Bank (an outstanding community member and marketer)`\n\n`-X7 DAO founders`'
 admin_commands = 'To be run in main chat\n\n' \
                 '/settings - Open the setting menu\n' \
                 '/setup - Setup the portal\n' \
@@ -73,8 +83,6 @@ admin_commands = 'To be run in main chat\n\n' \
                 '/stop_auto [name]\n' \
                 '/view_auto\n\n' \
                 f'wp quote will trigger every {variables.wp_time} hour\n'
-
-
 ecosystem = '*X7 Finance Ecosystem*\n\n• *X7R*\nX7\'s original launched token. Hodl as a percentage of all ' \
         'transaction fees are used to buy and burn tokens, reducing total supply of available tokens.\n\n' \
         '• *X7DAO*\nHolders of X7DAO tokens will be able to vote on fee rates, loan terms, funding terms, ' \
@@ -91,7 +99,6 @@ ecosystem = '*X7 Finance Ecosystem*\n\n• *X7R*\nX7\'s original launched token.
         'just as they would underwrite treasury bills and other stable assets. Holders of X7D will be able to ' \
         'mint a time-based interest-bearing NFT. X7D is always exchangeable with Ethereum at a 1-to-1 ratio.\n' \
         'The X7 Finance protocol will only permit minting of new X7 Deposit tokens when on-chain reserves permit.'
-
 about = '*Welcome to X7 Finance*\n\nX7 is an ecosystem of innovative smart contracts that provide those with ' \
         'visionary ideas access to leveraged seed capital (e.g. Initial Liquidity Offerings, or ILOs) without ' \
         'lenders incurring the risk of losing the principal. This invention has massive implications not just ' \
@@ -123,12 +130,10 @@ about = '*Welcome to X7 Finance*\n\nX7 is an ecosystem of innovative smart contr
         f'`"X7’s founding team believes that capital should be available to those with great ideas and that the ' \
         'unflinching reliability of code and distributed consensus can provide capital while eliminating ' \
         'significant downside risk."\n\n- X7DAO Founding Team`'
-
 twitter_replies = ["Raid!", "LFG", "Send it!", "Twitter raid!", "Like and Retweet!", "GO GO GO!", "X7 Force!",
                    "Raid it Fam!", 'Blow it up!', "Full force!", "Light it up!", "Shill time!", "Smash it!", "Slap it!",
                    "Send it!", "If Phlux says it, You do it!", "Phlux it up!", "Full Send!", "Hit it Hard!",
                    "Insert inspirational raid quote here!", "Let them know!", "RAIIIIIIIIIID", "Tweet Twoooo"]
-
 quotes = [
     "Ethos\n\nX7’s founding team believes that capital should be available to those with great ideas and that the "
     "unflinching reliability of code and distributed consensus can provide capital while eliminating significant "
