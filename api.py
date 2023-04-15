@@ -3,6 +3,7 @@ from moralis import evm_api
 import keys
 import requests
 import random
+import nfts
 from datetime import datetime
 
 def get_signers(wallet):
@@ -24,7 +25,7 @@ def get_cg_price(token):
     return cg
 
 # noinspection PyTypeChecker
-def get_nft(nft, chain):
+def get_nft_holder_list(nft, chain):
     result = evm_api.nft.get_nft_owners(
         api_key=keys.moralis, params={"chain": chain, "format": "decimal", "address": nft})
     return result
@@ -87,32 +88,70 @@ def get_quote():
     quote = f'`"{quote_raw["text"]}"\n\n-{quote_raw["author"]}`'
     return quote
 
-def get_holders_nft(nft, chain):
+def get_nft_holder_count(nft, chain):
     url = 'https://api.blockspan.com/v1/collections/contract/' + nft + chain
     response = requests.get(url, headers={"accept": "application/json", "X-API-KEY": keys.blockspan})
     data = response.json()
     amount = data["total_tokens"]
+    print(data)
     return amount
 
-def get_native_price(token):
-    if token == "eth":
-        url = 'https://api.etherscan.io/api?module=stats&action=ethprice&' + keys.ether
-        response = requests.get(url)
-        data = response.json()
-        value = float(data["result"]["ethusd"])
-        return value
-    if token == "bnb":
-        url = 'https://api.bscscan.com/api?module=stats&action=bnbprice&' + keys.bsc
-        response = requests.get(url)
-        data = response.json()
-        value = float(data["result"]["ethusd"])
-        return value
-    if token == "matic":
-        url = 'https://api.polygonscan.com/api?module=stats&action=maticprice&' + keys.poly
-        response = requests.get(url)
-        data = response.json()
-        value = float(data["result"]["maticusd"])
-        return value
+def get_nft_price(nft, chain):
+    if chain == "eth":
+        if nft == "eco":
+            return nfts.eco_price_eth
+        if nft == "liq":
+            return nfts.liq_price_eth
+        if nft == "borrow":
+            return nfts.borrow_price_eth
+        if nft == "dex":
+            return nfts.dex_price_eth
+        if nft == "magister":
+            return nfts.magister_price_eth
+    if chain == "bsc":
+        if nft == "eco":
+            return nfts.eco_price_bsc
+        if nft == "liq":
+            return nfts.liq_price_bsc
+        if nft == "borrow":
+            return nfts.borrow_price_bsc
+        if nft == "dex":
+            return nfts.dex_price_bsc
+        if nft == "magister":
+            return nfts.magister_price_bsc
+    if chain == "poly":
+        if nft == "eco":
+            return nfts.eco_price_poly
+        if nft == "liq":
+            return nfts.liq_price_poly
+        if nft == "borrow":
+            return nfts.borrow_price_poly
+        if nft == "dex":
+            return nfts.dex_price_poly
+        if nft == "magister":
+            return nfts.magister_price_poly
+    if chain == "opti":
+        if nft == "eco":
+            return nfts.eco_price_opti
+        if nft == "liq":
+            return nfts.liq_price_opti
+        if nft == "borrow":
+            return nfts.borrow_price_opti
+        if nft == "dex":
+            return nfts.dex_price_opti
+        if nft == "magister":
+            return nfts.magister_price_opti
+    if chain == "arb":
+        if nft == "eco":
+            return nfts.eco_price_arb
+        if nft == "liq":
+            return nfts.liq_price_arb
+        if nft == "borrow":
+            return nfts.borrow_price_arb
+        if nft == "dex":
+            return nfts.dex_price_arb
+        if nft == "magister":
+            return nfts.magister_price_arb
 
 def get_token_balance(wallet, chain, token):
     if chain == "eth":
@@ -202,3 +241,23 @@ def get_native_balance(wallet, chain):
         amount_raw = float(data["result"][0]["balance"])
         amount = str(amount_raw / 10 ** 18)
         return amount
+
+def get_native_price(token):
+    if token == "eth":
+        url = 'https://api.etherscan.io/api?module=stats&action=ethprice&' + keys.ether
+        response = requests.get(url)
+        data = response.json()
+        value = float(data["result"]["ethusd"])
+        return value
+    if token == "bnb":
+        url = 'https://api.bscscan.com/api?module=stats&action=bnbprice&' + keys.bsc
+        response = requests.get(url)
+        data = response.json()
+        value = float(data["result"]["ethusd"])
+        return value
+    if token == "matic":
+        url = 'https://api.polygonscan.com/api?module=stats&action=maticprice&' + keys.poly
+        response = requests.get(url)
+        data = response.json()
+        value = float(data["result"]["maticusd"])
+        return value

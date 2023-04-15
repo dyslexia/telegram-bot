@@ -18,13 +18,15 @@ import media
 import url
 import text
 import loans
-import nft
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 print('Bot Restarted')
 
+async def test_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    test = api.get_nft_holder_list(ca.eco, "eth")
+    print(test)
 
 # COMMANDS
 async def bot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -73,152 +75,92 @@ async def links_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
+    chain_name = ""
+    chain_api = ""
+    chain_url = ""
+    eco_price = ""
+    borrow_price = ""
+    dex_price = ""
+    liq_price = ""
+    magister_price = ""
     if chain == "" or chain == "eth":
-        await update.message.reply_video(
-            video=open(media.nft_logo, 'rb'),
-            caption=f'*X7 Finance NFT Information (ETH)*\nUse `/nft [chain-name]` for other chains\n\n'
-                    f'*Ecosystem Maxi*\n{nft.eco_price_eth}\n'
-                    f'Available - {500-int(api.get_holders_nft(ca.eco, "?chain=eth-main"))}\n'
-                    f'> 25% discount on X7100 tax\n'
-                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
-                    f'Liquidity Maxi*\n{nft.liq_price_eth}\n'
-                    f'Available - {250-int(api.get_holders_nft(ca.liq, "?chain=eth-main"))}\n'
-                    f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
-                    f'> 15 % discount on X7DAO tax\n\n'
-                    f'*Dex Maxi*\n{nft.dex_price_eth}\n'
-                    f'Available - {150-int(api.get_holders_nft(ca.dex, "?chain=eth-main"))}\n'
-                    f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{nft.borrow_price_eth}\n'
-                    f'Available - {100-int(api.get_holders_nft(ca.borrow, "?chain=eth-main"))}\n'
-                    f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
-                    f'*Magister*\n{nft.magister_price_eth}\n'
-                    f'Available - {49-int(api.get_holders_nft(ca.magister, "?chain=eth-main"))}\n'
-                    f'> 25% discount on X7100 tax\n'        
-                    f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n*Pioneer*\n'
-                    f' > 6% of profits that come into the X7 Treasury Splitter are now being allocated to the reward '
-                    f'pool. Each X7 Pioneer NFT grants you a proportional share of this pool\n\n{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Mint Here', url='https://x7.finance/x/nft/mint')],
-                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{url.ether_token}{ca.eco}')],
-                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{url.ether_token}{ca.liq}')],
-                [InlineKeyboardButton(text='DEX Maxi', url=f'{url.ether_token}{ca.dex}')],
-                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{url.ether_token}{ca.borrow}')],
-                [InlineKeyboardButton(text='Magister', url=f'{url.ether_token}{ca.magister}')],
-                [InlineKeyboardButton(text='Pioneer', url=f'{url.ether_token}{ca.pioneer}')], ]))
+        chain_name = "(ETH)"
+        chain_api = "?chain=eth-main"
+        chain_url = url.poly_address
+        eco_price = api.get_nft_price("eco", "eth")
+        borrow_price = api.get_nft_price("borrow", "eth")
+        dex_price = api.get_nft_price("dex", "eth")
+        liq_price = api.get_nft_price("liq", "eth")
+        magister_price = api.get_nft_price("magister", "eth")
+    if chain == "poly" or chain == "polygon":
+        chain_name = "(POLYGON)"
+        chain_api = "?chain=poly-main"
+        chain_url = url.ether_address
+        eco_price = api.get_nft_price("eco", "poly")
+        borrow_price = api.get_nft_price("borrow", "poly")
+        dex_price = api.get_nft_price("dex", "poly")
+        liq_price = api.get_nft_price("liq", "poly")
+        magister_price = api.get_nft_price("magister", "poly")
     if chain == "bsc" or chain == "bnb":
-        await update.message.reply_video(
-            video=open(media.nft_logo, 'rb'),
-            caption=f'*X7 Finance NFT Information (BSC)*\nUse `/nft [chain-name]` for other chains\n\n'
-                    f'*Ecosystem Maxi*\n{nft.eco_price_bsc}\n'
-                    f'> 25% discount on X7100 tax\n'
-                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*Liquidity Maxi*\n'
-                    f'{nft.liq_price_bsc}\n'
-                    f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
-                    f'> 15 % discount on X7DAO tax\n\n*Dex Maxi*\n{nft.dex_price_bsc}\n'
-                    f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{nft.borrow_price_bsc}\n> Fee discounts for borrowing funds for ILO on X7 '
-                    f'DEX\n\n'
-                    f'*Magister*\n{nft.magister_price_bsc}\n> 25% discount on X7100 tax\n'
-                    f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Mint Here', url='https://www.x7finance.org/nfts/')],
-                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{url.bsc_token}{ca.eco}')],
-                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{url.bsc_token}{ca.liq}')],
-                [InlineKeyboardButton(text='DEX Maxi', url=f'{url.bsc_token}{ca.dex}')],
-                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{url.bsc_token}{ca.borrow}')],
-                [InlineKeyboardButton(text='Magister', url=f'{url.bsc_token}{ca.magister}')], ]))
-    if chain == "arbitrum" or chain == "arb":
-        await update.message.reply_video(
-            video=open(media.nft_logo, 'rb'),
-            caption=f'*X7 Finance NFT Information (ARBITRUM)*\nUse `/nft [chain-name]` for other chains\n\n'
-                    f'*Ecosystem Maxi*\n{nft.eco_price_arb}\n'
-                    f'Available - {500-int(api.get_holders_nft(ca.eco, "?chain=arbitrum"))}\n'
-                    f'> 25% discount on X7100 tax\n'
-                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
-                    f'Liquidity Maxi*\n{nft.liq_price_arb}\n'
-                    f'Available - {250-int(api.get_holders_nft(ca.liq, "?chain=arbitrum"))}\n'
-                    f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
-                    f'> 15 % discount on X7DAO tax\n\n'
-                    f'*Dex Maxi*\n{nft.dex_price_arb}\n'
-                    f'Available - {150-int(api.get_holders_nft(ca.dex, "?chain=arbitrum"))}\n'
-                    f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{nft.borrow_price_arb}\n'
-                    f'Available - {100-int(api.get_holders_nft(ca.borrow, "?chain=arbitrum"))}\n'
-                    f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
-                    f'*Magister*\n{nft.magister_price_arb} - 49 Supply\n'
-                    f'Available - {49-int(api.get_holders_nft(ca.magister, "?chain=arbitrum"))}\n'
-                    f'> 25% discount on X7100 tax\n'
-                    f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Mint Here', url='https://www.x7finance.org/nfts/')],
-                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{url.arb_token}{ca.eco}')],
-                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{url.arb_token}{ca.liq}')],
-                [InlineKeyboardButton(text='DEX Maxi', url=f'{url.arb_token}{ca.dex}')],
-                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{url.arb_token}{ca.borrow}')],
-                [InlineKeyboardButton(text='Magister', url=f'{url.arb_token}{ca.magister}')], ]))
-    if chain == "polygon" or chain == "poly":
-        await update.message.reply_video(
-            video=open(media.nft_logo, 'rb'),
-            caption=f'*X7 Finance NFT Information (POLYGON)*\nUse `/nft [chain-name]` for other chains\n\n'
-                    f'*Ecosystem Maxi*\n{nft.eco_price_poly}\n'
-                    f'Available - {500-int(api.get_holders_nft(ca.eco, "?chain=poly-main"))}\n'
-                    f'> 25% discount on X7100 tax\n'
-                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
-                    f'Liquidity Maxi*\n{nft.liq_price_poly}\n'
-                    f'Available - {250-int(api.get_holders_nft(ca.liq, "?chain=poly-main"))}\n'
-                    f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
-                    f'> 15 % discount on X7DAO tax\n\n'
-                    f'*Dex Maxi*\n{nft.dex_price_poly}\n'
-                    f'Available - {150-int(api.get_holders_nft(ca.dex, "?chain=poly-main"))}\n'
-                    f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{nft.borrow_price_poly}\n'
-                    f'Available - {100-int(api.get_holders_nft(ca.borrow, "?chain=poly-main"))}\n'
-                    f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
-                    f'*Magister*\n{nft.magister_price_poly}\n'
-                    f'Available - {49-int(api.get_holders_nft(ca.magister, "?chain=poly-main"))}\n'
-                    f'> 25% discount on X7100 tax\n'
-                    f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Mint Here', url='https://www.x7finance.org/nfts/')],
-                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{url.poly_token}{ca.eco}')],
-                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{url.poly_token}{ca.liq}')],
-                [InlineKeyboardButton(text='DEX Maxi', url=f'{url.poly_token}{ca.dex}')],
-                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{url.poly_token}{ca.borrow}')],
-                [InlineKeyboardButton(text='Magister', url=f'{url.poly_token}{ca.magister}')], ]))
-    if chain == "optimism" or chain == "opti":
-        await update.message.reply_video(
-            video=open(media.nft_logo, 'rb'),
-            caption=f'*X7 Finance NFT Information (OPTIMISM)*\nUse `/nft [chain-name]` for other chains\n\n'
-                    f'*Ecosystem Maxi*\n{nft.eco_price_opti}\n'
-                    f'Available - {500-int(api.get_holders_nft(ca.eco, "?chain=optimism-main"))}\n'
-                    f'> 25% discount on X7100 tax\n'
-                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
-                    f'Liquidity Maxi*\n{nft.liq_price_opti}\n'
-                    f'Available - {250-int(api.get_holders_nft(ca.liq, "?chain=optimism-main"))}\n'
-                    f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
-                    f'> 15 % discount on X7DAO tax\n\n'
-                    f'*Dex Maxi*\n{nft.dex_price_opti}\n'
-                    f'Available - {150-int(api.get_holders_nft(ca.dex, "?chain=optimism-main"))}\n'
-                    f'> LP Fee Discounts while trading on X7 DEX\n\n'
-                    f'*Borrowing Maxi*\n{nft.borrow_price_opti}\n'
-                    f'Available - {100-int(api.get_holders_nft(ca.borrow, "?chain=optimism-main"))}\n'
-                    f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
-                    f'*Magister*\n{nft.magister_price_opti}\n'
-                    f'Available - {49-int(api.get_holders_nft(ca.magister, "?chain=optimism-main"))}\n'
-                    f'> 25% discount on X7100 tax\n'
-                    f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Mint Here', url='https://www.x7finance.org/nfts/')],
-                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{url.opti_token}{ca.eco}')],
-                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{url.opti_token}{ca.liq}')],
-                [InlineKeyboardButton(text='DEX Maxi', url=f'{url.opti_token}{ca.dex}')],
-                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{url.opti_token}{ca.borrow}')],
-                [InlineKeyboardButton(text='Magister', url=f'{url.opti_token}{ca.magister}')], ]))
+        chain_name = "(BSC)"
+        chain_api = ""
+        chain_url = url.bsc_address
+        eco_price = api.get_nft_price("eco", "bsc")
+        borrow_price = api.get_nft_price("borrow", "bsc")
+        dex_price = api.get_nft_price("dex", "bsc")
+        liq_price = api.get_nft_price("liq", "eth")
+        magister_price = api.get_nft_price("magister", "bsc")
+    if chain == "opti" or chain == "optimism" or chain == "op":
+        chain_name = "(OPTIMISM)"
+        chain_api = "?chain=optimism-main"
+        chain_url = url.opti_address
+        eco_price = api.get_nft_price("eco", "opti")
+        borrow_price = api.get_nft_price("borrow", "opti")
+        dex_price = api.get_nft_price("dex", "opti")
+        liq_price = api.get_nft_price("liq", "opti")
+        magister_price = api.get_nft_price("magister", "opti")
+    if chain == "arb" or chain == "arbitrum":
+        chain_name = "(ARB)"
+        chain_api = "?chain=arbitrum"
+        chain_url = url.arb_address
+        eco_price = api.get_nft_price("eco", "arb")
+        borrow_price = api.get_nft_price("borrow", "arb")
+        dex_price = api.get_nft_price("dex", "arb")
+        liq_price = api.get_nft_price("liq", "arb")
+        magister_price = api.get_nft_price("magister", "arb")
+    print(eco_price)
+    await update.message.reply_video(
+        video=open(media.nft_logo, 'rb'),
+        caption=f'*X7 Finance NFT Information {chain_name}*\nUse `/nft [chain-name]` for other chains\n\n'
+                f'*Ecosystem Maxi*\n{eco_price}\n'
+                f'Available - {500-int(api.get_nft_holder_count(ca.eco, chain_api))}\n'
+                f'> 25% discount on X7100 tax\n'
+                f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
+                f'Liquidity Maxi*\n{liq_price}\n'
+                f'Available - {250-int(api.get_nft_holder_count(ca.liq, chain_api))}\n'
+                f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
+                f'> 15 % discount on X7DAO tax\n\n'
+                f'*Dex Maxi*\n{dex_price}\n'
+                f'Available - {150-int(api.get_nft_holder_count(ca.dex, chain_api))}\n'
+                f'> LP Fee Discounts while trading on X7 DEX\n\n'
+                f'*Borrowing Maxi*\n{borrow_price}\n'
+                f'Available - {100-int(api.get_nft_holder_count(ca.borrow, chain_api))}\n'
+                f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
+                f'*Magister*\n{magister_price}\n'
+                f'Available - {49-int(api.get_nft_holder_count(ca.magister, chain_api))}\n'
+                f'> 25% discount on X7100 tax\n'        
+                f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n*Pioneer*\n'
+                f' > 6% of profits that come into the X7 Treasury Splitter are now being allocated to the reward '
+                f'pool. Each X7 Pioneer NFT grants you a proportional share of this pool\n\n{api.get_quote()}',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='Mint Here', url='https://x7.finance/x/nft/mint')],
+            [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{chain_url}{ca.eco}')],
+            [InlineKeyboardButton(text='Liquidity Maxi', url=f'{chain_url}{ca.liq}')],
+            [InlineKeyboardButton(text='DEX Maxi', url=f'{chain_url}{ca.dex}')],
+            [InlineKeyboardButton(text='Borrowing Maxi', url=f'{chain_url}{ca.borrow}')],
+            [InlineKeyboardButton(text='Magister', url=f'{chain_url}{ca.magister}')],
+            [InlineKeyboardButton(text='Pioneer', url=f'{chain_url}{ca.pioneer}')], ]))
 
 
 async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1542,29 +1484,29 @@ async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     response = ""
     holders = ""
     if chain == "eth" or chain == "":
-        response = api.get_nft(ca.magister, "eth")
+        response = api.get_nft_holder_list(ca.magister, "eth")
         chain_name = "(ETH)"
         chain_url = url.ether_address
-        holders = api.get_holders_nft(ca.magister, "?chain=eth-main")
+        holders = api.get_nft_holder_count(ca.magister, "?chain=eth-main")
     if chain == "bsc" or chain == "bnb":
-        response = api.get_nft(ca.magister, "bsc")
+        response = api.get_nft_holder_list(ca.magister, "bsc")
         chain_name = "(BSC)"
         chain_url = url.bsc_address
     if chain == "polygon" or chain == "poly":
-        response = api.get_nft(ca.magister, "polygon")
+        response = api.get_nft_holder_list(ca.magister, "polygon")
         chain_name = "(POLYGON)"
         chain_url = url.poly_address
-        holders = api.get_holders_nft(ca.magister, "?chain=poly-main")
+        holders = api.get_nft_holder_count(ca.magister, "?chain=poly-main")
     if chain == "optimism" or chain == "opti":
-        response = api.get_nft(ca.magister, "optimism")
+        response = api.get_nft_holder_list(ca.magister, "optimism")
         chain_name = "(OPTIMISM)"
         chain_url = url.opti_address
-        holders = api.get_holders_nft(ca.magister, "?chain=optimism-main")
+        holders = api.get_nft_holder_count(ca.magister, "?chain=optimism-main")
     if chain == "arbitrum" or chain == "arb":
-        response = api.get_nft(ca.magister, "arbitrum")
+        response = api.get_nft_holder_list(ca.magister, "arbitrum")
         chain_name = "(ARB)"
         chain_url = url.arb_address
-        holders = api.get_holders_nft(ca.magister, "?chain=arbitrum")
+        holders = api.get_nft_holder_count(ca.magister, "?chain=arbitrum")
     magisters = list(map(lambda x: x['owner_of'], response["result"]))
     address = '\n\n'.join(map(str, magisters))
     await update.message.reply_photo(
@@ -3479,6 +3421,7 @@ if __name__ == '__main__':
     job_queue = application.job_queue
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
+    application.add_handler(CommandHandler('test', test_command))
     application.add_handler(CommandHandler('supply', supply_command))
     application.add_handler(CommandHandler('potw', potw_command))
     application.add_handler(CommandHandler('launch', launch_command))
