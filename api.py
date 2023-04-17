@@ -98,60 +98,20 @@ def get_nft_holder_count(nft, chain):
 
 def get_nft_price(nft, chain):
     if chain == "eth":
-        if nft == "eco":
-            return nfts.eco_price_eth
-        if nft == "liq":
-            return nfts.liq_price_eth
-        if nft == "borrow":
-            return nfts.borrow_price_eth
-        if nft == "dex":
-            return nfts.dex_price_eth
-        if nft == "magister":
-            return nfts.magister_price_eth
+        return nfts.eco_price_eth, nfts.liq_price_eth, nfts.borrow_price_eth, nfts.dex_price_eth, \
+            nfts.magister_price_eth
     if chain == "bsc":
-        if nft == "eco":
-            return nfts.eco_price_bsc
-        if nft == "liq":
-            return nfts.liq_price_bsc
-        if nft == "borrow":
-            return nfts.borrow_price_bsc
-        if nft == "dex":
-            return nfts.dex_price_bsc
-        if nft == "magister":
-            return nfts.magister_price_bsc
+        return nfts.eco_price_bsc, nfts.liq_price_bsc, nfts.borrow_price_bsc, nfts.dex_price_bsc, \
+            nfts.magister_price_bsc
     if chain == "poly":
-        if nft == "eco":
-            return nfts.eco_price_poly
-        if nft == "liq":
-            return nfts.liq_price_poly
-        if nft == "borrow":
-            return nfts.borrow_price_poly
-        if nft == "dex":
-            return nfts.dex_price_poly
-        if nft == "magister":
-            return nfts.magister_price_poly
+        return nfts.eco_price_poly, nfts.liq_price_poly, nfts.borrow_price_poly, nfts.dex_price_poly, \
+            nfts.magister_price_poly
     if chain == "opti":
-        if nft == "eco":
-            return nfts.eco_price_opti
-        if nft == "liq":
-            return nfts.liq_price_opti
-        if nft == "borrow":
-            return nfts.borrow_price_opti
-        if nft == "dex":
-            return nfts.dex_price_opti
-        if nft == "magister":
-            return nfts.magister_price_opti
+        return nfts.eco_price_opti, nfts.liq_price_opti, nfts.borrow_price_opti, nfts.dex_price_opti, \
+            nfts.magister_price_opti
     if chain == "arb":
-        if nft == "eco":
-            return nfts.eco_price_arb
-        if nft == "liq":
-            return nfts.liq_price_arb
-        if nft == "borrow":
-            return nfts.borrow_price_arb
-        if nft == "dex":
-            return nfts.dex_price_arb
-        if nft == "magister":
-            return nfts.magister_price_arb
+        return nfts.eco_price_arb, nfts.liq_price_arb, nfts.borrow_price_arb, nfts.dex_price_arb, \
+            nfts.magister_price_arb
 
 def get_token_balance(wallet, chain, token):
     if chain == "eth":

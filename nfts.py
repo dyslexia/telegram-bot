@@ -1,7 +1,7 @@
 # NFTs
 # ETH
 eco_price_eth = '0.1 ETH - 500 Supply'
-liq_price_eth = '0.5ETH - 250 Supply'
+liq_price_eth = '0.5 ETH - 250 Supply'
 dex_price_eth = '0.5 ETH - 150 Supply'
 borrow_price_eth = '1 ETH - 100 Supply'
 magister_price_eth = '50 ETH - 49 Supply'
