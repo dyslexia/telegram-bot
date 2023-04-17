@@ -93,7 +93,6 @@ def get_nft_holder_count(nft, chain):
     response = requests.get(url, headers={"accept": "application/json", "X-API-KEY": keys.blockspan})
     data = response.json()
     amount = data["total_tokens"]
-    print(data)
     return amount
 
 def get_nft_price(nft, chain):
