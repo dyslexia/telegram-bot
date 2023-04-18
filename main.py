@@ -8,7 +8,7 @@ import wikipediaapi
 import random
 import requests
 import ca
-import variables
+import times
 import tweepy
 import pyttsx3
 import pandas as pd
@@ -104,12 +104,14 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7 Finance NFT Information {chain_name}*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{eco_price}\n'
                     f'Available - {500 - eco_count}\n'
-                    f'> 25% discount on X7100 tax\n'
-                    f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
-                    f'Liquidity Maxi*\n{liq_price}\n'
+                    f'> {tax.eco_discount_x7100}% discount on X7100 tax\n'
+                    f'> {tax.eco_discount_x7r}% discount on X7R tax\n'
+                    f'> {tax.eco_discount_x7dao}% discount on X7DAO tax\n\n'
+                    f'*Liquidity Maxi*\n{liq_price}\n'
                     f'Available - {250 - liq_count}\n'
-                    f'> 50 % discount on X7100 tax\n> 25 % discount on X7R tax\n'
-                    f'> 15 % discount on X7DAO tax\n\n'
+                    f'> {tax.liq_discount_x7100}% discount on X7100 tax\n'
+                    f'> {tax.liq_discount_x7r}% discount on X7R tax\n'
+                    f'> {tax.liq_discount_x7dao}% discount on X7DAO tax\n\n'
                     f'*Dex Maxi*\n{dex_price}\n'
                     f'Available - {150 - dex_count}\n'
                     f'> LP Fee Discounts while trading on X7 DEX\n\n'
@@ -118,8 +120,9 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
                     f'*Magister*\n{magister_price}\n'
                     f'Available - {49 - magister_count}\n'
-                    f'> 25% discount on X7100 tax\n'
-                    f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n*Pioneer*\n'
+                    f'> {tax.magister_discount_x7100}% discount on X7100 tax\n'
+                    f'> {tax.magister_discount_x7r}% discount on X7R tax\n> No discount on X7DAO tax\n\n'
+                    f'*Pioneer*\n'
                     f' > 6% of profits that come into the X7 Treasury Splitter are now being allocated to the reward '
                     f'pool. Each X7 Pioneer NFT grants you a proportional share of this pool\n\n{api.get_quote()}',
             parse_mode='Markdown',
@@ -188,23 +191,26 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         video=open(media.nft_logo, 'rb'),
         caption=f'*X7 Finance NFT Information {chain_name}*\nUse `/nft [chain-name]` for other chains\n\n'
                 f'*Ecosystem Maxi*\n{eco_price}\n'
-                f'Available - {500-eco_count}\n'
-                f'> 25% discount on X7100 tax\n'
-                f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
+                f'Available - {500 - eco_count}\n'
+                f'> {tax.eco_discount_x7100}% discount on X7100 tax\n'
+                f'> {tax.eco_discount_x7r}% discount on X7R tax\n'
+                f'> {tax.eco_discount_x7dao}% discount on X7DAO tax\n\n*'
                 f'Liquidity Maxi*\n{liq_price}\n'
-                f'Available - {250-liq_count}\n'
-                f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
-                f'> 15 % discount on X7DAO tax\n\n'
+                f'Available - {250 - liq_count}\n'
+                f'> {tax.liq_discount_x7100}% discount on X7100 tax\n'
+                f'> {tax.liq_discount_x7r}% discount on X7R tax\n'
+                f'> 1{tax.liq_discount_x7dao}% discount on X7DAO tax\n\n'
                 f'*Dex Maxi*\n{dex_price}\n'
-                f'Available - {150-dex_count}\n'
+                f'Available - {150 - dex_count}\n'
                 f'> LP Fee Discounts while trading on X7 DEX\n\n'
                 f'*Borrowing Maxi*\n{borrow_price}\n'
-                f'Available - {100-borrow_count}\n'
+                f'Available - {100 - borrow_count}\n'
                 f'> Fee discounts for borrowing funds for ILO on X7 DEX\n\n'
                 f'*Magister*\n{magister_price}\n'
-                f'Available - {49-magister_count}\n'
-                f'> 25% discount on X7100 tax\n'        
-                f'> 25% discount on X7R tax\n> No discount on X7DAO tax\n\n{api.get_quote()}',
+                f'Available - {49 - magister_count}\n'
+                f'> {tax.magister_discount_x7100}% discount on X7100 tax\n'
+                f'> {tax.magister_discount_x7r}% discount on X7R tax\n> No discount on X7DAO tax\n\n'
+                f'{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton(text='Mint Here', url='https://x7.finance/x/nft/mint')],
@@ -741,7 +747,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     chain_tax = ""
-    chain_name: ""
+    chain_name = ""
     if chain == "eth" or chain == "":
         chain_name = "(ETH)"
         chain_tax = tax.eth
@@ -759,7 +765,7 @@ async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chain_tax = tax.arb
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
-        caption=f'*X7 Finance Tax Info*\nUse `/tax [chain-name]` for other chains\n\n'
+        caption=f'*X7 Finance Tax Info {chain_name}*\nUse `/tax [chain-name]` for other chains\n\n'
                 f'{chain_tax}\n\n{api.get_quote()}',
         parse_mode='Markdown')
 
@@ -774,7 +780,7 @@ async def swap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def spaces_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    then = variables.spaces_time.astimezone(pytz.utc)
+    then = times.spaces_time.astimezone(pytz.utc)
     now = datetime.now(timezone.utc)
     duration = then - now
     duration_in_s = duration.total_seconds()
@@ -791,7 +797,7 @@ async def spaces_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             text=f'Next X7 Finance Twitter space is:\n\n{then.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
                  f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
-                 f'[Click here]({variables.spaces_link}) to set a reminder!'
+                 f'[Click here]({times.spaces_link}) to set a reminder!'
                  f'\n\n{api.get_quote()}', parse_mode="Markdown")
 
 
@@ -840,9 +846,9 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     df = pd.read_csv(excel)
     addresses = list(df.Address)
     last5 = [entry[-5:] for entry in addresses]
-    giveaway_time = variables.giveaway_time.astimezone(pytz.utc)
-    snapshot1 = variables.snapshot1.astimezone(pytz.utc)
-    snapshot2 = variables.snapshot2.astimezone(pytz.utc)
+    giveaway_time = times.giveaway_time.astimezone(pytz.utc)
+    snapshot1 = times.snapshot1.astimezone(pytz.utc)
+    snapshot2 = times.snapshot2.astimezone(pytz.utc)
     now = datetime.now(timezone.utc)
     duration = giveaway_time - now
     duration_in_s = duration.total_seconds()
@@ -873,7 +879,7 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         f'Credit: Defi Dipper!'
                         f'\n\n{api.get_quote()}', parse_mode="Markdown")
         if ext == "entries":
-            update_utc = variables.giveaway_update.astimezone(pytz.utc)
+            update_utc = times.giveaway_update.astimezone(pytz.utc)
             await update.message.reply_photo(
                 photo=open((random.choice(media.logos)), 'rb'),
                 caption=f'The following addresses are in the draw, weighted by minted amount'
@@ -3217,8 +3223,8 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler(['discount', 'dsc', 'dac'], discount_command))
     application.add_handler(CommandHandler(['admin_commands', 'admin', 'admincommands'], admin_commands_command))
     application.job_queue.run_repeating(
-        wp_message, variables.wp_time * 60 * 60,
+        wp_message, times.wp_time * 60 * 60,
         chat_id=ca.main_id,
         name=str('WP Message'),
-        data=variables.wp_time * 60 * 60)
+        data=times.wp_time * 60 * 60)
     application.run_polling()

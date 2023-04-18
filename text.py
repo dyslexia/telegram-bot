@@ -1,5 +1,5 @@
 # TEXT
-import variables
+import times
 
 mods_only = "You do not have permission to do this. #trustnoone"
 mods = '@robthebank44 @Adz1doubleD @CoastCorn @cryptod0c @Phlux @SlumdOg_shillionaire2022 @DallasX7 ' \
@@ -82,7 +82,7 @@ admin_commands = 'To be run in main chat\n\n' \
                 '/start_auto [name-one-word] [time-in-minutes] [message] \n' \
                 '/stop_auto [name]\n' \
                 '/view_auto\n\n' \
-                f'wp quote will trigger every {variables.wp_time} hour\n'
+                f'wp quote will trigger every {times.wp_time} hour\n'
 ecosystem = '*X7 Finance Ecosystem*\n\n• *X7R*\nX7\'s original launched token. Hodl as a percentage of all ' \
         'transaction fees are used to buy and burn tokens, reducing total supply of available tokens.\n\n' \
         '• *X7DAO*\nHolders of X7DAO tokens will be able to vote on fee rates, loan terms, funding terms, ' \
