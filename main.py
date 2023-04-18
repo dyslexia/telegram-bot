@@ -21,7 +21,6 @@ import loans
 import nfts
 from translate import Translator
 
-
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -949,20 +948,7 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     loan_ca = ""
     if loan_type == "":
         await update.message.reply_text(
-            '*X7 Finance Loan Terms*\n\n'
-            f'Use `/loans ill001 - ill003` for more details on individual loan contracts\n\n'
-            'Loan terms are defined by standalone smart contracts that provide the following:\n\n'
-            '1. Loan origination fee\n'
-            '2. Loan retention premium fee schedule\n'
-            '3. Principal repayment condition/maximum loan duration\n'
-            '4. Liquidation conditions and Reward\n'
-            '5. Loan duration\n\n'
-            'The lending process delegates the loan terms to standalone smart contracts (see whitepaper below for more'
-            ' details). These loan terms contracts must be deployed, and then “added” or “removed” from the Lending '
-            'Pool as “available” loan terms for new loans. The DAO will be able to add or remove these term '
-            'contracts.\n\nLoan term contracts may be created by any interested third party, enabling a market '
-            'process by which new loan terms may be invented, provided they implement the proper interface.\n\n'
-            f'{api.get_quote()}',
+            f'{loans.overview}\n\n{api.get_quote()}',
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7 Finance Whitepaper', url=f'{url.wp_link}')], ]))
@@ -2445,6 +2431,10 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     search = " ".join(context.args).lower()
+    cg_name = ""
+    price = ""
+    gas_data = ""
+    im2 = ""
     token = api.get_cg_search(search)
     token_id = token["coins"][0]["api_symbol"]
     symbol = token["coins"][0]["symbol"]
@@ -2461,7 +2451,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'X7 Finance Token Price Info (ETH)\n\n'
-                f'X7R:      ${price["x7r"]["usd"]}\n'
+                f'X7R:    ${price["x7r"]["usd"]}\n'
                 f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n\n'
                 f'X7DAO:  ${price["x7dao"]["usd"]}\n'
                 f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 0)}%\n\n\n\n\n\n'
@@ -2473,7 +2463,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7 Finance Token Price Info (ETH)*\n'
                     f'Use `/x7r [chain]` or `/x7dao [chain]` for all other details\n'
                     f'Use `/constellations` for constellations\n\n'
-                    f'X7R:      ${price["x7r"]["usd"]}\n'
+                    f'X7R:    ${price["x7r"]["usd"]}\n'
                     f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n\n'
                     f'X7DAO:  ${price["x7dao"]["usd"]}\n'
                     f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 0)}%\n\n'
@@ -2485,18 +2475,30 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  [InlineKeyboardButton(text='X7DAO Chart - Governance Token',
                                        url=f'{url.dex_tools_eth}{ca.x7dao_pair_eth}')], ]))
         return
-    if search == "eth":
-        eth = api.get_cg_price("ethereum")
-        gas_data = api.get_gas("eth")
+    if search == "eth" or search == "bnb" or search == "matic" or search == "poly" or search == "polygon":
+        if search == "eth":
+            cg_name = "ethereum"
+            price = api.get_cg_price("ethereum")
+            gas_data = api.get_gas("eth")
+            im2 = Image.open(requests.get(thumb, stream=True).raw)
+        if search == "bnb":
+            cg_name = "binancecoin"
+            price = api.get_cg_price("binancecoin")
+            gas_data = api.get_gas("bsc")
+            im2 = Image.open(requests.get(thumb, stream=True).raw)
+        if search == "matic" or search == "poly" or search == "polygon":
+            cg_name = "matic-network"
+            price = api.get_cg_price("matic-network")
+            gas_data = api.get_gas("poly")
+            im2 = Image.open(requests.get(thumb, stream=True).raw)
         im1 = Image.open((random.choice(media.blackhole)))
-        im2 = Image.open(requests.get(thumb, stream=True).raw)
         im1.paste(im2, (680, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'{symbol} price\n\n'
-                f'Price: ${eth["ethereum"]["usd"]}\n'
-                f'24 Hour Change: {round(eth["ethereum"]["usd_24h_change"], 1)}%\n\n'
+                f'Price: ${price[cg_name]["usd"]}\n'
+                f'24 Hour Change: {round(price[cg_name]["usd_24h_change"], 1)}%\n\n'
                 f'Gas Prices:\n'
                 f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
                 f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
@@ -2507,79 +2509,15 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*{symbol} price*\n\n'
-                    f'Price: ${eth["ethereum"]["usd"]}\n'
-                    f'24 Hour Change: {round(eth["ethereum"]["usd_24h_change"], 1)}%\n\n'
+                    f'Price: ${price[cg_name]["usd"]}\n'
+                    f'24 Hour Change: {round(price[cg_name]["usd_24h_change"], 1)}%\n\n'
                     f'Gas Prices:\n'
                     f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
                     f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
                     f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n'
                     f'{api.get_quote()}', parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Chart', url=f'https://www.coingecko.com/en/coins/ethereum')], ]))
-        return
-    if search == "bnb":
-        bnb = api.get_cg_price("binancecoin")
-        gas_data = api.get_gas("bsc")
-        im1 = Image.open((random.choice(media.blackhole)))
-        im2 = Image.open(requests.get(thumb, stream=True).raw)
-        im1.paste(im2, (680, 20), im2)
-        i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
-        i1.text((28, 36),
-                f'{symbol} price\n\n'
-                f'Price: ${bnb["binancecoin"]["usd"]}\n'
-                f'24 Hour Change: {round(bnb["binancecoin"]["usd_24h_change"], 1)}%\n\n'
-                f'Gas Prices:\n'
-                f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
-                f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
-                f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n\n\n'
-                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        im1.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*{symbol} price*\n\n'
-                    f'Price: ${bnb["binancecoin"]["usd"]}\n'
-                    f'24 Hour Change: {round(bnb["binancecoin"]["usd_24h_change"], 1)}%\n\n'
-                    f'Gas Prices:\n'
-                    f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
-                    f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
-                    f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n'
-                    f'{api.get_quote()}', parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Chart', url=f'https://www.coingecko.com/en/coins/bnb')], ]))
-        return
-    if search == "matic" or search == "poly" or search == "polygon":
-        matic = api.get_cg_price("matic-network")
-        gas_data = api.get_gas("poly")
-        im1 = Image.open((random.choice(media.blackhole)))
-        im2 = Image.open(requests.get(thumb, stream=True).raw)
-        im1.paste(im2, (680, 20), im2)
-        i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
-        i1.text((28, 36),
-                f'{symbol} price\n\n'
-                f'Price: ${matic["matic-network"]["usd"]}\n'
-                f'24 Hour Change: {round(matic["matic-network"]["usd_24h_change"], 1)}%\n\n'
-                f'Gas Prices:\n'
-                f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
-                f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
-                f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n\n\n'
-                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        im1.save(r"media\blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*{symbol} price*\n\n'
-                    f'Price: ${matic["matic-network"]["usd"]}\n'
-                    f'24 Hour Change: {round(matic["matic-network"]["usd_24h_change"], 1)}%\n\n'
-                    f'Gas Prices:\n'
-                    f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
-                    f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
-                    f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n'
-                    f'{api.get_quote()}', parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Chart', url=f'https://www.coingecko.com/en/coins/polygon')], ]))
+                [InlineKeyboardButton(text='Chart', url=f'https://www.coingecko.com/en/coins/{cg_name}')], ]))
         return
     else:
         img = Image.open(requests.get(thumb, stream=True).raw)
@@ -2604,8 +2542,8 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'24 Hour Change: {round(token_price[token_id]["usd_24h_change"], 1)}%\n\n'
                     f'{api.get_quote()}',
             parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Chart', url=f'https://www.coingecko.com/en/coins/{token_id}')], ]))
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='Chart', url=f'https://www.coingecko.com/en/coins/{token_id}')], ]))
 
 
 async def constellations_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
