@@ -20,6 +20,7 @@ import text
 import loans
 import nfts
 from translate import Translator
+import tax
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
@@ -37,10 +38,10 @@ async def ecosystem_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'\n\n{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Website', url='https://x7.finance')],
-            [InlineKeyboardButton(text='Community Dashboard', url='https://x7community.space/')],
-            [InlineKeyboardButton(text='Linktree', url='https://linktr.ee/X7_Finance')],
-            [InlineKeyboardButton(text='Medium', url='https://medium.com/@X7Finance')], ]))
+            [InlineKeyboardButton(text='Website', url=f'{url.website}')],
+            [InlineKeyboardButton(text='Community Dashboard', url=f'{url.dashboard}')],
+            [InlineKeyboardButton(text='Linktree', url=f'{url.linktree}')],
+            [InlineKeyboardButton(text='Medium', url=f'{url.medium}')], ]))
 
 
 async def about_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -51,7 +52,7 @@ async def about_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Website', url=f'{url.website}')],
             [InlineKeyboardButton(text='Community Dashboard', url=f'{url.dashboard}')],
             [InlineKeyboardButton(text='Linktree', url=f'{url.linktree}')],
-            [InlineKeyboardButton(text='Medium', url=f'{url.twitter}')], ]))
+            [InlineKeyboardButton(text='Medium', url=f'{url.medium}')], ]))
 
 
 async def links_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -107,7 +108,7 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'> 10% discount on X7R tax\n> 10% discount on X7DAO tax\n\n*'
                     f'Liquidity Maxi*\n{liq_price}\n'
                     f'Available - {250 - liq_count}\n'
-                    f'> 50 % discount on X7100tax\n> 25 % discount on X7R tax\n'
+                    f'> 50 % discount on X7100 tax\n> 25 % discount on X7R tax\n'
                     f'> 15 % discount on X7DAO tax\n\n'
                     f'*Dex Maxi*\n{dex_price}\n'
                     f'Available - {150 - dex_count}\n'
@@ -217,6 +218,7 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     chain_url = ""
+    chain_name = ""
     if chain == "" or chain == "eth":
         chain_url = ""
         await update.message.reply_photo(
@@ -224,42 +226,36 @@ async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'*X7 Finance Opensea Links (ETH)*\nUse `/nft [chain-name]` for other chains\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Ecosystem Maxi',
-                                      url=f'https://opensea.io/collection/x7-ecosystem-maxi{chain_url}')],
-                [InlineKeyboardButton(text='Liquidity Maxi',
-                                      url=f'https://opensea.io/collection/x7-liquidity-maxi{chain_url}')],
-                [InlineKeyboardButton(text='DEX Maxi',
-                                      url=f'https://opensea.io/collection/x7-dex-maxi{chain_url}')],
-                [InlineKeyboardButton(text='Borrowing Maxi',
-                                      url=f'https://opensea.io/collection/x7-borrowing-maxi{chain_url}')],
-                [InlineKeyboardButton(text='Magister',
-                                      url=f'https://opensea.io/collection/x7-magister{chain_url}')],
-                [InlineKeyboardButton(text='Pioneer',
-                                      url=f'https://opensea.io/collection/x7-pioneer{chain_url}')], ]))
+                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{url.os_eco}')],
+                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{url.os_liq}')],
+                [InlineKeyboardButton(text='DEX Maxi', url=f'{url.os_dex}')],
+                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{url.os_borrow}')],
+                [InlineKeyboardButton(text='Magister', url=f'{url.os_magister}')],
+                [InlineKeyboardButton(text='Pioneer', url=f'{url.os_pioneer}')], ]))
         return
     if chain == "arb" or chain == "arbitrum":
+        chain_name = "(ARB)"
         chain_url = "-arbitrum"
     if chain == "optimism" or chain == "opti":
+        chain_name = "(OPTI)"
         chain_url = "-optimism"
     if chain == "bnb" or chain == "bsc" or chain == "binance":
+        chain_name = "(BSC)"
         chain_url = "-binance"
     if chain == "poly" or chain == "polygon":
+        chain_name = "(POLYGON)"
         chain_url = "-polygon"
     await update.message.reply_photo(
         photo=open(media.opensea_logo, 'rb'),
-        caption=f'*X7 Finance Opensea Links (ETH)*\nUse `/nft [chain-name]` for other chains\n\n{api.get_quote()}',
+        caption=f'*X7 Finance Opensea Links {chain_name}*\nUse `/nft [chain-name]` '
+                f'for other chains\n\n{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Ecosystem Maxi',
-                                  url=f'https://opensea.io/collection/x7-ecosystem-maxi{chain_url}')],
-            [InlineKeyboardButton(text='Liquidity Maxi',
-                                  url=f'https://opensea.io/collection/x7-liquidity-maxi{chain_url}')],
-            [InlineKeyboardButton(text='DEX Maxi',
-                                  url=f'https://opensea.io/collection/x7-dex-maxi{chain_url}')],
-            [InlineKeyboardButton(text='Borrowing Maxi',
-                                  url=f'https://opensea.io/collection/x7-borrowing-maxi{chain_url}')],
-            [InlineKeyboardButton(text='Magister',
-                                  url=f'https://opensea.io/collection/x7-magister{chain_url}')], ]))
+            [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{url.os_eco}{chain_url}')],
+            [InlineKeyboardButton(text='Liquidity Maxi', url=f'{url.os_liq}{chain_url}')],
+            [InlineKeyboardButton(text='DEX Maxi', url=f'{url.os_dex}{chain_url}')],
+            [InlineKeyboardButton(text='Borrowing Maxi', url=f'{url.os_borrow}{chain_url}')],
+            [InlineKeyboardButton(text='Magister', url=f'{url.os_magister}{chain_url}')], ]))
 
 
 async def website_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -283,14 +279,32 @@ async def wp_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def buy_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chain = " ".join(context.args).lower()
+    chain_url = ""
+    chain_name = ""
+    if chain == "eth" or chain == "":
+        chain_name = "(ETH)"
+        chain_url = url.xchange_buy_eth
+    if chain == "bsc" or chain == "bnb":
+        chain_name = "(BSC)"
+        chain_url = url.xchange_buy_bsc
+    if chain == "polygon" or chain == "poly":
+        chain_name = "(POLYGON)"
+        chain_url = url.xchange_buy_poly
+    if chain == "optimism" or chain == "opti":
+        chain_name = "(OPTIMISM)"
+        chain_url = url.xchange_buy_opti
+    if chain == "arbitrum" or chain == "arb":
+        chain_name = "(ARB)"
+        chain_url = url.xchange_buy_arb
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
-        caption=f'*X7 Finance Buy Links*\nUse `/x7token-name` for all other details\n'
+        caption=f'*X7 Finance Buy Links {chain_name}*\nUse `/buy [chain-name]` for other chains\n'
                 f'Use `/constellations` for constellations\n\n{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='X7R - Rewards Token', url=f'{url.xchange_buy}{ca.x7r}')],
-            [InlineKeyboardButton(text='X7DAO - Governance Token', url=f'{url.xchange_buy}{ca.x7dao}')], ]))
+            [InlineKeyboardButton(text='X7R - Rewards Token', url=f'{chain_url}{ca.x7r}')],
+            [InlineKeyboardButton(text='X7DAO - Governance Token', url=f'{chain_url}{ca.x7dao}')], ]))
 
 
 async def chart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -517,7 +531,8 @@ async def buy_bots_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Bobby Buy Bot Channels*\n\n{api.get_quote()}', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text='Arbitrum', url='https://t.me/x7arbbuybots')],
+            [[InlineKeyboardButton(text='Ethereum', url='https://t.me/X7constellation)')],
+             [InlineKeyboardButton(text='Arbitrum', url='https://t.me/x7arbbuybots')],
              [InlineKeyboardButton(text='BSC', url='https://t.me/x7bscbuybots')],
              [InlineKeyboardButton(text='Optimism', url='https://t.me/x7optibuybots')],
              [InlineKeyboardButton(text='Polygon', url='https://t.me/x7polygonbuybots')], ]))
@@ -724,15 +739,28 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chain = " ".join(context.args).lower()
+    chain_tax = ""
+    chain_name: ""
+    if chain == "eth" or chain == "":
+        chain_name = "(ETH)"
+        chain_tax = tax.eth
+    if chain == "bsc" or chain == "bnb":
+        chain_name = "(BSC)"
+        chain_tax = tax.bsc
+    if chain == "polygon" or chain == "poly":
+        chain_name = "(POLYGON)"
+        chain_tax = tax.poly
+    if chain == "optimism" or chain == "opti":
+        chain_name = "(OPTIMISM)"
+        chain_tax = tax.opti
+    if chain == "arbitrum" or chain == "arb":
+        chain_name = "(ARB)"
+        chain_tax = tax.arb
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
-        caption=f'*X7 Finance Tax Info*\n\n'
-                f'X7R: 6%\nX7DAO: 6%\n'
-                f'X7101-X7105: 2%\n\n'
-                f'*Tax with NFTs*\n'
-                f'Liquidity Maxi:\nX7R: 4.50%\n7DAO: 5.10%\nX7101-X7105: 1.00%\n\n'
-                f'Ecosystem Maxi:\nX7R: 5.40%\nX7DAO: 5.40%\nX7101-X7105: 1.50%\n\n'
-                f'Magister:\nX7R: 4.50%\nX7DAO: 6.00%\nX7101-X7105: 1.50%\n\n{api.get_quote()}',
+        caption=f'*X7 Finance Tax Info*\nUse `/tax [chain-name]` for other chains\n\n'
+                f'{chain_tax}\n\n{api.get_quote()}',
         parse_mode='Markdown')
 
 
@@ -1649,7 +1677,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Etherscan', url=f'{url.ether_token}{ca.x7r}')],
                 [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{ca.x7r_pair_eth}')],
-                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7r}')], ]))
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7r}')], ]))
         return
     if chain == "bsc" or chain == "bnb":
         chain_name = "(BSC)"
@@ -1679,7 +1707,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text=f'{scan_name}', url=f'{chart_url}')],
                  [InlineKeyboardButton(text='Chart', url=f'{chart_url}')],
-                 [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7r}')], ]))
+                 [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7r}')], ]))
 
 
 async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1795,7 +1823,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Etherscan', url=f'{url.ether_token}{ca.x7dao}')],
                 [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{ca.x7dao_pair_eth}')],
-                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7dao}')], ]))
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7dao}')], ]))
         return
     if chain == "bsc" or chain == "bnb":
         chain_name = "(BSC)"
@@ -1825,7 +1853,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'{scan_name}', url=f'{chart_url}')],
              [InlineKeyboardButton(text='Chart', url=f'{chart_url}')],
-             [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7dao}')], ]))
+             [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7dao}')], ]))
 
 
 async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1904,7 +1932,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Etherscan', url=f'{url.ether_token}{ca.x7101}')],
                 [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{ca.x7101_pair_eth}')],
-                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7101}')], ]))
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7101}')], ]))
         return
     if chain == "bsc" or chain == "bnb":
         chain_name = "(BSC)"
@@ -1934,7 +1962,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'{scan_name}', url=f'{chart_url}')],
              [InlineKeyboardButton(text='Chart', url=f'{chart_url}')],
-             [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7101}')], ]))
+             [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7101}')], ]))
 
 
 async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2014,7 +2042,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Etherscan', url=f'{url.ether_token}{ca.x7102}')],
                 [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{ca.x7102_pair_eth}')],
-                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7102}')], ]))
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7102}')], ]))
         return
     if chain == "bsc" or chain == "bnb":
         chain_name = "(BSC)"
@@ -2044,7 +2072,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'{scan_name}', url=f'{chart_url}')],
              [InlineKeyboardButton(text='Chart', url=f'{chart_url}')],
-             [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7102}')], ]))
+             [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7102}')], ]))
 
 
 async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2124,7 +2152,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Etherscan', url=f'{url.ether_token}{ca.x7103}')],
                 [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{ca.x7103_pair_eth}')],
-                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7103}')], ]))
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7103}')], ]))
         return
     if chain == "bsc" or chain == "bnb":
         chain_name = "(BSC)"
@@ -2154,7 +2182,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'{scan_name}', url=f'{chart_url}')],
              [InlineKeyboardButton(text='Chart', url=f'{chart_url}')],
-             [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7103}')], ]))
+             [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7103}')], ]))
 
 
 async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2234,7 +2262,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Etherscan', url=f'{url.ether_token}{ca.x7104}')],
                 [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{ca.x7104_pair_eth}')],
-                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7104}')], ]))
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7104}')], ]))
         return
     if chain == "bsc" or chain == "bnb":
         chain_name = "(BSC)"
@@ -2264,7 +2292,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'{scan_name}', url=f'{chart_url}')],
              [InlineKeyboardButton(text='Chart', url=f'{chart_url}')],
-             [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7104}')], ]))
+             [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7104}')], ]))
 
 
 async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2344,7 +2372,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='Etherscan', url=f'{url.ether_token}{ca.x7105}')],
                 [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{ca.x7105_pair_eth}')],
-                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7105}')], ]))
+                [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7105}')], ]))
         return
     if chain == "bsc" or chain == "bnb":
         chain_name = "(BSC)"
@@ -2374,7 +2402,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'{scan_name}', url=f'{chart_url}')],
              [InlineKeyboardButton(text='Chart', url=f'{chart_url}')],
-             [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy}{ca.x7105}')], ]))
+             [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7105}')], ]))
 
 
 async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
