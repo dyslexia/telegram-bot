@@ -2705,10 +2705,12 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         com_dollar = float(com_eth) * float(api.get_native_price("eth")) / 1 ** 18
         pioneer_dollar = float(pioneer_eth) * float(api.get_native_price("eth")) / 1 ** 18
         com_x7r = api.get_token_balance(ca.com_multi_eth, "eth", ca.x7r)
+        com_x7dao = api.get_token_balance(ca.com_multi_eth, "eth", ca.x7dao)
+        com_x7dao_price = com_x7r * api.get_cg_price("x7dao")["x7dao"]["usd"]
         com_x7r_price = com_x7r * api.get_cg_price("x7r")["x7r"]["usd"]
         com_x7d = api.get_token_balance(ca.com_multi_eth, "eth", ca.x7d)
         com_x7d_price = com_x7d * api.get_native_price("eth")
-        com_total = com_x7r_price + com_dollar + com_x7d_price
+        com_total = com_x7r_price + com_dollar + com_x7d_price + com_x7dao_price
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.eth_logo)
         im1.paste(im2, (720, 20), im2)
@@ -2721,6 +2723,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Community Wallet:\n{com_eth[:4]}ETH (${"{:0,.0f}".format(com_dollar)})\n'
                 f'{com_x7d} X7D (${"{:0,.0f}".format(com_x7d_price)})\n'
                 f'{"{:0,.0f}".format(com_x7r)} X7R (${"{:0,.0f}".format(com_x7r_price)})\n'
+                f'{"{:0,.0f}".format(com_x7dao)} X7DAO (${"{:0,.0f}".format(com_x7dao_price)})\n'
                 f'Total: (${"{:0,.0f}".format(com_total)})\n\n\n\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2733,6 +2736,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'Community Wallet:\n{com_eth[:4]}ETH (${"{:0,.0f}".format(com_dollar)})\n'
                     f'{com_x7d} X7D (${"{:0,.0f}".format(com_x7d_price)})\n'
                     f'{"{:0,.0f}".format(com_x7r)} X7R (${"{:0,.0f}".format(com_x7r_price)})\n'
+                    f'{"{:0,.0f}".format(com_x7dao)} X7DAO (${"{:0,.0f}".format(com_x7dao_price)})\n'
                     f'Total: (${"{:0,.0f}".format(com_total)})\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
