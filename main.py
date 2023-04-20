@@ -1587,38 +1587,32 @@ async def supply_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def ath_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    x7r_ath_change = str(api.get_ath_change("x7r"))
     x7r_ath = api.get_ath("x7r")
     x7dao_ath = api.get_ath("x7dao")
-    x7101_ath = api.get_ath("x7101")
-    x7102_ath = api.get_ath("x7102")
-    x7103_ath = api.get_ath("x7103")
-    x7104_ath = api.get_ath("x7104")
-    x7105_ath = api.get_ath("x7105")
+    x7dao_ath_change = str(api.get_ath_change("x7dao"))
+    x7r_date = api.get_ath_date("x7r")
+    x7dao_date = api.get_ath_date("x7dao")
     img = Image.open((random.choice(media.blackhole)))
     i1 = ImageDraw.Draw(img)
-    myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 22)
+    myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 26)
     i1.text((28, 36),
             f'X7 Finance ATH Info\n\n'
-            f'X7R   - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)})\n'
-            f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)})\n'
-            f'X7101 - ${x7101_ath} (${"{:0,.0f}".format(x7101_ath * ca.supply)})\n'
-            f'X7102 - ${x7102_ath} (${"{:0,.0f}".format(x7102_ath * ca.supply)})\n'
-            f'X7103 - ${x7103_ath} (${"{:0,.0f}".format(x7103_ath * ca.supply)})\n'
-            f'X7104 - ${x7104_ath} (${"{:0,.0f}".format(x7104_ath * ca.supply)})\n'
-            f'X7105 - ${x7105_ath} (${"{:0,.0f}".format(x7105_ath * ca.supply)})\n\n\n\n\n\n\n\n'
+            f'X7R   - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change[:3]}%\n'
+            f'{x7r_date}\n\n'
+            f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change[:3]}%\n'
+            f'{x7dao_date}'
+            f'\n\n\n\n\n\n\n'
             f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
             font=myfont, fill=(255, 255, 255))
     img.save(r"media\blackhole.png")
     await update.message.reply_photo(
             photo=open(r'media\blackhole.png', 'rb'),
             caption=f'*X7 Finance ATH Info*\n\n'
-                    f'X7R - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)})\n'
-                    f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)})\n'
-                    f'X7101 - ${x7101_ath} (${"{:0,.0f}".format(x7101_ath * ca.supply)})\n'
-                    f'X7102 - ${x7102_ath} (${"{:0,.0f}".format(x7102_ath * ca.supply)})\n'
-                    f'X7103 - ${x7103_ath} (${"{:0,.0f}".format(x7103_ath * ca.supply)})\n'
-                    f'X7104 - ${x7104_ath} (${"{:0,.0f}".format(x7104_ath * ca.supply)})\n'
-                    f'X7105 - ${x7105_ath} (${"{:0,.0f}".format(x7105_ath * ca.supply)})\n\n'
+                    f'X7R - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change[:3]}%\n'
+                    f'{x7r_date}\n\n'
+                    f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change[:3]}%\n'
+                    f'{x7dao_date}\n\n'
                     f'{api.get_quote()}', parse_mode="Markdown")
 
 # CG COMMANDS
@@ -1666,6 +1660,8 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'\n\n{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
+        x7r_ath_change = str(api.get_ath_change("x7r"))
+        x7r_ath = api.get_ath("x7r")
         chain_name = ""
         scan_url = ""
         chart_url = ""
@@ -1681,15 +1677,17 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7r_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 28)
+        myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 25)
         im1.save(r"media\blackhole.png", quality=95)
         i1 = ImageDraw.Draw(im1)
+        print(x7r_ath)
         i1.text((26, 30),
                 f'X7R Info (ETH)\n\n'
                 f'X7R Price: ${price["x7r"]["usd"]}\n'
                 f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(price["x7r"]["usd"] * ca.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7r"]["usd_24h_vol"])}\n'
+                f'ATH: ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change[:3]}%\n'
                 f'Holders: {holders}\n\n'
                 f'Liquidity:\n'
                 f'{"{:0,.0f}".format(x7r_token)[:4]}M X7R (${"{:0,.0f}".format(x7r_token_dollar)})\n'
@@ -1705,6 +1703,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(price["x7r"]["usd"] * ca.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(price["x7r"]["usd_24h_vol"])}\n'
+                    f'ATH: ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change[:3]}%\n'
                     f'Holders: {holders}\n\n'
                     f'X7R Tokens Burned:\n'
                     f'{"{:,}".format(burn)}\n'
@@ -1822,6 +1821,8 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
+        x7dao_ath_change = str(api.get_ath_change("x7dao"))
+        x7dao_ath = api.get_ath("x7dao")
         holders = api.get_holders(ca.x7dao)
         x7dao = api.get_liquidity(ca.x7dao_pair_eth)
         x7dao_token = float(x7dao["reserve0"])
@@ -1831,7 +1832,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7dao_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 25)
         i1 = ImageDraw.Draw(im1)
         i1.text((28, 36),
                 f'X7DAO Info (ETH)\n\n'
@@ -1839,6 +1840,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(price["x7dao"]["usd"] * ca.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7dao"]["usd_24h_vol"])}\n'
+                f'ATH: ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change[:3]}%\n'
                 f'Holders: {holders}\n\n'
                 f'Liquidity:\n'
                 f'{"{:0,.0f}".format(x7dao_token)[:4]}M X7DAO (${"{:0,.0f}".format(x7dao_token_dollar)})\n'
@@ -1854,6 +1856,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 1)}%\n'
             f'Market Cap:  ${"{:0,.0f}".format(price["x7dao"]["usd"] * ca.supply)}\n'
             f'24 Hour Volume: ${"{:0,.0f}".format(price["x7dao"]["usd_24h_vol"])}\n'
+            f'ATH: ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change[:3]}%\n'
             f'Holders: {holders}\n\n'
             f'Liquidity:\n'
             f'{"{:0,.0f}".format(x7dao_token)[:4]}M X7DAO (${"{:0,.0f}".format(x7dao_token_dollar)})\n'
@@ -1944,18 +1947,21 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
+        x7101_ath_change = str(api.get_ath_change("x7101"))
+        x7101_ath = api.get_ath("x7101")
         holders = api.get_holders(ca.x7101)
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7101_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1.text((28, 36),
                 f'X7101 Info (ETH)\n\n'
                 f'X7101 Price: ${price["x7101"]["usd"]}\n'
                 f'24 Hour Change: {round(price["x7101"]["usd_24h_change"]),1}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(price["x7101"]["usd"] * ca.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7101"]["usd_24h_vol"])}\n'
+                f'ATH: ${x7101_ath} (${"{:0,.0f}".format(x7101_ath * ca.supply)}) {x7101_ath_change[:3]}%\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -1967,6 +1973,7 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f'24 Hour Change: {round(price["x7101"]["usd_24h_change"], 1)}%\n'
             f'Market Cap:  ${"{:0,.0f}".format(price["x7101"]["usd"] * ca.supply)}\n'
             f'24 Hour Volume: ${round(price["x7101"]["usd_24h_vol"])}\n'
+            f'ATH: ${x7101_ath} (${"{:0,.0f}".format(x7101_ath * ca.supply)}) {x7101_ath_change[:3]}%\n'
             f'Holders: {holders}\n\n'
             f'*X7101 Contract*\n`{ca.x7101}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
@@ -2054,18 +2061,21 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
+        x7102_ath_change = str(api.get_ath_change("x7102"))
+        x7102_ath = api.get_ath("x7102")
         holders = api.get_holders(ca.x7102)
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7102_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
         i1.text((28, 36),
                 f'X7102 Info (ETH)\n\n'
                 f'X7102 Price: ${price["x7102"]["usd"]}\n'
                 f'24 Hour Change: {round(price["x7102"]["usd_24h_change"], 1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(price["x7102"]["usd"] * ca.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7102"]["usd_24h_vol"])}\n'
+                f'ATH: ${x7102_ath} (${"{:0,.0f}".format(x7102_ath * ca.supply)}) {x7102_ath_change[:3]}%\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2077,6 +2087,7 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'24 Hour Change: {round(price["x7102"]["usd_24h_change"], 1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(price["x7102"]["usd"] * ca.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(price["x7102"]["usd_24h_vol"])}\n'
+                    f'ATH: ${x7102_ath} (${"{:0,.0f}".format(x7102_ath * ca.supply)}) {x7102_ath_change[:3]}%\n'
                     f'Holders: {holders}\n\n'
                     f'*X7102 Contract*\n`{ca.x7102}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
@@ -2164,18 +2175,21 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
+        x7103_ath_change = str(api.get_ath_change("x7103"))
+        x7103_ath = api.get_ath("x7103")
         holders = api.get_holders(ca.x7103)
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7103_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 25)
         i1.text((28, 36),
                 f'X7103 Info (ETH)\n\n'
                 f'X7103 Price: ${price["x7103"]["usd"]}\n'
                 f'24 Hour Change: {round(price["x7103"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(price["x7103"]["usd"] * ca.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7103"]["usd_24h_vol"])}\n'
+                f'ATH: ${x7103_ath} (${"{:0,.0f}".format(x7103_ath * ca.supply)}) {x7103_ath_change[:3]}%\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2187,6 +2201,7 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'24 Hour Change: {round(price["x7103"]["usd_24h_change"],1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(price["x7103"]["usd"] * ca.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(price["x7103"]["usd_24h_vol"])}\n'
+                    f'ATH: ${x7103_ath} (${"{:0,.0f}".format(x7103_ath * ca.supply)}) {x7103_ath_change[:3]}%\n'
                     f'Holders: {holders}\n\n'
                     f'*X7103 Contract*\n`{ca.x7103}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
@@ -2260,7 +2275,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7104_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 25)
         i1 = ImageDraw.Draw(im1)
         i1.text((26, 30),
                 f'X7104 Info (ETH)\n\n'
@@ -2274,6 +2289,8 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
+        x7104_ath_change = str(api.get_ath_change("x7104"))
+        x7104_ath = api.get_ath("x7104")
         holders = api.get_holders(ca.x7104)
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7104_logo)
@@ -2286,6 +2303,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(price["x7104"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(price["x7104"]["usd"] * ca.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7104"]["usd_24h_vol"])}\n'
+                f'ATH: ${x7104_ath} (${"{:0,.0f}".format(x7104_ath * ca.supply)}) {x7104_ath_change[:3]}%\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2297,6 +2315,7 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'24 Hour Change: {round(price["x7104"]["usd_24h_change"],1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(price["x7104"]["usd"] * ca.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(price["x7104"]["usd_24h_vol"])}\n'
+                    f'ATH: ${x7104_ath} (${"{:0,.0f}".format(x7104_ath * ca.supply)}) {x7104_ath_change[:3]}%\n'
                     f'Holders: {holders}\n\n'
                     f'*X7104 Contract*\n`{ca.x7104}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
@@ -2384,6 +2403,8 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
+        x7105_ath_change = str(api.get_ath_change("x7105"))
+        x7105_ath = api.get_ath("x7105")
         holders = api.get_holders(ca.x7105)
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7105_logo)
@@ -2396,6 +2417,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'24 Hour Change: {round(price["x7105"]["usd_24h_change"],1)}%\n'
                 f'Market Cap:  ${"{:0,.0f}".format(price["x7105"]["usd"] * ca.supply)}\n'
                 f'24 Hour Volume: ${"{:0,.0f}".format(price["x7105"]["usd_24h_vol"])}\n'
+                f'ATH: ${x7105_ath} (${"{:0,.0f}".format(x7105_ath * ca.supply)}) {x7105_ath_change[:3]}%\n'
                 f'Holders: {holders}\n\n\n\n\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2407,6 +2429,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'24 Hour Change: {round(price["x7105"]["usd_24h_change"],1)}%\n'
                     f'Market Cap:  ${"{:0,.0f}".format(price["x7105"]["usd"] * ca.supply)}\n'
                     f'24 Hour Volume: ${"{:0,.0f}".format(price["x7105"]["usd_24h_vol"])}\n'
+                    f'ATH: ${x7105_ath} (${"{:0,.0f}".format(x7105_ath * ca.supply)}) {x7105_ath_change[:3]}%\n'
                     f'Holders: {holders}\n\n'
                     f'*X7105 Contract*\n`{ca.x7105}`\n\n{api.get_quote()}',
             parse_mode='Markdown',
