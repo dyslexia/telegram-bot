@@ -1586,6 +1586,41 @@ async def supply_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}', parse_mode="Markdown")
 
 
+async def ath_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    x7r_ath = api.get_ath("x7r")
+    x7dao_ath = api.get_ath("x7dao")
+    x7101_ath = api.get_ath("x7101")
+    x7102_ath = api.get_ath("x7102")
+    x7103_ath = api.get_ath("x7103")
+    x7104_ath = api.get_ath("x7104")
+    x7105_ath = api.get_ath("x7105")
+    img = Image.open((random.choice(media.blackhole)))
+    i1 = ImageDraw.Draw(img)
+    myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 22)
+    i1.text((28, 36),
+            f'X7 Finance ATH Info\n\n'
+            f'X7R   - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)})\n'
+            f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)})\n'
+            f'X7101 - ${x7101_ath} (${"{:0,.0f}".format(x7101_ath * ca.supply)})\n'
+            f'X7102 - ${x7102_ath} (${"{:0,.0f}".format(x7102_ath * ca.supply)})\n'
+            f'X7103 - ${x7103_ath} (${"{:0,.0f}".format(x7103_ath * ca.supply)})\n'
+            f'X7104 - ${x7104_ath} (${"{:0,.0f}".format(x7104_ath * ca.supply)})\n'
+            f'X7105 - ${x7105_ath} (${"{:0,.0f}".format(x7105_ath * ca.supply)})\n\n\n\n\n\n\n\n'
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont, fill=(255, 255, 255))
+    img.save(r"media\blackhole.png")
+    await update.message.reply_photo(
+            photo=open(r'media\blackhole.png', 'rb'),
+            caption=f'*X7 Finance ATH Info*\n\n'
+                    f'X7R - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)})\n'
+                    f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)})\n'
+                    f'X7101 - ${x7101_ath} (${"{:0,.0f}".format(x7101_ath * ca.supply)})\n'
+                    f'X7102 - ${x7102_ath} (${"{:0,.0f}".format(x7102_ath * ca.supply)})\n'
+                    f'X7103 - ${x7103_ath} (${"{:0,.0f}".format(x7103_ath * ca.supply)})\n'
+                    f'X7104 - ${x7104_ath} (${"{:0,.0f}".format(x7104_ath * ca.supply)})\n'
+                    f'X7105 - ${x7105_ath} (${"{:0,.0f}".format(x7105_ath * ca.supply)})\n\n'
+                    f'{api.get_quote()}', parse_mode="Markdown")
+
 # CG COMMANDS
 async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -3028,6 +3063,28 @@ async def german_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     translation = translator.translate(phrase)
     await update.message.reply_text(translation)
 
+# COUNTDOWN
+async def countdown_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    then = times.countdown.astimezone(pytz.utc)
+    now = datetime.now(timezone.utc)
+    duration = then - now
+    duration_in_s = duration.total_seconds()
+    days = divmod(duration_in_s, 86400)
+    hours = divmod(days[1], 3600)
+    minutes = divmod(hours[1], 60)
+    if duration < timedelta(0):
+        await update.message.reply_photo(
+            photo=open((random.choice(media.logos)), 'rb'),
+            caption=f'*X7 Finance Countdown*\n\nNo countdown set, Please check back for more details'
+            f'\n\n{api.get_quote()}', parse_mode="Markdown")
+    else:
+        await update.message.reply_text(
+            text=f'*X7 Finance Countdown:*\n\n'
+                 f'{times.countdown_title}\n\n{then.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
+                 f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
+                 f'{times.countdown_desc}'
+                 f'\n\n{api.get_quote()}', parse_mode="Markdown")
+
 # AUTO MESSAGES
 async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
@@ -3152,6 +3209,8 @@ if __name__ == '__main__':
     job_queue = application.job_queue
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
+    application.add_handler(CommandHandler([f'{times.countdown_command}'], countdown_command))
+    application.add_handler(CommandHandler('ath', ath_command))
     application.add_handler(CommandHandler('japanese', japanese_command))
     application.add_handler(CommandHandler('german', german_command))
     application.add_handler(CommandHandler('supply', supply_command))
