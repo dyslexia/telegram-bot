@@ -1586,35 +1586,6 @@ async def supply_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}', parse_mode="Markdown")
 
 
-async def ath_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    x7r_ath_change = str(api.get_ath_change("x7r"))
-    x7r_ath = api.get_ath("x7r")
-    x7dao_ath = api.get_ath("x7dao")
-    x7dao_ath_change = str(api.get_ath_change("x7dao"))
-    x7r_date = api.get_ath_date("x7r")
-    x7dao_date = api.get_ath_date("x7dao")
-    img = Image.open((random.choice(media.blackhole)))
-    i1 = ImageDraw.Draw(img)
-    myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 26)
-    i1.text((28, 36),
-            f'X7 Finance ATH Info\n\n'
-            f'X7R   - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change[:3]}%\n'
-            f'{x7r_date}\n\n'
-            f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change[:3]}%\n'
-            f'{x7dao_date}'
-            f'\n\n\n\n\n\n\n'
-            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-            font=myfont, fill=(255, 255, 255))
-    img.save(r"media\blackhole.png")
-    await update.message.reply_photo(
-            photo=open(r'media\blackhole.png', 'rb'),
-            caption=f'*X7 Finance ATH Info*\n\n'
-                    f'X7R - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change[:3]}%\n'
-                    f'{x7r_date}\n\n'
-                    f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change[:3]}%\n'
-                    f'{x7dao_date}\n\n'
-                    f'{api.get_quote()}', parse_mode="Markdown")
-
 # CG COMMANDS
 async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -3071,6 +3042,35 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text='Etherscan Burn Wallet', url=f'{chain_url}{ca.x7r}?a={ca.dead}')], ]))
 
+
+async def ath_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    x7r_ath_change = str(api.get_ath_change("x7r"))
+    x7r_ath = api.get_ath("x7r")
+    x7dao_ath = api.get_ath("x7dao")
+    x7dao_ath_change = str(api.get_ath_change("x7dao"))
+    x7r_date = api.get_ath_date("x7r")
+    x7dao_date = api.get_ath_date("x7dao")
+    img = Image.open((random.choice(media.blackhole)))
+    i1 = ImageDraw.Draw(img)
+    myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 26)
+    i1.text((28, 36),
+            f'X7 Finance ATH Info\n\n'
+            f'X7R   - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change[:3]}%\n'
+            f'{x7r_date}\n\n'
+            f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change[:3]}%\n'
+            f'{x7dao_date}'
+            f'\n\n\n\n\n\n\n'
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont, fill=(255, 255, 255))
+    img.save(r"media\blackhole.png")
+    await update.message.reply_photo(
+            photo=open(r'media\blackhole.png', 'rb'),
+            caption=f'*X7 Finance ATH Info*\n\n'
+                    f'X7R - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change[:3]}%\n'
+                    f'{x7r_date}\n\n'
+                    f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change[:3]}%\n'
+                    f'{x7dao_date}\n\n'
+                    f'{api.get_quote()}', parse_mode="Markdown")
 
 # TRANSLATOR
 async def japanese_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
