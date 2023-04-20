@@ -123,7 +123,7 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'> {tax.magister_discount_x7100}% discount on X7100 tax\n'
                     f'> {tax.magister_discount_x7r}% discount on X7R tax\n> No discount on X7DAO tax\n\n'
                     f'*Pioneer*\n'
-                    f' > 6% of profits that come into the X7 Treasury Splitter are now being allocated to the reward '
+                    f' > 6% of profits that come into the X7 Treasury Splitter are allocated to the reward '
                     f'pool. Each X7 Pioneer NFT grants you a proportional share of this pool\n\n{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -334,7 +334,7 @@ async def chart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chain_name = "(ARB)"
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
-        caption=f'*X7 Finance Chart Links {chain_name}\nUse `/chart [chain-name]` for other chains\n'
+        caption=f'*X7 Finance Chart Links* {chain_name}\nUse `/chart [chain-name]` for other chains\n'
                 f'Use `/constellations` for constellations\n\n{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
@@ -1405,26 +1405,26 @@ async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "eth" or chain == "":
         response = api.get_nft_holder_list(ca.magister, "eth")
         chain_name = "(ETH)"
-        chain_url = url.ether_address
+        chain_url = url.ether_token
         holders = api.get_nft_holder_count(ca.magister, "?chain=eth-main")
     if chain == "bsc" or chain == "bnb":
         response = api.get_nft_holder_list(ca.magister, "bsc")
         chain_name = "(BSC)"
-        chain_url = url.bsc_address
+        chain_url = url.bsc_token
     if chain == "polygon" or chain == "poly":
         response = api.get_nft_holder_list(ca.magister, "polygon")
         chain_name = "(POLYGON)"
-        chain_url = url.poly_address
+        chain_url = url.poly_token
         holders = api.get_nft_holder_count(ca.magister, "?chain=poly-main")
     if chain == "optimism" or chain == "opti":
         response = api.get_nft_holder_list(ca.magister, "optimism")
         chain_name = "(OPTIMISM)"
-        chain_url = url.opti_address
+        chain_url = url.opti_token
         holders = api.get_nft_holder_count(ca.magister, "?chain=optimism-main")
     if chain == "arbitrum" or chain == "arb":
         response = api.get_nft_holder_list(ca.magister, "arbitrum")
         chain_name = "(ARB)"
-        chain_url = url.arb_address
+        chain_url = url.arb_token
         holders = api.get_nft_holder_count(ca.magister, "?chain=arbitrum")
     magisters = list(map(lambda x: x['owner_of'], response["result"]))
     address = '\n\n'.join(map(str, magisters))
@@ -2565,7 +2565,8 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((28, 36),
                 f'{symbol} price\n\n'
                 f'Price: ${float(token_price[token_id]["usd"])}\n'
-                f'24 Hour Change: {round(token_price[token_id]["usd_24h_change"], 1)}%\n\n\n\n\n\n\n\n\n'
+                f'24 Hour Change: {round(token_price[token_id]["usd_24h_change"], 1)}%'
+                f'Market Cap: ${"{:0,.0f}".format(token_price[token_id]["usd_market_cap"])}\n\n\n\n\n\n\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png", quality=95)
@@ -2573,7 +2574,8 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*{symbol} price*\n\n'
                     f'Price: ${float(token_price[token_id]["usd"])}\n'
-                    f'24 Hour Change: {round(token_price[token_id]["usd_24h_change"], 1)}%\n\n'
+                    f'24 Hour Change: {round(token_price[token_id]["usd_24h_change"], 1)}%\n'
+                    f'Market Cap: ${"{:0,.0f}".format(token_price[token_id]["usd_market_cap"])}\n\n'
                     f'{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup(
@@ -2970,26 +2972,26 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "bsc" or chain == "bnb":
         chain_name = "(BSC)"
         chain_url = url.bsc_address
-        amount = api.get_token_balance(ca.dead, "bsc", ca.x7r)
-        percent = round(((amount / ca.supply) * 100), 6)
+        burn = api.get_token_balance(ca.dead, "bsc", ca.x7r)
+        percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.bsc_logo)
     if chain == "polygon" or chain == "poly":
         chain_name = "(POLYGON)"
         chain_url = url.poly_address
-        amount = api.get_token_balance(ca.dead, "poly", ca.x7r)
-        percent = round(((amount / ca.supply) * 100), 6)
+        burn = api.get_token_balance(ca.dead, "poly", ca.x7r)
+        percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.poly_logo)
     if chain == "arbitrum" or chain == "arb":
         chain_name = "(ARB)"
         chain_url = url.arb_address
-        amount = api.get_token_balance(ca.dead, "arb", ca.x7r)
-        percent = round(((amount / ca.supply) * 100), 6)
+        burn = api.get_token_balance(ca.dead, "arb", ca.x7r)
+        percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.arb_logo)
     if chain == "optimism" or chain == "arb":
         chain_name = "(OPTIMISM)"
         chain_url = url.opti_address
-        amount = api.get_token_balance(ca.dead, "opti", ca.x7r)
-        percent = round(((amount / ca.supply) * 100), 6)
+        burn = api.get_token_balance(ca.dead, "opti", ca.x7r)
+        percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.opti_logo)
     im1 = Image.open((random.choice(media.blackhole)))
     im1.paste(im2, (720, 20), im2)
@@ -3005,7 +3007,7 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'\n\nX7R {chain_name} Tokens Burned:\nUse `/burn [chain-name]` for other chains\n\n'
-                f'{burn} (${"{:0,.0f}".format(float(burn_dollar))})\n'
+                f'{"{:0,.0f}".format(float(burn))} (${"{:0,.0f}".format(float(burn_dollar))})\n'
                 f'{percent}% of Supply\n\n{api.get_quote()}',
         parse_mode="markdown",
         reply_markup=InlineKeyboardMarkup(

@@ -21,16 +21,14 @@ def get_cg_search(token):
 def get_cg_price(token):
     coingecko = CoinGeckoAPI()
     cg = coingecko.get_price(ids=token, vs_currencies='usd',
-                             include_24hr_change='true', include_24hr_vol='true')
+                             include_24hr_change='true', include_24hr_vol='true', include_market_cap='true')
     return cg
 
-# noinspection PyTypeChecker
 def get_nft_holder_list(nft, chain):
     result = evm_api.nft.get_nft_owners(
         api_key=keys.moralis, params={"chain": chain, "format": "decimal", "address": nft})
     return result
 
-# noinspection PyTypeChecker
 def get_liquidity(pair):
     amount = evm_api.defi.get_pair_reserves(api_key=keys.moralis, params={"chain": "eth", "pair_address": pair})
     return amount
