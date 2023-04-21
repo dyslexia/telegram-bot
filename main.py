@@ -63,6 +63,7 @@ async def links_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton(text='Website', url=f'{url.website}')],
             [InlineKeyboardButton(text='Community Dashboard', url=f'{url.dashboard}')],
+            [InlineKeyboardButton(text='Snapshot', url=f'{url.snapshot}')],
             [InlineKeyboardButton(text='Linktree', url=f'{url.linktree}')],
             [InlineKeyboardButton(text='Medium', url=f'{url.medium}')],
             [InlineKeyboardButton(text='Twitter', url=f'{url.twitter}')],
@@ -1585,6 +1586,37 @@ async def supply_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{"{:0,.0f}".format(x7105)} X7105 (${"{:0,.0f}".format(x7105_dollar)}) {x7105_percent}%\n\n'
                     f'{api.get_quote()}', parse_mode="Markdown")
 
+
+async def snapshot(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    snapshot = api.get_snapshot()
+    end = datetime.utcfromtimestamp(snapshot["data"]["proposals"][0]["end"]).strftime('%Y-%m-%d %H:%M:%S')
+    start = datetime.utcfromtimestamp(snapshot["data"]["proposals"][0]["start"]).strftime('%Y-%m-%d %H:%M:%S')
+    then = datetime.utcfromtimestamp(snapshot["data"]["proposals"][0]["end"])
+    now = datetime.utcnow()
+    duration = then - now
+    duration_in_s = duration.total_seconds()
+    days = divmod(duration_in_s, 86400)
+    hours = divmod(days[1], 3600)
+    minutes = divmod(hours[1], 60)
+    print(snapshot)
+    if duration < timedelta(0):
+        countdown = "Vote Closed"
+        caption = "View"
+    else:
+        countdown = f'Vote Closing in: {int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
+        caption = "Vote"
+    await update.message.reply_photo(
+        photo=open((random.choice(media.logos)), 'rb'),
+        caption=f'*X7 Finance Community Snapshot*\n\n'
+                f'Latest Proposal:\n\n'
+                f'{snapshot["data"]["proposals"][0]["title"]} by - '
+                f'{snapshot["data"]["proposals"][0]["author"][-5:]}\n\n'
+                f'Voting Start: {start} UTC\n'
+                f'Voting End:   {end} UTC\n\n'
+                f'{countdown}', parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text=f'{caption} Here', url=f'{url.snapshot}/proposal/'
+                                                              f'{snapshot["data"]["proposals"][0]["id"]}')], ]))
 
 # CG COMMANDS
 async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3237,6 +3269,7 @@ if __name__ == '__main__':
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
     application.add_handler(CommandHandler([f'{times.countdown_command}'], countdown_command))
+    application.add_handler(CommandHandler('snapshot', snapshot))
     application.add_handler(CommandHandler('ath', ath_command))
     application.add_handler(CommandHandler('japanese', japanese_command))
     application.add_handler(CommandHandler('german', german_command))
