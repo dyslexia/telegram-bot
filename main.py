@@ -1131,13 +1131,13 @@ async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     duration = now - then
     duration_in_s = duration.total_seconds()
     days = divmod(duration_in_s, 86400)
-    if deployer["result"][0]['to_address'] == "0x000000000000000000000000000000000000dEaD" or \
-            deployer["result"][0]['to_address'] == ca.deployer:
+    to_address = deployer["result"][0]['to_address']
+    if str(to_address).lower() == "0x000000000000000000000000000000000000dead":
         message = bytes.fromhex(api.get_tx(ca.deployer, "eth")["result"][0]["input"][2:]).decode('utf-8')
         await update.message.reply_text(
             '*X7 Finance DAO Founders*\n\n'
             f'Deployer Wallet last TX -  {int(days[0])} days ago:\n\n'
-            f'`{message}`\n\n{url.ether_tx}{deployer["result"][0]["hash"]}',
+            f'`{message}`\n{url.ether_tx}{deployer["result"][0]["hash"]}',
             parse_mode='Markdown')
     else:
         await update.message.reply_photo(
@@ -1598,7 +1598,6 @@ async def snapshot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     days = divmod(duration_in_s, 86400)
     hours = divmod(days[1], 3600)
     minutes = divmod(hours[1], 60)
-    print(snapshot)
     if duration < timedelta(0):
         countdown = "Vote Closed"
         caption = "View"
@@ -1613,7 +1612,12 @@ async def snapshot(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'{snapshot["data"]["proposals"][0]["author"][-5:]}\n\n'
                 f'Voting Start: {start} UTC\n'
                 f'Voting End:   {end} UTC\n\n'
-                f'{countdown}', parse_mode='Markdown',
+                f'{snapshot["data"]["proposals"][0]["choices"][0]} - '
+                f'{"{:0,.0f}".format(snapshot["data"]["proposals"][0]["scores"][0])} DAO Votes\n'
+                f'{snapshot["data"]["proposals"][0]["choices"][1]} - '
+                f'{"{:0,.0f}".format(snapshot["data"]["proposals"][0]["scores"][1])} DAO Votes\n\n'
+                f'{"{:0,.0f}".format(snapshot["data"]["proposals"][0]["scores_total"])} Total DAO Votes\n\n'
+                f'{countdown}\n\n{api.get_quote()}', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton(text=f'{caption} Here', url=f'{url.snapshot}/proposal/'
                                                               f'{snapshot["data"]["proposals"][0]["id"]}')], ]))
