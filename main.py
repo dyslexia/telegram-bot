@@ -1184,7 +1184,7 @@ async def voting_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='X7 Finance Whitepaper', url='https://x7.finance/whitepaper')], ]))
 
 
-async def snapshot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def airdrop_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_sticker(sticker=media.chains)
     await update.message.reply_text(
         f'*X7 Finance Airdrop Information*\n\nThe rollout of the Ecosystem Contracts on BNB Smart Chain, Polygon ' 
@@ -1587,7 +1587,7 @@ async def supply_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}', parse_mode="Markdown")
 
 
-async def snapshot(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def snapshot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     snapshot = api.get_snapshot()
     end = datetime.utcfromtimestamp(snapshot["data"]["proposals"][0]["end"]).strftime('%Y-%m-%d %H:%M:%S')
     start = datetime.utcfromtimestamp(snapshot["data"]["proposals"][0]["start"]).strftime('%Y-%m-%d %H:%M:%S')
@@ -1602,7 +1602,7 @@ async def snapshot(update: Update, context: ContextTypes.DEFAULT_TYPE):
         countdown = "Vote Closed"
         caption = "View"
     else:
-        countdown = f'Vote Closing in: {int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
+        countdown = f'Vote Closing in: {int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes'
         caption = "Vote"
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -3273,7 +3273,7 @@ if __name__ == '__main__':
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
     application.add_handler(CommandHandler([f'{times.countdown_command}'], countdown_command))
-    application.add_handler(CommandHandler('snapshot', snapshot))
+    application.add_handler(CommandHandler('snapshot', snapshot_command))
     application.add_handler(CommandHandler('ath', ath_command))
     application.add_handler(CommandHandler('japanese', japanese_command))
     application.add_handler(CommandHandler('german', german_command))
@@ -3344,7 +3344,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('wei', wei_command))
     application.add_handler(CommandHandler('alumni', alumni_command))
     application.add_handler(CommandHandler(['docs', 'dashboard'], dashboard_command))
-    application.add_handler(CommandHandler(['snapshot', 'rollout', 'multichain', 'airdrop'], snapshot_command))
+    application.add_handler(CommandHandler(['rollout', 'multichain', 'airdrop'], airdrop_command))
     application.add_handler(CommandHandler(['discount', 'dsc', 'dac'], discount_command))
     application.add_handler(CommandHandler(['admin_commands', 'admin', 'admincommands'], admin_commands_command))
     application.job_queue.run_repeating(

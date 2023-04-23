@@ -78,6 +78,16 @@ def get_holders(token):
     amount = data["holdersCount"]
     return amount
 
+def get_token_name(token):
+    url = 'https://api.ethplorer.io/getTokenInfo/' + token + keys.ethplorer
+    response = requests.get(url)
+    data = response.json()
+    if "name" not in data:
+        return "Unknown Token Name"
+    else:
+        name = data["name"]
+        return name
+
 def get_ath(token):
     url = f"https://api.coingecko.com/api/v3/coins/{token}?localization=false&tickers=false&market_data=" \
           "true&community_data=false&developer_data=false&sparkline=false"
@@ -254,3 +264,10 @@ def get_snapshot():
     response = requests.get(url, query)
     data = response.json()
     return data
+
+def get_abi(contract):
+    url = f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address=" + contract + keys.ether
+    response = requests.get(url)
+    data = response.json()
+    result = data["result"][0]["ABI"]
+    return result
