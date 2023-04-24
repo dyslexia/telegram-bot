@@ -5,6 +5,7 @@ import requests
 import random
 import nfts
 from datetime import datetime
+import tweepy
 
 def get_signers(wallet):
     url = f'https://safe-transaction-mainnet.safe.global/api/v1/safes/{wallet}/'
@@ -271,3 +272,17 @@ def get_abi(contract):
     data = response.json()
     result = data["result"][0]["ABI"]
     return result
+
+
+# TWITTER
+auth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
+auth.set_access_token(keys.access, keys.accesssecret)
+twitter = tweepy.API(auth)
+twitter_bearer = tweepy.Client(keys.bearer)
+
+def get_space(space_id):
+    url = f"https://api.twitter.com/2/spaces/{space_id}?space.fields=scheduled_start,title"
+    headers = {"Authorization": "Bearer {}".format(keys.bearer), "User-Agent": "v2SpacesLookupPython"}
+    responses = requests.request("GET", url, headers=headers)
+    result = responses.json()
+    return result["data"]

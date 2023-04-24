@@ -21,11 +21,13 @@ import loans
 import nfts
 from translate import Translator
 import tax
+from dateutil import parser
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 print('Bot Restarted')
+
 
 # COMMANDS
 async def bot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -780,28 +782,6 @@ async def swap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                                         '4553617428/1053206402065256498')], ]))
 
 
-async def spaces_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    then = times.spaces_time.astimezone(pytz.utc)
-    now = datetime.now(timezone.utc)
-    duration = then - now
-    duration_in_s = duration.total_seconds()
-    days = divmod(duration_in_s, 86400)
-    hours = divmod(days[1], 3600)
-    minutes = divmod(hours[1], 60)
-    if duration < timedelta(0):
-        await update.message.reply_photo(
-            photo=open((random.choice(media.logos)), 'rb'),
-            caption=f'X7 Finance Twitter space\n\nPlease check back for more details'
-            f'\n\n{api.get_quote()}', parse_mode="Markdown")
-    else:
-        await update.message.reply_sticker(sticker=media.twitter_sticker)
-        await update.message.reply_text(
-            text=f'Next X7 Finance Twitter space is:\n\n{then.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
-                 f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
-                 f'[Click here]({times.spaces_link}) to set a reminder!'
-                 f'\n\n{api.get_quote()}', parse_mode="Markdown")
-
-
 async def roadmap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f'Devs are making incremental final progress against all ecosystem deliverables, we expect the '
@@ -1013,39 +993,6 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text=f'Optimism', url=f'{url.opti_address}{loan_ca}')], ]))
 
 
-async def twitter_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    ext = " ".join(context.args)
-    auth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
-    auth.set_access_token(keys.access, keys.accesssecret)
-    username = '@x7_finance'
-    client = tweepy.API(auth)
-    tweet = client.user_timeline(screen_name=username, count=1)
-    if ext == "":
-        await update.message.reply_sticker(sticker=media.twitter_sticker)
-        await update.message.reply_text(
-            f'Latest X7 Finance Tweet\n\n{tweet[0].text}\n\n'
-            f'https://twitter.com/X7_Finance/status/{tweet[0].id}\n\n'
-            f'{random.choice(text.twitter_replies)}')
-    if ext == "count":
-        chat_admins = await update.effective_chat.get_administrators()
-        if update.effective_user in (admin.user for admin in chat_admins):
-            rt_client = tweepy.Client(keys.bearer)
-            rt_auth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
-            rt_auth.set_access_token(keys.access, keys.accesssecret)
-            twitterapi = tweepy.API(rt_auth)
-            response = rt_client.get_retweeters(tweet[0].id)
-            status = twitterapi.get_status(tweet[0].id)
-            retweet_count = status.retweet_count
-            count = '\n'.join(str(p) for p in response.data)
-            await update.message.reply_sticker(sticker=media.twitter_sticker)
-            await update.message.reply_text(
-                f'Latest X7 Finance Tweet\n\n{tweet[0].text}\n\n'
-                f'https://twitter.com/X7_Finance/status/{tweet[0].id}\n\n'
-                f'Retweeted {retweet_count} times, by the following members:\n\n{count}')
-        else:
-            await update.message.reply_text(f'{text.mods_only}')
-
-
 async def discount_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         '*X7 Finance Discount*\n\n'
@@ -1245,24 +1192,6 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text=f'{chain_name} Gas Tracker', url=f'{chain_url}')], ]))
-
-
-async def count_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    tweet = context.args[0]
-    start = tweet.index('status/')
-    end = tweet.index('?', start + 1)
-    tweet_id = tweet[start + 7:end]
-    rt_client = tweepy.Client(keys.bearer)
-    rt_auth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
-    rt_auth.set_access_token(keys.access, keys.accesssecret)
-    twitterapi = tweepy.API(rt_auth)
-    rt_response = rt_client.get_retweeters(tweet_id)
-    status = twitterapi.get_status(tweet_id)
-    retweet_count = status.retweet_count
-    rt_names = '\n'.join(str(p) for p in rt_response.data)
-    await update.message.reply_sticker(sticker=media.twitter_sticker)
-    await update.message.reply_text(
-        f'Retweeted {retweet_count} times, by the following members:\n\n{rt_names}')
 
 
 async def draw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3112,6 +3041,79 @@ async def ath_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{x7dao_date}\n\n'
                     f'{api.get_quote()}', parse_mode="Markdown")
 
+
+# TWITTER COMMANDS
+async def spaces_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    response = api.twitter_bearer.get_spaces(user_ids=1561721566689386496)
+    data = str(response[0])
+    start = data.index('=')
+    end = data.index(' ', start)
+    space_id = data[start + 1:end]
+    space = api.get_space(space_id)
+    then = parser.parse(space["scheduled_start"]).astimezone(pytz.utc)
+    now = datetime.now(timezone.utc)
+    duration = then - now
+    duration_in_s = duration.total_seconds()
+    days = divmod(duration_in_s, 86400)
+    hours = divmod(days[1], 3600)
+    minutes = divmod(hours[1], 60)
+    if duration < timedelta(0):
+        await update.message.reply_photo(
+            photo=open((random.choice(media.logos)), 'rb'),
+            caption=f'X7 Finance Twitter space\n\nPlease check back for more details'
+                    f'\n\n{api.get_quote()}', parse_mode="Markdown")
+    else:
+        await update.message.reply_sticker(sticker=media.twitter_sticker)
+        await update.message.reply_text(
+            text=f'Next X7 Finance Twitter space:\n\n'
+                 f'{space["title"]}\n\n'
+                 f'{then.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
+                 f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
+                 f'[Click here](https://twitter.com/i/spaces/{space_id}) to set a reminder!'
+                 f'\n\n{api.get_quote()}', parse_mode="Markdown")
+
+
+async def twitter_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    ext = " ".join(context.args)
+    username = '@x7_finance'
+    tweet = api.twitter.user_timeline(screen_name=username, count=1)
+    if ext == "":
+        await update.message.reply_sticker(sticker=media.twitter_sticker)
+        await update.message.reply_text(
+            f'Latest X7 Finance Tweet\n\n{tweet[0].text}\n\n'
+            f'https://twitter.com/X7_Finance/status/{tweet[0].id}\n\n'
+            f'{random.choice(text.twitter_replies)}')
+    if ext == "count":
+        chat_admins = await update.effective_chat.get_administrators()
+        if update.effective_user in (admin.user for admin in chat_admins):
+            response = api.twitter_bearer.get_retweeters(tweet[0].id)
+            status = api.twitter.get_status(tweet[0].id)
+            retweet_count = status.retweet_count
+            count = '\n'.join(str(p) for p in response.data)
+            await update.message.reply_sticker(sticker=media.twitter_sticker)
+            await update.message.reply_text(
+                f'Latest X7 Finance Tweet\n\n{tweet[0].text}\n\n'
+                f'https://twitter.com/X7_Finance/status/{tweet[0].id}\n\n'
+                f'Retweeted {retweet_count} times, by the following members:\n\n{count}')
+        else:
+            await update.message.reply_text(f'{text.mods_only}')
+
+
+async def count_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    tweet = context.args[0]
+    print(tweet)
+    start = tweet.index('status/')
+    end = tweet.index('?', start + 1)
+    tweet_id = tweet[start + 7:end]
+    rt_response = api.twitter_bearer.get_retweeters(tweet_id)
+    status = api.twitter.get_status(tweet_id)
+    retweet_count = status.retweet_count
+    rt_names = '\n'.join(str(p) for p in rt_response.data)
+    await update.message.reply_sticker(sticker=media.twitter_sticker)
+    await update.message.reply_text(
+        f'Retweeted {retweet_count} times, by the following members:\n\n{rt_names}')
+
+
 # TRANSLATOR
 async def japanese_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     translator = Translator(from_lang="english", to_lang="japanese")
@@ -3126,27 +3128,6 @@ async def german_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     translation = translator.translate(phrase)
     await update.message.reply_text(translation)
 
-# COUNTDOWN
-async def countdown_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    then = times.countdown.astimezone(pytz.utc)
-    now = datetime.now(timezone.utc)
-    duration = then - now
-    duration_in_s = duration.total_seconds()
-    days = divmod(duration_in_s, 86400)
-    hours = divmod(days[1], 3600)
-    minutes = divmod(hours[1], 60)
-    if duration < timedelta(0):
-        await update.message.reply_photo(
-            photo=open((random.choice(media.logos)), 'rb'),
-            caption=f'*X7 Finance Countdown*\n\nNo countdown set, Please check back for more details'
-            f'\n\n{api.get_quote()}', parse_mode="Markdown")
-    else:
-        await update.message.reply_text(
-            text=f'*X7 Finance Countdown:*\n\n'
-                 f'{times.countdown_title}\n\n{then.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
-                 f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
-                 f'{times.countdown_desc}'
-                 f'\n\n{api.get_quote()}', parse_mode="Markdown")
 
 # AUTO MESSAGES
 async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -3210,6 +3191,28 @@ async def stop_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) 
 
 
 # GENERAL MESSAGES
+async def countdown_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    then = times.countdown.astimezone(pytz.utc)
+    now = datetime.now(timezone.utc)
+    duration = then - now
+    duration_in_s = duration.total_seconds()
+    days = divmod(duration_in_s, 86400)
+    hours = divmod(days[1], 3600)
+    minutes = divmod(hours[1], 60)
+    if duration < timedelta(0):
+        await update.message.reply_photo(
+            photo=open((random.choice(media.logos)), 'rb'),
+            caption=f'*X7 Finance Countdown*\n\nNo countdown set, Please check back for more details'
+            f'\n\n{api.get_quote()}', parse_mode="Markdown")
+    else:
+        await update.message.reply_text(
+            text=f'*X7 Finance Countdown:*\n\n'
+                 f'{times.countdown_title}\n\n{then.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
+                 f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
+                 f'{times.countdown_desc}'
+                 f'\n\n{api.get_quote()}', parse_mode="Markdown")
+
+
 async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = str(update.effective_message.text).lower()
     print(f'{update.effective_message.from_user.username} says "{message}" in: '
