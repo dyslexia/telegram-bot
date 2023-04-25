@@ -80,14 +80,9 @@ def get_holders(token):
     return amount
 
 def get_token_name(token):
-    url = 'https://api.ethplorer.io/getTokenInfo/' + token + keys.ethplorer
-    response = requests.get(url)
-    data = response.json()
-    if "name" not in data:
-        return "Unknown Token Name"
-    else:
-        name = data["name"]
-        return name
+    result = evm_api.token.get_token_metadata(
+        api_key=keys.moralis, params={"addresses": [f"{token}"] ,"chain": "eth"})
+    return result[0]["name"], result[0]["symbol"]
 
 def get_ath(token):
     url = f"https://api.coingecko.com/api/v3/coins/{token}?localization=false&tickers=false&market_data=" \
@@ -280,9 +275,17 @@ auth.set_access_token(keys.access, keys.accesssecret)
 twitter = tweepy.API(auth)
 twitter_bearer = tweepy.Client(keys.bearer)
 
+def get_space_id(user):
+    url = f"https://api.twitter.com/2/spaces/by/creator_id/{user}?space.fields=scheduled_start,title"
+    headers = {"Authorization": "Bearer {}".format(keys.bearer), "User-Agent": "v2SpacesLookupPython"}
+    response = requests.request("GET", url, headers=headers)
+    result = response.json()
+    return result
+
+
 def get_space(space_id):
     url = f"https://api.twitter.com/2/spaces/{space_id}?space.fields=scheduled_start,title"
     headers = {"Authorization": "Bearer {}".format(keys.bearer), "User-Agent": "v2SpacesLookupPython"}
-    responses = requests.request("GET", url, headers=headers)
-    result = responses.json()
+    response = requests.request("GET", url, headers=headers)
+    result = response.json()
     return result["data"]

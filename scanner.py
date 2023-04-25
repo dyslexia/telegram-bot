@@ -8,13 +8,12 @@ import ca
 infura_url = f'https://mainnet.infura.io/v3/{keys.infura}'
 web3 = Web3(Web3.HTTPProvider(infura_url))
 
-factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.uniswap))
+factory = web3.eth.contract(address=ca.uniswap, abi=api.get_abi(ca.uniswap))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001))
 ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003))
 
 async def new_loan(event):
-    print(event)
     await application.bot.send_photo(
         "-1001780235511",
         photo=open('media/logo10.png', 'rb'),
@@ -28,8 +27,8 @@ async def new_pair(event):
         "-1001780235511",
         photo=open('media/logo10.png', 'rb'),
         caption=f'*New Pair Created*\n\n{event["args"]["pair"]}\n\n'
-                f'Token 0: {name_token0}\n'
-                f'Token 1: {name_token1}\n\n'
+                f'Token 0: {name_token0} ({name_token0[1]})\n'
+                f'Token 1: {name_token1} ({name_token1[1]})\n\n'
                 f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
 
 async def log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval):
