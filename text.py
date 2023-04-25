@@ -1,5 +1,31 @@
 # TEXT
 import times
+multi_sig = '*Community Multisig Weekly Update - 4.21.2023*\n\n' \
+            '`Multisig team reporting for duty! The community leaders have been hard at work building out formal ' \
+            'reporting structures, roles, and responsibilities behind the scenes. Over the past few months, ' \
+            'we have compartmentalized the mod team at large into discrete groups. These groups are:\n\n' \
+            '-Sales (headed by @gazuga )\n' \
+            '-Community Socials (headed by Phlux)\n' \
+            '-Marketing (headed by @cryptod0c /Rob)\n' \
+            '-Technology (headed by @Adz1DoubleD )\n\n' \
+            'Additionally, each mod is aligned with a specific vertical. For example, @MikeMurpher is in the ' \
+            '"Technology" division. In addition to clearly delineating roles and responsibilities, we have ' \
+            'allocated a monthly budget for each division leader to use as they see fit. Each budget ranges ' \
+            'from $500 - 2,000, although budgets are not received in advance and are consumed throughout the ' \
+            'month as needed. Therefore, many budgets are not used entirely. Our budgeting has been based on the ' \
+            'average amount of trading volume funneling through to the multisig and we have adequate runway to ' \
+            'support our operations. Additionally, any excess Eth has been minted for X7D until it ' \
+            'needs to be redeemed and used elsewhere.\n\n' \
+            'Each division leader could provide a robust update just for themselves, and going forward we will ' \
+            'try to share more detail around the projects that each person is working on. Some of these ' \
+            'projects are self-evident, like the giveaways and promotions run by Phlux or the Snapshot.org voting ' \
+            'set up by Adz. Others are less apparent, like the dozens and dozens of private TG chats juggled ' \
+            'behind the scenes by Mark.\n\n' \
+            'We are excited to bring a new level of formality to our work and are honored and humbled to continue ' \
+            'building the most badass community in DeFi!`'
+
+
+
 
 mods_only = "You do not have permission to do this. #trustnoone"
 mods = '@robthebank44 @Adz1doubleD @CoastCorn @cryptod0c @Phlux @SlumdOg_shillionaire2022 @DallasX7 ' \
@@ -39,12 +65,13 @@ commands = '/about - Welcome to X7 Finance\n' \
            '/holders - Token Holder Info\n' \
            '/airdrop - Airdrop/Snapshot Info\n' \
            '/nft - NFT Details\n' \
-           'opensea - Opensea Links\n' \
+           '/opensea - Opensea Links\n' \
            '/pioneer -  [token-id] Pioneer NFT Stats\n' \
            '/discount - discount committee NFT Info\n' \
            '/smart - Smart Contract Details\n' \
            '/faq - X7 Finance FAQs\n' \
            '/deployer  - X7 Finance Deployer Info\n' \
+           '/community  - X7 Community Info\n' \
            '/withdraw  - How to withdraw X7D\n' \
            '/giveaway - Giveaway Details\n' \
            '/spaces  - Twitter Space Info\n' \
@@ -55,7 +82,7 @@ commands = '/about - Welcome to X7 Finance\n' \
            '/search - [keyword] Search the web\n' \
            '/joke - Tell a joke\n' \
            '/quote - Inspirational quote\n' \
-           '/day - On this day in history\n' \
+           '/today - On this day in history\n' \
            '/say - Text to speech\n' \
            '/channels - List of X7 Finance Community TG Channels\n' \
            '/announcements - X7 Finance Announcements TG Channel\n' \
