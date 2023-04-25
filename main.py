@@ -57,6 +57,12 @@ async def about_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Medium', url=f'{url.medium}')], ]))
 
 
+async def community_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        f'{text.multi_sig}',
+        parse_mode='Markdown')
+
+
 async def links_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -3276,6 +3282,7 @@ if __name__ == '__main__':
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
     application.add_handler(CommandHandler([f'{times.countdown_command}'], countdown_command))
+    application.add_handler(CommandHandler('community', community_command))
     application.add_handler(CommandHandler('snapshot', snapshot_command))
     application.add_handler(CommandHandler('ath', ath_command))
     application.add_handler(CommandHandler('japanese', japanese_command))
