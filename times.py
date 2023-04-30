@@ -1,7 +1,7 @@
 from datetime import datetime
 
 # AUTO TIMES HOURS
-wp_time = 1
+wp_time = 2
 
 # GIVEAWAY               Y   M   D   H   M  S
 giveaway_time = datetime(2024, 3, 30, 20, 30, 00)

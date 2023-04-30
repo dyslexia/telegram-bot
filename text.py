@@ -23,10 +23,6 @@ multi_sig = '*Community Multisig Weekly Update - 4.21.2023*\n\n' \
             'behind the scenes by Mark.\n\n' \
             'We are excited to bring a new level of formality to our work and are honored and humbled to continue ' \
             'building the most badass community in DeFi!`'
-
-
-
-
 mods_only = "You do not have permission to do this. #trustnoone"
 mods = '@robthebank44 @Adz1doubleD @CoastCorn @cryptod0c @Phlux @SlumdOg_shillionaire2022 @DallasX7 ' \
        '@gazuga @Gavalars @MikeMurpher @KBCrypto11\n\nMODS ASSEMBLE!'

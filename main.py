@@ -28,7 +28,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 print('Bot Restarted')
 
-
 # COMMANDS
 async def bot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f'{text.commands}')
@@ -1458,9 +1457,10 @@ async def launch_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def potw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
-        caption='*Pioneer of the week*\n\n'
+        caption='*Pioneer Of The Week*\n\n'
                 'The following Pioneers have shown exemplary contributions towards X7 Finance\n\n'
-                'Week 15 - @Ahmed812007\n\n'
+                'Week 15 - @Ahmed812007\n'
+                'Week 17 - @X7Nobody\n\n'
                 f'{api.get_quote()}', parse_mode="Markdown")
 
 
@@ -1622,7 +1622,6 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 25)
         im1.save(r"media\blackhole.png", quality=95)
         i1 = ImageDraw.Draw(im1)
-        print(x7r_ath)
         i1.text((26, 30),
                 f'X7R Info (ETH)\n\n'
                 f'X7R Price: ${price["x7r"]["usd"]}\n'
@@ -2565,7 +2564,7 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text((28, 36),
                 f'{symbol} price\n\n'
                 f'Price: ${float(token_price[token_id]["usd"])}\n'
-                f'24 Hour Change: {round(token_price[token_id]["usd_24h_change"], 1)}%'
+                f'24 Hour Change: {round(token_price[token_id]["usd_24h_change"], 1)}%\n'
                 f'Market Cap: ${"{:0,.0f}".format(token_price[token_id]["usd_market_cap"])}\n\n\n\n\n\n\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -2677,7 +2676,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         pioneer_dollar = float(pioneer_eth) * float(api.get_native_price("eth")) / 1 ** 18
         com_x7r = api.get_token_balance(ca.com_multi_eth, "eth", ca.x7r)
         com_x7dao = api.get_token_balance(ca.com_multi_eth, "eth", ca.x7dao)
-        com_x7dao_price = com_x7r * api.get_cg_price("x7dao")["x7dao"]["usd"]
+        com_x7dao_price = com_x7dao * api.get_cg_price("x7dao")["x7dao"]["usd"]
         com_x7r_price = com_x7r * api.get_cg_price("x7r")["x7r"]["usd"]
         com_x7d = api.get_token_balance(ca.com_multi_eth, "eth", ca.x7d)
         com_x7d_price = com_x7d * api.get_native_price("eth")
@@ -2695,7 +2694,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'{com_x7d} X7D (${"{:0,.0f}".format(com_x7d_price)})\n'
                 f'{"{:0,.0f}".format(com_x7r)} X7R (${"{:0,.0f}".format(com_x7r_price)})\n'
                 f'{"{:0,.0f}".format(com_x7dao)} X7DAO (${"{:0,.0f}".format(com_x7dao_price)})\n'
-                f'Total: (${"{:0,.0f}".format(com_total)})\n\n\n\n\n'
+                f'Total: (${"{:0,.0f}".format(com_total)})\n\n\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
         im1.save(r"media\blackhole.png")
@@ -3093,6 +3092,7 @@ async def twitter_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_admins = await update.effective_chat.get_administrators()
         if update.effective_user in (admin.user for admin in chat_admins):
             response = api.twitter_bearer.get_retweeters(tweet[0].id)
+            print(response)
             status = api.twitter.get_status(tweet[0].id)
             retweet_count = status.retweet_count
             count = '\n'.join(str(p) for p in response.data)
