@@ -228,19 +228,8 @@ async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain_url = ""
     chain_name = ""
     if chain == "" or chain == "eth":
+        chain_name = "(ETH)"
         chain_url = ""
-        await update.message.reply_photo(
-            photo=open(media.opensea_logo, 'rb'),
-            caption=f'*X7 Finance Opensea Links (ETH)*\nUse `/nft [chain-name]` for other chains\n\n{api.get_quote()}',
-            parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text='Ecosystem Maxi', url=f'{url.os_eco}')],
-                [InlineKeyboardButton(text='Liquidity Maxi', url=f'{url.os_liq}')],
-                [InlineKeyboardButton(text='DEX Maxi', url=f'{url.os_dex}')],
-                [InlineKeyboardButton(text='Borrowing Maxi', url=f'{url.os_borrow}')],
-                [InlineKeyboardButton(text='Magister', url=f'{url.os_magister}')],
-                [InlineKeyboardButton(text='Pioneer', url=f'{url.os_pioneer}')], ]))
-        return
     if chain == "arb" or chain == "arbitrum":
         chain_name = "(ARB)"
         chain_url = "-arbitrum"
@@ -580,7 +569,9 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7 Pioneer Dashboard', url='https://x7.finance/x/nft/pioneer')],
-                 [InlineKeyboardButton(text='Opensea', url='https://opensea.io/collection/x7-pioneer')], ]))
+                 [InlineKeyboardButton(text='Blur Marketplace',
+                                       url='https://blur.io/collection/x7-pioneer?traits=%7B%22'
+                                           'Transfer%20Lock%20Status%22%3A%5B%22Unlocked%22%5D%7D')], ]))
     else:
         baseurl = "https://api.opensea.io/api/v1/asset/"
         slug = ca.pioneer + "/"
@@ -597,7 +588,9 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode='markdown',
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7 Pioneer Dashboard', url='https://x7.finance/x/nft/pioneer')],
-                 [InlineKeyboardButton(text='Opensea', url='https://opensea.io/collection/x7-pioneer')], ]))
+                 [InlineKeyboardButton(text='Blur Marketplace',
+                                       url='https://blur.io/collection/x7-pioneer?traits=%7B%22'
+                                           'Transfer%20Lock%20Status%22%3A%5B%22Unlocked%22%5D%7D')], ]))
 
 async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     wiki = wikipediaapi.Wikipedia('en')
@@ -1054,20 +1047,26 @@ async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     deployer = api.get_tx(ca.deployer, "eth")
     date = deployer["result"][0]["block_timestamp"].split("-")
+    time = deployer["result"][0]["block_timestamp"].split(":")
     year = int(date[0])
     month = int(date[1])
     day = int(date[2][:2])
-    then = datetime(year, month, day)
+    hour = int(time[0][-2:])
+    minute = int(time[1])
+    then = datetime(year, month, day, hour, minute)
     now = datetime.now()
     duration = now - then
     duration_in_s = duration.total_seconds()
     days = divmod(duration_in_s, 86400)
+    hours = divmod(days[1], 3600)
+    minutes = divmod(hours[1], 60)
     to_address = deployer["result"][0]['to_address']
     if str(to_address).lower() == "0x000000000000000000000000000000000000dead":
         message = bytes.fromhex(api.get_tx(ca.deployer, "eth")["result"][0]["input"][2:]).decode('utf-8')
         await update.message.reply_text(
             '*X7 Finance DAO Founders*\n\n'
-            f'Deployer Wallet last TX -  {int(days[0])} days ago:\n\n'
+            f'Deployer Wallet last TX\n'
+            f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes ago:\n\n'
             f'`{message}`\n{url.ether_tx}{deployer["result"][0]["hash"]}',
             parse_mode='Markdown')
     else:
