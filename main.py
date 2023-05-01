@@ -32,7 +32,6 @@ print('Bot Restarted')
 async def bot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f'{text.commands}')
 
-
 async def ecosystem_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f'{text.ecosystem}'
@@ -44,7 +43,6 @@ async def ecosystem_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Linktree', url=f'{url.linktree}')],
             [InlineKeyboardButton(text='Medium', url=f'{url.medium}')], ]))
 
-
 async def about_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f'{text.about}',
@@ -55,12 +53,10 @@ async def about_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Linktree', url=f'{url.linktree}')],
             [InlineKeyboardButton(text='Medium', url=f'{url.medium}')], ]))
 
-
 async def community_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f'{text.multi_sig}',
         parse_mode='Markdown')
-
 
 async def links_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
@@ -78,7 +74,6 @@ async def links_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Reddit', url=f'{url.reddit}')],
             [InlineKeyboardButton(text='Youtube', url=f'{url.youtube}')],
             [InlineKeyboardButton(text='Github', url=f'{url.github}')], ]))
-
 
 async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -228,7 +223,6 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Borrowing Maxi', url=f'{chain_url}{ca.borrow}')],
             [InlineKeyboardButton(text='Magister', url=f'{chain_url}{ca.magister}')], ]))
 
-
 async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     chain_url = ""
@@ -271,7 +265,6 @@ async def opensea_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Borrowing Maxi', url=f'{url.os_borrow}{chain_url}')],
             [InlineKeyboardButton(text='Magister', url=f'{url.os_magister}{chain_url}')], ]))
 
-
 async def website_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -281,7 +274,6 @@ async def website_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Website', url=f'{url.website}')],
             [InlineKeyboardButton(text='Community Dashboard', url=f'{url.dashboard}')], ]))
 
-
 async def wp_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         text=f'*X7 Finance Whitepaper Quote*\n\n{random.choice(text.quotes)}',
@@ -290,7 +282,6 @@ async def wp_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Website', url=f'{url.website}')],
             [InlineKeyboardButton(text='Full WP', url=f'{url.wp_link}')],
             [InlineKeyboardButton(text='Short WP', url=f'{url.short_wp_link}')], ]))
-
 
 async def buy_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -320,7 +311,6 @@ async def buy_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='X7R - Rewards Token', url=f'{chain_url}{ca.x7r}')],
             [InlineKeyboardButton(text='X7DAO - Governance Token', url=f'{chain_url}{ca.x7dao}')], ]))
 
-
 async def chart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     chain_url = ""
@@ -348,7 +338,6 @@ async def chart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton(text='X7R - Rewards Token', url=f'{chain_url}{ca.x7r_pair_eth}')],
             [InlineKeyboardButton(text='X7DAO - Governance Token', url=f'{chain_url}{ca.x7dao_pair_eth}')], ]))
-
 
 async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -394,7 +383,6 @@ async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='X7 Lending Pool Contract', url=f'{chain_url}{ca.lpool}')],
             [InlineKeyboardButton(text='X7 Xchange Factory', url=f'{chain_url}{ca.factory}')], ]))
 
-
 async def ca_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -408,7 +396,6 @@ async def ca_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'*X7105*\n`{ca.x7105}`\n\n'
                 f'*X7D*\n`{ca.x7d}`\n\n{api.get_quote()}',
         parse_mode='Markdown')
-
 
 async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -483,7 +470,6 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [[InlineKeyboardButton(text='X7 Lending Pool Reserve Contract', url=f'{chain_url}{ca.lpool_reserve}#code')],
              [InlineKeyboardButton(text='X7 Deposit Contract', url=f'{chain_url}{ca.x7d}#code')], ]))
 
-
 async def media_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -498,7 +484,6 @@ async def media_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text='X7 TG Sticker Pack 3', url='https://t.me/addstickers/x7financ')],
              [InlineKeyboardButton(text='X7 TG Sticker Pack 4', url='https://t.me/addstickers/GavalarsX7')],
              [InlineKeyboardButton(text='X7 Emojis Pack', url='https://t.me/addemoji/x7FinanceEmojis')], ]))
-
 
 async def buy_evenly_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
@@ -527,7 +512,6 @@ async def buy_evenly_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                                                              '137dfa6afd5b6af5771c3ffbea49#code')],
              [InlineKeyboardButton(text='Epoch Convertor', url='https://www.epochconverter.com/')], ]))
 
-
 async def channels_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -539,7 +523,6 @@ async def channels_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text='Research Notes', url='https://t.me/X7m105_Research')],
              [InlineKeyboardButton(text='Chinese Community', url='https://t.me/X7CNPortal')], ]))
 
-
 async def buy_bots_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -550,7 +533,6 @@ async def buy_bots_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text='BSC', url='https://t.me/x7bscbuybots')],
              [InlineKeyboardButton(text='Optimism', url='https://t.me/x7optibuybots')],
              [InlineKeyboardButton(text='Polygon', url='https://t.me/x7polygonbuybots')], ]))
-
 
 async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pioneer_id = " ".join(context.args)
@@ -617,7 +599,6 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [[InlineKeyboardButton(text='X7 Pioneer Dashboard', url='https://x7.finance/x/nft/pioneer')],
                  [InlineKeyboardButton(text='Opensea', url='https://opensea.io/collection/x7-pioneer')], ]))
 
-
 async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     wiki = wikipediaapi.Wikipedia('en')
     keyword = " ".join(context.args)
@@ -647,7 +628,6 @@ async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'[Etherscan](https://etherscan.io/search?f=0&q={keyword})\n\n'
                     f'{api.get_quote()}',
             parse_mode="markdown")
-
 
 async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -751,7 +731,6 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [[InlineKeyboardButton(text='Lending Pool Reserve Contract', url=f'{chain_url}{ca.lpool_reserve}')],
                 [InlineKeyboardButton(text='X7 Deposit Contract', url=f'{chain_url}{ca.x7d}#code')], ]))
 
-
 async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     chain_tax = ""
@@ -777,7 +756,6 @@ async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'{chain_tax}\n\n{api.get_quote()}',
         parse_mode='Markdown')
 
-
 async def swap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_sticker(
         sticker=media.swap,
@@ -786,45 +764,55 @@ async def swap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text='Feedback', url='https://discord.com/channels/101665704'
                                                         '4553617428/1053206402065256498')], ]))
 
-
 async def roadmap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        f'Devs are making incremental final progress against all ecosystem deliverables, we expect the '
-        f'following order of delivery:\n\n'
-        f'1. Whitepaper ✅\n'
-        f'2. Pioneer NFT & Reward Pool ✅\n'
-        f'3. DEX and Leveraged Initial Liquidity:\n'
-        f'3.1. X7D token contract ✅\n'
-        f'3.2. A gnosis multi-sig wallet that will be used to manage the X7D token ownership prior to DAO '
-        f'control turnover ✅\n'
-        f'3.3. Lending pool reserve contract ✅\n'
-        f'3.4. v1 lending pool contract ✅\n'
-        f'3.5. First three Loan Term NFT contracts ✅\n'
-        f'3.6. Lending Pool Discount Authority contract ✅\n'
-        f'3.7. XchangeFactory and XchangePair contracts ✅\n'
-        f'3.8. V1 XchangeRouter ✅\n'
-        f'3.9. V1 XchangeOmniRouter, ✅\n'
-        f'4. Lender dApp 🔄\n'
-        f'5. X7D minting ✅\n'
-        f'6. X7D staking 🔄\n'
-        f'7. X7D dApp 🔄\n'
-        f'8. Governance contracts 🔄\n'
-        f'9. Governance dApp 🔄\n'
-        f'X. Initial DAO control turnover 🔄\n\n'
-        f'In addition to the above development milestones, the following additional deliveries can be '
-        f'expected:\n\n'
-        f'*Marketing Materials:*\n'
-        f'> Investor deck / summary\n'
-        f'> Prettified ecosystem diagrams and explanations\n\n'
-        f'*Development Tooling and Documentation:*\n'
-        f'> Technical design document for all smart contracts\n'
-        f'> Smart contract trust diagram\n'
-        f'> Technical User Guide for DAO interactions\n'
-        f'> Integration Guide for third party integrations\n'
-        f'> Open sourced SDKs for smart contract interactions\n'
-        f'> Open sourced testing and development tooling\n\n{api.get_quote()}',
-        parse_mode="Markdown")
-
+    def draw_progress_bar(d, x, y, w, h, progress, bg="black", fg="white"):
+        im1.ellipse((x + w, y, x + h + w, y + h), fill=bg)
+        im1.ellipse((x, y, x + h, y + h), fill=bg)
+        im1.rectangle((x + (h / 2), y, x + w + (h / 2), y + h), fill=bg)
+        w *= progress
+        im1.ellipse((x + w, y, x + h + w, y + h), fill=fg)
+        im1.ellipse((x, y, x + h, y + h), fill=fg)
+        im1.rectangle((x + (h / 2), y, x + w + (h / 2), y + h), fill=fg)
+        return im1
+    out = Image.open((random.choice(media.blackhole)))
+    im1 = ImageDraw.Draw(out)
+    myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+    ws1 = draw_progress_bar(im1, 80, 80, 200, 25, text.ws1)
+    ws2 = draw_progress_bar(im1, 80, 180, 200, 25, text.ws2)
+    ws3 = draw_progress_bar(im1, 80, 280, 200, 25, text.ws3)
+    ws4 = draw_progress_bar(im1, 80, 380, 200, 25, text.ws4)
+    ws5 = draw_progress_bar(im1, 80, 480, 200, 25, text.ws5)
+    ws6 = draw_progress_bar(im1, 480, 80, 200, 25, text.ws6)
+    ws7 = draw_progress_bar(im1, 480, 180, 200, 25, text.ws7)
+    ws8 = draw_progress_bar(im1, 480, 280, 200, 25, text.ws8)
+    ws9 = draw_progress_bar(im1, 480, 380, 200, 25, text.ws9)
+    im1.text((80, 36),
+             f'WS 1 - {text.ws1 * 100}% \n\n\n'
+             f'WS 2 - {text.ws2 * 100}% \n\n\n'
+             f'WS 3 - {text.ws3 * 100}% \n\n\n'
+             f'WS 4 - {text.ws4 * 100}% \n\n\n'
+             f'WS 5 - {text.ws5 * 100}% \n\n\n',
+             font=myfont, fill=(255, 255, 255))
+    im1.text((480, 36),
+             f'WS 6 - {text.ws6 * 100}%\n\n\n'
+             f'WS 7 - {text.ws7 * 100}%\n\n\n'
+             f'WS 8 - {text.ws8 * 100}%\n\n\n'
+             f'WS 9 - {text.ws9 * 100}%\n\n\n',
+             font=myfont, fill=(255, 255, 255))
+    out.save(r"media\blackhole.png")
+    await update.message.reply_photo(
+        photo=open(r"media\blackhole.png", 'rb'),
+        caption=f'*X7 Finance Work Stream Status*\n\n'
+                f'WS 1 WS1: Omni routing (multi dex routing "library" code) - {text.ws1*100}% \n\n'
+                f'WS2: Omni routing (UI) - {text.ws2*100}% \n\n'
+                f'WS3: Borrowing UI - {text.ws3*100}% \n\n'
+                f'WS4: Lending and Liquidation UI - {text.ws4*100}% \n\n'
+                f'WS5: DAO smart contracts - {text.ws5*100}% \n\n'
+                f'WS6: X7 DAO UI - {text.ws6*100}%\n\n'
+                f'WS7: Marketing "Pitch Deck" - {text.ws7*100}%\n\n'
+                f'WS8: Decentralization in hosting - {text.ws8*100}%\n\n'
+                f'WS9: Developer Tools and Example Smart Contracts - {text.ws9*100}%\n\n{api.get_quote()}',
+        parse_mode='Markdown')
 
 async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ext = " ".join(context.args)
@@ -886,7 +874,6 @@ async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             else:
                 await update.message.reply_text(f'{text.mods_only}')
 
-
 async def joke_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     joke_response = requests.get('https://v2.jokeapi.dev/joke/Any?safe-mode')
     joke = joke_response.json()
@@ -901,7 +888,6 @@ async def joke_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption=f'`{joke["setup"]}\n\n{joke["delivery"]}`',
             parse_mode="Markdown")
 
-
 async def today_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = api.get_today()
     today = (random.choice(data["data"]["Events"]))
@@ -909,7 +895,6 @@ async def today_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         photo=open((random.choice(media.logos)), 'rb'),
         caption=f'`On this day in {today["year"]}:\n\n{today["text"]}`',
         parse_mode="Markdown")
-
 
 async def fg_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     fear_response = requests.get('https://api.alternative.me/fng/?limit=0')
@@ -953,13 +938,11 @@ async def fg_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Next Update:\n'
                 f'{int(hours[0])} hours and {int(minutes[0])} minutes\n\n{api.get_quote()}', parse_mode='Markdown')
 
-
 async def quote_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
         caption=f'{api.get_quote()}',
         parse_mode="Markdown")
-
 
 async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     loan_type = " ".join(context.args).lower()
@@ -997,7 +980,6 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text=f'Arbitrum', url=f'{url.arb_address}{loan_ca}')],
              [InlineKeyboardButton(text=f'Optimism', url=f'{url.opti_address}{loan_ca}')], ]))
 
-
 async def discount_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         '*X7 Finance Discount*\n\n'
@@ -1028,7 +1010,6 @@ async def discount_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [[InlineKeyboardButton(text='Discount Application', url=url.dac)],
              [InlineKeyboardButton(text='X7 Lending Discount Contract',
                                    url=f'{url.ether_address}{ca.lending_discount}#code')], ]))
-
 
 async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -1064,13 +1045,11 @@ async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text='X7 Lending Pool Reserve', url=f'{chain_url}{ca.lpool_reserve}#code')], ]))
 
-
 async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     engine = pyttsx3.init()
     engine.save_to_file(" ".join(context.args), 'media/voicenote.mp3')
     engine.runAndWait()
     await update.message.reply_audio(audio=open('media/voicenote.mp3', 'rb'))
-
 
 async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     deployer = api.get_tx(ca.deployer, "eth")
@@ -1099,7 +1078,6 @@ async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{url.ether_tx}{deployer["result"][0]["hash"]}\n\n{api.get_quote()}',
             parse_mode='Markdown')
 
-
 async def announcements_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -1107,7 +1085,6 @@ async def announcements_command(update: Update, context: ContextTypes.DEFAULT_TY
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text='X7 Announcement Channel', url="https://t.me/X7announcements")], ]))
-
 
 async def voting_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
@@ -1135,7 +1112,6 @@ async def voting_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Website', url='https://x7.finance')],
             [InlineKeyboardButton(text='X7 Finance Whitepaper', url='https://x7.finance/whitepaper')], ]))
 
-
 async def airdrop_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_sticker(sticker=media.chains)
     await update.message.reply_text(
@@ -1151,7 +1127,6 @@ async def airdrop_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'contrary, the more tokens held on Ethereum, the greater the reward will be when the tokens and ecosystem ' 
         f'are released on other chains.\n\nThese airdrop snapshots will occur just prior to the token launch\n\n'
         f'{api.get_quote()}', parse_mode='Markdown')
-
 
 async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -1198,7 +1173,6 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text=f'{chain_name} Gas Tracker', url=f'{chain_url}')], ]))
 
-
 async def draw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tweet = context.args[0]
     chat_admins = await update.effective_chat.get_administrators()
@@ -1221,7 +1195,6 @@ async def draw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                         f'Congratulations, Please DM @X7_Finance to verify your account')
     else:
         await update.message.reply_text(f'{text.mods_only}')
-
 
 async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     west_coast_raw = pytz.timezone("America/Los_Angeles")
@@ -1253,7 +1226,6 @@ async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                     f'{tokyo_time} - JST\n',
                                     parse_mode="Markdown")
 
-
 async def wei_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     eth = " ".join(context.args)
     wei_raw = float(eth)
@@ -1262,7 +1234,6 @@ async def wei_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'{eth} ETH is equal to \n\n'
         f'`{wei:.0f}` wei',
         parse_mode="Markdown")
-
 
 async def dashboard_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
@@ -1281,7 +1252,6 @@ async def dashboard_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Whitepaper', url='https://www.x7finance.org/whitepaper/')],
             [InlineKeyboardButton(text='FAQs', url='https://www.x7finance.org/faq/')], ]))
 
-
 async def faq_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -1297,7 +1267,6 @@ async def faq_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                   url='https://www.x7finance.org/faq/liquiditylending')],
             [InlineKeyboardButton(text='NFT Questions', url='https://www.x7finance.org/faq/nfts')],
             [InlineKeyboardButton(text='Xchange Questions', url='https://www.x7finance.org/faq/xchange')], ]))
-
 
 async def holders_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7dao_holders = api.get_holders(ca.x7dao)
@@ -1320,7 +1289,6 @@ async def holders_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'{api.get_quote()}',
         parse_mode='Markdown')
 
-
 async def alumni_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -1329,7 +1297,6 @@ async def alumni_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'@WoxieX - Creator of the OG dashboard -  x7community.space\n\n'
                 f'@Zaratustra  - Defi extraordinaire and protocol prophet\n\n'
                 f'{api.get_quote()}', parse_mode='Markdown')
-
 
 async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -1373,7 +1340,6 @@ async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton(
                 text='Magister Holder List', url=f'{chain_url}{ca.magister}#balances')], ]))
-
 
 async def signers_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -1421,7 +1387,6 @@ async def signers_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [[InlineKeyboardButton(text='X7 Developer Multi-Sig', url=f'{chain_url}{ca.dev_multi_eth}')],
              [InlineKeyboardButton(text='X7 Community Multi-Sig', url=f'{chain_url}{ca.com_multi_eth}')], ]))
 
-
 async def launch_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     launch_raw = datetime(2022, 8, 13, 14, 10, 17)
     migration_raw = datetime(2022, 9, 25, 5, 00, 11)
@@ -1453,7 +1418,6 @@ async def launch_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text='Migration Go Live TX', url=f'https://etherscan.io/tx/'
                                         f'0x13e8ed59bcf97c5948837c8069f1d61e3b0f817d6912015427e468a77056fe41')], ]))
 
-
 async def potw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -1462,7 +1426,6 @@ async def potw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 'Week 15 - @Ahmed812007\n'
                 'Week 17 - @X7Nobody\n\n'
                 f'{api.get_quote()}', parse_mode="Markdown")
-
 
 async def supply_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     prices = api.get_cg_price("x7r, x7dao, x7101, x7102, x7103, x7104, x7105")
@@ -1520,7 +1483,6 @@ async def supply_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'*X7105*\n'
                     f'{"{:0,.0f}".format(x7105)} X7105 (${"{:0,.0f}".format(x7105_dollar)}) {x7105_percent}%\n\n'
                     f'{api.get_quote()}', parse_mode="Markdown")
-
 
 async def snapshot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     snapshot = api.get_snapshot()
@@ -1690,7 +1652,6 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  [InlineKeyboardButton(text='Chart', url=f'{chart_url}')],
                  [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7r}')], ]))
 
-
 async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     chain_name = ""
@@ -1840,7 +1801,6 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text='Chart', url=f'{chart_url}')],
              [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7dao}')], ]))
 
-
 async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     chain_name = ""
@@ -1952,7 +1912,6 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [[InlineKeyboardButton(text=f'{scan_name}', url=f'{chart_url}')],
              [InlineKeyboardButton(text='Chart', url=f'{chart_url}')],
              [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7101}')], ]))
-
 
 async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -2067,7 +2026,6 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text='Chart', url=f'{chart_url}')],
              [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7102}')], ]))
 
-
 async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     chain_name = ""
@@ -2180,7 +2138,6 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [[InlineKeyboardButton(text=f'{scan_name}', url=f'{chart_url}')],
              [InlineKeyboardButton(text='Chart', url=f'{chart_url}')],
              [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7103}')], ]))
-
 
 async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -2295,7 +2252,6 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text='Chart', url=f'{chart_url}')],
              [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7104}')], ]))
 
-
 async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     chain_name = ""
@@ -2409,7 +2365,6 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text='Chart', url=f'{chart_url}')],
              [InlineKeyboardButton(text='Buy', url=f'{url.xchange_buy_eth}{ca.x7105}')], ]))
 
-
 async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     x7r_supply = ca.supply - api.get_token_balance(ca.dead, "eth", ca.x7r)
@@ -2460,7 +2415,6 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'${"{:0,.0f}".format(total_cap)}'
                 f'\n\n{api.get_quote()}',
         parse_mode="Markdown")
-
 
 async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     search = " ".join(context.args).lower()
@@ -2580,7 +2534,6 @@ async def price_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='Chart', url=f'https://www.coingecko.com/en/coins/{token_id}')], ]))
 
-
 async def constellations_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     price = api.get_cg_price("x7101, x7102, x7103, x7104, x7105")
@@ -2653,7 +2606,6 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
                     f'CA: `{ca.x7105}\n\n`'
                     f'Combined Market Cap: ${"{:0,.0f}".format(const_mc)}\n\n'
                     f'{api.get_quote()}', parse_mode="Markdown")
-
 
 async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -2784,7 +2736,6 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                   url=f'{chain_url}{ca.dev_multi_bsc}')],
             [InlineKeyboardButton(text='Community Multi-sig Wallet',
                                   url=f'{chain_url}{ca.com_multi_bsc}')], ]))
-
 
 async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -2956,7 +2907,6 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='X7100 Initial Liquidity',
                                   url=f'{chain_url}{ca.cons_liq_lock}')], ]))
 
-
 async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     chain_url = ""
@@ -3016,7 +2966,6 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text='Etherscan Burn Wallet', url=f'{chain_url}{ca.x7r}?a={ca.dead}')], ]))
 
-
 async def ath_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7r_ath_change = str(api.get_ath_change("x7r"))
     x7r_ath = api.get_ath("x7r")
@@ -3045,7 +2994,6 @@ async def ath_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change[:3]}%\n'
                     f'{x7dao_date}\n\n'
                     f'{api.get_quote()}', parse_mode="Markdown")
-
 
 # TWITTER COMMANDS
 async def spaces_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3077,7 +3025,6 @@ async def spaces_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  f'[Click here](https://twitter.com/i/spaces/{space_id}) to set a reminder!'
                  f'\n\n{api.get_quote()}', parse_mode="Markdown")
 
-
 async def twitter_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ext = " ".join(context.args)
     username = '@x7_finance'
@@ -3104,7 +3051,6 @@ async def twitter_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             await update.message.reply_text(f'{text.mods_only}')
 
-
 async def count_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tweet = context.args[0]
     print(tweet)
@@ -3119,7 +3065,6 @@ async def count_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f'Retweeted {retweet_count} times, by the following members:\n\n{rt_names}')
 
-
 # TRANSLATOR
 async def japanese_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     translator = Translator(from_lang="english", to_lang="japanese")
@@ -3127,13 +3072,11 @@ async def japanese_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     translation = translator.translate(phrase)
     await update.message.reply_text(translation)
 
-
 async def german_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     translator = Translator(from_lang="english", to_lang="german")
     phrase = " ".join(context.args).lower()
     translation = translator.translate(phrase)
     await update.message.reply_text(translation)
-
 
 # AUTO MESSAGES
 async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -3146,14 +3089,12 @@ async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
             [InlineKeyboardButton(text='Website', url=f'{url.website}')],
             [InlineKeyboardButton(text='Whitepaper', url=f'{url.wp_link}')], ]))
 
-
 async def auto_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
     await context.bot.send_photo(
         job.chat_id,
         photo=open((random.choice(media.logos)), 'rb'),
         caption=f"{job.data}")
-
 
 async def show_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     chat_admins = await update.effective_chat.get_administrators()
@@ -3163,7 +3104,6 @@ async def show_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) 
                                         f'to stop')
     else:
         await update.message.reply_text(f'{text.mods_only}')
-
 
 async def auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     chat_id = update.effective_message.chat_id
@@ -3182,7 +3122,6 @@ async def auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     else:
         await update.message.reply_text(f'{text.mods_only}')
 
-
 async def stop_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     chat_admins = await update.effective_chat.get_administrators()
     if update.effective_user in (admin.user for admin in chat_admins):
@@ -3194,7 +3133,6 @@ async def stop_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) 
             await update.message.reply_text(f"No active message named {context.args}.")
     else:
         await update.message.reply_text(f'{text.mods_only}')
-
 
 # GENERAL MESSAGES
 async def countdown_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3217,7 +3155,6 @@ async def countdown_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n'
                  f'{times.countdown_desc}'
                  f'\n\n{api.get_quote()}', parse_mode="Markdown")
-
 
 async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = str(update.effective_message.text).lower()
@@ -3255,7 +3192,6 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if "slapped" in message:
         await update.message.reply_sticker(sticker=media.slapped)
 
-
 async def admin_commands_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_admins = await update.effective_chat.get_administrators()
     if update.effective_user in (admin.user for admin in chat_admins):
@@ -3266,14 +3202,11 @@ async def admin_commands_command(update: Update, context: ContextTypes.DEFAULT_T
     else:
         await update.message.reply_text(f'{text.mods_only}')
 
-
 async def mods_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f'{text.mods}')
 
-
 async def error(update, context):
     print(f'Update {update} caused error: {context.error}')
-
 
 # RUN
 if __name__ == '__main__':

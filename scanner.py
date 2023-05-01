@@ -44,7 +44,7 @@ async def new_pair(event):
     myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
     i1 = ImageDraw.Draw(im1)
     i1.text((26, 30),
-            f'*New Pair Created (ETH)*\n\n{event["args"]["pair"]}\n\n'
+            f'New Pair Created (ETH)\n\n{event["args"]["pair"]}\n\n'
             f'Token 0: {name_token0} ({name_token0[1]})\n'
             f'Token 1: {name_token1} ({name_token1[1]})\n\n'
             f'https://etherscan.io/tx/{event["transactionHash"].hex()}',
@@ -67,7 +67,7 @@ async def time_lock_extend(event):
     myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
     i1 = ImageDraw.Draw(im1)
     i1.text((26, 30),
-            f'*Token Unlock Time Extended (ETH)*\n\n*{token_name}*\n\n'
+            f'Token Unlock Time Extended (ETH)\n\n*{token_name}*\n\n'
             f'{event["tokenAddress"]}\n'
             f'{time}\n\n'
             f'https://etherscan.io/tx/{event["transactionHash"].hex()}',
