@@ -39,8 +39,11 @@ def get_last_tx(address, chain):
         api_key=keys.moralis, params={"address": address, "chain": chain})
     return result
 
-def get_tx(tx):
-    url = f'https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.ether}'
+def get_tx(tx, chain):
+    if chain == "eth":
+        url = f'https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.ether}'
+    if chain == "bsc":
+        url = f'https://api.bscscan.com/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.bsc}'
     response = requests.get(url)
     data = response.json()
     return data
@@ -85,9 +88,9 @@ def get_holders(token):
     amount = data["holdersCount"]
     return amount
 
-def get_token_name(token):
+def get_token_name(token, chain):
     result = evm_api.token.get_token_metadata(
-        api_key=keys.moralis, params={"addresses": [f"{token}"], "chain": "eth"})
+        api_key=keys.moralis, params={"addresses": [f"{token}"], "chain": chain})
     return result[0]["name"], result[0]["symbol"]
 
 def get_ath(token):
@@ -267,22 +270,21 @@ def get_snapshot():
     data = response.json()
     return data
 
-def get_abi_bsc(contract):
-    url = f"https://api.bscscan.com/api?module=contract&action=getsourcecode&address=" + contract + keys.bsc
+def get_abi(contract, chain):
+    if chain == "eth":
+        url = f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address=" + contract + keys.ether
+    if chain == "bsc":
+        url = f"https://api.bscscan.com/api?module=contract&action=getsourcecode&address=" + contract + keys.bsc
     response = requests.get(url)
     data = response.json()
     result = data["result"][0]["ABI"]
     return result
 
-def get_abi(contract):
-    url = f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address=" + contract + keys.ether
-    response = requests.get(url)
-    data = response.json()
-    result = data["result"][0]["ABI"]
-    return result
-
-def get_verified(contract):
-    url = f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address={contract}{keys.ether}"
+def get_verified(contract, chain):
+    if chain == "eth":
+        url = f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address={contract}{keys.ether}"
+    if chain == "bsc":
+        url = f"https://api.bscscan.com/api?module=contract&action=getsourcecode&address={contract}{keys.bsc}"
     response = requests.get(url)
     data = response.json()
     for result in data["result"][0]["SourceCode"]:

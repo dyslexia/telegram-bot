@@ -14,11 +14,12 @@ from telegram import *
 infura_url = f'https://mainnet.infura.io/v3/{keys.infura}'
 web3 = Web3(Web3.HTTPProvider(infura_url))
 
-factory = web3.eth.contract(address=ca.uniswap, abi=api.get_abi(ca.uniswap))
-ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001))
-ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002))
-ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003))
-time_lock = web3.eth.contract(address=ca.time_lock, abi=api.get_abi(ca.time_lock))
+
+factory = web3.eth.contract(address=ca.uniswap, abi=api.get_abi(ca.uniswap, "eth"))
+ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "eth"))
+ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "eth"))
+ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "eth"))
+time_lock = web3.eth.contract(address=ca.time_lock, abi=api.get_abi(ca.time_lock, "eth"))
 
 
 async def new_loan(event):
@@ -39,8 +40,7 @@ async def new_loan(event):
                 f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
 
 async def new_pair(event):
-    tx = api.get_tx(event["transactionHash"].hex())
-    print(event)
+    tx = api.get_tx(event["transactionHash"].hex(), "eth")
     pool = int(tx["result"]["value"], 0) / 10 ** 18
     if pool == 0:
         pool_text = "Not Available"
@@ -48,14 +48,14 @@ async def new_pair(event):
         pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1 ** 18
         pool_text = f'{pool} ETH (${"{:0,.0f}".format(pool_dollar)})'
     if event["args"]["token0"] == ca.weth:
-        native = api.get_token_name(event["args"]["token0"])
-        token = api.get_token_name(event["args"]["token1"])
+        native = api.get_token_name(event["args"]["token0"], "eth")
+        token = api.get_token_name(event["args"]["token1"], "eth")
         token_address = event["args"]["token1"]
     else:
-        native = api.get_token_name(event["args"]["token1"])
-        token = api.get_token_name(event["args"]["token0"])
+        native = api.get_token_name(event["args"]["token1"], "eth")
+        token = api.get_token_name(event["args"]["token0"], "eth")
         token_address = event["args"]["token0"]
-    verified = api.get_verified(token_address)
+    verified = api.get_verified(token_address, "eth")
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
@@ -71,7 +71,7 @@ async def new_pair(event):
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
-        '-1001942497316',
+        ca.alerts_id,
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*New Pair Created (ETH)*\n\n'
                 f''f'{token[0]} ({token[1]}/{native[1]})\n\n'
@@ -85,8 +85,9 @@ async def new_pair(event):
              [InlineKeyboardButton(text='Token Contract', url=f'{url.ether_token}{token_address}')],
              [InlineKeyboardButton(text='Factory TX', url=f'{url.ether_tx}{event["transactionHash"].hex()}')], ]))
 
+
 async def time_lock_extend(event):
-    token_name = api.get_token_name(event["args"]["tokenAddress"])
+    token_name = api.get_token_name(event["args"]["tokenAddress"], "eth")
     time = datetime.fromtimestamp(event["tokenAddress"], timezone.utc)
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.eth_logo)
@@ -108,7 +109,8 @@ async def time_lock_extend(event):
                 f'{time}\n\n'
                 f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
 
-async def log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, poll_interval):
+async def log_loop(
+        pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, poll_interval):
     while True:
         for PairCreated in pair_filter.get_new_entries():
             await new_pair(PairCreated)
@@ -122,7 +124,7 @@ async def log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, tim
         await asyncio.sleep(poll_interval)
 
 def main():
-    print("Scanning X7 Finance ecosystem")
+    print("Scanning Eth Network")
     pair_filter = factory.events.PairCreated.create_filter(fromBlock='latest')
     ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock='latest')
     ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock='latest')
@@ -131,8 +133,8 @@ def main():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     try:
-        loop.run_until_complete(asyncio.gather(log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter,
-                                                        time_lock_filter, 2)))
+        loop.run_until_complete(asyncio.gather(log_loop(
+            pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, 2)))
     finally:
         loop.close()
 
