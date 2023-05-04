@@ -34,10 +34,16 @@ def get_liquidity(pair):
     amount = evm_api.defi.get_pair_reserves(api_key=keys.moralis, params={"chain": "eth", "pair_address": pair})
     return amount
 
-def get_tx(address, chain):
+def get_last_tx(address, chain):
     result = evm_api.transaction.get_wallet_transactions(
         api_key=keys.moralis, params={"address": address, "chain": chain})
     return result
+
+def get_tx(tx):
+    url = f'https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.ether}'
+    response = requests.get(url)
+    data = response.json()
+    return data
 
 def get_today():
     current_day = str(datetime.now().day)
@@ -261,12 +267,28 @@ def get_snapshot():
     data = response.json()
     return data
 
+def get_abi_bsc(contract):
+    url = f"https://api.bscscan.com/api?module=contract&action=getsourcecode&address=" + contract + keys.bsc
+    response = requests.get(url)
+    data = response.json()
+    result = data["result"][0]["ABI"]
+    return result
+
 def get_abi(contract):
     url = f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address=" + contract + keys.ether
     response = requests.get(url)
     data = response.json()
     result = data["result"][0]["ABI"]
     return result
+
+def get_verified(contract):
+    url = f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address={contract}{keys.ether}"
+    response = requests.get(url)
+    data = response.json()
+    for result in data["result"][0]["SourceCode"]:
+        return "Yes"
+    else:
+        return "No"
 
 
 # TWITTER

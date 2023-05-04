@@ -1,5 +1,4 @@
 import api
-from telegram.ext import *
 from web3 import Web3
 import asyncio
 import keys
@@ -8,15 +7,19 @@ from datetime import datetime, timezone
 import random
 from PIL import Image, ImageDraw, ImageFont
 import media
+import url
+from telegram.ext import *
+from telegram import *
 
 infura_url = f'https://mainnet.infura.io/v3/{keys.infura}'
 web3 = Web3(Web3.HTTPProvider(infura_url))
 
-factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.uniswap))
+factory = web3.eth.contract(address=ca.uniswap, abi=api.get_abi(ca.uniswap))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001))
 ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003))
 time_lock = web3.eth.contract(address=ca.time_lock, abi=api.get_abi(ca.time_lock))
+
 
 async def new_loan(event):
     im1 = Image.open((random.choice(media.blackhole)))
@@ -36,27 +39,51 @@ async def new_loan(event):
                 f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
 
 async def new_pair(event):
-    name_token0 = api.get_token_name(event["args"]["token0"])
-    name_token1 = api.get_token_name(event["args"]["token1"])
+    tx = api.get_tx(event["transactionHash"].hex())
+    print(event)
+    pool = int(tx["result"]["value"], 0) / 10 ** 18
+    if pool == 0:
+        pool_text = "Not Available"
+    else:
+        pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1 ** 18
+        pool_text = f'{pool} ETH (${"{:0,.0f}".format(pool_dollar)})'
+    if event["args"]["token0"] == ca.weth:
+        native = api.get_token_name(event["args"]["token0"])
+        token = api.get_token_name(event["args"]["token1"])
+        token_address = event["args"]["token1"]
+    else:
+        native = api.get_token_name(event["args"]["token1"])
+        token = api.get_token_name(event["args"]["token0"])
+        token_address = event["args"]["token0"]
+    verified = api.get_verified(token_address)
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
     myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
     i1 = ImageDraw.Draw(im1)
     i1.text((26, 30),
-            f'New Pair Created (ETH)\n\n{event["args"]["pair"]}\n\n'
-            f'Token 0: {name_token0} ({name_token0[1]})\n'
-            f'Token 1: {name_token1} ({name_token1[1]})\n\n'
-            f'https://etherscan.io/tx/{event["transactionHash"].hex()}',
+            f'New Pair Created (ETH)\n\n'
+            f'{token[0]} ({token[1]}/{native[1]})\n\n'
+            f'Launched Pool Amount:\n'
+            f'{pool_text}\n\n'
+            f'Contract Verified: {verified}\n\n\n\n\n\n'
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
-        "-1001780235511",
+        '-1001942497316',
         photo=open(r"media\blackhole.png", 'rb'),
-        caption=f'*New Pair Created (ETH)*\n\n{event["args"]["pair"]}\n\n'
-                f'Token 0: {name_token0} ({name_token0[1]})\n'
-                f'Token 1: {name_token1} ({name_token1[1]})\n\n'
-                f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
+        caption=f'*New Pair Created (ETH)*\n\n'
+                f''f'{token[0]} ({token[1]}/{native[1]})\n\n'
+                f'Token Address:\n`{token_address}`\n\n'
+                f'Launched Pool Amount:\n'
+                f'{pool_text}\n\n'
+                f'Contract Verified: {verified}', parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text=f'Buy On Xchange', url=f'{url.xchange_buy_eth}{token_address}')],
+             [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{event["args"]["pair"]}')],
+             [InlineKeyboardButton(text='Token Contract', url=f'{url.ether_token}{token_address}')],
+             [InlineKeyboardButton(text='Factory TX', url=f'{url.ether_tx}{event["transactionHash"].hex()}')], ]))
 
 async def time_lock_extend(event):
     token_name = api.get_token_name(event["args"]["tokenAddress"])
