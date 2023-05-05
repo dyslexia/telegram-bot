@@ -796,7 +796,7 @@ async def roadmap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*X7 Finance Work Stream Status*\n\n'
-                f'WS 1 WS1: Omni routing (multi dex routing "library" code) - {text.ws1*100}% \n\n'
+                f'WS1: Omni routing (multi dex routing "library" code) - {text.ws1*100}% \n\n'
                 f'WS2: Omni routing (UI) - {text.ws2*100}% \n\n'
                 f'WS3: Borrowing UI - {text.ws3*100}% \n\n'
                 f'WS4: Lending and Liquidation UI - {text.ws4*100}% \n\n'
@@ -1045,7 +1045,7 @@ async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_audio(audio=open('media/voicenote.mp3', 'rb'))
 
 async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    deployer = api.get_tx(ca.deployer, "eth")
+    deployer = api.get_last_tx(ca.deployer, "eth")
     date = deployer["result"][0]["block_timestamp"].split("-")
     time = deployer["result"][0]["block_timestamp"].split(":")
     year = int(date[0])
@@ -1062,7 +1062,7 @@ async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     minutes = divmod(hours[1], 60)
     to_address = deployer["result"][0]['to_address']
     if str(to_address).lower() == "0x000000000000000000000000000000000000dead":
-        message = bytes.fromhex(api.get_tx(ca.deployer, "eth")["result"][0]["input"][2:]).decode('utf-8')
+        message = bytes.fromhex(api.get_last_tx(ca.deployer, "eth")["result"][0]["input"][2:]).decode('utf-8')
         await update.message.reply_text(
             '*X7 Finance DAO Founders*\n\n'
             f'Deployer Wallet last TX\n'
@@ -1572,7 +1572,7 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         holders = api.get_holders(ca.x7r)
         burn = api.get_token_balance(ca.dead, "eth", ca.x7r)
         percent = round(((burn / ca.supply) * 100), 6)
-        x7r = api.get_liquidity(ca.x7r_pair_eth)
+        x7r = api.get_liquidity(ca.x7r_pair_eth, "eth")
         x7r_token = float(x7r["reserve0"])
         x7r_weth = float(x7r["reserve1"]) / 10 ** 18
         x7r_weth_dollar = float(x7r_weth) * float(api.get_native_price("eth"))
@@ -1725,7 +1725,7 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7dao_ath_change = str(api.get_ath_change("x7dao"))
         x7dao_ath = api.get_ath("x7dao")
         holders = api.get_holders(ca.x7dao)
-        x7dao = api.get_liquidity(ca.x7dao_pair_eth)
+        x7dao = api.get_liquidity(ca.x7dao_pair_eth, "eth")
         x7dao_token = float(x7dao["reserve0"])
         x7dao_weth = float(x7dao["reserve1"]) / 10 ** 18
         x7dao_weth_dollar = float(x7dao_weth) * float(api.get_native_price("eth"))
@@ -2759,13 +2759,13 @@ async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7103_price = (price["x7103"]["usd"])
         x7104_price = (price["x7104"]["usd"])
         x7105_price = (price["x7105"]["usd"])
-        x7r = api.get_liquidity(ca.x7r_pair_eth)
-        x7dao = api.get_liquidity(ca.x7dao_pair_eth)
-        x7101 = api.get_liquidity(ca.x7101_pair_eth)
-        x7102 = api.get_liquidity(ca.x7102_pair_eth)
-        x7103 = api.get_liquidity(ca.x7103_pair_eth)
-        x7104 = api.get_liquidity(ca.x7104_pair_eth)
-        x7105 = api.get_liquidity(ca.x7105_pair_eth)
+        x7r = api.get_liquidity(ca.x7r_pair_eth, "eth")
+        x7dao = api.get_liquidity(ca.x7dao_pair_eth, "eth")
+        x7101 = api.get_liquidity(ca.x7101_pair_eth, "eth")
+        x7102 = api.get_liquidity(ca.x7102_pair_eth, "eth")
+        x7103 = api.get_liquidity(ca.x7103_pair_eth, "eth")
+        x7104 = api.get_liquidity(ca.x7104_pair_eth, "eth")
+        x7105 = api.get_liquidity(ca.x7105_pair_eth, "eth")
         x7r_token = float(x7r["reserve0"])
         x7r_weth = float(x7r["reserve1"]) / 10 ** 18
         x7r_weth_dollar = float(x7r_weth) * float(api.get_native_price("eth"))
@@ -3088,6 +3088,18 @@ async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
             [InlineKeyboardButton(text='Website', url=f'{url.website}')],
             [InlineKeyboardButton(text='Whitepaper', url=f'{url.wp_link}')], ]))
 
+async def alert(context: ContextTypes.DEFAULT_TYPE) -> None:
+    job = context.job
+    await context.bot.send_photo(
+        job.chat_id,
+        photo=open((random.choice(media.logos)), 'rb'),
+        caption=f'*X7 Finance*\n\n{text.alert_message}\n\n{api.get_quote()}',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='Website', url=f'{url.website}')],
+            [InlineKeyboardButton(text='Whitepaper', url=f'{url.wp_link}')],
+            [InlineKeyboardButton(text='Telegram', url='https://t.me/x7m105portal')], ]))
+
 async def auto_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
     await context.bot.send_photo(
@@ -3294,4 +3306,9 @@ if __name__ == '__main__':
         chat_id=ca.main_id,
         name=str('WP Message'),
         data=times.wp_time * 60 * 60)
+    application.job_queue.run_repeating(
+        alert, times.alert_time * 60 * 60,
+        chat_id=ca.alerts_id,
+        name=str('Alert Message'),
+        data=times.alert_time * 60 * 60)
     application.run_polling()

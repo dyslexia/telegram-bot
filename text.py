@@ -1,28 +1,44 @@
 # TEXT
 import times
-multi_sig = '*Community Multisig Weekly Update - 4.21.2023*\n\n' \
-            '`Multisig team reporting for duty! The community leaders have been hard at work building out formal ' \
-            'reporting structures, roles, and responsibilities behind the scenes. Over the past few months, ' \
-            'we have compartmentalized the mod team at large into discrete groups. These groups are:\n\n' \
-            '-Sales (headed by @gazuga )\n' \
-            '-Community Socials (headed by Phlux)\n' \
-            '-Marketing (headed by @cryptod0c /Rob)\n' \
-            '-Technology (headed by @Adz1DoubleD )\n\n' \
-            'Additionally, each mod is aligned with a specific vertical. For example, @MikeMurpher is in the ' \
-            '"Technology" division. In addition to clearly delineating roles and responsibilities, we have ' \
-            'allocated a monthly budget for each division leader to use as they see fit. Each budget ranges ' \
-            'from $500 - 2,000, although budgets are not received in advance and are consumed throughout the ' \
-            'month as needed. Therefore, many budgets are not used entirely. Our budgeting has been based on the ' \
-            'average amount of trading volume funneling through to the multisig and we have adequate runway to ' \
-            'support our operations. Additionally, any excess Eth has been minted for X7D until it ' \
-            'needs to be redeemed and used elsewhere.\n\n' \
-            'Each division leader could provide a robust update just for themselves, and going forward we will ' \
-            'try to share more detail around the projects that each person is working on. Some of these ' \
-            'projects are self-evident, like the giveaways and promotions run by Phlux or the Snapshot.org voting ' \
-            'set up by Adz. Others are less apparent, like the dozens and dozens of private TG chats juggled ' \
-            'behind the scenes by Mark.\n\n' \
-            'We are excited to bring a new level of formality to our work and are honored and humbled to continue ' \
-            'building the most badass community in DeFi!`'
+multi_sig = \
+    '*Community Multi-sig Update 4.28.2023*\n\n' \
+    'Please see below for a brief overview of activities performed by each division, either in the previous week or' \
+    ' more generally. Each update has been provided by the respective division lead.\n\n' \
+    '*Socials:*\n\n' \
+    'Since the inception of the Social Mods group in early March we have stayed busy on many fronts. Some of them ' \
+    'you see in public, (i.e., daily posts/threads/engagement from the X7 Twitter account, community contests, etc…),' \
+    ' and some happen behind the scenes. We are in constant communication with influencers, promoters, and ' \
+    'researchers. We reach out to some, and some reach out to us, but we only act when the fit is right. Below ' \
+    'are some highlights since early March:\n' \
+    '⁃ Pioneer of the week: Awarded to Ahmed\n' \
+    '⁃ 50/50 Burn Raffle: Burned and awarded 50,032 ($2,556) respectively\n' \
+    '⁃ Fox Crypto tweets: 2 promotional tweets (1 more coming)\n' \
+    '⁃ Daily Twitter spaces listen-ins with the X7 Twitter account to help garner attention (we’ve attracted many ' \
+    'new followers doing this)\n' \
+    '⁃ Several community like/retweet and meme contests\n' \
+    '⁃ We’ve gained roughly 1,380 new Twitter followers since early March\n' \
+    '⁃ Last week we decided to follow more than 7 people on Twitter\n\n' \
+    '*Sales Division Update:*\n\n' \
+    'While we wait for a finished product the sales division continues to maintain existing relationships with ' \
+    'potential project launchers, as well as the owners of various multichain trading groups and call channels.\n\n' \
+    'Our goal is to have as many projects as possible prepared to onboard at go live via information delivered' \
+    'through our dev chat, as well as educating potential investors on where/how to trade pairs on Xchange. Some ' \
+    'notable projects we are in ongoing discussions with include Gigaswap, YDF, Steer Protocol & Houdini Swap.\n\n' \
+    'Members of the community are welcome to provide leads to @gazuga @Exelthior and @Greeno1000xs Community ' \
+    'members that bring projects that utilize ILLs will be eligible for rewards from our Incentive Program in the ' \
+    'future. As the sales group has not started active onboarding, the monthly budget was used to support the chart. ' \
+    'Starting in May, the sales budget will be accumulated to compensate for the sales leads.\n\n' \
+    '*Tech Division Update:*\n\n' \
+    'It\'s been a busy week for the Tech Division. We have successfully deployed ' \
+    'https://snapshot.org/#/x7community.eth and had a total of 44.4 million DAO votes cast across 3 the proposals ' \
+    'that were submitted\n\n' \
+    'Please remember that this should be used for advisory notes only, until we have the X7 DAO dApp live. ' \
+    'Guidelines can be found on the latest addition to the community site ' \
+    '(https://www.x7finance.org/faq/daosnapshot/)\n\n' \
+    'Hand in hand with snapshot.org came the ENS x7community.eth, as well as the unstoppable domain, ' \
+    'x7community.UNS, both resolved at the community multi-sig\n\n' \
+    'We\'ve also upgraded our API that interacts with infura to poll the lending pool and factory contracts for new ' \
+    'loans and new pairs created. These will be alerted directly in TG.\n\nLong Live DeFi!'
 mods_only = "You do not have permission to do this. #trustnoone"
 mods = '@robthebank44 @Adz1doubleD @CoastCorn @cryptod0c @Phlux @SlumdOg_shillionaire2022 @DallasX7 ' \
        '@gazuga @Gavalars @MikeMurpher @KBCrypto11\n\nMODS ASSEMBLE!'
@@ -157,6 +173,8 @@ twitter_replies = ["Raid!", "LFG", "Send it!", "Twitter raid!", "Like and Retwee
                    "Raid it Fam!", 'Blow it up!', "Full force!", "Light it up!", "Shill time!", "Smash it!", "Slap it!",
                    "Send it!", "If Phlux says it, You do it!", "Phlux it up!", "Full Send!", "Hit it Hard!",
                    "Insert inspirational raid quote here!", "Let them know!", "RAIIIIIIIIIID", "Tweet Twoooo"]
+alert_message = "Launch your project on Xchange with 10-1000x the initial liquidity into the Ethereum ecosystem " \
+                "where anyone can Swap, Borrow and Lend!"
 quotes = [
     "Ethos\n\nX7’s founding team believes that capital should be available to those with great ideas and that the "
     "unflinching reliability of code and distributed consensus can provide capital while eliminating significant "
@@ -501,12 +519,10 @@ quotes = [
     " configurable or alternative automated marketing making capabilities\n● Non-native token (ETH, BNB, etc.) "
     "initial liquidity loans\n",
     ]
-
-
-ws1 = 0.85
+ws1 = 0.90
 ws2 = 0.20
 ws3 = 0.75
-ws4 = 0.15
+ws4 = 0.40
 ws5 = 0.00
 ws6 = 0.00
 ws7 = 0.80
