@@ -14,13 +14,11 @@ from telegram import *
 infura_url = f'https://mainnet.infura.io/v3/{keys.infura}'
 web3 = Web3(Web3.HTTPProvider(infura_url))
 
-
 factory = web3.eth.contract(address=ca.uniswap, abi=api.get_abi(ca.uniswap, "eth"))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "eth"))
 ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "eth"))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "eth"))
 time_lock = web3.eth.contract(address=ca.time_lock, abi=api.get_abi(ca.time_lock, "eth"))
-
 
 async def new_loan(event):
     im1 = Image.open((random.choice(media.blackhole)))
@@ -42,19 +40,39 @@ async def new_loan(event):
 async def new_pair(event):
     tx = api.get_tx(event["transactionHash"].hex(), "eth")
     pool = int(tx["result"]["value"], 0) / 10 ** 18
-    if pool == 0:
-        pool_text = "Not Available"
+    liq = api.get_liquidity(event["args"]["pair"], "eth")
+    if pool == 0 or pool == "" or not pool:
+        pool_text = "Launched Pool Amount: Unavailable"
     else:
         pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1 ** 18
-        pool_text = f'{pool} ETH (${"{:0,.0f}".format(pool_dollar)})'
+        pool_text = f'Launched Pool Amount: {pool} ETH (${"{:0,.0f}".format(pool_dollar)})'
     if event["args"]["token0"] == ca.weth:
         native = api.get_token_name(event["args"]["token0"], "eth")
-        token = api.get_token_name(event["args"]["token1"], "eth")
+        token_name = api.get_token_name(event["args"]["token1"], "eth")
         token_address = event["args"]["token1"]
+        weth = liq["reserve0"]
+        token = liq["reserve1"]
+        dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
+        return
+    if event["args"]["token0"] == ca.usdt:
+        native = api.get_token_name(event["args"]["token0"], "eth")
+        token_name = api.get_token_name(event["args"]["token1"], "eth")
+        token_address = event["args"]["token1"]
+        weth = liq["reserve0"]
+        token = liq["reserve1"]
+        dollar = int(weth) * 2
+        return
     else:
         native = api.get_token_name(event["args"]["token1"], "eth")
-        token = api.get_token_name(event["args"]["token0"], "eth")
+        token_name = api.get_token_name(event["args"]["token0"], "eth")
         token_address = event["args"]["token0"]
+        weth = liq["reserve1"]
+        token = liq["reserve0"]
+        dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
+    if dollar == 0:
+        liquidity_text = 'Total Liquidity: Unavailable'
+    else:
+        liquidity_text = f'Total Liquidity: ${"{:0,.0f}".format(dollar)}'
     verified = api.get_verified(token_address, "eth")
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.eth_logo)
@@ -63,10 +81,10 @@ async def new_pair(event):
     i1 = ImageDraw.Draw(im1)
     i1.text((26, 30),
             f'New Pair Created (ETH)\n\n'
-            f'{token[0]} ({token[1]}/{native[1]})\n\n'
-            f'Launched Pool Amount:\n'
+            f'{token_name[0]}\n({token_name[1]}/{native[1]})\n\n'
             f'{pool_text}\n\n'
-            f'Contract Verified: {verified}\n\n\n\n\n\n'
+            f'{liquidity_text}\n\n'
+            f'Contract Verified: {verified}\n\n\n\n'
             f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
@@ -74,17 +92,16 @@ async def new_pair(event):
         ca.alerts_id,
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*New Pair Created (ETH)*\n\n'
-                f''f'{token[0]} ({token[1]}/{native[1]})\n\n'
+                f'{token_name[0]}\n({token_name[1]}/{native[1]})\n\n'
                 f'Token Address:\n`{token_address}`\n\n'
-                f'Launched Pool Amount:\n'
                 f'{pool_text}\n\n'
+                f'{liquidity_text}\n\n'
                 f'Contract Verified: {verified}', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'Buy On Xchange', url=f'{url.xchange_buy_eth}{token_address}')],
              [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{event["args"]["pair"]}')],
              [InlineKeyboardButton(text='Token Contract', url=f'{url.ether_token}{token_address}')],
              [InlineKeyboardButton(text='Factory TX', url=f'{url.ether_tx}{event["transactionHash"].hex()}')], ]))
-
 
 async def time_lock_extend(event):
     token_name = api.get_token_name(event["args"]["tokenAddress"], "eth")

@@ -30,8 +30,8 @@ def get_nft_holder_list(nft, chain):
         api_key=keys.moralis, params={"chain": chain, "format": "decimal", "address": nft})
     return result
 
-def get_liquidity(pair):
-    amount = evm_api.defi.get_pair_reserves(api_key=keys.moralis, params={"chain": "eth", "pair_address": pair})
+def get_liquidity(pair, chain):
+    amount = evm_api.defi.get_pair_reserves(api_key=keys.moralis, params={"chain": chain, "pair_address": pair})
     return amount
 
 def get_last_tx(address, chain):
@@ -40,6 +40,7 @@ def get_last_tx(address, chain):
     return result
 
 def get_tx(tx, chain):
+    url = ""
     if chain == "eth":
         url = f'https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.ether}'
     if chain == "bsc":
@@ -271,6 +272,7 @@ def get_snapshot():
     return data
 
 def get_abi(contract, chain):
+    url = ""
     if chain == "eth":
         url = f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address=" + contract + keys.ether
     if chain == "bsc":
@@ -281,6 +283,7 @@ def get_abi(contract, chain):
     return result
 
 def get_verified(contract, chain):
+    url = ""
     if chain == "eth":
         url = f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address={contract}{keys.ether}"
     if chain == "bsc":
@@ -291,6 +294,19 @@ def get_verified(contract, chain):
         return "Yes"
     else:
         return "No"
+
+def get_supply(token, chain):
+    url = ""
+    if chain == "eth":
+        url = f'https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress={token}{keys.ether}'
+    if chain == "bsc":
+        url = f'https://api.bscscan.com/api?module=stats&action=tokensupply&contractaddress={token}{keys.bsc}'
+    response = requests.get(url)
+    data = response.json()
+    result = data["result"]
+    return result
+
+
 
 
 # TWITTER
