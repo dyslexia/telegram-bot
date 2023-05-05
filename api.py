@@ -306,7 +306,10 @@ def get_supply(token, chain):
     result = data["result"]
     return result
 
-
+def get_token_data(token, chain):
+    result = evm_api.token.get_token_metadata(
+        api_key=keys.moralis, params={"addresses": [f"{token}"], "chain": chain})
+    return result
 
 
 # TWITTER

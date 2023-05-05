@@ -29,6 +29,23 @@ logger = logging.getLogger(__name__)
 print('Bot Restarted')
 
 # COMMANDS
+async def token_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    token = " ".join(context.args)
+    info_eth = api.get_token_data(token, "eth")
+    info_bsc = api.get_token_data(token, "bsc")
+    await update.message.reply_text(f'ETH\n\n'
+                                    f'Name: {info_eth[0]["name"]}\n'
+                                    f'Decimals: {info_eth[0]["decimals"]}\n'
+                                    f'Logo: {info_eth[0]["logo"]}\n'
+                                    f'Created: {info_eth[0]["created_at"]}\n'
+                                    f'Possible Spam?: {info_eth[0]["possible_spam"]}\n\n'
+                                    f'BSC\n\n'
+                                    f'Name: {info_bsc[0]["name"]}\n'
+                                    f'Decimals: {info_bsc[0]["decimals"]}\n'
+                                    f'Logo: {info_bsc[0]["logo"]}\n'
+                                    f'Created: {info_bsc[0]["created_at"]}\n'
+                                    f'Possible Spam?: {info_bsc[0]["possible_spam"]}')
+
 async def bot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f'{text.commands}')
 
@@ -202,7 +219,7 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'Available - {250 - liq_count}\n'
                 f'> {tax.liq_discount_x7100}% discount on X7100 tax\n'
                 f'> {tax.liq_discount_x7r}% discount on X7R tax\n'
-                f'> 1{tax.liq_discount_x7dao}% discount on X7DAO tax\n\n'
+                f'> {tax.liq_discount_x7dao}% discount on X7DAO tax\n\n'
                 f'*Dex Maxi*\n{dex_price}\n'
                 f'Available - {150 - dex_count}\n'
                 f'> LP Fee Discounts while trading on X7 DEX\n\n'
@@ -508,6 +525,7 @@ async def channels_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text='Community Chat', url='https://t.me/X7m105portal')],
              [InlineKeyboardButton(text='Announcements', url='https://t.me/X7announcements')],
+             [InlineKeyboardButton(text='Xchange Alerts', url='https://t.me/x7_alerts)')],
              [InlineKeyboardButton(text='Media', url='https://t.me/X7MediaChannel')],
              [InlineKeyboardButton(text='Research Notes', url='https://t.me/X7m105_Research')],
              [InlineKeyboardButton(text='Chinese Community', url='https://t.me/X7CNPortal')], ]))
@@ -517,7 +535,8 @@ async def buy_bots_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Bobby Buy Bot Channels*\n\n{api.get_quote()}', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text='Ethereum', url='https://t.me/X7constellation)')],
+            [[InlineKeyboardButton(text='Xchange Alerts', url='https://t.me/x7_alerts)')],
+             [InlineKeyboardButton(text='Ethereum', url='https://t.me/X7constellation)')],
              [InlineKeyboardButton(text='Arbitrum', url='https://t.me/x7arbbuybots')],
              [InlineKeyboardButton(text='BSC', url='https://t.me/x7bscbuybots')],
              [InlineKeyboardButton(text='Optimism', url='https://t.me/x7optibuybots')],
@@ -3088,17 +3107,15 @@ async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
             [InlineKeyboardButton(text='Website', url=f'{url.website}')],
             [InlineKeyboardButton(text='Whitepaper', url=f'{url.wp_link}')], ]))
 
-async def alert(context: ContextTypes.DEFAULT_TYPE) -> None:
+async def alert_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
     await context.bot.send_photo(
         job.chat_id,
         photo=open((random.choice(media.logos)), 'rb'),
-        caption=f'*X7 Finance*\n\n{text.alert_message}\n\n{api.get_quote()}',
-        parse_mode='Markdown',
-        reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Website', url=f'{url.website}')],
-            [InlineKeyboardButton(text='Whitepaper', url=f'{url.wp_link}')],
-            [InlineKeyboardButton(text='Telegram', url='https://t.me/x7m105portal')], ]))
+        caption=f'*X7 Finance*\n\n{random.choice(text.quotes)}\n\n{api.get_quote()}\n\n'
+                f'🔗 [X7.Finance](http://x7.finance) ┃ 💬 [Telegram](t.me/x7m105portal) ┃ 💰 [Donate]({url.ether_address}'
+                f'0x89eE55b32B0E463C27508669fcFCf43D18e9833E)',
+        parse_mode='Markdown')
 
 async def auto_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
@@ -3226,6 +3243,7 @@ if __name__ == '__main__':
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
     application.add_handler(CommandHandler([f'{times.countdown_command}'], countdown_command))
+    application.add_handler(CommandHandler('token', token_command))
     application.add_handler(CommandHandler('community', community_command))
     application.add_handler(CommandHandler('snapshot', snapshot_command))
     application.add_handler(CommandHandler('ath', ath_command))
@@ -3307,7 +3325,7 @@ if __name__ == '__main__':
         name=str('WP Message'),
         data=times.wp_time * 60 * 60)
     application.job_queue.run_repeating(
-        alert, times.alert_time * 60 * 60,
+        alert_message, times.alert_time * 60 * 60,
         chat_id=ca.alerts_id,
         name=str('Alert Message'),
         data=times.alert_time * 60 * 60)
