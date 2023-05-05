@@ -40,8 +40,10 @@ multi_sig = \
     'We\'ve also upgraded our API that interacts with infura to poll the lending pool and factory contracts for new ' \
     'loans and new pairs created. These will be alerted directly in TG.\n\nLong Live DeFi!'
 mods_only = "You do not have permission to do this. #trustnoone"
-mods = '@robthebank44 @Adz1doubleD @CoastCorn @cryptod0c @Phlux @SlumdOg_shillionaire2022 @DallasX7 ' \
-       '@gazuga @Gavalars @MikeMurpher @KBCrypto11\n\nMODS ASSEMBLE!'
+mods = f'Marketing Team\n@Robthebank44\n@Cryptod0c\n\n' \
+       f'Sales Team\n@Gazuga\n@Exelthior\n@Greeno1000xs\n\n' \
+       f'Socials Team\n@Phlux\n@SlumdOg_shillionaire2022\n@DallasX7\n@Gavalars\n@KBCrypto11\n@CoastCorn\n\n' \
+       f'Tech Team\n@Adz1DoubleD\n@MikeMurpher\n@Cryptod0c'
 commands = '/about - Welcome to X7 Finance\n' \
            '/ecosystem - Token Overview\n' \
            '/links - Official Links\n' \
@@ -173,8 +175,6 @@ twitter_replies = ["Raid!", "LFG", "Send it!", "Twitter raid!", "Like and Retwee
                    "Raid it Fam!", 'Blow it up!', "Full force!", "Light it up!", "Shill time!", "Smash it!", "Slap it!",
                    "Send it!", "If Phlux says it, You do it!", "Phlux it up!", "Full Send!", "Hit it Hard!",
                    "Insert inspirational raid quote here!", "Let them know!", "RAIIIIIIIIIID", "Tweet Twoooo"]
-alert_message = "Launch your project on Xchange with 10-1000x the initial liquidity into the Ethereum ecosystem " \
-                "where anyone can Swap, Borrow and Lend!"
 quotes = [
     "Ethos\n\nX7’s founding team believes that capital should be available to those with great ideas and that the "
     "unflinching reliability of code and distributed consensus can provide capital while eliminating significant "

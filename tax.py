@@ -44,7 +44,7 @@ eth = f'X7R: {eth_x7r}%\nX7DAO: {eth_x7dao}%\n' \
       f'X7101-X7105: {eth_x7100-(eth_x7100*eco_discount_x7100/100)}%\n\n' \
       f'Magister:\n' \
       f'X7R: {eth_x7r-(eth_x7r*magister_discount_x7r/100)}%\n' \
-      f'X7DAO: {eth_x7dao}\n%' \
+      f'X7DAO: {eth_x7dao}%\n' \
       f'X7101-X7105: {eth_x7100-(eth_x7100*magister_discount_x7100/100)}%\n'
 
 opti = f'X7R: {opti_x7r}%\nX7DAO: {opti_x7dao}%\n' \
