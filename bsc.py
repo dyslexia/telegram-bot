@@ -43,79 +43,76 @@ async def new_loan(event):
                 f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
 
 async def new_pair(event):
-    try:
-        tx = api.get_tx(event["transactionHash"].hex(), "bsc")
-        pool = int(tx["result"]["value"], 0) / 10 ** 18
-        liq = api.get_liquidity(event["args"]["pair"], "bsc")
-        if pool == 0 or pool == "" or not pool:
-            pool_text = "Launched Pool Amount: Unavailable"
-        else:
-            pool_dollar = float(pool) * float(api.get_native_price("bnb")) / 1 ** 18
-            pool_text = f'Launched Pool Amount: {pool} BNB (${"{:0,.0f}".format(pool_dollar)})'
-        if event["args"]["token0"] == ca.wbnb:
-            native = api.get_token_name(event["args"]["token0"], "bsc")
-            token_name = api.get_token_name(event["args"]["token1"], "bsc")
-            token_address = event["args"]["token1"]
-            weth = liq["reserve0"]
-            token = liq["reserve1"]
-            dollar = int(weth) * 2 * api.get_native_price("bnb") / 10 ** 18
-            return
-        if event["args"]["token0"] == ca.bep20usdt or event["args"]["token0"] == ca.busd:
-            native = api.get_token_name(event["args"]["token0"], "bsc")
-            token_name = api.get_token_name(event["args"]["token1"], "bsc")
-            token_address = event["args"]["token1"]
-            weth = liq["reserve0"]
-            token = liq["reserve1"]
-            dollar = int(weth) * 2
-            return
-        else:
-            native = api.get_token_name(event["args"]["token1"], "bsc")
-            token_name = api.get_token_name(event["args"]["token0"], "bsc")
-            token_address = event["args"]["token0"]
-            weth = liq["reserve1"]
-            token = liq["reserve0"]
-            dollar = int(weth) * 2 * api.get_native_price("bnb") / 10 ** 18
-        supply = int(api.get_supply(token_address, "bsc"))
-        info = api.get_token_data(token_address, "bsc")
-        if dollar == 0:
-            liquidity_text = 'Total Liquidity: Unavailable'
-        else:
-            liquidity_text = f'Total Liquidity: ${"{:0,.0f}".format(dollar)}'
-        verified = api.get_verified(token_address, "bsc")
-        im1 = Image.open((random.choice(media.blackhole)))
-        im2 = Image.open(media.bsc_logo)
-        im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
-        i1 = ImageDraw.Draw(im1)
-        i1.text((26, 30),
-                f'New Pair Created (BSC)\n\n'
+    tx = api.get_tx(event["transactionHash"].hex(), "bsc")
+    pool = int(tx["result"]["value"], 0) / 10 ** 18
+    liq = api.get_liquidity(event["args"]["pair"], "bsc")
+    if pool == 0 or pool == "" or not pool:
+        pool_text = "Launched Pool Amount: Unavailable"
+    else:
+        pool_dollar = float(pool) * float(api.get_native_price("bnb")) / 1 ** 18
+        pool_text = f'Launched Pool Amount: {pool} BNB (${"{:0,.0f}".format(pool_dollar)})'
+    if event["args"]["token0"] == ca.wbnb:
+        native = api.get_token_name(event["args"]["token0"], "bsc")
+        token_name = api.get_token_name(event["args"]["token1"], "bsc")
+        token_address = event["args"]["token1"]
+        weth = liq["reserve0"]
+        token = liq["reserve1"]
+        dollar = int(weth) * 2 * api.get_native_price("bnb") / 10 ** 18
+        return
+    if event["args"]["token0"] == ca.bep20usdt or event["args"]["token0"] == ca.busd:
+        native = api.get_token_name(event["args"]["token0"], "bsc")
+        token_name = api.get_token_name(event["args"]["token1"], "bsc")
+        token_address = event["args"]["token1"]
+        weth = liq["reserve0"]
+        token = liq["reserve1"]
+        dollar = int(weth) * 2
+        return
+    else:
+        native = api.get_token_name(event["args"]["token1"], "bsc")
+        token_name = api.get_token_name(event["args"]["token0"], "bsc")
+        token_address = event["args"]["token0"]
+        weth = liq["reserve1"]
+        token = liq["reserve0"]
+        dollar = int(weth) * 2 * api.get_native_price("bnb") / 10 ** 18
+    info = api.get_token_data(token_address, "bsc")
+    supply = int(api.get_supply(token_address, "bsc")) / 10 ** int(info[0]["decimals"])
+    if dollar == 0:
+        liquidity_text = 'Total Liquidity: Unavailable'
+    else:
+        liquidity_text = f'Total Liquidity: ${"{:0,.0f}".format(dollar)}'
+    verified = api.get_verified(token_address, "bsc")
+    im1 = Image.open((random.choice(media.blackhole)))
+    im2 = Image.open(media.bsc_logo)
+    im1.paste(im2, (720, 20), im2)
+    myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+    i1 = ImageDraw.Draw(im1)
+    i1.text((26, 30),
+            f'New Pair Created (BSC)\n\n'
+            f'{token_name[0]}\n({token_name[1]}/{native[1]})\n\n'
+            f'Supply: {"{:0,.0f}".format(supply)}\n'
+            f'({info[0]["decimals"]} Decimals)\n\n'
+            f'{pool_text}\n\n'
+            f'{liquidity_text}\n\n'
+            f'Contract Verified: {verified}\n\n'
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont, fill=(255, 255, 255))
+    im1.save(r"media\blackhole.png")
+    await application.bot.send_photo(
+        ca.alerts_id,
+        photo=open(r"media\blackhole.png", 'rb'),
+        caption=f'*New Pair Created (BSC)*\n\n'
                 f'{token_name[0]}\n({token_name[1]}/{native[1]})\n\n'
+                f'Token Address:\n`{token_address}`\n\n'
                 f'Supply: {"{:0,.0f}".format(supply)}\n'
                 f'({info[0]["decimals"]} Decimals)\n\n'
                 f'{pool_text}\n\n'
                 f'{liquidity_text}\n\n'
-                f'Contract Verified: {verified}\n\n'
-                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
-        im1.save(r"media\blackhole.png")
-        await application.bot.send_photo(
-            ca.alerts_id,
-            photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*New Pair Created (BSC)*\n\n'
-                    f'{token_name[0]}\n({token_name[1]}/{native[1]})\n\n'
-                    f'Token Address:\n`{token_address}`\n\n'
-                    f'Supply: {"{:0,.0f}".format(supply)}\n'
-                    f'({info[0]["decimals"]} Decimals)\n\n'
-                    f'{pool_text}\n\n'
-                    f'{liquidity_text}\n\n'
-                    f'Contract Verified: {verified}', parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text=f'Buy On Xchange (COMING SOON)', url=f'{url.xchange_buy_bsc}')],
-                 [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_bsc}{event["args"]["pair"]}')],
-                 [InlineKeyboardButton(text='Token Contract', url=f'{url.bsc_token}{token_address}')],
-                 [InlineKeyboardButton(text='Factory TX', url=f'{url.bsc_tx}{event["transactionHash"].hex()}')], ]))
-    finally:
-        return
+                f'Contract Verified: {verified}', parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text=f'Buy On Xchange (COMING SOON)', url=f'{url.xchange_buy_bsc}')],
+             [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_bsc}{event["args"]["pair"]}')],
+             [InlineKeyboardButton(text='Token Contract', url=f'{url.bsc_token}{token_address}')],
+             [InlineKeyboardButton(text='Factory TX', url=f'{url.bsc_tx}{event["transactionHash"].hex()}')], ]))
 
 async def time_lock_extend(event):
     token_name = api.get_token_name(event["args"]["tokenAddress"], "eth")
@@ -166,6 +163,9 @@ def main():
     try:
         loop.run_until_complete(asyncio.gather(log_loop(
             pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, 2)))
+    except Exception:
+        print('Loop Restarted')
+        asyncio.run(main())
     finally:
         loop.close()
 
