@@ -153,7 +153,7 @@ def get_nft_price(nft, chain):
         return nfts.eco_price_arb, nfts.liq_price_arb, nfts.borrow_price_arb, nfts.dex_price_arb, \
             nfts.magister_price_arb
 
-def get_token_balance(wallet, chain, token):
+def get_token_balance(wallet, token, chain):
     if chain == "eth":
         url = 'https://api.etherscan.io/' \
               'api?module=account&action=tokenbalance&contractaddress='
@@ -194,6 +194,33 @@ def get_token_balance(wallet, chain, token):
         data = response.json()
         amount = int(data["result"][:-18])
         return amount
+
+def get_pool_liq_balance(wallet, token, chain):
+    if chain == "eth":
+        url = f'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
+        response = requests.get(url + token + '&address=' + wallet + '&tag=latest' + keys.ether)
+        data = response.json()
+        return int(data["result"])
+    if chain == "bsc":
+        url = f'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
+        response = requests.get(url + token + '&address=' + wallet + '&tag=latest' + keys.bsc)
+        data = response.json()
+        return int(data["result"])
+    if chain == "arb":
+        url = f'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
+        response = requests.get(url + token + '&address=' + wallet + '&tag=latest' + keys.arb)
+        data = response.json()
+        return int(data["result"])
+    if chain == "poly":
+        url = f'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
+        response = requests.get(url + token + '&address=' + wallet + '&tag=latest' + keys.poly)
+        data = response.json()
+        return int(data["result"])
+    if chain == "opti":
+        url = f'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress='
+        response = requests.get(url + token + '&address=' + wallet + '&tag=latest' + keys.optt)
+        data = response.json()
+        return int(data["result"])
 
 def get_native_balance(wallet, chain):
     if chain == "opti":

@@ -155,8 +155,7 @@ async def new_v3_pair(event):
         native = api.get_token_name(event["args"]["token0"], "eth")
         token_name = api.get_token_name(event["args"]["token1"], "eth")
         token_address = event["args"]["token1"]
-        liq = web3.eth.contract(address=weth_address, abi=api.get_abi(weth_address, "eth"))
-        weth = liq.functions.balanceOf(weth_address).call()
+        weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
         dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
         return
     if event["args"]["token0"] == ca.usdt:
@@ -164,8 +163,7 @@ async def new_v3_pair(event):
         native = api.get_token_name(event["args"]["token0"], "eth")
         token_name = api.get_token_name(event["args"]["token1"], "eth")
         token_address = event["args"]["token1"]
-        liq = web3.eth.contract(address=weth_address, abi=api.get_abi(weth_address, "eth"))
-        weth = liq.functions.balanceOf(weth_address).call()
+        weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
         dollar = int(weth) * 2
         return
     else:
@@ -173,8 +171,7 @@ async def new_v3_pair(event):
         native = api.get_token_name(event["args"]["token1"], "eth")
         token_name = api.get_token_name(event["args"]["token0"], "eth")
         token_address = event["args"]["token0"]
-        weth_contract = web3.eth.contract(address=weth_address, abi=api.get_abi(weth_address, "eth"))
-        weth = weth_contract.functions.balanceOf(weth_address).call()
+        weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
         dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
     if dollar == 0:
         liquidity_text = 'Total Liquidity: Unavailable'
@@ -273,10 +270,16 @@ async def log_loop(
         for TokenUnlockTimeExtended in time_lock_filter.get_new_entries():
             await time_lock_extend(TokenUnlockTimeExtended)
         await asyncio.sleep(poll_interval)
-        for LoanOriginated in \
-                ill001_filter.get_new_entries() or ill002_filter.get_new_entries() or ill003_filter.get_new_entries():
+        for LoanOriginated in ill001_filter.get_new_entries():
             await new_loan(LoanOriginated)
         await asyncio.sleep(poll_interval)
+        for LoanOriginated in ill002_filter.get_new_entries():
+            await new_loan(LoanOriginated)
+        await asyncio.sleep(poll_interval)
+        for LoanOriginated in ill003_filter.get_new_entries():
+            await new_loan(LoanOriginated)
+        await asyncio.sleep(poll_interval)
+
 
 def main():
     print("Scanning ETH Network")
