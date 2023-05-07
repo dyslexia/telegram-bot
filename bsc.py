@@ -46,6 +46,7 @@ async def new_loan(event):
 async def new_pair(event):
     tx = api.get_tx(event["transactionHash"].hex(), "bsc")
     pool = int(tx["result"]["value"], 0) / 10 ** 18
+    deployer = tx["result"]["from"]
     liq = api.get_liquidity(event["args"]["pair"], "bsc")
     if pool == 0 or pool == "" or not pool:
         pool_text = "Launched Pool Amount: Unavailable"
@@ -109,13 +110,21 @@ async def new_pair(event):
         try:
             owner = contract.functions.owner().call()
             if owner == "0x0000000000000000000000000000000000000000":
-                status = 'Contract Verified ✅\nContract Renounced ✅'
+                status = '✅ Contract Verified\n✅ Contract Renounced'
             else:
-                status = 'Contract Verified ✅'
+                status = '✅ Contract Verified\n❌ Contract Not Renounced'
         except Web3Exception:
-            status = 'Contract Verified ✅'
+            status = '✅Contract Verified\n❌ Contract Not Renounced'
+        try:
+            scan = contract.all_functions()
+            if "maxTaxSwap" in str(scan):
+                warning = "❗ Possible high tax token"
+            else:
+                warning = ''
+        except Web3Exception:
+            warning = ''
     if verified == "No":
-        status = ''
+        status = 'SCAN:\n❌ Contract Unverified'
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.bsc_logo)
     im1.paste(im2, (720, 20), im2)
@@ -127,7 +136,8 @@ async def new_pair(event):
             f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
             f'{pool_text}\n\n'
             f'{liquidity_text}\n\n'
-            f'{status}\n\n',
+            f'SCAN:\n'
+            f'{status}\n',
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
@@ -138,12 +148,14 @@ async def new_pair(event):
                 f'Token Address:\n`{token_address}`\n\n'
                 f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
                 f'{pool_text}\n\n'
+                f'SCAN:\n'
+                f'🖥️ [Deployer]({url.ether_address}{deployer})\n'
                 f'{liquidity_text}\n\n'
                 f'{status}', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'Buy On Xchange (COMING SOON)', url=f'{url.xchange_buy_bsc}')],
              [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_bsc}{event["args"]["pair"]}')],
-             [InlineKeyboardButton(text='Token Contract', url=f'{url.bsc_token}{token_address}')],
+             [InlineKeyboardButton(text='Token Contract', url=f'{url.bsc_address}{token_address}')],
              [InlineKeyboardButton(text='Factory TX', url=f'{url.bsc_tx}{event["transactionHash"].hex()}')], ]))
 
 async def time_lock_extend(event):
@@ -178,8 +190,13 @@ async def log_loop(
         for TokenUnlockTimeExtended in time_lock_filter.get_new_entries():
             await time_lock_extend(TokenUnlockTimeExtended)
         await asyncio.sleep(poll_interval)
-        for LoanOriginated in \
-                ill001_filter.get_new_entries() or ill002_filter.get_new_entries() or ill003_filter.get_new_entries():
+        for LoanOriginated in ill001_filter.get_new_entries():
+            await new_loan(LoanOriginated)
+        await asyncio.sleep(poll_interval)
+        for LoanOriginated in ill002_filter.get_new_entries():
+            await new_loan(LoanOriginated)
+        await asyncio.sleep(poll_interval)
+        for LoanOriginated in ill003_filter.get_new_entries():
             await new_loan(LoanOriginated)
         await asyncio.sleep(poll_interval)
 
