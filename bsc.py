@@ -230,10 +230,10 @@ def main():
     try:
         loop.run_until_complete(asyncio.gather(log_loop(
             pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, 2)))
-    except Exception as e:
-        print(f' Error: {e}')
-        print(f'Trying Restart of BSC Network Scan')
-        asyncio.run(main())
+    except (Web3Exception, Exception, TimeoutError) as e:
+        print(f'Error: {e}')
+    finally:
+        loop.close()
 
 
 if __name__ == "__main__":

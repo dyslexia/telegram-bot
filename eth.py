@@ -83,7 +83,7 @@ async def new_pair(event):
         weth = liq["reserve1"]
         token = liq["reserve0"]
         dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
-    if dollar == 0:
+    if dollar == 0 or dollar == "" or not dollar:
         liquidity_text = 'Total Liquidity: Unavailable'
     else:
         liquidity_text = f'Total Liquidity: ${"{:0,.0f}".format(dollar)}'
@@ -169,6 +169,7 @@ async def new_v3_pair(event):
         weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
         dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
     elif event["args"]["token0"] in ca.stables:
+        print("USD PAIR----------------------------")
         weth_address = event["args"]["token0"]
         native = api.get_token_name(event["args"]["token0"], "eth")
         token_name = api.get_token_name(event["args"]["token1"], "eth")
@@ -176,6 +177,7 @@ async def new_v3_pair(event):
         weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
         dollar = int(weth) * 2 / 10 ** 18
     elif event["args"]["token1"] in ca.stables:
+        print("USD PAIR----------------------------")
         weth_address = event["args"]["token1"]
         native = api.get_token_name(event["args"]["token1"], "eth")
         token_name = api.get_token_name(event["args"]["token0"], "eth")
@@ -189,7 +191,7 @@ async def new_v3_pair(event):
         token_address = event["args"]["token0"]
         weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
         dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
-    if dollar == 0:
+    if dollar == 0 or dollar == "" or not dollar:
         liquidity_text = 'Total Liquidity: Unavailable'
     else:
         liquidity_text = f'Total Liquidity: ${"{:0,.0f}".format(dollar)}'
@@ -313,10 +315,10 @@ def main():
     try:
         loop.run_until_complete(asyncio.gather(log_loop(
             v2_pair_filter, v3_pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, 5)))
-    except Exception as e:
-        print(f' Error: {e}')
-        print(f'Trying Restart of BSC Network Scan')
-        asyncio.run(main())
+    except (Web3Exception, Exception, TimeoutError) as e:
+        print(f'Error: {e}')
+    finally:
+        loop.close()
 
 
 if __name__ == "__main__":
