@@ -44,6 +44,7 @@ async def new_loan(event):
                 f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
 
 async def new_pair(event):
+    print("Pair found")
     tx = api.get_tx(event["transactionHash"].hex(), "bsc")
     pool = int(tx["result"]["value"], 0) / 10 ** 18
     deployer = tx["result"]["from"]
@@ -60,31 +61,48 @@ async def new_pair(event):
         weth = liq["reserve0"]
         token = liq["reserve1"]
         dollar = int(weth) * 2 * api.get_native_price("bnb") / 10 ** 18
-        return
-    if event["args"]["token0"] == ca.cake or event["args"]["token0"] == ca.matic:
+    elif event["args"]["token0"] in ca.bscpairs:
         native = api.get_token_name(event["args"]["token0"], "bsc")
         token_name = api.get_token_name(event["args"]["token1"], "bsc")
         token_address = event["args"]["token1"]
         weth = liq["reserve0"]
         token = liq["reserve1"]
         dollar = 0
-        return
-    if event["args"]["token0"] == ca.beth or event["args"]["token0"] == ca.bweth:
+    elif event["args"]["token1"] in ca.bscpairs:
+        native = api.get_token_name(event["args"]["token1"], "bsc")
+        token_name = api.get_token_name(event["args"]["token0"], "bsc")
+        token_address = event["args"]["token0"]
+        weth = liq["reserve1"]
+        token = liq["reserve0"]
+        dollar = 0
+    elif event["args"]["token0"] in ca.bscethpairs:
         native = api.get_token_name(event["args"]["token0"], "bsc")
         token_name = api.get_token_name(event["args"]["token1"], "bsc")
         token_address = event["args"]["token1"]
         weth = liq["reserve0"]
         token = liq["reserve1"]
         dollar = dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
-        return
-    if event["args"]["token0"] == ca.bep20usdt or event["args"]["token0"] == ca.busd:
+    elif event["args"]["token1"] in ca.bscethpairs:
+        native = api.get_token_name(event["args"]["token1"], "bsc")
+        token_name = api.get_token_name(event["args"]["token0"], "bsc")
+        token_address = event["args"]["token0"]
+        weth = liq["reserve1"]
+        token = liq["reserve0"]
+        dollar = dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
+    elif event["args"]["token0"] in ca.bscethpairs:
         native = api.get_token_name(event["args"]["token0"], "bsc")
         token_name = api.get_token_name(event["args"]["token1"], "bsc")
         token_address = event["args"]["token1"]
         weth = liq["reserve0"]
         token = liq["reserve1"]
-        dollar = int(weth) * 2
-        return
+        dollar = int(weth) * 2 / 10 ** 18
+    elif event["args"]["token1"] in ca.bscethpairs:
+        native = api.get_token_name(event["args"]["token1"], "bsc")
+        token_name = api.get_token_name(event["args"]["token0"], "bsc")
+        token_address = event["args"]["token0"]
+        weth = liq["reserve1"]
+        token = liq["reserve0"]
+        dollar = int(weth) * 2 / 10 ** 18
     else:
         native = api.get_token_name(event["args"]["token1"], "bsc")
         token_name = api.get_token_name(event["args"]["token0"], "bsc")
@@ -95,7 +113,6 @@ async def new_pair(event):
     info = api.get_token_data(token_address, "bsc")
     if info[0]["decimals"] == "" or info[0]["decimals"] == "0" or not info[0]["decimals"]:
         supply = int(api.get_supply(token_address, "bsc"))
-        return
     else:
         supply = int(api.get_supply(token_address, "bsc")) / 10 ** int(info[0]["decimals"])
     if dollar == 0:
@@ -157,6 +174,7 @@ async def new_pair(event):
              [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_bsc}{event["args"]["pair"]}')],
              [InlineKeyboardButton(text='Token Contract', url=f'{url.bsc_address}{token_address}')],
              [InlineKeyboardButton(text='Factory TX', url=f'{url.bsc_tx}{event["transactionHash"].hex()}')], ]))
+    print(f'V2 Pair sent: ({token_name[1]}/{native[1]})')
 
 async def time_lock_extend(event):
     token_name = api.get_token_name(event["args"]["tokenAddress"], "eth")

@@ -45,213 +45,214 @@ async def new_loan(event):
                 f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
 
 async def new_pair(event):
-    print('V2 Pair found')
-    try:
-        tx = api.get_tx(event["transactionHash"].hex(), "eth")
-        deployer = tx["result"]["from"]
-        pool = int(tx["result"]["value"], 0) / 10 ** 18
-        liq = api.get_liquidity(event["args"]["pair"], "eth")
-        if pool == 0 or pool == "" or not pool:
-            pool_text = "Launched Pool Amount: Unavailable"
-        else:
-            pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1 ** 18
-            pool_text = f'Launched Pool Amount: {pool} ETH (${"{:0,.0f}".format(pool_dollar)})'
-        if event["args"]["token0"] == ca.weth:
-            native = api.get_token_name(event["args"]["token0"], "eth")
-            token_name = api.get_token_name(event["args"]["token1"], "eth")
-            token_address = event["args"]["token1"]
-            weth = liq["reserve0"]
-            token = liq["reserve1"]
-            dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
-            return
-        if event["args"]["token0"] == ca.usdt:
-            native = api.get_token_name(event["args"]["token0"], "eth")
-            token_name = api.get_token_name(event["args"]["token1"], "eth")
-            token_address = event["args"]["token1"]
-            weth = liq["reserve0"]
-            token = liq["reserve1"]
-            dollar = int(weth) * 2
-            return
-        else:
-            native = api.get_token_name(event["args"]["token1"], "eth")
-            token_name = api.get_token_name(event["args"]["token0"], "eth")
-            token_address = event["args"]["token0"]
-            weth = liq["reserve1"]
-            token = liq["reserve0"]
-            dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
-        if dollar == 0:
-            liquidity_text = 'Total Liquidity: Unavailable'
-        else:
-            liquidity_text = f'Total Liquidity: ${"{:0,.0f}".format(dollar)}'
-        info = api.get_token_data(token_address, "eth")
-        if info[0]["decimals"] == "" or info[0]["decimals"] == "0" or not info[0]["decimals"]:
-            supply = int(api.get_supply(token_address, "eth"))
-            return
-        else:
-            supply = int(api.get_supply(token_address, "eth")) / 10 ** int(info[0]["decimals"])
-        verified = api.get_verified(token_address, "eth")
-        status = ""
-        warning = ""
-        if verified == "Yes":
-            contract = web3.eth.contract(address=token_address, abi=api.get_abi(token_address, "eth"))
-            try:
-                owner = contract.functions.owner().call()
-                if owner == "0x0000000000000000000000000000000000000000":
-                    status = f'✅ Contract Verified\n✅ Contract Renounced'
-                else:
-                    status = '✅ Contract Verified\n❌ Contract Not Renounced'
-            except Web3Exception:
+    print(f'V2 Pair found')
+    tx = api.get_tx(event["transactionHash"].hex(), "eth")
+    deployer = tx["result"]["from"]
+    pool = int(tx["result"]["value"], 0) / 10 ** 18
+    if pool == 0 or pool == "" or not pool:
+        pool_text = "Launched Pool Amount: Unavailable"
+    else:
+        pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1 ** 18
+        pool_text = f'Launched Pool Amount: {pool} ETH (${"{:0,.0f}".format(pool_dollar)})'
+    liq = api.get_liquidity(event["args"]["pair"], "eth")
+    if event["args"]["token0"] == ca.weth:
+        native = api.get_token_name(event["args"]["token0"], "eth")
+        token_name = api.get_token_name(event["args"]["token1"], "eth")
+        token_address = event["args"]["token1"]
+        weth = liq["reserve0"]
+        token = liq["reserve1"]
+        dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
+    elif event["args"]["token0"] in ca.stables:
+        native = api.get_token_name(event["args"]["token0"], "eth")
+        token_name = api.get_token_name(event["args"]["token1"], "eth")
+        token_address = event["args"]["token1"]
+        weth = liq["reserve0"]
+        token = liq["reserve1"]
+        dollar = int(weth) * 2 / 10 ** 18
+    elif event["args"]["token1"] in ca.stables:
+        native = api.get_token_name(event["args"]["token1"], "eth")
+        token_name = api.get_token_name(event["args"]["token0"], "eth")
+        token_address = event["args"]["token0"]
+        weth = liq["reserve1"]
+        token = liq["reserve0"]
+        dollar = int(weth) * 2 / 10 ** 18
+    else:
+        native = api.get_token_name(event["args"]["token1"], "eth")
+        token_name = api.get_token_name(event["args"]["token0"], "eth")
+        token_address = event["args"]["token0"]
+        weth = liq["reserve1"]
+        token = liq["reserve0"]
+        dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
+    if dollar == 0:
+        liquidity_text = 'Total Liquidity: Unavailable'
+    else:
+        liquidity_text = f'Total Liquidity: ${"{:0,.0f}".format(dollar)}'
+    info = api.get_token_data(token_address, "eth")
+    if info[0]["decimals"] == "" or info[0]["decimals"] == "0" or not info[0]["decimals"]:
+        supply = int(api.get_supply(token_address, "eth"))
+    else:
+        supply = int(api.get_supply(token_address, "eth")) / 10 ** int(info[0]["decimals"])
+    verified = api.get_verified(token_address, "eth")
+    status = ""
+    warning = ""
+    if verified == "Yes":
+        contract = web3.eth.contract(address=token_address, abi=api.get_abi(token_address, "eth"))
+        try:
+            owner = contract.functions.owner().call()
+            if owner == "0x0000000000000000000000000000000000000000":
+                status = f'✅ Contract Verified\n✅ Contract Renounced'
+            else:
                 status = '✅ Contract Verified\n❌ Contract Not Renounced'
-            try:
-                scan = contract.all_functions()
-                if "maxTaxSwap" in str(scan):
-                    warning = "❗ Possible High Tax Token"
-                else:
-                    warning = ''
-            except Web3Exception:
+        except Web3Exception:
+            status = '✅ Contract Verified\n❌ Contract Not Renounced'
+        try:
+            scan = contract.all_functions()
+            if "maxTaxSwap" in str(scan):
+                warning = "❗ Possible High Tax Token"
+            else:
                 warning = ''
-        if verified == "No":
-            status = '❌ Contract Unverified'
-        im1 = Image.open((random.choice(media.blackhole)))
-        im2 = Image.open(media.eth_logo)
-        im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
-        i1 = ImageDraw.Draw(im1)
-        i1.text((26, 30),
-                f'New Pair Created (ETH Uniswap v2) \n\n'
+        except Web3Exception:
+            warning = ''
+    if verified == "No":
+        status = '❌ Contract Unverified'
+    im1 = Image.open((random.choice(media.blackhole)))
+    im2 = Image.open(media.eth_logo)
+    im1.paste(im2, (720, 20), im2)
+    myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+    i1 = ImageDraw.Draw(im1)
+    i1.text((26, 30),
+            f'New Pair Created (ETH Uniswap v2) \n\n'
+            f'{token_name[0]} ({token_name[1]}/{native[1]})\n\n'
+            f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
+            f'{pool_text}\n\n'
+            f'{liquidity_text}\n\n'
+            f'SCAN:\n'
+            f'{status}\n'
+            f'{warning}',
+            font=myfont, fill=(255, 255, 255))
+    im1.save(r"media\blackhole.png")
+    await application.bot.send_photo(
+        ca.alerts_id,
+        photo=open(r"media\blackhole.png", 'rb'),
+        caption=f'*New Pair Created (ETH Uniswap v2)*\n\n'
                 f'{token_name[0]} ({token_name[1]}/{native[1]})\n\n'
+                f'Token Address:\n`{token_address}`\n\n'
                 f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
                 f'{pool_text}\n\n'
                 f'{liquidity_text}\n\n'
                 f'SCAN:\n'
+                f'🖥️ [Deployer]({url.ether_address}{deployer})\n'
                 f'{status}\n'
-                f'{warning}',
-                font=myfont, fill=(255, 255, 255))
-        im1.save(r"media\blackhole.png")
-        await application.bot.send_photo(
-            ca.alerts_id,
-            photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*New Pair Created (ETH Uniswap v2)*\n\n'
-                    f'{token_name[0]} ({token_name[1]}/{native[1]})\n\n'
-                    f'Token Address:\n`{token_address}`\n\n'
-                    f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
-                    f'{pool_text}\n\n'
-                    f'{liquidity_text}\n\n'
-                    f'SCAN:\n'
-                    f'🖥️ [Deployer]({url.ether_address}{deployer})\n'
-                    f'{status}\n'
-                    f'{warning}', parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text=f'Buy On Xchange', url=f'{url.xchange_buy_eth}{token_address}')],
-                 [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{event["args"]["pair"]}')],
-                 [InlineKeyboardButton(text='Token Contract', url=f'{url.ether_address}{token_address}')],
-                 [InlineKeyboardButton(text='Factory TX', url=f'{url.ether_tx}{event["transactionHash"].hex()}')], ]))
-        print('V2 Pair sent')
-    except Exception as e:
-        print(f'V2 Pair error:\n{e}')
-
+                f'{warning}', parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text=f'Buy On Xchange', url=f'{url.xchange_buy_eth}{token_address}')],
+             [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{event["args"]["pair"]}')],
+             [InlineKeyboardButton(text='Token Contract', url=f'{url.ether_address}{token_address}')],
+             [InlineKeyboardButton(text='Factory TX', url=f'{url.ether_tx}{event["transactionHash"].hex()}')], ]))
+    print(f'V2 Pair sent: ({token_name[1]}/{native[1]})')
 
 async def new_v3_pair(event):
     print('V3 Pair found')
-    try:
-        tx = api.get_tx(event["transactionHash"].hex(), "eth")
-        deployer = tx["result"]["from"]
-        pool = int(tx["result"]["value"], 0) / 10 ** 18
-        if pool == 0 or pool == "" or not pool:
-            pool_text = "Launched Pool Amount: Unavailable"
-        else:
-            pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1 ** 18
-            pool_text = f'Launched Pool Amount: {pool} ETH (${"{:0,.0f}".format(pool_dollar)})'
-        if event["args"]["token0"] == ca.weth:
-            weth_address = event["args"]["token0"]
-            native = api.get_token_name(event["args"]["token0"], "eth")
-            token_name = api.get_token_name(event["args"]["token1"], "eth")
-            token_address = event["args"]["token1"]
-            weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
-            dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
-            return
-        if event["args"]["token0"] == ca.usdt:
-            weth_address = event["args"]["token0"]
-            native = api.get_token_name(event["args"]["token0"], "eth")
-            token_name = api.get_token_name(event["args"]["token1"], "eth")
-            token_address = event["args"]["token1"]
-            weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
-            dollar = int(weth) * 2
-            return
-        else:
-            weth_address = event["args"]["token1"]
-            native = api.get_token_name(event["args"]["token1"], "eth")
-            token_name = api.get_token_name(event["args"]["token0"], "eth")
-            token_address = event["args"]["token0"]
-            weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
-            dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
-        if dollar == 0:
-            liquidity_text = 'Total Liquidity: Unavailable'
-        else:
-            liquidity_text = f'Total Liquidity: ${"{:0,.0f}".format(dollar)}'
-        info = api.get_token_data(token_address, "eth")
-        if info[0]["decimals"] == "" or info[0]["decimals"] == "0" or not info[0]["decimals"]:
-            supply = int(api.get_supply(token_address, "eth"))
-            return
-        else:
-            supply = int(api.get_supply(token_address, "eth")) / 10 ** int(info[0]["decimals"])
-        verified = api.get_verified(token_address, "eth")
-        status = ""
-        if verified == "Yes":
-            contract = web3.eth.contract(address=token_address, abi=api.get_abi(token_address, "eth"))
-            try:
-                owner = contract.functions.owner().call()
-                if owner == "0x0000000000000000000000000000000000000000":
-                    status = '✅ Contract Verified\n✅ Contract Renounced'
-                else:
-                    status = '✅ Contract Verified\n❌ Contract Not Renounced'
-            except Web3Exception:
+    tx = api.get_tx(event["transactionHash"].hex(), "eth")
+    deployer = tx["result"]["from"]
+    pool = int(tx["result"]["value"], 0) / 10 ** 18
+    if pool == 0 or pool == "" or not pool:
+        pool_text = "Launched Pool Amount: Unavailable"
+    else:
+        pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1 ** 18
+        pool_text = f'Launched Pool Amount: {pool} ETH (${"{:0,.0f}".format(pool_dollar)})'
+    if event["args"]["token0"] == ca.weth:
+        weth_address = event["args"]["token0"]
+        native = api.get_token_name(event["args"]["token0"], "eth")
+        token_name = api.get_token_name(event["args"]["token1"], "eth")
+        token_address = event["args"]["token1"]
+        weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
+        dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
+    elif event["args"]["token0"] in ca.stables:
+        weth_address = event["args"]["token0"]
+        native = api.get_token_name(event["args"]["token0"], "eth")
+        token_name = api.get_token_name(event["args"]["token1"], "eth")
+        token_address = event["args"]["token1"]
+        weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
+        dollar = int(weth) * 2 / 10 ** 18
+    elif event["args"]["token1"] in ca.stables:
+        weth_address = event["args"]["token1"]
+        native = api.get_token_name(event["args"]["token1"], "eth")
+        token_name = api.get_token_name(event["args"]["token0"], "eth")
+        token_address = event["args"]["token0"]
+        weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
+        dollar = int(weth) * 2 / 10 ** 18
+    else:
+        weth_address = event["args"]["token1"]
+        native = api.get_token_name(event["args"]["token1"], "eth")
+        token_name = api.get_token_name(event["args"]["token0"], "eth")
+        token_address = event["args"]["token0"]
+        weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
+        dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
+    if dollar == 0:
+        liquidity_text = 'Total Liquidity: Unavailable'
+    else:
+        liquidity_text = f'Total Liquidity: ${"{:0,.0f}".format(dollar)}'
+    info = api.get_token_data(token_address, "eth")
+    if info[0]["decimals"] == "" or info[0]["decimals"] == "0" or not info[0]["decimals"]:
+        supply = int(api.get_supply(token_address, "eth"))
+    else:
+        supply = int(api.get_supply(token_address, "eth")) / 10 ** int(info[0]["decimals"])
+    verified = api.get_verified(token_address, "eth")
+    status = ""
+    if verified == "Yes":
+        contract = web3.eth.contract(address=token_address, abi=api.get_abi(token_address, "eth"))
+        try:
+            owner = contract.functions.owner().call()
+            if owner == "0x0000000000000000000000000000000000000000":
+                status = '✅ Contract Verified\n✅ Contract Renounced'
+            else:
                 status = '✅ Contract Verified\n❌ Contract Not Renounced'
-            try:
-                scan = contract.all_functions()
-                if "maxTaxSwap" in str(scan):
-                    warning = "❗ Possible high tax token"
-                else:
-                    warning = ''
-            except Web3Exception:
+        except Web3Exception:
+            status = '✅ Contract Verified\n❌ Contract Not Renounced'
+        try:
+            scan = contract.all_functions()
+            if "maxTaxSwap" in str(scan):
+                warning = "❗ Possible high tax token"
+            else:
                 warning = ''
-        if verified == "No":
-            status = 'SCAN:\n❌ Contract Unverified'
-        im1 = Image.open((random.choice(media.blackhole)))
-        im2 = Image.open(media.eth_logo)
-        im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
-        i1 = ImageDraw.Draw(im1)
-        i1.text((26, 30),
-                f'New Pair Created (ETH Uniswap v3)\n\n'
+        except Web3Exception:
+            warning = ''
+    if verified == "No":
+        status = 'SCAN:\n❌ Contract Unverified'
+    im1 = Image.open((random.choice(media.blackhole)))
+    im2 = Image.open(media.eth_logo)
+    im1.paste(im2, (720, 20), im2)
+    myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+    i1 = ImageDraw.Draw(im1)
+    i1.text((26, 30),
+            f'New Pair Created (ETH Uniswap v3)\n\n'
+            f'{token_name[0]} ({token_name[1]}/{native[1]})\n\n'
+            f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
+            f'{pool_text}\n\n'
+            f'{liquidity_text}\n\n'
+            f'SCAN:\n'
+            f'{status}',
+            font=myfont, fill=(255, 255, 255))
+    im1.save(r"media\blackhole.png")
+    await application.bot.send_photo(
+        ca.alerts_id,
+        photo=open(r"media\blackhole.png", 'rb'),
+        caption=f'*New Pair Created (ETH Uniswap v3)*\n\n'
                 f'{token_name[0]} ({token_name[1]}/{native[1]})\n\n'
+                f'Token Address:\n`{token_address}`\n\n'
                 f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
                 f'{pool_text}\n\n'
                 f'{liquidity_text}\n\n'
                 f'SCAN:\n'
-                f'{status}',
-                font=myfont, fill=(255, 255, 255))
-        im1.save(r"media\blackhole.png")
-        await application.bot.send_photo(
-            ca.alerts_id,
-            photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*New Pair Created (ETH Uniswap v3)*\n\n'
-                    f'{token_name[0]} ({token_name[1]}/{native[1]})\n\n'
-                    f'Token Address:\n`{token_address}`\n\n'
-                    f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
-                    f'{pool_text}\n\n'
-                    f'{liquidity_text}\n\n'
-                    f'SCAN:\n'
-                    f'🖥️ [Deployer]({url.ether_address}{deployer})\n'
-                    f'{status}', parse_mode='Markdown',
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text=f'Buy On Xchange', url=f'{url.xchange_buy_eth}{token_address}')],
-                 [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{event["args"]["pool"]}')],
-                 [InlineKeyboardButton(text='Token Contract', url=f'{url.ether_address}{token_address}')],
-                 [InlineKeyboardButton(text='Factory TX', url=f'{url.ether_tx}{event["transactionHash"].hex()}')], ]))
-        print('V3 Pair Sent')
-    except Exception as e:
-        print(f'V3 Pair error:\n{e}')
+                f'🖥️ [Deployer]({url.ether_address}{deployer})\n'
+                f'{status}', parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text=f'Buy On Xchange', url=f'{url.xchange_buy_eth}{token_address}')],
+             [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_eth}{event["args"]["pool"]}')],
+             [InlineKeyboardButton(text='Token Contract', url=f'{url.ether_address}{token_address}')],
+             [InlineKeyboardButton(text='Factory TX', url=f'{url.ether_tx}{event["transactionHash"].hex()}')], ]))
+    print(f'V3 Pair Sent: ({token_name[1]}/{native[1]})')
 
 async def time_lock_extend(event):
     token_name = api.get_token_name(event["args"]["tokenAddress"], "eth")
@@ -311,9 +312,10 @@ def main():
     asyncio.set_event_loop(loop)
     try:
         loop.run_until_complete(asyncio.gather(log_loop(
-            v2_pair_filter, v3_pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, 2)))
+            v2_pair_filter, v3_pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, 5)))
     except Exception as e:
-        print(f'Loop Error: {e}\n\nTrying Restart of ETH Network Scan')
+        print(f' Error: {e}')
+        print(f'Trying Restart of BSC Network Scan')
         asyncio.run(main())
 
 
