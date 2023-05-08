@@ -1,3 +1,4 @@
+from web3 import Web3
 import logging
 from telegram.ext import *
 from telegram import *
@@ -27,6 +28,9 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 print('Bot Restarted')
+
+async def test_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    return
 
 # COMMANDS
 async def token_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1447,13 +1451,13 @@ async def potw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def supply_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     prices = api.get_cg_price("x7r, x7dao, x7101, x7102, x7103, x7104, x7105")
-    x7r = api.get_token_balance(ca.x7r_pair_eth, "eth", ca.x7r)
-    x7dao = api.get_token_balance(ca.x7dao_pair_eth, "eth", ca.x7dao)
-    x7101 = api.get_token_balance(ca.x7101_pair_eth, "eth", ca.x7101)
-    x7102 = api.get_token_balance(ca.x7102_pair_eth, "eth", ca.x7102)
-    x7103 = api.get_token_balance(ca.x7103_pair_eth, "eth", ca.x7103)
-    x7104 = api.get_token_balance(ca.x7104_pair_eth, "eth", ca.x7104)
-    x7105 = api.get_token_balance(ca.x7105_pair_eth, "eth", ca.x7105)
+    x7r = api.get_token_balance(ca.x7r_pair_eth, ca.x7r, "eth")
+    x7dao = api.get_token_balance(ca.x7dao_pair_eth, ca.x7dao, "eth")
+    x7101 = api.get_token_balance(ca.x7101_pair_eth, ca.x7101, "eth")
+    x7102 = api.get_token_balance(ca.x7102_pair_eth, ca.x7102, "eth")
+    x7103 = api.get_token_balance(ca.x7103_pair_eth, ca.x7103, "eth")
+    x7104 = api.get_token_balance(ca.x7104_pair_eth, ca.x7104, "eth")
+    x7105 = api.get_token_balance(ca.x7105_pair_eth, ca.x7105, "eth")
     x7r_dollar = x7r * prices["x7r"]["usd"]
     x7dao_dollar = x7dao * prices["x7dao"]["usd"]
     x7101_dollar = x7101 * prices["x7101"]["usd"]
@@ -1582,14 +1586,14 @@ async def x7r_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'\n\n{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
-        x7r_ath_change = str(api.get_ath_change("x7r"))
-        x7r_ath = api.get_ath("x7r")
+        x7r_ath_change = str(api.get_ath("x7r")[1])
+        x7r_ath = api.get_ath("x7r")[0]
         chain_name = ""
         scan_url = ""
         chart_url = ""
         scan_name = ""
         holders = api.get_holders(ca.x7r)
-        burn = api.get_token_balance(ca.dead, "eth", ca.x7r)
+        burn = api.get_token_balance(ca.dead, ca.x7r, "eth")
         percent = round(((burn / ca.supply) * 100), 6)
         x7r = api.get_liquidity(ca.x7r_pair_eth, "eth")
         x7r_token = float(x7r["reserve0"])
@@ -1741,8 +1745,8 @@ async def x7dao_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
-        x7dao_ath_change = str(api.get_ath_change("x7dao"))
-        x7dao_ath = api.get_ath("x7dao")
+        x7dao_ath_change = str(api.get_ath("x7dao")[1])
+        x7dao_ath = api.get_ath("x7dao")[0]
         holders = api.get_holders(ca.x7dao)
         x7dao = api.get_liquidity(ca.x7dao_pair_eth, "eth")
         x7dao_token = float(x7dao["reserve0"])
@@ -1866,8 +1870,8 @@ async def x7101_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
-        x7101_ath_change = str(api.get_ath_change("x7101"))
-        x7101_ath = api.get_ath("x7101")
+        x7101_ath_change = str(api.get_ath("x7101")[1])
+        x7101_ath = api.get_ath("x7101")[0]
         holders = api.get_holders(ca.x7101)
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7101_logo)
@@ -1979,8 +1983,8 @@ async def x7102_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
-        x7102_ath_change = str(api.get_ath_change("x7102"))
-        x7102_ath = api.get_ath("x7102")
+        x7102_ath_change = str(api.get_ath("x7102")[1])
+        x7102_ath = api.get_ath("x7102")[0]
         holders = api.get_holders(ca.x7102)
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7102_logo)
@@ -2092,8 +2096,8 @@ async def x7103_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
-        x7103_ath_change = str(api.get_ath_change("x7103"))
-        x7103_ath = api.get_ath("x7103")
+        x7103_ath_change = str(api.get_ath("x7103")[1])
+        x7103_ath = api.get_ath("x7103")[0]
         holders = api.get_holders(ca.x7103)
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7103_logo)
@@ -2205,8 +2209,8 @@ async def x7104_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
-        x7104_ath_change = str(api.get_ath_change("x7104"))
-        x7104_ath = api.get_ath("x7104")
+        x7104_ath_change = str(api.get_ath("x7104")[1])
+        x7104_ath = api.get_ath("x7104")[0]
         holders = api.get_holders(ca.x7104)
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7104_logo)
@@ -2318,8 +2322,8 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode='Markdown')
     if chain == "" or chain == "eth":
-        x7105_ath_change = str(api.get_ath_change("x7105"))
-        x7105_ath = api.get_ath("x7105")
+        x7105_ath_change = str(api.get_ath("x7105")[1])
+        x7105_ath = api.get_ath("x7105")[0]
         holders = api.get_holders(ca.x7105)
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7105_logo)
@@ -2385,7 +2389,7 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    x7r_supply = ca.supply - api.get_token_balance(ca.dead, "eth", ca.x7r)
+    x7r_supply = ca.supply - api.get_token_balance(ca.dead, ca.x7r, "eth")
     price = api.get_cg_price("x7r, x7dao, x7101, x7102, x7103, x7104, x7105")
     x7r_cap = price["x7r"]["usd"] * x7r_supply
     x7dao_cap = price["x7dao"]["usd"] * ca.supply
@@ -2644,11 +2648,11 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         dev_dollar = float(dev_eth) * float(api.get_native_price("eth")) / 1 ** 18
         com_dollar = float(com_eth) * float(api.get_native_price("eth")) / 1 ** 18
         pioneer_dollar = float(pioneer_eth) * float(api.get_native_price("eth")) / 1 ** 18
-        com_x7r = api.get_token_balance(ca.com_multi_eth, "eth", ca.x7r)
-        com_x7dao = api.get_token_balance(ca.com_multi_eth, "eth", ca.x7dao)
+        com_x7r = api.get_token_balance(ca.com_multi_eth, ca.x7r, "eth")
+        com_x7dao = api.get_token_balance(ca.com_multi_eth, ca.x7dao, "eth")
         com_x7dao_price = com_x7dao * api.get_cg_price("x7dao")["x7dao"]["usd"]
         com_x7r_price = com_x7r * api.get_cg_price("x7r")["x7r"]["usd"]
-        com_x7d = api.get_token_balance(ca.com_multi_eth, "eth", ca.x7d)
+        com_x7d = api.get_token_balance(ca.com_multi_eth, ca.x7d, "eth")
         com_x7d_price = com_x7d * api.get_native_price("eth")
         com_total = com_x7r_price + com_dollar + com_x7d_price + com_x7dao_price
         im1 = Image.open((random.choice(media.blackhole)))
@@ -2936,32 +2940,32 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "" or chain == "eth":
         chain_name = "(ETH)"
         chain_url = url.ether_address
-        burn = api.get_token_balance(ca.dead, "eth", ca.x7r)
+        burn = api.get_token_balance(ca.dead, ca.x7r, "eth")
         percent = round(burn / ca.supply * 100, 2)
         burn_dollar = api.get_cg_price("x7r")["x7r"]["usd"] * float(burn)
         im2 = Image.open(media.eth_logo)
     if chain == "bsc" or chain == "bnb":
         chain_name = "(BSC)"
         chain_url = url.bsc_address
-        burn = api.get_token_balance(ca.dead, "bsc", ca.x7r)
+        burn = api.get_token_balance(ca.dead, ca.x7r, "bsc")
         percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.bsc_logo)
     if chain == "polygon" or chain == "poly":
         chain_name = "(POLYGON)"
         chain_url = url.poly_address
-        burn = api.get_token_balance(ca.dead, "poly", ca.x7r)
+        burn = api.get_token_balance(ca.dead, ca.x7r, "poly")
         percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.poly_logo)
     if chain == "arbitrum" or chain == "arb":
         chain_name = "(ARB)"
         chain_url = url.arb_address
-        burn = api.get_token_balance(ca.dead, "arb", ca.x7r)
+        burn = api.get_token_balance(ca.dead, ca.x7r, "arb")
         percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.arb_logo)
     if chain == "optimism" or chain == "arb":
         chain_name = "(OPTIMISM)"
         chain_url = url.opti_address
-        burn = api.get_token_balance(ca.dead, "opti", ca.x7r)
+        burn = api.get_token_balance(ca.dead, ca.x7r, "opti")
         percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.opti_logo)
     im1 = Image.open((random.choice(media.blackhole)))
@@ -2985,12 +2989,12 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [[InlineKeyboardButton(text='Etherscan Burn Wallet', url=f'{chain_url}{ca.x7r}?a={ca.dead}')], ]))
 
 async def ath_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    x7r_ath_change = str(api.get_ath_change("x7r"))
-    x7r_ath = api.get_ath("x7r")
-    x7dao_ath = api.get_ath("x7dao")
-    x7dao_ath_change = str(api.get_ath_change("x7dao"))
-    x7r_date = api.get_ath_date("x7r")
-    x7dao_date = api.get_ath_date("x7dao")
+    x7r_ath_change = str(api.get_ath("x7r")[1])
+    x7r_ath = api.get_ath("x7r")[0]
+    x7dao_ath = api.get_ath("x7dao")[0]
+    x7dao_ath_change = str(api.get_ath("x7dao")[1])
+    x7r_date = api.get_ath("x7r")[2]
+    x7dao_date = api.get_ath("x7dao")[2]
     img = Image.open((random.choice(media.blackhole)))
     i1 = ImageDraw.Draw(img)
     myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 26)
@@ -3113,7 +3117,8 @@ async def alert_message(context: ContextTypes.DEFAULT_TYPE) -> None:
         job.chat_id,
         photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance*\n\n{random.choice(text.quotes)}\n\n{api.get_quote()}\n\n'
-                f'🔗 [X7.Finance](http://x7.finance) ┃ 💬 [Telegram](t.me/x7m105portal) ┃ 💰 [Donate]({url.ether_address}'
+                f'🏠 [X7.Finance](http://x7.finance) ┃ 🔗 [X7finance.org](http://x7finance.org)\n'
+                f'💬 [Telegram](t.me/x7m105portal)   ┃ 💰 [Donate]({url.ether_address}'
                 f'0x89eE55b32B0E463C27508669fcFCf43D18e9833E)',
         parse_mode='Markdown')
 
@@ -3189,12 +3194,12 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'{update.effective_message.from_user.username} says "{message}" in: '
           f'{update.effective_message.chat.title}')
     if "@devs" in message:
-        result = round(((api.get_token_balance(ca.dead, "eth", ca.x7r) / ca.supply) * 100), 6)
+        result = round(((api.get_token_balance(ca.dead, ca.x7r, "eth") / ca.supply) * 100), 6)
         await update.message.reply_text(f'Please send 1000 X7R to the burn wallet:\n\n'
                                         f'`0x000000000000000000000000000000000000dEaD`\n\nThank you for your '
                                         f'contribution {update.message.from_user.username}\n\n'
                                         f'X7R (ETH) Tokens Burned:\n'
-                                        f'{"{:,}".format(api.get_token_balance(ca.dead, "eth", ca.x7r))}\n'
+                                        f'{"{:,}".format(api.get_token_balance(ca.dead, ca.x7r, "eth"))}\n'
                                         f'{result}% of Supply',
                                         parse_mode='Markdown')
     if "rob the bank" in message:
@@ -3243,6 +3248,7 @@ if __name__ == '__main__':
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
     application.add_handler(CommandHandler([f'{times.countdown_command}'], countdown_command))
+    application.add_handler(CommandHandler('test', test_command))
     application.add_handler(CommandHandler('token', token_command))
     application.add_handler(CommandHandler('community', community_command))
     application.add_handler(CommandHandler('snapshot', snapshot_command))
