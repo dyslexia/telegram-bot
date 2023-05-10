@@ -3111,6 +3111,17 @@ async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
             [InlineKeyboardButton(text='Website', url=f'{url.website}')],
             [InlineKeyboardButton(text='Whitepaper', url=f'{url.wp_link}')], ]))
 
+async def raid_message(context: ContextTypes.DEFAULT_TYPE) -> None:
+    job = context.job
+    username = random.choice(text.usernamelist)
+    tweet = api.twitter.user_timeline(screen_name=username, count=1, include_rts="false", exclude_replies="true")
+    await context.bot.send__sticker(sticker=media.twitter_sticker)
+    await context.bot.send_reply_text(
+        f'🚨🚨 *RAID* {username} 🚨🚨\n\n'
+        f'[https://twitter.com/{username}/{tweet[0].id}](https://twitter.com/intent/tweet?text='
+        f'@X7_Finance&hashtags=LongLiveDefi&in_reply_to={tweet[0].id})\n\n'
+        f'{random.choice(text.twitter_replies)}', parse_mode='Markdown')
+
 async def alert_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
     await context.bot.send_photo(
@@ -3335,4 +3346,9 @@ if __name__ == '__main__':
         chat_id=ca.alerts_id,
         name=str('Alert Message'),
         data=times.alert_time * 60 * 60)
+    application.job_queue.run_repeating(
+        raid_message, times.raid_time * 60 * 60,
+        chat_id=ca.main_id,
+        name=str('Raid Message'),
+        data=times.raid_time * 60 * 60)
     application.run_polling()
