@@ -200,22 +200,27 @@ async def time_lock_extend(event):
                 f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
 
 async def log_loop(
-        pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, poll_interval):
+        v2_pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, poll_interval):
     while True:
-        for PairCreated in pair_filter.get_new_entries():
+        for PairCreated in v2_pair_filter.get_new_entries():
             await new_pair(PairCreated)
+            application = ApplicationBuilder().token(random.choice(keys.tokens)).build()
         await asyncio.sleep(poll_interval)
         for TokenUnlockTimeExtended in time_lock_filter.get_new_entries():
             await time_lock_extend(TokenUnlockTimeExtended)
+            application = ApplicationBuilder().token(random.choice(keys.tokens)).build()
         await asyncio.sleep(poll_interval)
         for LoanOriginated in ill001_filter.get_new_entries():
             await new_loan(LoanOriginated)
+            application = ApplicationBuilder().token(random.choice(keys.tokens)).build()
         await asyncio.sleep(poll_interval)
         for LoanOriginated in ill002_filter.get_new_entries():
             await new_loan(LoanOriginated)
+            application = ApplicationBuilder().token(random.choice(keys.tokens)).build()
         await asyncio.sleep(poll_interval)
         for LoanOriginated in ill003_filter.get_new_entries():
             await new_loan(LoanOriginated)
+            application = ApplicationBuilder().token(random.choice(keys.tokens)).build()
         await asyncio.sleep(poll_interval)
 
 def main():
@@ -234,8 +239,9 @@ def main():
         print(f'Error: {e}')
     finally:
         loop.close()
+        asyncio.run(main())
 
 
 if __name__ == "__main__":
-    application = ApplicationBuilder().token(keys.token).build()
+    application = ApplicationBuilder().token(random.choice(keys.tokens)).build()
     asyncio.run(main())
