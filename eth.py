@@ -169,7 +169,6 @@ async def new_v3_pair(event):
         weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
         dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
     elif event["args"]["token0"] in ca.stables:
-        print("USD PAIR----------------------------")
         weth_address = event["args"]["token0"]
         native = api.get_token_name(event["args"]["token0"], "eth")
         token_name = api.get_token_name(event["args"]["token1"], "eth")
@@ -177,7 +176,6 @@ async def new_v3_pair(event):
         weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
         dollar = int(weth) * 2 / 10 ** 18
     elif event["args"]["token1"] in ca.stables:
-        print("USD PAIR----------------------------")
         weth_address = event["args"]["token1"]
         native = api.get_token_name(event["args"]["token1"], "eth")
         token_name = api.get_token_name(event["args"]["token0"], "eth")
@@ -284,29 +282,28 @@ async def log_loop(
     while True:
         for PairCreated in v2_pair_filter.get_new_entries():
             await new_pair(PairCreated)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).build()
+            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
         await asyncio.sleep(poll_interval)
         for PoolCreated in v3_pair_filter.get_new_entries():
             await new_v3_pair(PoolCreated)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).build()
+            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
         await asyncio.sleep(poll_interval)
         for TokenUnlockTimeExtended in time_lock_filter.get_new_entries():
             await time_lock_extend(TokenUnlockTimeExtended)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).build()
+            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
         await asyncio.sleep(poll_interval)
         for LoanOriginated in ill001_filter.get_new_entries():
             await new_loan(LoanOriginated)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).build()
+            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
         await asyncio.sleep(poll_interval)
         for LoanOriginated in ill002_filter.get_new_entries():
             await new_loan(LoanOriginated)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).build()
+            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
         await asyncio.sleep(poll_interval)
         for LoanOriginated in ill003_filter.get_new_entries():
             await new_loan(LoanOriginated)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).build()
+            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
         await asyncio.sleep(poll_interval)
-
 
 def main():
     print("Scanning ETH Network")
@@ -323,11 +320,12 @@ def main():
             v2_pair_filter, v3_pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, 2)))
     except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
         print(f'Error: {e}')
-    finally:
         loop.close()
         asyncio.run(main())
+    finally:
+        loop.close()
 
 
 if __name__ == "__main__":
-    application = ApplicationBuilder().token(random.choice(keys.tokens)).build()
+    application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
     asyncio.run(main())
