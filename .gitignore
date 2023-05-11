@@ -3,5 +3,7 @@ _pycache_/
 Lib/
 Scripts/
 keys.py
+times.py
+text.py
 pyvenv.cfg
 
