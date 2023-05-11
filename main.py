@@ -444,19 +444,11 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     im2 = Image.open(media.x7d_logo)
     im1.paste(im2, (720, 20), im2)
     i1 = ImageDraw.Draw(im1)
-    myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 18)
+    myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
     i1.text((28, 36),
             f'X7D {chain_name} Info\n\n'
             f'Supply: {supply[:5]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
             f'Holders: {holders}\n\n'
-            f'To receive X7D:\n'
-            '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
-            f'{ca.lpool_reserve}\n\n'
-            '2. Import the X7D contract address to your custom tokens in your wallet\nto see your tokens:\n'
-            f'{ca.x7d}\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
-            'Note:\n'
-            'Do not interact directly with the X7D contract\n'
-            'Do not send from a CEX\n\n'
             f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
@@ -466,18 +458,11 @@ async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'For other chains use `/x7d [chain-name]`\n\n'
                 f'Supply: {supply[:5]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
                 f'Holders: {holders}\n\n'
-                f'To receive X7D:\n\n'
-                '1. Send ETH (Not Swap) to the Lending Pool Reserve Contract:\n'
-                f'`{ca.lpool_reserve}`\n\n'
-                '2. Import the X7D contract address to your custom tokens in your wallet to see your tokens:\n'
-                f'`{ca.x7d}`\n\nYou will receive X7D in your wallet which has a 1:1 price X7D:ETH\n\n'
-                'Note:\n'
-                'Do not interact directly with the X7D contract\n'
-                'Do not send from a CEX\n\n'
                 f'{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text='X7 Lending Pool Reserve Contract', url=f'{chain_url}{ca.lpool_reserve}#code')],
+            [[InlineKeyboardButton(text='X7D Funding Dashboard', url='https://beta.x7.finance/#/fund')],
+             [InlineKeyboardButton(text='X7 Lending Pool Reserve Contract', url=f'{chain_url}{ca.lpool_reserve}#code')],
              [InlineKeyboardButton(text='X7 Deposit Contract', url=f'{chain_url}{ca.x7d}#code')], ]))
 
 async def media_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1027,39 +1012,6 @@ async def discount_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text='X7 Lending Discount Contract',
                                    url=f'{url.ether_address}{ca.lending_discount}#code')], ]))
 
-async def withdraw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chain = " ".join(context.args).lower()
-    chain_name = ""
-    chain_url = ""
-    if chain == "eth" or chain == "":
-        chain_name = "(ETH)"
-        chain_url = url.ether_address
-    if chain == "poly" or chain == "polygon":
-        chain_name = "(POLYGON)"
-        chain_url = url.poly_address
-    if chain == "arb" or chain == "arbitrum":
-        chain_name = "(ARB)"
-        chain_url = url.arb_address
-    if chain == "opti" or chain == "optimism":
-        chain_name = "(OPTIMISM)"
-        chain_url = url.opti_address
-    if chain == "bsc" or chain == "bnb":
-        chain_name = "(BSC)"
-        chain_url = url.bsc_address
-    await update.message.reply_text(
-        f'*X7D Withdrawal {chain_name}*\n'
-        'For other chains use `/withdraw [chain-name]`\n\n'
-        'To Withdraw X7D Head over to the X7 Lending pool reserve contract below and follow the steps:\n\n'
-        '1. Write Contract\n'
-        '2. Connect to Web3 (This will connect via your chosen wallet)\n'
-        '3. Select Function `13. withdrawETH`\n'
-        '3. Input your desired amount in wei\n'
-        '4. Write\n'
-        '5. Confirm TX in chosen wallet\n\n'
-        'Note: use command `/wei [amount]` in TG to quickly convert into wei division',
-        parse_mode='Markdown',
-        reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text='X7 Lending Pool Reserve', url=f'{chain_url}{ca.lpool_reserve}#code')], ]))
 
 async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     engine = pyttsx3.init()
@@ -3087,6 +3039,20 @@ async def count_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f'Retweeted {retweet_count} times, by the following members:\n\n{rt_names}')
 
+async def raid_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_admins = await update.effective_chat.get_administrators()
+    if update.effective_user in (admin.user for admin in chat_admins):
+        username = random.choice(text.usernamelist)
+        tweet = api.twitter.user_timeline(screen_name=username, count=1, include_rts="false", exclude_replies="true")
+        await update.message.reply_sticker(sticker=media.twitter_sticker)
+        await update.message.reply_text(
+            f'🚨🚨 *RAID* {username} 🚨🚨\n\n'
+            f'[https://twitter.com/{username}/{tweet[0].id}](https://twitter.com/intent/tweet?text='
+            f'@X7_Finance&hashtags=LongLiveDefi&in_reply_to={tweet[0].id})\n\n'
+            f'{random.choice(text.twitter_replies)}', parse_mode='Markdown')
+    else:
+        await update.message.reply_text(f'{text.mods_only}')
+
 # TRANSLATOR
 async def japanese_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     translator = Translator(from_lang="english", to_lang="japanese")
@@ -3115,8 +3081,9 @@ async def raid_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
     username = random.choice(text.usernamelist)
     tweet = api.twitter.user_timeline(screen_name=username, count=1, include_rts="false", exclude_replies="true")
-    await context.bot.send__sticker(sticker=media.twitter_sticker)
-    await context.bot.send_reply_text(
+    await context.bot.send_sticker(job.chat_id, sticker=media.twitter_sticker)
+    await context.bot.send_message(
+        job.chat_id,
         f'🚨🚨 *RAID* {username} 🚨🚨\n\n'
         f'[https://twitter.com/{username}/{tweet[0].id}](https://twitter.com/intent/tweet?text='
         f'@X7_Finance&hashtags=LongLiveDefi&in_reply_to={tweet[0].id})\n\n'
@@ -3290,7 +3257,6 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler(['chart', 'charts'], chart_command))
     application.add_handler(CommandHandler(['opensea',  'os'], opensea_command))
     application.add_handler(CommandHandler('about', about_command))
-    application.add_handler(CommandHandler('withdraw', withdraw_command))
     application.add_handler(CommandHandler(['price', 'prices'], price_command))
     application.add_handler(CommandHandler(['ecosystem', 'tokens'], ecosystem_command))
     application.add_handler(CommandHandler('media', media_command))
@@ -3332,6 +3298,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('gas', gas_command))
     application.add_handler(CommandHandler('wei', wei_command))
     application.add_handler(CommandHandler('alumni', alumni_command))
+    application.add_handler(CommandHandler('raid', raid_command))
     application.add_handler(CommandHandler(['docs', 'dashboard'], dashboard_command))
     application.add_handler(CommandHandler(['rollout', 'multichain', 'airdrop'], airdrop_command))
     application.add_handler(CommandHandler(['discount', 'dsc', 'dac'], discount_command))
@@ -3349,6 +3316,7 @@ if __name__ == '__main__':
     application.job_queue.run_repeating(
         raid_message, times.raid_time * 60 * 60,
         chat_id=ca.main_id,
+        first=1800,
         name=str('Raid Message'),
         data=times.raid_time * 60 * 60)
     application.run_polling()
