@@ -280,30 +280,35 @@ async def time_lock_extend(event):
 async def log_loop(
         v2_pair_filter, v3_pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, poll_interval):
     while True:
-        for PairCreated in v2_pair_filter.get_new_entries():
-            await new_pair(PairCreated)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
-        await asyncio.sleep(poll_interval)
-        for PoolCreated in v3_pair_filter.get_new_entries():
-            await new_v3_pair(PoolCreated)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
-        await asyncio.sleep(poll_interval)
-        for TokenUnlockTimeExtended in time_lock_filter.get_new_entries():
-            await time_lock_extend(TokenUnlockTimeExtended)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
-        await asyncio.sleep(poll_interval)
-        for LoanOriginated in ill001_filter.get_new_entries():
-            await new_loan(LoanOriginated)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
-        await asyncio.sleep(poll_interval)
-        for LoanOriginated in ill002_filter.get_new_entries():
-            await new_loan(LoanOriginated)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
-        await asyncio.sleep(poll_interval)
-        for LoanOriginated in ill003_filter.get_new_entries():
-            await new_loan(LoanOriginated)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
-        await asyncio.sleep(poll_interval)
+        try:
+            for PairCreated in v2_pair_filter.get_new_entries():
+                await new_pair(PairCreated)
+                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+            await asyncio.sleep(poll_interval)
+            for PoolCreated in v3_pair_filter.get_new_entries():
+                await new_v3_pair(PoolCreated)
+                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+            await asyncio.sleep(poll_interval)
+            for TokenUnlockTimeExtended in time_lock_filter.get_new_entries():
+                await time_lock_extend(TokenUnlockTimeExtended)
+                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+            await asyncio.sleep(poll_interval)
+            for LoanOriginated in ill001_filter.get_new_entries():
+                await new_loan(LoanOriginated)
+                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+            await asyncio.sleep(poll_interval)
+            for LoanOriginated in ill002_filter.get_new_entries():
+                await new_loan(LoanOriginated)
+                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+            await asyncio.sleep(poll_interval)
+            for LoanOriginated in ill003_filter.get_new_entries():
+                await new_loan(LoanOriginated)
+                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+            await asyncio.sleep(poll_interval)
+        except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+            print(f'Loop Error: {e}')
+            continue
+
 
 def main():
     print("Scanning ETH Network")
@@ -315,15 +320,13 @@ def main():
     time_lock_filter = ill003.events.LoanOriginated.create_filter(fromBlock='latest')
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    try:
-        loop.run_until_complete(asyncio.gather(log_loop(
-            v2_pair_filter, v3_pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, 2)))
-    except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-        print(f'Error: {e}')
-        loop.close()
-        asyncio.run(main())
-    finally:
-        loop.close()
+    while True:
+        try:
+            loop.run_until_complete(asyncio.gather(log_loop(
+                v2_pair_filter, v3_pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, 2)))
+        except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+            print(f'Main Error: {e}')
+            continue
 
 
 if __name__ == "__main__":
