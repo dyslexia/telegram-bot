@@ -23,6 +23,7 @@ import nfts
 from translate import Translator
 import tax
 from dateutil import parser
+import textwrap
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
@@ -33,6 +34,29 @@ async def test_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return
 
 # COMMANDS
+async def image_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = " ".join(context.args)
+    img = Image.open((random.choice(media.blackhole)))
+    i1 = ImageDraw.Draw(img)
+    myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
+    wrapper = textwrap.TextWrapper(width=50)
+    word_list = wrapper.wrap(text=text)
+    caption_new = ""
+    for ii in word_list:
+        caption_new = caption_new + ii + '\n'
+    i1.text((50, img.size[1] / 8), caption_new, font=myfont, fill=(255, 255, 255))
+    img.save(r"media\blackhole.png")
+    i1.text((50, 460),
+            f'{update.message.from_user.username}\n'
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont, fill=(255, 255, 255))
+    img.save(r"media\blackhole.png")
+    await update.message.reply_photo(
+        photo=open(r"media\blackhole.png", 'rb'))
+
+async def beta_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(f'https://beta.x7.finance/')
+
 async def token_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     token = " ".join(context.args)
     info_eth = api.get_token_data(token, "eth")
@@ -534,8 +558,7 @@ async def buy_bots_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pioneer_id = " ".join(context.args)
     data = api.get_os_nft("/x7-pioneer")
-    floor = (data["collection"]["stats"]["floor_price"])
-    floor_dollar = floor * float(api.get_native_price("eth")) / 1 ** 18
+    floor = api.get_nft_floor(ca.pioneer, "?chain=eth-main")
     floor_dollar = floor * float(api.get_native_price("eth")) / 1 ** 18
     traits = (data["collection"]["traits"]["Transfer Lock Status"]["unlocked"])
     cap = round(data["collection"]["stats"]["market_cap"], 2)
@@ -553,7 +576,8 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1 = ImageDraw.Draw(img)
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
-                f'X7 Pioneer NFT Info\n\nFloor Price: {floor} ETH (${"{:0,.0f}".format(floor_dollar)})\n'
+                f'X7 Pioneer NFT Info\n\n'
+                f'Floor Price: {floor} ETH (${"{:0,.0f}".format(floor_dollar)})\n'
                 f'Average Price: {price} ETH (${"{:0,.0f}".format(price_dollar)})\n'
                 f'Market Cap: {cap} ETH (${"{:0,.0f}".format(cap_dollar)})\n'
                 f'Total Volume: {volume} ETH (${"{:0,.0f}".format(volume_dollar)})\n'
@@ -566,7 +590,8 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*X7 Pioneer NFT Info*\n\nFloor Price: {floor} ETH (${"{:0,.0f}".format(floor_dollar)})\n'
+            caption=f'*X7 Pioneer NFT Info*\n\n'
+                    f'Floor Price: {floor} ETH (${"{:0,.0f}".format(floor_dollar)})\n'
                     f'Average Price: {price} ETH (${"{:0,.0f}".format(price_dollar)})\n'
                     f'Market Cap: {cap} ETH (${"{:0,.0f}".format(cap_dollar)})\n'
                     f'Total Volume: {volume} ETH (${"{:0,.0f}".format(volume_dollar)})\n'
@@ -1048,7 +1073,8 @@ async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open((random.choice(media.logos)), 'rb'),
             caption='*X7 Finance DAO Founders*\n\n'
-                    f'Deployer Wallet last TX -  {int(days[0])} days ago:\n\n'
+                    f'Deployer Wallet last TX\n'
+                    f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes ago: \n\n'
                     f'{url.ether_tx}{deployer["result"][0]["hash"]}\n\n{api.get_quote()}',
             parse_mode='Markdown')
 
@@ -3046,10 +3072,10 @@ async def raid_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         tweet = api.twitter.user_timeline(screen_name=username, count=1, include_rts="false", exclude_replies="true")
         await update.message.reply_sticker(sticker=media.twitter_sticker)
         await update.message.reply_text(
-            f'🚨🚨 *RAID* {username} 🚨🚨\n\n'
-            f'[https://twitter.com/{username}/{tweet[0].id}](https://twitter.com/intent/tweet?text='
-            f'@X7_Finance&hashtags=LongLiveDefi&in_reply_to={tweet[0].id})\n\n'
-            f'{random.choice(text.twitter_replies)}', parse_mode='Markdown')
+            f'🚨🚨 Raid {username} 🚨🚨\n\n'
+            f'{tweet[0].text}\n\n'
+            f'https://twitter.com/intent/tweet?text=@X7_Finance&hashtags=LongLiveDefi&in_reply_to={tweet[0].id}\n\n'
+            f'{random.choice(text.twitter_replies)}', disable_web_page_preview=True)
     else:
         await update.message.reply_text(f'{text.mods_only}')
 
@@ -3084,10 +3110,11 @@ async def raid_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     await context.bot.send_sticker(job.chat_id, sticker=media.twitter_sticker)
     await context.bot.send_message(
         job.chat_id,
-        f'🚨🚨 *RAID* {username} 🚨🚨\n\n'
-        f'[https://twitter.com/{username}/{tweet[0].id}](https://twitter.com/intent/tweet?text='
-        f'@X7_Finance&hashtags=LongLiveDefi&in_reply_to={tweet[0].id})\n\n'
-        f'{random.choice(text.twitter_replies)}', parse_mode='Markdown')
+        f'🚨🚨 Raid {username} 🚨🚨\n\n'
+        f'{tweet[0].text}\n\n'
+        f'https://twitter.com/intent/'
+        f'tweet?text=@X7_Finance&hashtags=X7Finance%2CLongLiveDefi&in_reply_to={tweet[0].id}\n\n'
+        f'{random.choice(text.twitter_replies)}', disable_web_page_preview=True)
 
 async def alert_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
@@ -3144,6 +3171,7 @@ async def stop_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) 
             await update.message.reply_text(f"No active message named {context.args}.")
     else:
         await update.message.reply_text(f'{text.mods_only}')
+
 
 # GENERAL MESSAGES
 async def countdown_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3227,6 +3255,8 @@ if __name__ == '__main__':
     application.add_error_handler(error)
     application.add_handler(CommandHandler([f'{times.countdown_command}'], countdown_command))
     application.add_handler(CommandHandler('test', test_command))
+    application.add_handler(CommandHandler('beta', beta_command))
+    application.add_handler(CommandHandler('image', image_command))
     application.add_handler(CommandHandler('token', token_command))
     application.add_handler(CommandHandler('community', community_command))
     application.add_handler(CommandHandler('snapshot', snapshot_command))
@@ -3298,6 +3328,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('gas', gas_command))
     application.add_handler(CommandHandler('wei', wei_command))
     application.add_handler(CommandHandler('alumni', alumni_command))
+    application.add_handler(CommandHandler('community', community_command))
     application.add_handler(CommandHandler('raid', raid_command))
     application.add_handler(CommandHandler(['docs', 'dashboard'], dashboard_command))
     application.add_handler(CommandHandler(['rollout', 'multichain', 'airdrop'], airdrop_command))
