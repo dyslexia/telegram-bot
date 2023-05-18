@@ -121,27 +121,48 @@ async def new_pair(event):
         liquidity_text = f'Total Liquidity: ${"{:0,.0f}".format(dollar)}'
     verified = api.get_verified(token_address, "bsc")
     status = ""
+    renounced = ""
+    lock = ""
     if verified == "Yes":
-        status = 'Contract Verified: Yes'
-        contract = web3.eth.contract(address=token_address, abi=api.get_abi(token_address, "bsc"))
+        contract = web3.eth.contract(address=token_address, abi=api.get_abi(token_address, "eth"))
+        verified = '✅ Contract Verified'
+        scan = api.get_scan(token_address, "bsc")
+        try:
+            if (scan[f'{token_address.lower()}']["is_honeypot"]) == 1:
+                print('Skip - Honey Pot')
+                return
+        except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+            print(f'Error: {e}')
+        try:
+            if (scan[f'{token_address.lower()}']["is_mintable"]) == 1:
+                print('Skip - Mintable')
+                return
+        except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+            print(f'Error: {e}')
+        try:
+            if (scan[f'{token_address.lower()}']["is_in_dex"]) == 1:
+                if (scan[f'{token_address.lower()}']["cannot_sell_all"]) == 1:
+                    print('Skip - Cannot Sell')
+                    return
+                if scan[f'{str(token_address).lower()}']["lp_holders"][0]["is_locked"] == 1:
+                    lock = f'✅ Liquidity Locked ({scan[str(token_address).lower()]["lp_holders"][0]["percent"][:4]}%)'
+        except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+            print(f'Error: {e}')
+        try:
+            if (scan[f'{token_address.lower()}']["honeypot_with_same_creator"]) == 1:
+                print('Skip - Honey Pot')
+                return
+        except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+            print(f'Error: {e}')
         try:
             owner = contract.functions.owner().call()
             if owner == "0x0000000000000000000000000000000000000000":
-                status = '✅ Contract Verified\n✅ Contract Renounced'
-            else:
-                status = '✅ Contract Verified\n❌ Contract Not Renounced'
-        except Web3Exception:
-            status = '✅Contract Verified\n❌ Contract Not Renounced'
-        try:
-            scan = contract.all_functions()
-            if "maxTaxSwap" in str(scan):
-                warning = "❗ Possible high tax token"
-            else:
-                warning = ''
-        except Web3Exception:
-            warning = ''
+                renounced = '✅ Contract Renounced'
+        except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration):
+            status = verified
     if verified == "No":
-        status = 'SCAN:\n❌ Contract Unverified'
+        verified = '❌ Contract Unverified'
+    status = f'{verified}\n{renounced}\n{lock}\n'
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.bsc_logo)
     im1.paste(im2, (720, 20), im2)
@@ -202,26 +223,31 @@ async def time_lock_extend(event):
 async def log_loop(
         v2_pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, poll_interval):
     while True:
-        for PairCreated in v2_pair_filter.get_new_entries():
-            await new_pair(PairCreated)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
-        await asyncio.sleep(poll_interval)
-        for TokenUnlockTimeExtended in time_lock_filter.get_new_entries():
-            await time_lock_extend(TokenUnlockTimeExtended)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
-        await asyncio.sleep(poll_interval)
-        for LoanOriginated in ill001_filter.get_new_entries():
-            await new_loan(LoanOriginated)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
-        await asyncio.sleep(poll_interval)
-        for LoanOriginated in ill002_filter.get_new_entries():
-            await new_loan(LoanOriginated)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
-        await asyncio.sleep(poll_interval)
-        for LoanOriginated in ill003_filter.get_new_entries():
-            await new_loan(LoanOriginated)
-            application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
-        await asyncio.sleep(poll_interval)
+        try:
+            for PairCreated in v2_pair_filter.get_new_entries():
+                await new_pair(PairCreated)
+                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+            await asyncio.sleep(poll_interval)
+            for TokenUnlockTimeExtended in time_lock_filter.get_new_entries():
+                await time_lock_extend(TokenUnlockTimeExtended)
+                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+            await asyncio.sleep(poll_interval)
+            for LoanOriginated in ill001_filter.get_new_entries():
+                await new_loan(LoanOriginated)
+                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+            await asyncio.sleep(poll_interval)
+            for LoanOriginated in ill002_filter.get_new_entries():
+                await new_loan(LoanOriginated)
+                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+            await asyncio.sleep(poll_interval)
+            for LoanOriginated in ill003_filter.get_new_entries():
+                await new_loan(LoanOriginated)
+                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+            await asyncio.sleep(poll_interval)
+        except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+            print(f'Loop Error: {e}')
+            break
+        break
 
 def main():
     print("Scanning BSC Network")
