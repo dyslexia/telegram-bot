@@ -153,6 +153,13 @@ def get_nft_holder_count(nft, chain):
     amount = data["total_tokens"]
     return amount
 
+def get_nft_floor(nft, chain):
+    url = 'https://api.blockspan.com/v1/collections/contract/' + nft + chain
+    response = requests.get(url, headers={"accept": "application/json", "X-API-KEY": keys.blockspan})
+    data = response.json()
+    amount = data
+    return amount["exchange_data"][0]["stats"]["floor_price"]
+
 def get_nft_price(nft, chain):
     if chain == "eth":
         return nfts.eco_price_eth, nfts.liq_price_eth, nfts.borrow_price_eth, nfts.dex_price_eth, \
@@ -212,6 +219,17 @@ def get_quote():
     quote = quote_raw["text"] + quote_raw["author"]
     quote = f'`"{quote_raw["text"]}"\n\n-{quote_raw["author"]}`'
     return quote
+
+def get_scan(token, chain):
+    chain_number = ""
+    if chain == "eth":
+        chain_number = 1
+    if chain == "bsc":
+        chain_number = 56
+    url = f"https://api.gopluslabs.io/api/v1/token_security/{chain_number}?contract_addresses={token}"
+    response = requests.get(url)
+    data = response.json()
+    return data["result"]
 
 def get_signers(wallet):
     url = f'https://safe-transaction-mainnet.safe.global/api/v1/safes/{wallet}/'
