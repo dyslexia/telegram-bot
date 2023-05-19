@@ -65,6 +65,13 @@ def get_holders(token):
     amount = data["holdersCount"]
     return amount
 
+def get_internal_tx(address, chain):
+    if chain == "eth":
+        url = f"https://api.etherscan.io/api?module=account&action=txlistinternal&sort=desc&address={address}{keys.ether}"
+        response = requests.get(url)
+        data = response.json()
+        return data
+
 def get_last_tx(address, chain):
     result = evm_api.transaction.get_wallet_transactions(
         api_key=keys.moralis, params={"address": address, "chain": chain})

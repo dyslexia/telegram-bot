@@ -34,6 +34,61 @@ async def test_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return
 
 # COMMANDS
+async def ebb_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chain = " ".join(context.args).lower()
+    if chain == "eth" or chain == "":
+        chain_name = "(ETH)"
+        chain_url = url.ether_address
+        now = datetime.utcnow()
+        x7r = api.get_internal_tx(ca.x7r_liq_hub, "eth")
+        x7r_value_raw = int(x7r["result"][0]["value"]) / 10 ** 18
+        x7r_value = str(x7r_value_raw)
+        x7r_dollar = float(x7r_value) * float(api.get_native_price("eth")) / 1 ** 18
+        x7r_time = datetime.utcfromtimestamp(int(x7r["result"][0]["timeStamp"]))
+        x7r_duration = now - x7r_time
+        x7r_duration_in_s = x7r_duration.total_seconds()
+        x7r_days = divmod(x7r_duration_in_s, 86400)
+        x7r_hours = divmod(x7r_days[1], 3600)
+        x7r_minutes = divmod(x7r_hours[1], 60)
+
+        x7dao = api.get_internal_tx(ca.x7dao_liq_hub, "eth")
+        x7dao_value_raw = int(x7dao["result"][0]["value"]) / 10 ** 18
+        x7dao_value = str(x7dao_value_raw)
+        x7dao_dollar = float(x7dao_value) * float(api.get_native_price("eth")) / 1 ** 18
+        x7dao_time = datetime.utcfromtimestamp(int(x7dao["result"][0]["timeStamp"]))
+        x7dao_duration = now - x7dao_time
+        x7dao_duration_in_s = x7dao_duration.total_seconds()
+        x7dao_days = divmod(x7dao_duration_in_s, 86400)
+        x7dao_hours = divmod(x7dao_days[1], 3600)
+        x7dao_minutes = divmod(x7dao_hours[1], 60)
+
+        x7100 = api.get_internal_tx(ca.x7100_liq_hub, "eth")
+        x7100_value_raw = int(x7100["result"][0]["value"]) / 10 ** 18
+        x7100_value = str(x7100_value_raw)
+        x7100_dollar = float(x7100_value) * float(api.get_native_price("eth")) / 1 ** 18
+        x7100_time = datetime.utcfromtimestamp(int(x7100["result"][0]["timeStamp"]))
+        x7100_duration = now - x7100_time
+        x7100_duration_in_s = x7100_duration.total_seconds()
+        x7100_days = divmod(x7100_duration_in_s, 86400)
+        x7100_hours = divmod(x7100_days[1], 3600)
+        x7100_minutes = divmod(x7100_hours[1], 60)
+
+        await update.message.reply_photo(
+            photo=open((random.choice(media.logos)), 'rb'),
+            caption=f'*X7 Finance Liquidity Hubs {chain_name}*\nUse `/ebb [chain-name]` for other chains\n\n'
+                    f'Last X7R Buy Back: {x7r_time}\n{x7r_value[:5]} ETH (${"{:0,.0f}".format(x7r_dollar)})\n'
+                    f'{int(x7r_days[0])} days, {int(x7r_hours[0])} hours and {int(x7r_minutes[0])} minutes ago\n\n'
+                    f'Last X7DAO Buy Back: {x7dao_time}\n{x7dao_value[:5]} ETH (${"{:0,.0f}".format(x7dao_dollar)})\n'
+                    f'{int(x7dao_days[0])} days, {int(x7dao_hours[0])} hours and {int(x7dao_minutes[0])} minutes ago\n\n'
+                    f'Last X7100 Buy Back: {x7100_time}\n{x7100_value[:5]} ETH (${"{:0,.0f}".format(x7100_dollar)})\n'
+                    f'{int(x7100_days[0])} days, {int(x7100_hours[0])} hours and {int(x7100_minutes[0])} minutes ago\n\n'
+                    f'{api.get_quote()}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text='X7R Liquidity Hub', url=f'{chain_url}{ca.x7r_liq_hub}')],
+                [InlineKeyboardButton(text='X7DAO Liquidity Hub', url=f'{chain_url}{ca.x7dao_liq_hub}')],
+                [InlineKeyboardButton(text='X7100 Liquidity Hub', url=f'{chain_url}{ca.x7100_liq_hub}')], ]))
+
 async def image_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = " ".join(context.args)
     img = Image.open((random.choice(media.blackhole)))
@@ -3250,10 +3305,12 @@ async def error(update, context):
 # RUN
 if __name__ == '__main__':
     application = ApplicationBuilder().token(keys.token).build()
+
     job_queue = application.job_queue
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
     application.add_handler(CommandHandler([f'{times.countdown_command}'], countdown_command))
+    application.add_handler(CommandHandler(['ebb', 'buybacks'], ebb_command))
     application.add_handler(CommandHandler('test', test_command))
     application.add_handler(CommandHandler('beta', beta_command))
     application.add_handler(CommandHandler('image', image_command))
