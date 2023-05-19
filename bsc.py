@@ -46,14 +46,7 @@ async def new_loan(event):
 async def new_pair(event):
     print("Pair found")
     tx = api.get_tx(event["transactionHash"].hex(), "bsc")
-    pool = int(tx["result"]["value"], 0) / 10 ** 18
-    deployer = tx["result"]["from"]
     liq = api.get_liquidity(event["args"]["pair"], "bsc")
-    if pool == 0 or pool == "" or not pool:
-        pool_text = "Launched Pool Amount: Unavailable"
-    else:
-        pool_dollar = float(pool) * float(api.get_native_price("bnb")) / 1 ** 18
-        pool_text = f'Launched Pool Amount: {pool} BNB (${"{:0,.0f}".format(pool_dollar)})'
     if event["args"]["token0"] == ca.wbnb:
         native = api.get_token_name(event["args"]["token0"], "bsc")
         token_name = api.get_token_name(event["args"]["token1"], "bsc")
@@ -123,6 +116,8 @@ async def new_pair(event):
     status = ""
     renounced = ""
     lock = ""
+    if verified == "No":
+        return
     if verified == "Yes":
         contract = web3.eth.contract(address=token_address, abi=api.get_abi(token_address, "eth"))
         verified = '✅ Contract Verified'
@@ -160,8 +155,13 @@ async def new_pair(event):
                 renounced = '✅ Contract Renounced'
         except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration):
             status = verified
-    if verified == "No":
-        verified = '❌ Contract Unverified'
+    pool = int(tx["result"]["value"], 0) / 10 ** 18
+    deployer = tx["result"]["from"]
+    if pool == 0 or pool == "" or not pool:
+        pool_text = "Launched Pool Amount: Unavailable"
+    else:
+        pool_dollar = float(pool) * float(api.get_native_price("bnb")) / 1 ** 18
+        pool_text = f'Launched Pool Amount: {pool} BNB (${"{:0,.0f}".format(pool_dollar)})'
     status = f'{verified}\n{renounced}\n{lock}\n'
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.bsc_logo)

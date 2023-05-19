@@ -25,7 +25,6 @@ factoryv3 = web3.eth.contract(address=ca.uniswapv3, abi=api.get_abi(ca.uniswapv3
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "eth"))
 ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "eth"))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "eth"))
-time_lock = web3.eth.contract(address=ca.time_lock, abi=api.get_abi(ca.time_lock, "eth"))
 
 async def new_loan(event):
     im1 = Image.open((random.choice(media.blackhole)))
@@ -45,15 +44,7 @@ async def new_loan(event):
                 f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
 
 async def new_pair(event):
-    print(f'V2 Pair found')
     tx = api.get_tx(event["transactionHash"].hex(), "eth")
-    deployer = tx["result"]["from"]
-    pool = int(tx["result"]["value"], 0) / 10 ** 18
-    if pool == 0 or pool == "" or not pool:
-        pool_text = "Launched Pool Amount: Unavailable"
-    else:
-        pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1 ** 18
-        pool_text = f'Launched Pool Amount: {pool} ETH (${"{:0,.0f}".format(pool_dollar)})'
     liq = api.get_liquidity(event["args"]["pair"], "eth")
     if event["args"]["token0"] == ca.weth:
         native = api.get_token_name(event["args"]["token0"], "eth")
@@ -83,6 +74,9 @@ async def new_pair(event):
         weth = liq["reserve1"]
         token = liq["reserve0"]
         dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
+    verified = api.get_verified(token_address, "eth")
+    if verified == "No":
+        return
     if dollar == 0 or dollar == "" or not dollar:
         liquidity_text = 'Total Liquidity: Unavailable'
     else:
@@ -92,11 +86,11 @@ async def new_pair(event):
         supply = int(api.get_supply(token_address, "eth"))
     else:
         supply = int(api.get_supply(token_address, "eth")) / 10 ** int(info[0]["decimals"])
-    verified = api.get_verified(token_address, "eth")
     status = ""
     renounced = ""
     lock = ""
     if verified == "Yes":
+        print(f'V2 Pair Found')
         contract = web3.eth.contract(address=token_address, abi=api.get_abi(token_address, "eth"))
         verified = '✅ Contract Verified'
         scan = api.get_scan(token_address, "eth")
@@ -133,9 +127,14 @@ async def new_pair(event):
                 renounced = '✅ Contract Renounced'
         except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration):
             status = verified
-    if verified == "No":
-        verified = '❌ Contract Unverified'
     status = f'{verified}\n{renounced}\n{lock}\n'
+    deployer = tx["result"]["from"]
+    pool = int(tx["result"]["value"], 0) / 10 ** 18
+    if pool == 0 or pool == "" or not pool:
+        pool_text = "Launched Pool Amount: Unavailable"
+    else:
+        pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1 ** 18
+        pool_text = f'Launched Pool Amount: {pool} ETH (${"{:0,.0f}".format(pool_dollar)})'
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
@@ -171,15 +170,8 @@ async def new_pair(event):
     print(f'V2 Pair sent: ({token_name[1]}/{native[1]})')
 
 async def new_v3_pair(event):
-    print('V3 Pair found')
     tx = api.get_tx(event["transactionHash"].hex(), "eth")
     deployer = tx["result"]["from"]
-    pool = int(tx["result"]["value"], 0) / 10 ** 18
-    if pool == 0 or pool == "" or not pool:
-        pool_text = "Launched Pool Amount: Unavailable"
-    else:
-        pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1 ** 18
-        pool_text = f'Launched Pool Amount: {pool} ETH (${"{:0,.0f}".format(pool_dollar)})'
     if event["args"]["token0"] == ca.weth:
         weth_address = event["args"]["token0"]
         native = api.get_token_name(event["args"]["token0"], "eth")
@@ -208,6 +200,9 @@ async def new_v3_pair(event):
         token_address = event["args"]["token0"]
         weth = api.get_pool_liq_balance(event["args"]["pool"], weth_address, "eth")
         dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
+    verified = api.get_verified(token_address, "eth")
+    if verified == "No":
+        return
     if dollar == 0 or dollar == "" or not dollar:
         liquidity_text = 'Total Liquidity: Unavailable'
     else:
@@ -217,14 +212,14 @@ async def new_v3_pair(event):
         supply = int(api.get_supply(token_address, "eth"))
     else:
         supply = int(api.get_supply(token_address, "eth")) / 10 ** int(info[0]["decimals"])
-    verified = api.get_verified(token_address, "eth")
     status = ""
     renounced = ""
     lock = ""
     if verified == "Yes":
+        print('V3 Pair Found')
         contract = web3.eth.contract(address=token_address, abi=api.get_abi(token_address, "eth"))
         verified = '✅ Contract Verified'
-        scan = api.get_warning(token_address, "eth")
+        scan = api.get_scan(token_address, "eth")
         try:
             if (scan[f'{token_address.lower()}']["is_honeypot"]) == 1:
                 print('Skip - Honey Pot')
@@ -258,9 +253,13 @@ async def new_v3_pair(event):
                 renounced = '✅ Contract Renounced'
         except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration):
             status = verified
-    if verified == "No":
-        verified = '❌ Contract Unverified'
     status = f'{verified}\n{renounced}\n{lock}\n'
+    pool = int(tx["result"]["value"], 0) / 10 ** 18
+    if pool == 0 or pool == "" or not pool:
+        pool_text = "Launched Pool Amount: Unavailable"
+    else:
+        pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1 ** 18
+        pool_text = f'Launched Pool Amount: {pool} ETH (${"{:0,.0f}".format(pool_dollar)})'
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
@@ -319,7 +318,8 @@ async def time_lock_extend(event):
                 f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
 
 async def log_loop(
-        v2_pair_filter, v3_pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, poll_interval):
+        v2_pair_filter, v3_pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter,
+        poll_interval):
     while True:
         try:
             for PairCreated in v2_pair_filter.get_new_entries():
