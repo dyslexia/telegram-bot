@@ -41,48 +41,48 @@ async def ebb_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chain_url = url.ether_address
         now = datetime.utcnow()
         x7r = api.get_internal_tx(ca.x7r_liq_hub, "eth")
-        x7r_value_raw = int(x7r["result"][0]["value"]) / 10 ** 18
+        x7r_filter = [d for d in x7r["result"] if d['from'] in str(ca.x7r_liq_hub).lower()]
+        x7r_value_raw = int(x7r_filter[0]["value"]) / 10 ** 18
         x7r_value = str(x7r_value_raw)
         x7r_dollar = float(x7r_value) * float(api.get_native_price("eth")) / 1 ** 18
-        x7r_time = datetime.utcfromtimestamp(int(x7r["result"][0]["timeStamp"]))
+        x7r_time = datetime.utcfromtimestamp(int(x7r_filter[0]["timeStamp"]))
         x7r_duration = now - x7r_time
         x7r_duration_in_s = x7r_duration.total_seconds()
         x7r_days = divmod(x7r_duration_in_s, 86400)
         x7r_hours = divmod(x7r_days[1], 3600)
         x7r_minutes = divmod(x7r_hours[1], 60)
-
         x7dao = api.get_internal_tx(ca.x7dao_liq_hub, "eth")
-        x7dao_value_raw = int(x7dao["result"][0]["value"]) / 10 ** 18
+        x7dao_filter = [d for d in x7dao["result"] if d['from'] in str(ca.x7dao_liq_hub).lower()]
+        x7dao_value_raw = int(x7dao_filter[0]["value"]) / 10 ** 18
         x7dao_value = str(x7dao_value_raw)
         x7dao_dollar = float(x7dao_value) * float(api.get_native_price("eth")) / 1 ** 18
-        x7dao_time = datetime.utcfromtimestamp(int(x7dao["result"][0]["timeStamp"]))
+        x7dao_time = datetime.utcfromtimestamp(int(x7dao_filter[0]["timeStamp"]))
         x7dao_duration = now - x7dao_time
         x7dao_duration_in_s = x7dao_duration.total_seconds()
         x7dao_days = divmod(x7dao_duration_in_s, 86400)
         x7dao_hours = divmod(x7dao_days[1], 3600)
         x7dao_minutes = divmod(x7dao_hours[1], 60)
-
         x7100 = api.get_internal_tx(ca.x7100_liq_hub, "eth")
-        x7100_value_raw = int(x7100["result"][0]["value"]) / 10 ** 18
+        x7100_filter = [d for d in x7100["result"] if d['from'] in str(ca.x7100_liq_hub).lower()]
+        x7100_value_raw = int(x7100_filter[0]["value"]) / 10 ** 18
         x7100_value = str(x7100_value_raw)
         x7100_dollar = float(x7100_value) * float(api.get_native_price("eth")) / 1 ** 18
-        x7100_time = datetime.utcfromtimestamp(int(x7100["result"][0]["timeStamp"]))
+        x7100_time = datetime.utcfromtimestamp(int(x7100_filter[0]["timeStamp"]))
         x7100_duration = now - x7100_time
         x7100_duration_in_s = x7100_duration.total_seconds()
         x7100_days = divmod(x7100_duration_in_s, 86400)
         x7100_hours = divmod(x7100_days[1], 3600)
         x7100_minutes = divmod(x7100_hours[1], 60)
-
         await update.message.reply_photo(
             photo=open((random.choice(media.logos)), 'rb'),
             caption=f'*X7 Finance Liquidity Hubs {chain_name}*\nUse `/ebb [chain-name]` for other chains\n\n'
-                    f'Last X7R Buy Back: {x7r_time}\n{x7r_value[:5]} ETH (${"{:0,.0f}".format(x7r_dollar)})\n'
-                    f'{int(x7r_days[0])} days, {int(x7r_hours[0])} hours and {int(x7r_minutes[0])} minutes ago\n\n'
-                    f'Last X7DAO Buy Back: {x7dao_time}\n{x7dao_value[:5]} ETH (${"{:0,.0f}".format(x7dao_dollar)})\n'
-                    f'{int(x7dao_days[0])} days, {int(x7dao_hours[0])} hours and {int(x7dao_minutes[0])} minutes ago\n\n'
-                    f'Last X7100 Buy Back: {x7100_time}\n{x7100_value[:5]} ETH (${"{:0,.0f}".format(x7100_dollar)})\n'
-                    f'{int(x7100_days[0])} days, {int(x7100_hours[0])} hours and {int(x7100_minutes[0])} minutes ago\n\n'
-                    f'{api.get_quote()}',
+            f'Last X7R Buy Back: {x7r_time}\n{x7r_value[:5]} ETH (${"{:0,.0f}".format(x7r_dollar)})\n'
+            f'{int(x7r_days[0])} days, {int(x7r_hours[0])} hours and {int(x7r_minutes[0])} minutes ago\n\n'
+            f'Last X7DAO Buy Back: {x7dao_time}\n{x7dao_value[:5]} ETH (${"{:0,.0f}".format(x7dao_dollar)})\n'
+            f'{int(x7dao_days[0])} days, {int(x7dao_hours[0])} hours and {int(x7dao_minutes[0])} minutes ago\n\n'
+            f'Last X7100 Buy Back: {x7100_time}\n{x7100_value[:5]} ETH (${"{:0,.0f}".format(x7100_dollar)})\n'
+            f'{int(x7100_days[0])} days, {int(x7100_hours[0])} hours and {int(x7100_minutes[0])} minutes ago\n\n'
+            f'{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton(text='X7R Liquidity Hub', url=f'{chain_url}{ca.x7r_liq_hub}')],
@@ -476,14 +476,10 @@ async def ca_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Contract Addresses for all chains*\n\n'
-                f'*X7R*\n`{ca.x7r}`\n\n'
-                f'*X7DAO*\n`{ca.x7dao}`\n\n'
-                f'*X7101*\n`{ca.x7101}`\n\n'
-                f'*X7102*\n`{ca.x7102}`\n\n'
-                f'*X7103*\n`{ca.x7103}`\n\n'
-                f'*X7104*\n`{ca.x7104}`\n\n'
-                f'*X7105*\n`{ca.x7105}`\n\n'
-                f'*X7D*\n`{ca.x7d}`\n\n{api.get_quote()}',
+                f'*X7R - Rewards Token *\n`{ca.x7r}`\n\n'
+                f'*X7DAO - Governance Token*\n`{ca.x7dao}`\n\n'
+                f'For advanced trading and arbitrage opportunities see `/constellations`\n\n'
+                f'{api.get_quote()}',
         parse_mode='Markdown')
 
 async def x7d_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2972,32 +2968,32 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     percent = ""
     if chain == "" or chain == "eth":
         chain_name = "(ETH)"
-        chain_url = url.ether_address
+        chain_url = url.ether_token
         burn = api.get_token_balance(ca.dead, ca.x7r, "eth")
         percent = round(burn / ca.supply * 100, 2)
         burn_dollar = api.get_cg_price("x7r")["x7r"]["usd"] * float(burn)
         im2 = Image.open(media.eth_logo)
     if chain == "bsc" or chain == "bnb":
         chain_name = "(BSC)"
-        chain_url = url.bsc_address
+        chain_url = url.bsc_token
         burn = api.get_token_balance(ca.dead, ca.x7r, "bsc")
         percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.bsc_logo)
     if chain == "polygon" or chain == "poly":
         chain_name = "(POLYGON)"
-        chain_url = url.poly_address
+        chain_url = url.poly_token
         burn = api.get_token_balance(ca.dead, ca.x7r, "poly")
         percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.poly_logo)
     if chain == "arbitrum" or chain == "arb":
         chain_name = "(ARB)"
-        chain_url = url.arb_address
+        chain_url = url.arb_token
         burn = api.get_token_balance(ca.dead, ca.x7r, "arb")
         percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.arb_logo)
     if chain == "optimism" or chain == "arb":
         chain_name = "(OPTIMISM)"
-        chain_url = url.opti_address
+        chain_url = url.opti_token
         burn = api.get_token_balance(ca.dead, ca.x7r, "opti")
         percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.opti_logo)
