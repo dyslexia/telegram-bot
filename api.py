@@ -65,18 +65,6 @@ def get_holders(token):
     amount = data["holdersCount"]
     return amount
 
-def get_internal_tx(address, chain):
-    if chain == "eth":
-        url = f"https://api.etherscan.io/api?module=account&action=txlistinternal&sort=desc&address={address}{keys.ether}"
-        response = requests.get(url)
-        data = response.json()
-        return data
-
-def get_last_tx(address, chain):
-    result = evm_api.transaction.get_wallet_transactions(
-        api_key=keys.moralis, params={"address": address, "chain": chain})
-    return result
-
 def get_liquidity(pair, chain):
     amount = evm_api.defi.get_pair_reserves(api_key=keys.moralis, params={"chain": chain, "pair_address": pair})
     return amount
@@ -324,7 +312,7 @@ def get_token_name(token, chain):
         api_key=keys.moralis, params={"addresses": [f"{token}"], "chain": chain})
     return result[0]["name"], result[0]["symbol"]
 
-def get_tx(tx, chain):
+def get_tx_from_hash(tx, chain):
     url = ""
     if chain == "eth":
         url = f'https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.ether}'
@@ -333,6 +321,21 @@ def get_tx(tx, chain):
     response = requests.get(url)
     data = response.json()
     return data
+
+def get_tx(address, chain):
+    if chain == "eth":
+        url = f"https://api.etherscan.io/api?module=account&action=txlist&address={address}&sort=desc{keys.ether}"
+        response = requests.get(url)
+        data = response.json()
+        return data
+
+def get_tx_internal(address, chain):
+    if chain == "eth":
+        url = f"https://api.etherscan.io/api?module=account&action=txlistinternal&sort=" \
+              f"desc&address={address}{keys.ether}"
+        response = requests.get(url)
+        data = response.json()
+        return data
 
 def get_verified(contract, chain):
     url = ""
@@ -349,14 +352,14 @@ def get_verified(contract, chain):
 
 
 # TWITTER
-auth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
-auth.set_access_token(keys.access, keys.accesssecret)
+auth = tweepy.OAuthHandler(keys.twitter_api, keys.twitter_api_secret)
+auth.set_access_token(keys.twitter_access, keys.twitter_access_secret)
 twitter = tweepy.API(auth)
-twitter_bearer = tweepy.Client(keys.bearer)
+twitter_bearer = tweepy.Client(keys.twitter_bearer)
 
 def get_space(space_id):
     url = f"https://api.twitter.com/2/spaces/{space_id}?space.fields=scheduled_start,title"
-    headers = {"Authorization": "Bearer {}".format(keys.bearer), "User-Agent": "v2SpacesLookupPython"}
+    headers = {"Authorization": "Bearer {}".format(keys.twitter_bearer), "User-Agent": "v2SpacesLookupPython"}
     response = requests.request("GET", url, headers=headers)
     result = response.json()
     return result["data"]
