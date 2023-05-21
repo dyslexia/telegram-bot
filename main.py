@@ -40,48 +40,34 @@ async def ebb_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chain_name = "(ETH)"
         chain_url = url.ether_address
         now = datetime.utcnow()
-        x7r = api.get_internal_tx(ca.x7r_liq_hub, "eth")
-        x7r_filter = [d for d in x7r["result"] if d['from'] in str(ca.x7r_liq_hub).lower()]
-        x7r_value_raw = int(x7r_filter[0]["value"]) / 10 ** 18
-        x7r_value = str(x7r_value_raw)
-        x7r_dollar = float(x7r_value) * float(api.get_native_price("eth")) / 1 ** 18
-        x7r_time = datetime.utcfromtimestamp(int(x7r_filter[0]["timeStamp"]))
-        x7r_duration = now - x7r_time
-        x7r_duration_in_s = x7r_duration.total_seconds()
-        x7r_days = divmod(x7r_duration_in_s, 86400)
-        x7r_hours = divmod(x7r_days[1], 3600)
-        x7r_minutes = divmod(x7r_hours[1], 60)
-        x7dao = api.get_internal_tx(ca.x7dao_liq_hub, "eth")
-        x7dao_filter = [d for d in x7dao["result"] if d['from'] in str(ca.x7dao_liq_hub).lower()]
-        x7dao_value_raw = int(x7dao_filter[0]["value"]) / 10 ** 18
-        x7dao_value = str(x7dao_value_raw)
-        x7dao_dollar = float(x7dao_value) * float(api.get_native_price("eth")) / 1 ** 18
-        x7dao_time = datetime.utcfromtimestamp(int(x7dao_filter[0]["timeStamp"]))
-        x7dao_duration = now - x7dao_time
-        x7dao_duration_in_s = x7dao_duration.total_seconds()
-        x7dao_days = divmod(x7dao_duration_in_s, 86400)
-        x7dao_hours = divmod(x7dao_days[1], 3600)
-        x7dao_minutes = divmod(x7dao_hours[1], 60)
-        x7100 = api.get_internal_tx(ca.x7100_liq_hub, "eth")
-        x7100_filter = [d for d in x7100["result"] if d['from'] in str(ca.x7100_liq_hub).lower()]
-        x7100_value_raw = int(x7100_filter[0]["value"]) / 10 ** 18
-        x7100_value = str(x7100_value_raw)
-        x7100_dollar = float(x7100_value) * float(api.get_native_price("eth")) / 1 ** 18
-        x7100_time = datetime.utcfromtimestamp(int(x7100_filter[0]["timeStamp"]))
-        x7100_duration = now - x7100_time
-        x7100_duration_in_s = x7100_duration.total_seconds()
-        x7100_days = divmod(x7100_duration_in_s, 86400)
-        x7100_hours = divmod(x7100_days[1], 3600)
-        x7100_minutes = divmod(x7100_hours[1], 60)
+
+        def get_liquidity_data(hub_address):
+            hub = api.get_internal_tx(hub_address, "eth")
+            hub_filter = [d for d in hub["result"] if d['from'] in str(hub_address).lower()]
+            value_raw = int(hub_filter[0]["value"]) / 10 ** 18
+            value = str(value_raw)
+            dollar = float(value) * float(api.get_native_price("eth")) / 1 ** 18
+            time = datetime.utcfromtimestamp(int(hub_filter[0]["timeStamp"]))
+            duration = now - time
+            duration_in_s = duration.total_seconds()
+            days = divmod(duration_in_s, 86400)
+            hours = divmod(days[1], 3600)
+            minutes = divmod(hours[1], 60)
+            return value, dollar, time, int(days[0]), int(hours[0]), int(minutes[0])
+        x7r_value, x7r_dollar, x7r_time, x7r_days, x7r_hours, x7r_minutes = get_liquidity_data(ca.x7r_liq_hub)
+        x7dao_value, x7dao_dollar, x7dao_time, x7dao_days, x7dao_hours, x7dao_minutes = \
+            get_liquidity_data(ca.x7dao_liq_hub)
+        x7100_value, x7100_dollar, x7100_time, x7100_days, x7100_hours, x7100_minutes = \
+            get_liquidity_data(ca.x7100_liq_hub)
         await update.message.reply_photo(
             photo=open((random.choice(media.logos)), 'rb'),
             caption=f'*X7 Finance Liquidity Hubs {chain_name}*\nUse `/ebb [chain-name]` for other chains\n\n'
             f'Last X7R Buy Back: {x7r_time}\n{x7r_value[:5]} ETH (${"{:0,.0f}".format(x7r_dollar)})\n'
-            f'{int(x7r_days[0])} days, {int(x7r_hours[0])} hours and {int(x7r_minutes[0])} minutes ago\n\n'
+            f'{x7r_days} days, {x7r_hours} hours and {x7r_minutes} minutes ago\n\n'
             f'Last X7DAO Buy Back: {x7dao_time}\n{x7dao_value[:5]} ETH (${"{:0,.0f}".format(x7dao_dollar)})\n'
-            f'{int(x7dao_days[0])} days, {int(x7dao_hours[0])} hours and {int(x7dao_minutes[0])} minutes ago\n\n'
+            f'{x7dao_days} days, {x7dao_hours} hours and {x7dao_minutes} minutes ago\n\n'
             f'Last X7100 Buy Back: {x7100_time}\n{x7100_value[:5]} ETH (${"{:0,.0f}".format(x7100_dollar)})\n'
-            f'{int(x7100_days[0])} days, {int(x7100_hours[0])} hours and {int(x7100_minutes[0])} minutes ago\n\n'
+            f'{x7100_days} days, {x7100_hours} hours and {x7100_minutes} minutes ago\n\n'
             f'{api.get_quote()}',
             parse_mode='Markdown',
             reply_markup=InlineKeyboardMarkup([
@@ -279,11 +265,11 @@ async def nft_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         magister_price = nfts.magister_price_opti
     if chain == "arb" or chain == "arbitrum":
         chain_name = "(ARB)"
-        eco_count = int(api.get_nft_holder_count(ca.eco, "?chain=arbitrum"))
-        borrow_count = int(api.get_nft_holder_count(ca.borrow, "?chain=arbitrum"))
-        dex_count = int(api.get_nft_holder_count(ca.dex, "?chain=arbitrum"))
-        liq_count = int(api.get_nft_holder_count(ca.liq, "?chain=arbitrum"))
-        magister_count = int(api.get_nft_holder_count(ca.magister, "?chain=arbitrum"))
+        eco_count = int(api.get_nft_holder_count(ca.eco, "?chain=arbitrum-main"))
+        borrow_count = int(api.get_nft_holder_count(ca.borrow, "?chain=arbitrum-main"))
+        dex_count = int(api.get_nft_holder_count(ca.dex, "?chain=arbitrum-main"))
+        liq_count = int(api.get_nft_holder_count(ca.liq, "?chain=arbitrum-main"))
+        magister_count = int(api.get_nft_holder_count(ca.magister, "?chain=arbitrum-main"))
         chain_url = url.arb_address
         eco_price = nfts.eco_price_arb
         borrow_price = nfts.borrow_price_arb
@@ -373,24 +359,26 @@ async def wp_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Short WP', url=f'{url.short_wp_link}')], ]))
 
 async def buy_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if context is None:
+        context = ContextTypes.DEFAULT_TYPE()
     chain = " ".join(context.args).lower()
     chain_url = ""
     chain_name = ""
-    if chain == "eth" or chain == "":
-        chain_name = "(ETH)"
-        chain_url = url.xchange_buy_eth
-    if chain == "bsc" or chain == "bnb":
-        chain_name = "(BSC)"
-        chain_url = url.xchange_buy_bsc
-    if chain == "polygon" or chain == "poly":
-        chain_name = "(POLYGON)"
-        chain_url = url.xchange_buy_poly
-    if chain == "optimism" or chain == "opti":
-        chain_name = "(OPTIMISM)"
-        chain_url = url.xchange_buy_opti
-    if chain == "arbitrum" or chain == "arb":
-        chain_name = "(ARB)"
-        chain_url = url.xchange_buy_arb
+    chain_mappings = {
+        "eth": ("(ETH)", url.xchange_buy_eth),
+        "bsc": ("(BSC)", url.xchange_buy_bsc),
+        "bnb": ("(BSC)", url.xchange_buy_bsc),
+        "polygon": ("(POLYGON)", url.xchange_buy_poly),
+        "poly": ("(POLYGON)", url.xchange_buy_poly),
+        "optimism": ("(OPTIMISM)", url.xchange_buy_opti),
+        "opti": ("(OPTIMISM)", url.xchange_buy_opti),
+        "arbitrum": ("(ARB)", url.xchange_buy_arb),
+        "arb": ("(ARB)", url.xchange_buy_arb)
+    }
+    if chain in chain_mappings:
+        chain_name, chain_url = chain_mappings[chain]
+    else:
+        chain_name, chain_url = chain_mappings["eth"]
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Buy Links {chain_name}*\nUse `/buy [chain-name]` for other chains\n'
@@ -400,25 +388,27 @@ async def buy_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='X7R - Rewards Token', url=f'{chain_url}{ca.x7r}')],
             [InlineKeyboardButton(text='X7DAO - Governance Token', url=f'{chain_url}{ca.x7dao}')], ]))
 
-async def chart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def chart_command(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
+    if context is None:
+        context = ContextTypes.DEFAULT_TYPE()
     chain = " ".join(context.args).lower()
     chain_url = ""
     chain_name = ""
-    if chain == "":
-        chain_url = url.dex_tools_eth
-        chain_name = "(ETH)"
-    if chain == "opti" or chain == "optimism":
-        chain_url = url.dex_tools_opti
-        chain_name = "(OPTI)"
-    if chain == "bsc" or chain == "bnb":
-        chain_url = url.dex_tools_bsc
-        chain_name = "(BSC)"
-    if chain == "poly" or chain == "polygon":
-        chain_url = url.dex_tools_poly
-        chain_name = "(POLYGON)"
-    if chain == "arb" or chain == "arbitrum":
-        chain_url = url.dex_tools_arb
-        chain_name = "(ARB)"
+    chain_mappings = {
+        "eth": (url.dex_tools_eth, "(ETH)"),
+        "bsc": (url.dex_tools_bsc, "(BSC)"),
+        "bnb": (url.dex_tools_bsc, "(BSC)"),
+        "polygon": (url.dex_tools_poly, "(POLYGON)"),
+        "poly": (url.dex_tools_poly, "(POLYGON)"),
+        "optimism": (url.dex_tools_opti, "(OPTI)"),
+        "opti": (url.dex_tools_opti, "(OPTI)"),
+        "arbitrum": (url.dex_tools_arb, "(ARB)"),
+        "arb": (url.dex_tools_arb, "(ARB)")
+    }
+    if chain in chain_mappings:
+        chain_url, chain_name = chain_mappings[chain]
+    else:
+        chain_url, chain_name = chain_mappings["eth"]
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Chart Links* {chain_name}\nUse `/chart [chain-name]` for other chains\n'
@@ -428,25 +418,28 @@ async def chart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='X7R - Rewards Token', url=f'{chain_url}{ca.x7r_pair_eth}')],
             [InlineKeyboardButton(text='X7DAO - Governance Token', url=f'{chain_url}{ca.x7dao_pair_eth}')], ]))
 
-async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def smart_command(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
+    if context is None:
+        context = ContextTypes.DEFAULT_TYPE()
     chain = " ".join(context.args).lower()
     chain_name = ""
     chain_url = ""
-    if chain == "" or chain == "eth":
-        chain_name = "(ETH)"
-        chain_url = url.ether_address
-    if chain == "arbitrum" or chain == "arb":
-        chain_name = "(ARB)"
-        chain_url = url.arb_address
-    if chain == "poly" or chain == "polygon":
-        chain_name = "(POLYGON)"
-        chain_url = url.poly_address
-    if chain == "bsc" or chain == "bnb":
-        chain_name = "(BSC)"
-        chain_url = url.bsc_address
-    if chain == "op" or chain == "optimism" or chain == "opti":
-        chain_name = "(OP)"
-        chain_url = url.opti_address
+    chain_mappings = {
+        "eth": ("(ETH)", url.ether_address),
+        "arbitrum": ("(ARB)", url.arb_address),
+        "arb": ("(ARB)", url.arb_address),
+        "poly": ("(POLYGON)", url.poly_address),
+        "polygon": ("(POLYGON)", url.poly_address),
+        "bsc": ("(BSC)", url.bsc_address),
+        "bnb": ("(BSC)", url.bsc_address),
+        "op": ("(OP)", url.opti_address),
+        "optimism": ("(OP)", url.opti_address),
+        "opti": ("(OP)", url.opti_address)
+    }
+    if chain in chain_mappings:
+        chain_name, chain_url = chain_mappings[chain]
+    else:
+        chain_name, chain_url = chain_mappings["eth"]
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Smart Contracts {chain_name}*\nUse `/smart [chain-name]` or other chains\n\n'
@@ -606,75 +599,79 @@ async def buy_bots_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text='Optimism', url='https://t.me/x7optibuybots')],
              [InlineKeyboardButton(text='Polygon', url='https://t.me/x7polygonbuybots')], ]))
 
-async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
     pioneer_id = " ".join(context.args)
     data = api.get_os_nft("/x7-pioneer")
     floor = api.get_nft_floor(ca.pioneer, "?chain=eth-main")
     floor_dollar = floor * float(api.get_native_price("eth")) / 1 ** 18
-    traits = (data["collection"]["traits"]["Transfer Lock Status"]["unlocked"])
+    traits = data["collection"]["traits"]["Transfer Lock Status"]["unlocked"]
     cap = round(data["collection"]["stats"]["market_cap"], 2)
     cap_dollar = cap * float(api.get_native_price("eth")) / 1 ** 18
-    sales = (data["collection"]["stats"]["total_sales"])
-    owners = (data["collection"]["stats"]["num_owners"])
+    sales = data["collection"]["stats"]["total_sales"]
+    owners = data["collection"]["stats"]["num_owners"]
     price = round(data["collection"]["stats"]["average_price"], 2)
     price_dollar = price * float(api.get_native_price("eth")) / 1 ** 18
     volume = round(data["collection"]["stats"]["total_volume"], 2)
     volume_dollar = volume * float(api.get_native_price("eth")) / 1 ** 18
     pioneer_pool = api.get_native_balance(ca.pioneer, "eth")
     total_dollar = float(pioneer_pool) * float(api.get_native_price("eth")) / 1 ** 18
+
     if pioneer_id == "":
-        img = Image.open((random.choice(media.blackhole)))
+        img = Image.open(random.choice(media.blackhole))
         i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
-        i1.text((28, 36),
-                f'X7 Pioneer NFT Info\n\n'
-                f'Floor Price: {floor} ETH (${"{:0,.0f}".format(floor_dollar)})\n'
-                f'Average Price: {price} ETH (${"{:0,.0f}".format(price_dollar)})\n'
-                f'Market Cap: {cap} ETH (${"{:0,.0f}".format(cap_dollar)})\n'
-                f'Total Volume: {volume} ETH (${"{:0,.0f}".format(volume_dollar)})\n'
-                f'Total Sales: {sales}\n'
-                f'Number of Owners: {owners}\n'
-                f'Pioneers Unlocked: {traits}\n\n\n'
-                f'Pioneer Pool: {pioneer_pool[:3]} ETH (${"{:0,.0f}".format(total_dollar)})\n\n'
-                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-                font=myfont, fill=(255, 255, 255))
+        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 28)
+        i1.text(
+            (28, 36),
+            f"X7 Pioneer NFT Info\n\n"
+            f"Floor Price: {floor} ETH (${'{:0,.0f}'.format(floor_dollar)})\n"
+            f"Average Price: {price} ETH (${'{:0,.0f}'.format(price_dollar)})\n"
+            f"Market Cap: {cap} ETH (${'{:0,.0f}'.format(cap_dollar)})\n"
+            f"Total Volume: {volume} ETH (${'{:0,.0f}'.format(volume_dollar)})\n"
+            f"Total Sales: {sales}\n"
+            f"Number of Owners: {owners}\n"
+            f"Pioneers Unlocked: {traits}\n\n\n"
+            f"Pioneer Pool: {pioneer_pool[:3]} ETH (${'{:0,.0f}'.format(total_dollar)})\n\n"
+            f"UTC: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}",
+            font=myfont,
+            fill=(255, 255, 255),
+        )
         img.save(r"media\blackhole.png")
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", 'rb'),
-            caption=f'*X7 Pioneer NFT Info*\n\n'
-                    f'Floor Price: {floor} ETH (${"{:0,.0f}".format(floor_dollar)})\n'
-                    f'Average Price: {price} ETH (${"{:0,.0f}".format(price_dollar)})\n'
-                    f'Market Cap: {cap} ETH (${"{:0,.0f}".format(cap_dollar)})\n'
-                    f'Total Volume: {volume} ETH (${"{:0,.0f}".format(volume_dollar)})\n'
-                    f'Number of Owners: {owners}\n'
-                    f'Pioneers Unlocked: {traits}\n\n'
-                    f'Pioneer Pool: {pioneer_pool[:3]} ETH (${"{:0,.0f}".format(total_dollar)})\n\n'
-                    f'{api.get_quote()}',
-            parse_mode='markdown',
+            photo=open(r"media\blackhole.png", "rb"),
+            caption=f"*X7 Pioneer NFT Info*\n\n"
+            f"Floor Price: {floor} ETH (${'{:0,.0f}'.format(floor_dollar)})\n"
+            f"Average Price: {price} ETH (${'{:0,.0f}'.format(price_dollar)})\n"
+            f"Market Cap: {cap} ETH (${'{:0,.0f}'.format(cap_dollar)})\n"
+            f"Total Volume: {volume} ETH (${'{:0,.0f}'.format(volume_dollar)})\n"
+            f"Number of Owners: {owners}\n"
+            f"Pioneers Unlocked: {traits}\n\n"
+            f"Pioneer Pool: {pioneer_pool[:3]} ETH (${'{:0,.0f}'.format(total_dollar)})\n\n"
+            f"{api.get_quote()}",
+            parse_mode="markdown",
             reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Pioneer Dashboard', url='https://x7.finance/x/nft/pioneer')],
-                 [InlineKeyboardButton(text='Blur Marketplace',
-                                       url='https://blur.io/collection/x7-pioneer?traits=%7B%22'
-                                           'Transfer%20Lock%20Status%22%3A%5B%22Unlocked%22%5D%7D')], ]))
+                [[InlineKeyboardButton(text="X7 Pioneer Dashboard", url="https://x7.finance/x/nft/pioneer")],
+                 [InlineKeyboardButton(text="Blur Marketplace",
+                                       url="https://blur.io/collection/x7-pioneer"
+                                           "?traits=%7B%22Transfer%20Lock%20Status%22%3A%5B%22Unlocked%22%5D%7D")], ]))
     else:
-        baseurl = "https://api.opensea.io/api/v1/asset/"
+        base_url = "https://api.opensea.io/api/v1/asset/"
         slug = ca.pioneer + "/"
         headers = {"X-API-KEY": keys.os}
-        single_url = baseurl + slug + pioneer_id + "/"
+        single_url = base_url + slug + pioneer_id + "/"
         single_response = requests.get(single_url, headers=headers)
         single_data = single_response.json()
-        status = (single_data["traits"][0]["value"])
+        status = single_data["traits"][0]["value"]
         await update.message.reply_text(
-            f'*X7 Pioneer {pioneer_id} NFT Info*\n\n'
-            f'Transfer Lock Status: {status}\n\n'
-            f'https://opensea.io/assets/ethereum/0x70000299ee8910ccacd97b1bb560e34f49c9e4f7/'
-            f'{pioneer_id}\n\n{api.get_quote()}',
-            parse_mode='markdown',
+            f"*X7 Pioneer {pioneer_id} NFT Info*\n\n"
+            f"Transfer Lock Status: {status}\n\n"
+            f"https://opensea.io/assets/ethereum/0x70000299ee8910ccacd97b1bb560e34f49c9e4f7/{pioneer_id}\n\n"
+            f"{api.get_quote()}",
+            parse_mode="markdown",
             reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text='X7 Pioneer Dashboard', url='https://x7.finance/x/nft/pioneer')],
-                 [InlineKeyboardButton(text='Blur Marketplace',
-                                       url='https://blur.io/collection/x7-pioneer?traits=%7B%22'
-                                           'Transfer%20Lock%20Status%22%3A%5B%22Unlocked%22%5D%7D')], ]))
+                [[InlineKeyboardButton(text="X7 Pioneer Dashboard", url="https://x7.finance/x/nft/pioneer")],
+                 [InlineKeyboardButton(text="Blur Marketplace",
+                                       url="https://blur.io/collection/x7-pioneer?"
+                                           "traits=%7B%22Transfer%20Lock%20Status%22%3A%5B%22Unlocked%22%5D%7D")], ]))
 
 async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     wiki = wikipediaapi.Wikipedia('en')
@@ -695,7 +692,6 @@ async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'[Etherscan](https://etherscan.io/search?f=0&q={keyword})\n\n'
                     f'{api.get_quote()}',
             parse_mode="markdown")
-
     else:
         await update.message.reply_photo(
             photo=open((random.choice(media.logos)), 'rb'),
@@ -706,13 +702,14 @@ async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'{api.get_quote()}',
             parse_mode="markdown")
 
+
 async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     chain_name = ""
     chain_token = ""
     pool = ""
     pool_dollar = ""
-    im2 = ""
+    im2 = None
     chain_url = ""
     eth_pool = api.get_native_balance(ca.lpool_reserve, "eth")
     eth_dollar = float(eth_pool) * float(api.get_native_price("eth")) / 1 ** 18
@@ -806,7 +803,7 @@ async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text='Lending Pool Reserve Contract', url=f'{chain_url}{ca.lpool_reserve}')],
-                [InlineKeyboardButton(text='X7 Deposit Contract', url=f'{chain_url}{ca.x7d}#code')], ]))
+             [InlineKeyboardButton(text='X7 Deposit Contract', url=f'{chain_url}{ca.x7d}#code')], ]))
 
 async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -973,47 +970,32 @@ async def today_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         caption=f'`On this day in {today["year"]}:\n\n{today["text"]}`',
         parse_mode="Markdown")
 
-async def fg_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+async def fg_command(update, context):
     fear_response = requests.get('https://api.alternative.me/fng/?limit=0')
     fear_data = fear_response.json()
-    timestamp0 = float(fear_data["data"][0]["timestamp"])
-    localtime0 = datetime.fromtimestamp(timestamp0)
-    timestamp1 = float(fear_data["data"][1]["timestamp"])
-    localtime1 = datetime.fromtimestamp(timestamp1)
-    timestamp2 = float(fear_data["data"][2]["timestamp"])
-    localtime2 = datetime.fromtimestamp(timestamp2)
-    timestamp3 = float(fear_data["data"][3]["timestamp"])
-    localtime3 = datetime.fromtimestamp(timestamp3)
-    timestamp4 = float(fear_data["data"][4]["timestamp"])
-    localtime4 = datetime.fromtimestamp(timestamp4)
-    timestamp5 = float(fear_data["data"][5]["timestamp"])
-    localtime5 = datetime.fromtimestamp(timestamp5)
-    timestamp6 = float(fear_data["data"][6]["timestamp"])
-    localtime6 = datetime.fromtimestamp(timestamp6)
+
+    fear_values = []
+    for i in range(7):
+        timestamp = float(fear_data["data"][i]["timestamp"])
+        localtime = datetime.fromtimestamp(timestamp)
+        fear_values.append((fear_data["data"][i]["value"], fear_data["data"][i]["value_classification"], localtime))
     duration_in_s = float(fear_data["data"][0]["time_until_update"])
     days = divmod(duration_in_s, 86400)
     hours = divmod(days[1], 3600)
     minutes = divmod(hours[1], 60)
+    caption = '*Market Fear and Greed Index*\n\n'
+    caption += f'{fear_values[0][0]} - {fear_values[0][1]} - {fear_values[0][2].strftime("%A %B %d")}\n\n'
+    caption += 'Change:\n'
+    for i in range(1, 7):
+        caption += f'{fear_values[i][0]} - {fear_values[i][1]} - {fear_values[i][2].strftime("%A %B %d")}\n'
+    caption += '\nNext Update:\n'
+    caption += f'{int(hours[0])} hours and {int(minutes[0])} minutes\n\n{api.get_quote()}'
     await update.message.reply_photo(
         photo='https://alternative.me/crypto/fear-and-greed-index.png',
-        caption=f'*Market Fear and Greed Index*\n\n'
-                f'{fear_data["data"][0]["value"]} - {fear_data["data"][0]["value_classification"]} - '
-                f'{localtime0.strftime("%A %B %d")} \n\n'
-                f'Change:\n'
-                f'{fear_data["data"][1]["value"]} - {fear_data["data"][1]["value_classification"]} - '
-                f'{localtime1.strftime("%A %B %d")}\n'
-                f'{fear_data["data"][2]["value"]} - {fear_data["data"][2]["value_classification"]} - '
-                f'{localtime2.strftime("%A %B %d")}\n'
-                f'{fear_data["data"][3]["value"]} - {fear_data["data"][3]["value_classification"]} - '
-                f'{localtime3.strftime("%A %B %d")}\n'
-                f'{fear_data["data"][4]["value"]} - {fear_data["data"][4]["value_classification"]} - '
-                f'{localtime4.strftime("%A %B %d")}\n'
-                f'{fear_data["data"][5]["value"]} - {fear_data["data"][5]["value_classification"]} - '
-                f'{localtime5.strftime("%A %B %d")}\n'
-                f'{fear_data["data"][6]["value"]} - {fear_data["data"][6]["value_classification"]} - '
-                f'{localtime6.strftime("%A %B %d")}\n\n'
-                f'Next Update:\n'
-                f'{int(hours[0])} hours and {int(minutes[0])} minutes\n\n{api.get_quote()}', parse_mode='Markdown')
+        caption=caption,
+        parse_mode='Markdown'
+    )
 
 async def quote_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
@@ -1021,7 +1003,8 @@ async def quote_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         caption=f'{api.get_quote()}',
         parse_mode="Markdown")
 
-async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+async def loans_command(update, context):
     loan_type = " ".join(context.args).lower()
     loan_name = ""
     loan_terms = ""
@@ -1033,29 +1016,23 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7 Finance Whitepaper', url=f'{url.wp_link}')], ]))
         return
-    if loan_type == "ill001":
-        loan_name = loans.ill001_name
-        loan_terms = loans.ill001_terms
-        loan_ca = ca.ill001
-    if loan_type == "ill002":
-        loan_name = loans.ill002_name
-        loan_terms = loans.ill002_terms
-        loan_ca = ca.ill002
-    if loan_type == "ill003":
-        loan_name = loans.ill003_name
-        loan_terms = loans.ill003_terms
-        loan_ca = ca.ill003
+    loan_types = {
+        "ill001": (loans.ill001_name, loans.ill001_terms, ca.ill001),
+        "ill002": (loans.ill002_name, loans.ill002_terms, ca.ill002),
+        "ill003": (loans.ill003_name, loans.ill003_terms, ca.ill003)
+    }
+    if loan_type in loan_types:
+        loan_name, loan_terms, loan_ca = loan_types[loan_type]
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
-        caption=f'{loan_name}\n\n'
-                f'{loan_terms}\n\n',
+        caption=f'{loan_name}\n\n{loan_terms}\n\n',
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'Ethereum', url=f'{url.ether_address}{loan_ca}')],
              [InlineKeyboardButton(text=f'BSC', url=f'{url.bsc_address}{loan_ca}')],
              [InlineKeyboardButton(text=f'Polygon', url=f'{url.poly_address}{loan_ca}')],
              [InlineKeyboardButton(text=f'Arbitrum', url=f'{url.arb_address}{loan_ca}')],
-             [InlineKeyboardButton(text=f'Optimism', url=f'{url.opti_address}{loan_ca}')], ]))
+             [InlineKeyboardButton(text=f'Optimism', url=f'{url.opti_address}{loan_ca}')],]))
 
 async def discount_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
@@ -1179,41 +1156,51 @@ async def airdrop_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'are released on other chains.\n\nThese airdrop snapshots will occur just prior to the token launch\n\n'
         f'{api.get_quote()}', parse_mode='Markdown')
 
-async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+async def gas_command(update, context):
     chain = " ".join(context.args).lower()
     chain_name = ""
     chain_url = ""
     gas_data = ""
-    im2 = ""
+    im2 = None
     if chain == "" or chain == "eth":
-        gas_data = api.get_gas("eth")
+        chain = "eth"
+        gas_data = api.get_gas(chain)
         im2 = Image.open(media.eth_logo)
         chain_name = "(ETH)"
         chain_url = "https://etherscan.io/gastracker"
-    if chain == "bsc":
-        gas_data = api.get_gas("bsc")
+    elif chain == "bsc":
+        gas_data = api.get_gas(chain)
         im2 = Image.open(media.bsc_logo)
         chain_name = "(BSC)"
         chain_url = "https://bscscan.com/gastracker"
-    if chain == "polygon" or chain == "poly":
-        gas_data = api.get_gas("poly")
+    elif chain == "polygon" or chain == "poly":
+        chain = "poly"
+        gas_data = api.get_gas(chain)
         im2 = Image.open(media.poly_logo)
         chain_name = "(POLYGON)"
         chain_url = 'https://polygon.com/gastracker'
-    im1 = Image.open((random.choice(media.blackhole)))
+    if im2 is None:
+        await update.message.reply_text(
+            "Invalid chain. Please provide a valid chain name.",
+            parse_mode="Markdown")
+        return
+    im1 = Image.open(random.choice(media.blackhole))
     im1.paste(im2, (720, 20), im2)
     myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
     i1 = ImageDraw.Draw(im1)
-    i1.text((26, 30),
-            f'{chain_name} Gas Prices:\n\n'
-            f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
-            f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
-            f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n\n'
-            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-            font=myfont, fill=(255, 255, 255))
-    im1.save(r"media\blackhole.png")
+    i1.text(
+        (26, 30),
+        f'{chain_name} Gas Prices:\n\n'
+        f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
+        f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
+        f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n\n\n\n\n\n\n\n'
+        f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+        font=myfont,
+        fill=(255, 255, 255))
+    im1.save("media/blackhole.png")
     await update.message.reply_photo(
-        photo=open(r"media\blackhole.png", 'rb'),
+        photo=open("media/blackhole.png", 'rb'),
         caption=f'*{chain_name} Gas Prices:*\n'
                 f'For other chains use `/gas [chain-name]`\n\n'
                 f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
@@ -1222,7 +1209,7 @@ async def gas_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text=f'{chain_name} Gas Tracker', url=f'{chain_url}')], ]))
+            [InlineKeyboardButton(text=f'{chain_name} Gas Tracker', url=chain_url)]]))
 
 async def draw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tweet = context.args[0]
@@ -1248,34 +1235,21 @@ async def draw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f'{text.mods_only}')
 
 async def time_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    west_coast_raw = pytz.timezone("America/Los_Angeles")
-    west_coast = datetime.now(west_coast_raw)
-    west_coast_time = west_coast.strftime("%I:%M %p")
-    east_coast_raw = pytz.timezone("America/New_York")
-    east_coast = datetime.now(east_coast_raw)
-    east_coast_time = east_coast.strftime("%I:%M %p")
-    london_raw = pytz.timezone("Europe/London")
-    london = datetime.now(london_raw)
-    london_time = london.strftime("%I:%M %p")
-    berlin_raw = pytz.timezone("Europe/Berlin")
-    berlin = datetime.now(berlin_raw)
-    berlin_time = berlin.strftime("%I:%M %p")
-    tokyo_raw = pytz.timezone("Asia/Tokyo")
-    tokyo = datetime.now(tokyo_raw)
-    tokyo_time = tokyo.strftime("%I:%M %p")
-    dubai_raw = pytz.timezone("Asia/Dubai")
-    dubai = datetime.now(dubai_raw)
-    dubai_time = dubai.strftime("%I:%M %p")
-    await update.message.reply_text(f'GM or GN Wherever you are...\n\n'
-                                    f'{datetime.now(timezone.utc).strftime("%A %B %d %Y")}\n'
-                                    f'{datetime.now(timezone.utc).strftime("%I:%M %p")} - UTC\n\n'
-                                    f'{west_coast_time} - PST\n'
-                                    f'{east_coast_time} - EST\n'
-                                    f'{london_time} - GMT\n'
-                                    f'{berlin_time} - CET\n'
-                                    f'{dubai_time} - GST\n'
-                                    f'{tokyo_time} - JST\n',
-                                    parse_mode="Markdown")
+    timezones = [
+        ("America/Los_Angeles", "PST"),
+        ("America/New_York", "EST"),
+        ("Europe/London", "GMT"),
+        ("Europe/Berlin", "CET"),
+        ("Asia/Dubai", "GST"),
+        ("Asia/Tokyo", "JST")
+    ]
+    current_time = datetime.now(timezone.utc)
+    time_info = f"{current_time.strftime('%A %B %d %Y')}\n"
+    time_info += f"{current_time.strftime('%I:%M %p')} - UTC\n\n"
+    for tz, tz_name in timezones:
+        tz_time = current_time.astimezone(pytz.timezone(tz))
+        time_info += f"{tz_time.strftime('%I:%M %p')} - {tz_name}\n"
+    await update.message.reply_text(time_info, parse_mode="Markdown")
 
 async def wei_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     eth = " ".join(context.args)
@@ -1353,38 +1327,42 @@ async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     chain_name = ""
     chain_url = ""
-    response = ""
     holders = ""
-    if chain == "eth" or chain == "":
-        response = api.get_nft_holder_list(ca.magister, "eth")
+
+    if chain in ["eth", ""]:
+        chain = "eth"
         chain_name = "(ETH)"
         chain_url = url.ether_token
         holders = api.get_nft_holder_count(ca.magister, "?chain=eth-main")
-    if chain == "bsc" or chain == "bnb":
-        response = api.get_nft_holder_list(ca.magister, "bsc")
+    elif chain == "bsc" or chain == "bnb":
+        chain = "bsc"
         chain_name = "(BSC)"
         chain_url = url.bsc_token
-    if chain == "polygon" or chain == "poly":
-        response = api.get_nft_holder_list(ca.magister, "polygon")
+    elif chain == "polygon" or chain == "poly":
+        chain = "polygon"
         chain_name = "(POLYGON)"
         chain_url = url.poly_token
         holders = api.get_nft_holder_count(ca.magister, "?chain=poly-main")
-    if chain == "optimism" or chain == "opti":
-        response = api.get_nft_holder_list(ca.magister, "optimism")
+    elif chain == "optimism" or chain == "opti":
+        chain = "optimism"
         chain_name = "(OPTIMISM)"
         chain_url = url.opti_token
         holders = api.get_nft_holder_count(ca.magister, "?chain=optimism-main")
-    if chain == "arbitrum" or chain == "arb":
-        response = api.get_nft_holder_list(ca.magister, "arbitrum")
+    elif chain == "arbitrum" or chain == "arb":
+        chain = "arbitrum"
         chain_name = "(ARB)"
         chain_url = url.arb_token
-        holders = api.get_nft_holder_count(ca.magister, "?chain=arbitrum")
-    magisters = list(map(lambda x: x['owner_of'], response["result"]))
+        holders = api.get_nft_holder_count(ca.magister, "?chain=arbitrum-main")
+    else:
+        await update.message.reply_text("Invalid chain. Please specify a valid chain.")
+        return
+    response = api.get_nft_holder_list(ca.magister, chain)
+    magisters = [holder['owner_of'] for holder in response["result"]]
     address = '\n\n'.join(map(str, magisters))
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), 'rb'),
+        photo=open(random.choice(media.logos), 'rb'),
         caption=f'*X7 Finance Magister Holders {chain_name}*\n'
-                'Use `/magisters [chain-name]` or other chains\n\n'
+                f'Use `/magisters [chain-name]` or other chains\n\n'
                 f'Holders - {holders}\n\n'
                 f'`{address}`\n\n{api.get_quote()}',
         parse_mode='Markdown',
@@ -1394,49 +1372,59 @@ async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def signers_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    dev_response = api.get_signers(ca.dev_multi_eth)
-    com_response = api.get_signers(ca.com_multi_eth)
     chain_name = ""
     chain_url = ""
-    if chain == "eth" or chain == "":
+    dev_response = None
+    com_response = None
+    if chain in ["eth", ""]:
+        chain = "eth"
         dev_response = api.get_signers(ca.dev_multi_eth)
         com_response = api.get_signers(ca.com_multi_eth)
         chain_name = "(ETH)"
         chain_url = url.ether_address
-    if chain == "poly" or chain == "polygon":
+    elif chain in ["poly", "polygon"]:
+        chain = "polygon"
         dev_response = api.get_signers(ca.dev_multi_poly)
         com_response = api.get_signers(ca.com_multi_poly)
         chain_name = "(POLYGON)"
         chain_url = url.poly_address
-    if chain == "bsc" or chain == "bnb":
+    elif chain in ["bsc", "bnb"]:
+        chain = "bsc"
         dev_response = api.get_signers(ca.dev_multi_bsc)
         com_response = api.get_signers(ca.com_multi_bsc)
         chain_name = "(BSC)"
         chain_url = url.poly_address
-    if chain == "arb" or chain == "arbitrum":
+    elif chain in ["arb", "arbitrum"]:
+        chain = "arbitrum"
         dev_response = api.get_signers(ca.dev_multi_arb)
         com_response = api.get_signers(ca.com_multi_arb)
         chain_name = "(ARB)"
         chain_url = url.arb_address
-    if chain == "opti" or chain == "optimism":
+    elif chain in ["opti", "optimism"]:
+        chain = "optimism"
         dev_response = api.get_signers(ca.dev_multi_opti)
         com_response = api.get_signers(ca.com_multi_opti)
         chain_name = "(OPTIMISM)"
         chain_url = url.opti_address
+    else:
+        await update.message.reply_text("Invalid chain. Please specify a valid chain.")
+        return
     dev_list = dev_response["owners"]
     dev_address = '\n\n'.join(map(str, dev_list))
     com_list = com_response["owners"]
     com_address = '\n\n'.join(map(str, com_list))
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), 'rb'),
-        caption=f'*X7 Finance Multi-Sig Singers {chain_name}*\n'
-                'Use `/signers [chain-name]` or other chains\n\n'
+        photo=open(random.choice(media.logos), 'rb'),
+        caption=f'*X7 Finance Multi-Sig Signers {chain_name}*\n'
+                f'Use `/signers [chain-name]` or other chains\n\n'
                 f'*Developer Signers*\n`{dev_address}`\n\n*Community Signers*\n`{com_address}`\n\n'
                 f'{api.get_quote()}',
         parse_mode='Markdown',
-        reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text='X7 Developer Multi-Sig', url=f'{chain_url}{ca.dev_multi_eth}')],
-             [InlineKeyboardButton(text='X7 Community Multi-Sig', url=f'{chain_url}{ca.com_multi_eth}')], ]))
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(
+                text='X7 Developer Multi-Sig', url=f'{chain_url}{ca.dev_multi_eth}')],
+            [InlineKeyboardButton(
+                text='X7 Community Multi-Sig', url=f'{chain_url}{ca.com_multi_eth}')], ]))
 
 async def launch_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     launch_raw = datetime(2022, 8, 13, 14, 10, 17)
@@ -1445,29 +1433,28 @@ async def launch_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     migration = migration_raw.astimezone(pytz.utc)
     now = datetime.now(timezone.utc)
     launch_duration = now - launch
-    launch_duration_in_s = launch_duration.total_seconds()
-    launch_days = divmod(launch_duration_in_s, 86400)
-    launch_hours = divmod(launch_days[1], 3600)
-    launch_minutes = divmod(launch_hours[1], 60)
+    launch_days, launch_remainder = divmod(launch_duration.total_seconds(), 86400)
+    launch_hours, launch_remainder = divmod(launch_remainder, 3600)
+    launch_minutes, _ = divmod(launch_remainder, 60)
     migration_duration = now - migration
-    migration_duration_in_s = migration_duration.total_seconds()
-    migration_days = divmod(migration_duration_in_s, 86400)
-    migration_hours = divmod(migration_days[1], 3600)
-    migration_minutes = divmod(migration_hours[1], 60)
+    migration_days, migration_remainder = divmod(migration_duration.total_seconds(), 86400)
+    migration_hours, migration_remainder = divmod(migration_remainder, 3600)
+    migration_minutes, _ = divmod(migration_remainder, 60)
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), 'rb'),
+        photo=open(random.choice(media.logos), 'rb'),
         caption=f'*X7 Finance Launch Info*\n\nX7M105 Stealth Launch\n{launch.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n'
-                f'{int(launch_days[0])} days, {int(launch_hours[0])} hours and {int(launch_minutes[0])} minutes ago\n\n'
+                f'{int(launch_days)} days, {int(launch_hours)} hours and {int(launch_minutes)} minutes ago\n\n'
                 f'V2 Migration\n{migration.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n'
-                f'{int(migration_days[0])} days, {int(migration_hours[0])} hours and '
-                f'{int(migration_minutes[0])} minutes ago\n\n'
+                f'{int(migration_days)} days, {int(migration_hours)} hours and {int(migration_minutes)} minutes ago\n\n'
                 f'{api.get_quote()}',
         parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text='X7M105 Launch TX', url=f'https://etherscan.io/tx/'
-                                        f'0x11ff5b6a860170eaac5b33930680bf79dbf0656292cac039805dbcf34e8abdbf')],
-             [InlineKeyboardButton(text='Migration Go Live TX', url=f'https://etherscan.io/tx/'
-                                        f'0x13e8ed59bcf97c5948837c8069f1d61e3b0f817d6912015427e468a77056fe41')], ]))
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(
+                text='X7M105 Launch TX',
+                url='https://etherscan.io/tx/0x11ff5b6a860170eaac5b33930680bf79dbf0656292cac039805dbcf34e8abdbf')],
+            [InlineKeyboardButton(
+                text='Migration Go Live TX',
+                url='https://etherscan.io/tx/0x13e8ed59bcf97c5948837c8069f1d61e3b0f817d6912015427e468a77056fe41')], ]))
 
 async def potw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
@@ -1479,61 +1466,43 @@ async def potw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'{api.get_quote()}', parse_mode="Markdown")
 
 async def supply_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    token_pairs = {
+        "x7r": (ca.x7r_pair_eth, ca.x7r),
+        "x7dao": (ca.x7dao_pair_eth, ca.x7dao),
+        "x7101": (ca.x7101_pair_eth, ca.x7101),
+        "x7102": (ca.x7102_pair_eth, ca.x7102),
+        "x7103": (ca.x7103_pair_eth, ca.x7103),
+        "x7104": (ca.x7104_pair_eth, ca.x7104),
+        "x7105": (ca.x7105_pair_eth, ca.x7105)
+    }
     prices = api.get_cg_price("x7r, x7dao, x7101, x7102, x7103, x7104, x7105")
-    x7r = api.get_token_balance(ca.x7r_pair_eth, ca.x7r, "eth")
-    x7dao = api.get_token_balance(ca.x7dao_pair_eth, ca.x7dao, "eth")
-    x7101 = api.get_token_balance(ca.x7101_pair_eth, ca.x7101, "eth")
-    x7102 = api.get_token_balance(ca.x7102_pair_eth, ca.x7102, "eth")
-    x7103 = api.get_token_balance(ca.x7103_pair_eth, ca.x7103, "eth")
-    x7104 = api.get_token_balance(ca.x7104_pair_eth, ca.x7104, "eth")
-    x7105 = api.get_token_balance(ca.x7105_pair_eth, ca.x7105, "eth")
-    x7r_dollar = x7r * prices["x7r"]["usd"]
-    x7dao_dollar = x7dao * prices["x7dao"]["usd"]
-    x7101_dollar = x7101 * prices["x7101"]["usd"]
-    x7102_dollar = x7102 * prices["x7102"]["usd"]
-    x7103_dollar = x7103 * prices["x7103"]["usd"]
-    x7104_dollar = x7104 * prices["x7104"]["usd"]
-    x7105_dollar = x7105 * prices["x7105"]["usd"]
-    x7r_percent = round(x7r / ca.supply * 100, 2)
-    x7dao_percent = round(x7dao / ca.supply * 100, 2)
-    x7101_percent = round(x7101 / ca.supply * 100, 2)
-    x7102_percent = round(x7102 / ca.supply * 100, 2)
-    x7103_percent = round(x7103 / ca.supply * 100, 2)
-    x7104_percent = round(x7104 / ca.supply * 100, 2)
-    x7105_percent = round(x7105 / ca.supply * 100, 2)
+    supply_info = {}
+    for token, (pair, contract) in token_pairs.items():
+        balance = api.get_token_balance(pair, contract, "eth")
+        dollar_value = balance * prices[token]["usd"]
+        percent = round(balance / ca.supply * 100, 2)
+        supply_info[token] = {"balance": balance, "dollar_value": dollar_value, "percent": percent}
     img = Image.open((random.choice(media.blackhole)))
-    i1 = ImageDraw.Draw(img)
-    myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 22)
-    i1.text((28, 36),
-            f'X7 Finance Uniswap Supply\n\n'
-            f'X7R: {"{:0,.0f}".format(x7r)} X7R (${"{:0,.0f}".format(x7r_dollar)}) {x7r_percent}%\n\n'
-            f'X7DAO: {"{:0,.0f}".format(x7dao)} X7DAO (${"{:0,.0f}".format(x7dao_dollar)}) {x7dao_percent}%\n\n'
-            f'X7101: {"{:0,.0f}".format(x7101)} X7101 (${"{:0,.0f}".format(x7101_dollar)}) {x7101_percent}%\n\n'
-            f'X7102: {"{:0,.0f}".format(x7102)} X7102 (${"{:0,.0f}".format(x7102_dollar)}) {x7102_percent}%\n\n'
-            f'X7103: {"{:0,.0f}".format(x7103)} X7103 (${"{:0,.0f}".format(x7103_dollar)}) {x7103_percent}%\n\n'
-            f'X7104: {"{:0,.0f}".format(x7104)} X7104 (${"{:0,.0f}".format(x7104_dollar)}) {x7104_percent}%\n\n'
-            f'X7105: {"{:0,.0f}".format(x7105)} X7105 (${"{:0,.0f}".format(x7105_dollar)}) {x7105_percent}%\n\n'
-            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-            font=myfont, fill=(255, 255, 255))
-    img.save(r"media\blackhole.png")
+    draw = ImageDraw.Draw(img)
+    font = ImageFont.truetype("media/FreeMonoBold.ttf", 22)
+    caption_lines = []
+    for token, info in supply_info.items():
+        balance_str = "{:0,.0f}".format(info["balance"])
+        dollar_value_str = "${:0,.0f}".format(info["dollar_value"])
+        percent_str = f"{info['percent']}%"
+        line = f"*{token.upper()}*\n{balance_str} {token.upper()} ({dollar_value_str}) {percent_str}"
+        caption_lines.append(line)
+    utc_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+    caption = (
+        f"*X7 Finance Uniswap Supply*\n\n" + "\n\n".join(caption_lines) + f"\n\nUTC: {utc_time}\n{api.get_quote()}")
+    for i, line in enumerate(caption_lines):
+        y_offset = 36 + i * 72
+        draw.text((28, y_offset), line, font=font, fill=(255, 255, 255))
+    img.save("media/blackhole.png")
     await update.message.reply_photo(
-            photo=open(r'media\blackhole.png', 'rb'),
-            caption=f'*X7 Finance Uniswap Supply*\n\n'
-                    f'*X7R*\n'
-                    f'{"{:0,.0f}".format(x7r)} X7R (${"{:0,.0f}".format(x7r_dollar)}) {x7r_percent}%\n\n'
-                    f'*X7DAO*\n'
-                    f'{"{:0,.0f}".format(x7dao)} X7DAO (${"{:0,.0f}".format(x7dao_dollar)}) {x7dao_percent}%\n\n'
-                    f'*X7101*\n'
-                    f'{"{:0,.0f}".format(x7101)} X7101 (${"{:0,.0f}".format(x7101_dollar)}) {x7101_percent}%\n\n'
-                    f'*X7102*\n'
-                    f'{"{:0,.0f}".format(x7102)} X7102 (${"{:0,.0f}".format(x7102_dollar)}) {x7102_percent}%\n\n'
-                    f'*X7103*\n'
-                    f'{"{:0,.0f}".format(x7103)} X7103 (${"{:0,.0f}".format(x7103_dollar)}) {x7103_percent}%\n\n'
-                    f'*X7104*\n'
-                    f'{"{:0,.0f}".format(x7104)} X7104 (${"{:0,.0f}".format(x7104_dollar)}) {x7104_percent}%\n\n'
-                    f'*X7105*\n'
-                    f'{"{:0,.0f}".format(x7105)} X7105 (${"{:0,.0f}".format(x7105_dollar)}) {x7105_percent}%\n\n'
-                    f'{api.get_quote()}', parse_mode="Markdown")
+        photo=open("media/blackhole.png", "rb"),
+        caption=caption,
+        parse_mode="Markdown")
 
 async def snapshot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     snapshot = api.get_snapshot()
@@ -2418,48 +2387,37 @@ async def x7105_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    x7r_supply = ca.supply - api.get_token_balance(ca.dead, ca.x7r, "eth")
     price = api.get_cg_price("x7r, x7dao, x7101, x7102, x7103, x7104, x7105")
-    x7r_cap = price["x7r"]["usd"] * x7r_supply
-    x7dao_cap = price["x7dao"]["usd"] * ca.supply
-    x7101_cap = price["x7101"]["usd"] * ca.supply
-    x7102_cap = price["x7102"]["usd"] * ca.supply
-    x7103_cap = price["x7103"]["usd"] * ca.supply
-    x7104_cap = price["x7104"]["usd"] * ca.supply
-    x7105_cap = price["x7105"]["usd"] * ca.supply
-    cons_cap = x7101_cap + x7102_cap + x7103_cap + x7104_cap + x7105_cap
-    total_cap = x7r_cap + x7dao_cap + x7101_cap + x7102_cap + x7103_cap + x7104_cap + x7105_cap
-    im1 = Image.open((random.choice(media.blackhole)))
+    x7r_supply = ca.supply - api.get_token_balance(ca.dead, ca.x7r, "eth")
+    tokens = ["x7r", "x7dao", "x7101", "x7102", "x7103", "x7104", "x7105"]
+    caps = {}
+    for token in tokens:
+        caps[token] = price[token]["usd"] * ca.supply
+    cons_cap = sum(caps.values()) - caps["x7r"]
+    total_cap = sum(caps.values())
+    im1 = Image.open(random.choice(media.blackhole))
     im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
     myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 22)
     i1 = ImageDraw.Draw(im1)
-    i1.text((28, 36),
-            f'X7 Finance Market Cap Info (ETH)\n\n'
-            f'X7R:         ${"{:0,.0f}".format(x7r_cap)}\n'
-            f'X7DAO:       ${"{:0,.0f}".format(x7dao_cap)}\n'
-            f'X7101:       ${"{:0,.0f}".format(x7101_cap)}\n'
-            f'X7102:       ${"{:0,.0f}".format(x7102_cap)}\n'
-            f'X7103:       ${"{:0,.0f}".format(x7103_cap)}\n'
-            f'X7104:       ${"{:0,.0f}".format(x7104_cap)}\n'
-            f'X7105:       ${"{:0,.0f}".format(x7105_cap)}\n\n'
-            f'Constellations Combined:\n'
-            f'${"{:0,.0f}".format(cons_cap)}\n\n'
-            f'Total Token Market Cap:\n'
-            f'${"{:0,.0f}".format(total_cap)}\n\n'
-            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-            font=myfont, fill=(255, 255, 255))
+    market_cap_info = f'X7 Finance Market Cap Info (ETH)\n\n'
+    for token in tokens:
+        market_cap_info += f'{token.upper()}:   ${"{:0,.0f}".format(caps[token])}\n'
+    market_cap_info += f'\nConstellations Combined:\n${"{:0,.0f}".format(cons_cap)}\n\n'
+    market_cap_info += f'Total Token Market Cap:\n${"{:0,.0f}".format(total_cap)}\n\n'
+    market_cap_info += f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}'
+    i1.text((28, 36), market_cap_info, font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await update.message.reply_photo(
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*X7 Finance Market Cap Info (ETH)*\n\n'
-                f'X7R:           ${"{:0,.0f}".format(x7r_cap)}\n'
-                f'X7DAO:      ${"{:0,.0f}".format(x7dao_cap)}\n'     
-                f'X7101:       ${"{:0,.0f}".format(x7101_cap)}\n'
-                f'X7102:       ${"{:0,.0f}".format(x7102_cap)}\n'
-                f'X7103:       ${"{:0,.0f}".format(x7103_cap)}\n'
-                f'X7104:       ${"{:0,.0f}".format(x7104_cap)}\n'
-                f'X7105:       ${"{:0,.0f}".format(x7105_cap)}\n\n'
+                f'X7R:           ${"{:0,.0f}".format(caps["x7r"])}\n'
+                f'X7DAO:         ${"{:0,.0f}".format(caps["x7dao"])}\n'
+                f'X7101:         ${"{:0,.0f}".format(caps["x7101"])}\n'
+                f'X7102:         ${"{:0,.0f}".format(caps["x7102"])}\n'
+                f'X7103:         ${"{:0,.0f}".format(caps["x7103"])}\n'
+                f'X7104:         ${"{:0,.0f}".format(caps["x7104"])}\n'
+                f'X7105:         ${"{:0,.0f}".format(caps["x7105"])}\n\n'
                 f'Constellations Combined:\n'
                 f'${"{:0,.0f}".format(cons_cap)}\n\n'
                 f'Total Token Market Cap:\n'
@@ -2658,6 +2616,7 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
                     f'Combined Market Cap: ${"{:0,.0f}".format(const_mc)}\n\n'
                     f'{api.get_quote()}', parse_mode="Markdown")
 
+
 async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     chain_name = ""
@@ -2751,6 +2710,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         dev_dollar = float(dev_amount) * float(api.get_native_price("matic")) / 1 ** 18
         com_dollar = float(com_amount) * float(api.get_native_price("matic")) / 1 ** 18
         im2 = Image.open(media.poly_logo)
+
     if chain == "optimism" or chain == "opti":
         chain_name = "opti"
         chain_token_name = "ETH"
@@ -2761,6 +2721,7 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         dev_dollar = float(dev_amount) * float(api.get_native_price("eth")) / 1 ** 18
         com_dollar = float(com_amount) * float(api.get_native_price("eth")) / 1 ** 18
         im2 = Image.open(media.opti_logo)
+
     im1 = Image.open((random.choice(media.blackhole)))
     im1.paste(im2, (720, 20), im2)
     myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 20)
@@ -2787,6 +2748,8 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                   url=f'{chain_url}{ca.dev_multi_bsc}')],
             [InlineKeyboardButton(text='Community Multi-sig Wallet',
                                   url=f'{chain_url}{ca.com_multi_bsc}')], ]))
+    return
+
 
 async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -3018,33 +2981,38 @@ async def burn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [[InlineKeyboardButton(text='Etherscan Burn Wallet', url=f'{chain_url}{ca.x7r}?a={ca.dead}')], ]))
 
 async def ath_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    x7r_ath_change = str(api.get_ath("x7r")[1])
-    x7r_ath = api.get_ath("x7r")[0]
-    x7dao_ath = api.get_ath("x7dao")[0]
-    x7dao_ath_change = str(api.get_ath("x7dao")[1])
-    x7r_date = api.get_ath("x7r")[2]
-    x7dao_date = api.get_ath("x7dao")[2]
+    coins = ["x7r", "x7dao"]
+
+    def get_ath_info(coin):
+        ath, ath_change, date = api.get_ath(coin)
+        ath_change_str = str(ath_change)
+        return ath, ath_change_str[:3], date
+    x7r_ath, x7r_ath_change, x7r_date = get_ath_info("x7r")
+    x7dao_ath, x7dao_ath_change, x7dao_date = get_ath_info("x7dao")
     img = Image.open((random.choice(media.blackhole)))
     i1 = ImageDraw.Draw(img)
     myfont = ImageFont.truetype(R'media\FreeMonoBold.ttf', 26)
     i1.text((28, 36),
             f'X7 Finance ATH Info\n\n'
-            f'X7R   - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change[:3]}%\n'
+            f'X7R   - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change}%\n'
             f'{x7r_date}\n\n'
-            f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change[:3]}%\n'
+            f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change}%\n'
             f'{x7dao_date}'
             f'\n\n\n\n\n\n\n'
             f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
             font=myfont, fill=(255, 255, 255))
     img.save(r"media\blackhole.png")
+    caption = (
+        f'*X7 Finance ATH Info*\n\n'
+        f'X7R - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change}%\n'
+        f'{x7r_date}\n\n'
+        f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change}%\n'
+        f'{x7dao_date}\n\n'
+        f'{api.get_quote()}')
     await update.message.reply_photo(
-            photo=open(r'media\blackhole.png', 'rb'),
-            caption=f'*X7 Finance ATH Info*\n\n'
-                    f'X7R - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change[:3]}%\n'
-                    f'{x7r_date}\n\n'
-                    f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change[:3]}%\n'
-                    f'{x7dao_date}\n\n'
-                    f'{api.get_quote()}', parse_mode="Markdown")
+        photo=open(r'media\blackhole.png', 'rb'),
+        caption=caption,
+        parse_mode="Markdown")
 
 # TWITTER COMMANDS
 async def spaces_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
