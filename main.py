@@ -1,4 +1,3 @@
-from web3 import Web3
 import logging
 from telegram.ext import *
 from telegram import *
@@ -34,6 +33,26 @@ async def test_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return
 
 # COMMANDS
+async def on_chain_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    now = datetime.utcnow()
+    tx = api.get_tx(ca.deployer, "eth")
+    tx_filter = [d for d in tx["result"] if d['to'] in str(ca.dead).lower()]
+    message = bytes.fromhex(tx_filter[0]["input"][2:]).decode('utf-8')
+    time = datetime.utcfromtimestamp(int(tx_filter[0]["timeStamp"]))
+    duration = now - time
+    duration_in_s = duration.total_seconds()
+    days = divmod(duration_in_s, 86400)
+    hours = divmod(days[1], 3600)
+    minutes = divmod(hours[1], 60)
+    print(tx_filter[0])
+    await update.message.reply_text(
+        f'*Last On Chain Message:*\n\n{time} (UTC)\n'
+        f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes ago\n\n'
+        f'`{message}`', parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='View on chain', url=f'{url.ether_tx}{tx_filter[0]["hash"]}')],
+            [InlineKeyboardButton(text='View all on chains', url=f'{url.dashboard}onchains')], ]))
+
 async def ebb_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     if chain == "eth" or chain == "":
@@ -42,7 +61,7 @@ async def ebb_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         now = datetime.utcnow()
 
         def get_liquidity_data(hub_address):
-            hub = api.get_internal_tx(hub_address, "eth")
+            hub = api.get_tx_internal(hub_address, "eth")
             hub_filter = [d for d in hub["result"] if d['from'] in str(hub_address).lower()]
             value_raw = int(hub_filter[0]["value"]) / 10 ** 18
             value = str(value_raw)
@@ -615,7 +634,6 @@ async def pioneer_command(update: Update, context: ContextTypes.DEFAULT_TYPE = N
     volume_dollar = volume * float(api.get_native_price("eth")) / 1 ** 18
     pioneer_pool = api.get_native_balance(ca.pioneer, "eth")
     total_dollar = float(pioneer_pool) * float(api.get_native_price("eth")) / 1 ** 18
-
     if pioneer_id == "":
         img = Image.open(random.choice(media.blackhole))
         i1 = ImageDraw.Draw(img)
@@ -701,7 +719,6 @@ async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'[Etherscan](https://etherscan.io/search?f=0&q={keyword})\n\n'
                     f'{api.get_quote()}',
             parse_mode="markdown")
-
 
 async def pool_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -970,7 +987,6 @@ async def today_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         caption=f'`On this day in {today["year"]}:\n\n{today["text"]}`',
         parse_mode="Markdown")
 
-
 async def fg_command(update, context):
     fear_response = requests.get('https://api.alternative.me/fng/?limit=0')
     fear_data = fear_response.json()
@@ -1003,7 +1019,6 @@ async def quote_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         caption=f'{api.get_quote()}',
         parse_mode="Markdown")
 
-
 async def loans_command(update, context):
     loan_type = " ".join(context.args).lower()
     loan_name = ""
@@ -1032,7 +1047,7 @@ async def loans_command(update, context):
              [InlineKeyboardButton(text=f'BSC', url=f'{url.bsc_address}{loan_ca}')],
              [InlineKeyboardButton(text=f'Polygon', url=f'{url.poly_address}{loan_ca}')],
              [InlineKeyboardButton(text=f'Arbitrum', url=f'{url.arb_address}{loan_ca}')],
-             [InlineKeyboardButton(text=f'Optimism', url=f'{url.opti_address}{loan_ca}')],]))
+             [InlineKeyboardButton(text=f'Optimism', url=f'{url.opti_address}{loan_ca}')], ]))
 
 async def discount_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
@@ -1065,7 +1080,6 @@ async def discount_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
              [InlineKeyboardButton(text='X7 Lending Discount Contract',
                                    url=f'{url.ether_address}{ca.lending_discount}#code')], ]))
 
-
 async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     engine = pyttsx3.init()
     engine.save_to_file(" ".join(context.args), 'media/voicenote.mp3')
@@ -1073,38 +1087,37 @@ async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_audio(audio=open('media/voicenote.mp3', 'rb'))
 
 async def deployer_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    deployer = api.get_last_tx(ca.deployer, "eth")
-    date = deployer["result"][0]["block_timestamp"].split("-")
-    time = deployer["result"][0]["block_timestamp"].split(":")
-    year = int(date[0])
-    month = int(date[1])
-    day = int(date[2][:2])
-    hour = int(time[0][-2:])
-    minute = int(time[1])
-    then = datetime(year, month, day, hour, minute)
-    now = datetime.now()
-    duration = now - then
+    tx = api.get_tx(ca.deployer, "eth")
+    time = datetime.utcfromtimestamp(int(tx["result"][0]["timeStamp"]))
+    now = datetime.utcnow()
+    duration = now - time
     duration_in_s = duration.total_seconds()
     days = divmod(duration_in_s, 86400)
     hours = divmod(days[1], 3600)
     minutes = divmod(hours[1], 60)
-    to_address = deployer["result"][0]['to_address']
-    if str(to_address).lower() == "0x000000000000000000000000000000000000dead":
-        message = bytes.fromhex(api.get_last_tx(ca.deployer, "eth")["result"][0]["input"][2:]).decode('utf-8')
+    if str(tx["result"][0]["to"]).lower() == "0x000000000000000000000000000000000000dead":
+        message = bytes.fromhex(tx[0]["input"][2:]).decode('utf-8')
         await update.message.reply_text(
-            '*X7 Finance DAO Founders*\n\n'
-            f'Deployer Wallet last TX\n'
+            f'*Last On Chain Message:*\n\n{time} (UTC)\n'
             f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes ago:\n\n'
-            f'`{message}`\n{url.ether_tx}{deployer["result"][0]["hash"]}',
-            parse_mode='Markdown')
+            f'`{message}`\n',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='View on chain', url=f'{url.ether_tx}{tx["result"][0]["hash"]}')],
+                 [InlineKeyboardButton(text='View all on chains', url=f'{url.dashboard}onchains')], ]))
     else:
         await update.message.reply_photo(
             photo=open((random.choice(media.logos)), 'rb'),
-            caption='*X7 Finance DAO Founders*\n\n'
-                    f'Deployer Wallet last TX\n'
-                    f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes ago: \n\n'
-                    f'{url.ether_tx}{deployer["result"][0]["hash"]}\n\n{api.get_quote()}',
-            parse_mode='Markdown')
+            caption=f'*Deployer Wallet last TX*\n\n{time} (UTC)\n'
+                    f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes ago:\n\n'
+                    f'*{tx["result"][0]["functionName"]}*\n\n'
+                    f'This command will pull last TX on the X7 Finance deployer wallet.'
+                    f' To view last on chain use `/on_chain`\n\n'
+                    f'{api.get_quote()}',
+            parse_mode='Markdown',
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text='View on chain', url=f'{url.ether_tx}{tx["result"][0]["hash"]}')],
+                 [InlineKeyboardButton(text='View all on chains', url=f'{url.dashboard}onchains')], ]))
 
 async def announcements_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
@@ -1155,7 +1168,6 @@ async def airdrop_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'contrary, the more tokens held on Ethereum, the greater the reward will be when the tokens and ecosystem ' 
         f'are released on other chains.\n\nThese airdrop snapshots will occur just prior to the token launch\n\n'
         f'{api.get_quote()}', parse_mode='Markdown')
-
 
 async def gas_command(update, context):
     chain = " ".join(context.args).lower()
@@ -1218,9 +1230,9 @@ async def draw_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         start = tweet.index('status/')
         end = tweet.index('?', start + 1)
         tweet_id = tweet[start + 7:end]
-        rt_client = tweepy.Client(keys.bearer)
-        rt_auth = tweepy.OAuthHandler(keys.twitterapi, keys.secret)
-        rt_auth.set_access_token(keys.access, keys.accesssecret)
+        rt_client = tweepy.Client(keys.twitter_bearer)
+        rt_auth = tweepy.OAuthHandler(keys.twitter_api, keys.twitter_api_secret)
+        rt_auth.set_access_token(keys.twitter_access, keys.twitter_access_secret)
         twitterapi = tweepy.API(rt_auth)
         response = rt_client.get_retweeters(tweet_id)
         status = twitterapi.get_status(tweet_id)
@@ -1328,7 +1340,6 @@ async def magisters_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain_name = ""
     chain_url = ""
     holders = ""
-
     if chain in ["eth", ""]:
         chain = "eth"
         chain_name = "(ETH)"
@@ -2411,8 +2422,8 @@ async def mcap_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*X7 Finance Market Cap Info (ETH)*\n\n'
-                f'X7R:           ${"{:0,.0f}".format(caps["x7r"])}\n'
-                f'X7DAO:         ${"{:0,.0f}".format(caps["x7dao"])}\n'
+                f'X7R:            ${"{:0,.0f}".format(caps["x7r"])}\n'
+                f'X7DAO:        ${"{:0,.0f}".format(caps["x7dao"])}\n'
                 f'X7101:         ${"{:0,.0f}".format(caps["x7101"])}\n'
                 f'X7102:         ${"{:0,.0f}".format(caps["x7102"])}\n'
                 f'X7103:         ${"{:0,.0f}".format(caps["x7103"])}\n'
@@ -2616,7 +2627,6 @@ async def constellations_command(update: Update, context: ContextTypes.DEFAULT_T
                     f'Combined Market Cap: ${"{:0,.0f}".format(const_mc)}\n\n'
                     f'{api.get_quote()}', parse_mode="Markdown")
 
-
 async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     chain_name = ""
@@ -2749,7 +2759,6 @@ async def treasury_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Community Multi-sig Wallet',
                                   url=f'{chain_url}{ca.com_multi_bsc}')], ]))
     return
-
 
 async def liquidity_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -3191,7 +3200,6 @@ async def stop_auto_command(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     else:
         await update.message.reply_text(f'{text.mods_only}')
 
-
 # GENERAL MESSAGES
 async def countdown_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     then = times.countdown.astimezone(pytz.utc)
@@ -3269,7 +3277,6 @@ async def error(update, context):
 # RUN
 if __name__ == '__main__':
     application = ApplicationBuilder().token(keys.token).build()
-
     job_queue = application.job_queue
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
@@ -3289,7 +3296,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('launch', launch_command))
     application.add_handler(CommandHandler('signers', signers_command))
     application.add_handler(CommandHandler('magisters', magisters_command))
-    application.add_handler(CommandHandler(['on_chain', 'deployer', 'devs'], deployer_command))
+    application.add_handler(CommandHandler(['deployer', 'devs'], deployer_command))
     application.add_handler(CommandHandler(['links', 'socials'], links_command))
     application.add_handler(CommandHandler(['ca', 'contract', 'contracts'], ca_command))
     application.add_handler(CommandHandler('x7r', x7r_command))
@@ -3351,10 +3358,12 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('alumni', alumni_command))
     application.add_handler(CommandHandler('community', community_command))
     application.add_handler(CommandHandler('raid', raid_command))
+    application.add_handler(CommandHandler(['on_chain', 'onchain', 'message'], on_chain_command))
     application.add_handler(CommandHandler(['docs', 'dashboard'], dashboard_command))
     application.add_handler(CommandHandler(['rollout', 'multichain', 'airdrop'], airdrop_command))
     application.add_handler(CommandHandler(['discount', 'dsc', 'dac'], discount_command))
     application.add_handler(CommandHandler(['admin_commands', 'admin', 'admincommands'], admin_commands_command))
+
     application.job_queue.run_repeating(
         wp_message, times.wp_time * 60 * 60,
         chat_id=ca.main_id,
