@@ -45,7 +45,7 @@ async def new_loan(event):
                 f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
 
 async def new_pair(event):
-    tx = api.get_tx(event["transactionHash"].hex(), "eth")
+    tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
     liq = api.get_liquidity(event["args"]["pair"], "eth")
     if event["args"]["token0"] == ca.weth:
         native = api.get_token_name(event["args"]["token0"], "eth")
@@ -196,7 +196,7 @@ async def new_pair(event):
     print(f'V2 Pair sent: ({token_name[1]}/{native[1]})')
 
 async def new_v3_pair(event):
-    tx = api.get_tx(event["transactionHash"].hex(), "eth")
+    tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
     if event["args"]["token0"] == ca.weth:
         weth_address = event["args"]["token0"]
         native = api.get_token_name(event["args"]["token0"], "eth")

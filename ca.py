@@ -121,6 +121,7 @@ cake = "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"
 matic = "0xCC42724C6683B7E57334c4E856f4c9965ED682bD"
 bweth = "0x2170Ed0880ac9A755fd29B2688956BD959F933F8"
 beth = "0xa2E3356610840701BDf5611a53974510Ae27E2e1"
+snow = "0x27C6295aAf7985C05f0ca8058B8D9b47211f2841"
 
 # STABLES
 usdc = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
@@ -129,6 +130,7 @@ bep20usdt = "0x55d398326f99059fF775485246999027B3197955"
 usdt = "0xdAC17F958D2ee523a2206206994597C13D831ec7"
 dai = "0x6b175474e89094c44da98b954eedeac495271d0f"
 
-stables = usdc, busd, bep20usdt, usdt, dai
-bscethpairs = bweth, beth
-bscpairs = cake, matic
+stables = [usdc, busd, bep20usdt, usdt, dai]
+ethpairs = [matic, snow]
+bscethpairs = [bweth, beth]
+bscpairs = [cake, matic]

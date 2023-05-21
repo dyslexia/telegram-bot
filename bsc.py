@@ -46,7 +46,7 @@ async def new_loan(event):
 
 async def new_pair(event):
     print("Pair found")
-    tx = api.get_tx(event["transactionHash"].hex(), "bsc")
+    tx = api.get_tx_from_hash(event["transactionHash"].hex(), "bsc")
     liq = api.get_liquidity(event["args"]["pair"], "bsc")
     if event["args"]["token0"] == ca.wbnb:
         native = api.get_token_name(event["args"]["token0"], "bsc")
