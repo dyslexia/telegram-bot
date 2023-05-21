@@ -5,6 +5,7 @@ from web3.exceptions import Web3Exception
 import asyncio
 import keys
 import ca
+import time
 from datetime import datetime, timezone
 import random
 from PIL import Image, ImageDraw, ImageFont
@@ -114,55 +115,87 @@ async def new_pair(event):
         liquidity_text = f'Total Liquidity: ${"{:0,.0f}".format(dollar)}'
     verified = api.get_verified(token_address, "bsc")
     status = ""
+    tax = ""
     renounced = ""
     lock = ""
-    if verified == "No":
-        return
+    tax_warning = ""
     if verified == "Yes":
+        print(f'V2 Pair Found')
         contract = web3.eth.contract(address=token_address, abi=api.get_abi(token_address, "eth"))
         verified = '✅ Contract Verified'
-        scan = api.get_scan(token_address, "bsc")
-        try:
-            if (scan[f'{token_address.lower()}']["is_honeypot"]) == 1:
-                print('Skip - Honey Pot')
-                return
-        except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-            print(f'Error: {e}')
-        try:
-            if (scan[f'{token_address.lower()}']["is_mintable"]) == 1:
-                print('Skip - Mintable')
-                return
-        except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-            print(f'Error: {e}')
-        try:
-            if (scan[f'{token_address.lower()}']["is_in_dex"]) == 1:
-                if (scan[f'{token_address.lower()}']["cannot_sell_all"]) == 1:
-                    print('Skip - Cannot Sell')
+        time.sleep(10)
+        scan = api.get_scan(token_address, "eth")
+        if scan[f'{str(token_address).lower()}']["is_open_source"] == "1":
+            try:
+                if scan[f'{str(token_address).lower()}']["slippage_modifiable"] == "1":
+                    tax_warning = "(Changeable)"
+                else:
+                    tax_warning = ""
+            except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+                print(f'Error: {e}')
+            try:
+                if scan[f'{str(token_address).lower()}']["is_honeypot"] == "1":
+                    print('Skip - Honey Pot')
                     return
-                if scan[f'{str(token_address).lower()}']["lp_holders"][0]["is_locked"] == 1:
-                    lock = f'✅ Liquidity Locked ({scan[str(token_address).lower()]["lp_holders"][0]["percent"][:4]}%)'
-        except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-            print(f'Error: {e}')
-        try:
-            if (scan[f'{token_address.lower()}']["honeypot_with_same_creator"]) == 1:
-                print('Skip - Honey Pot')
-                return
-        except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-            print(f'Error: {e}')
+            except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+                print(f'Error: {e}')
+            try:
+                if scan[f'{str(token_address).lower()}']["is_mintable"] == "1":
+                    print('Skip - Mintable')
+                    return
+            except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+                print(f'Initial Error: {e}')
+        if scan[f'{str(token_address).lower()}']["is_in_dex"] == "1":
+            try:
+                if scan[f'{str(token_address).lower()}']["sell_tax"] == "1" \
+                        or scan[f'{str(token_address).lower()}']["buy_tax"] == "1":
+                    print('Skip - Cannot Buy')
+                    return
+                buy_tax_raw = float(scan[f'{str(token_address).lower()}']["buy_tax"]) * 100
+                sell_tax_raw = float(scan[f'{str(token_address).lower()}']["sell_tax"]) * 100
+                buy_tax = int(buy_tax_raw)
+                sell_tax = int(sell_tax_raw)
+                if sell_tax > 10 or buy_tax > 10:
+                    tax = f'⚠️ Tax: {buy_tax}/{sell_tax} {tax_warning}'
+                else:
+                    tax = f'✅️ Tax: {buy_tax}/{sell_tax} {tax_warning}'
+            except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+                print(f'Tax Error: {e}')
+                tax = f'⚠️ Tax: Unavailable {tax_warning}'
+            if "lp_holders" in scan[f'{str(token_address).lower()}']:
+                lp_holders = scan[f'{str(token_address).lower()}']["lp_holders"]
+            try:
+                locked_lp_list = [
+                    lp for lp in scan[f'{str(token_address).lower()}']["lp_holders"]
+                    if lp["is_locked"] == 1 and lp["address"] != "0x0000000000000000000000000000000000000000"]
+                if locked_lp_list:
+                    lp_with_locked_detail = [lp for lp in locked_lp_list if "locked_detail" in lp]
+                    if lp_with_locked_detail:
+                        lock =\
+                            f"✅ Liquidity Locked\n{locked_lp_list[0]['tag']} - {locked_lp_list[0]['percent'][:6]}%\n" \
+                            f"Unlock - {locked_lp_list[0]['locked_detail'][0]['end_time']}"
+                    else:
+                        lock = f"✅ Liquidity Locked\n{locked_lp_list[0]['tag']} - {locked_lp_list[0]['percent'][:6]}%\n"
+                else:
+                    lock = ""
+            except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+                print(f'Liquidity Error: {e}')
+        else:
+            tax = f'⚠️ Tax: Unavailable {tax_warning}'
         try:
             owner = contract.functions.owner().call()
             if owner == "0x0000000000000000000000000000000000000000":
                 renounced = '✅ Contract Renounced'
-        except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration):
+        except (Exception, TimeoutError, ValueError, StopAsyncIteration):
             status = verified
+    status = f'{verified}\n{tax}\n{renounced}\n{lock}'
     pool = int(tx["result"]["value"], 0) / 10 ** 18
-    deployer = tx["result"]["from"]
     if pool == 0 or pool == "" or not pool:
         pool_text = "Launched Pool Amount: Unavailable"
     else:
         pool_dollar = float(pool) * float(api.get_native_price("bnb")) / 1 ** 18
         pool_text = f'Launched Pool Amount: {pool} BNB (${"{:0,.0f}".format(pool_dollar)})'
-    status = f'{verified}\n{renounced}\n{lock}\n'
+    status = f'{verified}\n{tax}\n{renounced}\n{lock}\n'
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.bsc_logo)
     im1.paste(im2, (720, 20), im2)
@@ -187,14 +220,13 @@ async def new_pair(event):
                 f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
                 f'{pool_text}\n\n'
                 f'SCAN:\n'
-                f'🖥️ [Deployer]({url.ether_address}{deployer})\n'
                 f'{liquidity_text}\n\n'
                 f'{status}', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'Buy On Xchange (COMING SOON)', url=f'{url.xchange_buy_bsc}')],
              [InlineKeyboardButton(text='Chart', url=f'{url.dex_tools_bsc}{event["args"]["pair"]}')],
              [InlineKeyboardButton(text='Token Contract', url=f'{url.bsc_address}{token_address}')],
-             [InlineKeyboardButton(text='Factory TX', url=f'{url.bsc_tx}{event["transactionHash"].hex()}')], ]))
+             [InlineKeyboardButton(text='Deployer TX', url=f'{url.bsc_tx}{event["transactionHash"].hex()}')], ]))
     print(f'V2 Pair sent: ({token_name[1]}/{native[1]})')
 
 async def time_lock_extend(event):
