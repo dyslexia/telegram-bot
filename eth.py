@@ -14,8 +14,7 @@ import url
 from web3 import Web3
 from web3.exceptions import Web3Exception
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 infura_url = f'https://mainnet.infura.io/v3/{keys.infura}'
@@ -26,6 +25,7 @@ factoryv3 = web3.eth.contract(address=ca.uniswapv3, abi=api.get_abi(ca.uniswapv3
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "eth"))
 ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "eth"))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "eth"))
+timelock = web3.eth.contract(address=ca.time_lock, abi=api.get_abi(ca.time_lock, "eth"))
 
 async def new_loan(event):
     im1 = Image.open((random.choice(media.blackhole)))
@@ -132,17 +132,20 @@ async def new_pair(event):
             if "lp_holders" in scan[f'{str(token_address).lower()}']:
                 lp_holders = scan[f'{str(token_address).lower()}']["lp_holders"]
             try:
-                locked_lp_list = [
-                    lp for lp in scan[f'{str(token_address).lower()}']["lp_holders"]
-                    if lp["is_locked"] == 1 and lp["address"] != "0x0000000000000000000000000000000000000000"]
-                if locked_lp_list:
-                    lp_with_locked_detail = [lp for lp in locked_lp_list if "locked_detail" in lp]
-                    if lp_with_locked_detail:
-                        lock =\
-                            f"✅ Liquidity Locked\n{locked_lp_list[0]['tag']} - {locked_lp_list[0]['percent'][:6]}%\n" \
-                            f"Unlock - {locked_lp_list[0]['locked_detail'][0]['end_time']}"
-                    else:
-                        lock = f"✅ Liquidity Locked\n{locked_lp_list[0]['tag']} - {locked_lp_list[0]['percent'][:6]}%\n"
+                if "lp_holder_count" in scan[f'{str(token_address).lower()}']:
+                    locked_lp_list = [
+                        lp for lp in scan[f'{str(token_address).lower()}']["lp_holders"]
+                        if lp["is_locked"] == 1 and lp["address"] != "0x0000000000000000000000000000000000000000"]
+                    if locked_lp_list:
+                        lp_with_locked_detail = [lp for lp in locked_lp_list if "locked_detail" in lp]
+                        if lp_with_locked_detail:
+                            lock =\
+                                f"✅ Liquidity Locked\n{locked_lp_list[0]['tag']} - " \
+                                f"{locked_lp_list[0]['percent'][:6]}%\n" \
+                                f"Unlock - {locked_lp_list[0]['locked_detail'][0]['end_time']}"
+                        else:
+                            lock = f"✅ Liquidity Locked\n{locked_lp_list[0]['tag']} - " \
+                                   f"{locked_lp_list[0]['percent'][:6]}%\n"
                 else:
                     lock = ""
             except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
@@ -243,7 +246,7 @@ async def new_v3_pair(event):
     lock = ""
     tax_warning = ""
     if verified == "Yes":
-        print(f'V2 Pair Found')
+        print(f'V3 Pair Found')
         contract = web3.eth.contract(address=token_address, abi=api.get_abi(token_address, "eth"))
         verified = '✅ Contract Verified'
         time.sleep(10)
@@ -282,17 +285,20 @@ async def new_v3_pair(event):
             if "lp_holders" in scan[f'{str(token_address).lower()}']:
                 lp_holders = scan[f'{str(token_address).lower()}']["lp_holders"]
             try:
-                locked_lp_list = [
-                    lp for lp in scan[f'{str(token_address).lower()}']["lp_holders"]
-                    if lp["is_locked"] == 1 and lp["address"] != "0x0000000000000000000000000000000000000000"]
-                if locked_lp_list:
-                    lp_with_locked_detail = [lp for lp in locked_lp_list if "locked_detail" in lp]
-                    if lp_with_locked_detail:
-                        lock =\
-                            f"✅ Liquidity Locked\n{locked_lp_list[0]['tag']} - {locked_lp_list[0]['percent'][:6]}%\n" \
-                            f"Unlock - {locked_lp_list[0]['locked_detail'][0]['end_time']}"
-                    else:
-                        lock = f"✅ Liquidity Locked\n{locked_lp_list[0]['tag']} - {locked_lp_list[0]['percent'][:6]}%\n"
+                if "lp_holder_count" in scan[f'{str(token_address).lower()}']:
+                    locked_lp_list = [
+                        lp for lp in scan[f'{str(token_address).lower()}']["lp_holders"]
+                        if lp["is_locked"] == 1 and lp["address"] != "0x0000000000000000000000000000000000000000"]
+                    if locked_lp_list:
+                        lp_with_locked_detail = [lp for lp in locked_lp_list if "locked_detail" in lp]
+                        if lp_with_locked_detail:
+                            lock =\
+                                f"✅ Liquidity Locked\n{locked_lp_list[0]['tag']} - " \
+                                f"{locked_lp_list[0]['percent'][:6]}%\n" \
+                                f"Unlock - {locked_lp_list[0]['locked_detail'][0]['end_time']}"
+                        else:
+                            lock = f"✅ Liquidity Locked\n{locked_lp_list[0]['tag']} - " \
+                                   f"{locked_lp_list[0]['percent'][:6]}%\n"
                 else:
                     lock = ""
             except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
@@ -381,8 +387,8 @@ async def log_loop(
                 await new_v3_pair(PoolCreated)
                 application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
             await asyncio.sleep(poll_interval)
-            for TokenUnlockTimeExtended in time_lock_filter.get_new_entries():
-                await time_lock_extend(TokenUnlockTimeExtended)
+            for LockExtended in time_lock_filter.get_new_entries():
+                await time_lock_extend(LockExtended)
                 application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
             await asyncio.sleep(poll_interval)
             for LoanOriginated in ill001_filter.get_new_entries():

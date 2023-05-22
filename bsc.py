@@ -14,8 +14,7 @@ import url
 from web3 import Web3
 from web3.exceptions import Web3Exception
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 getblock_url = f'https://bsc.getblock.io/{keys.getblock}'
@@ -253,16 +252,13 @@ async def time_lock_extend(event):
                 f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
 
 async def log_loop(
-        v2_pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, poll_interval):
+        v2_pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval):
     while True:
         try:
             for PairCreated in v2_pair_filter.get_new_entries():
                 await new_pair(PairCreated)
                 application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
             await asyncio.sleep(poll_interval)
-            for TokenUnlockTimeExtended in time_lock_filter.get_new_entries():
-                await time_lock_extend(TokenUnlockTimeExtended)
-                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
             await asyncio.sleep(poll_interval)
             for LoanOriginated in ill001_filter.get_new_entries():
                 await new_loan(LoanOriginated)
@@ -287,12 +283,11 @@ def main():
     ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock='latest')
     ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock='latest')
     ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock='latest')
-    time_lock_filter = ill003.events.LoanOriginated.create_filter(fromBlock='latest')
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     try:
         loop.run_until_complete(asyncio.gather(log_loop(
-            pair_filter, ill001_filter, ill002_filter, ill003_filter, time_lock_filter, 2)))
+            pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)))
     except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
         print(f'Error: {e}')
         loop.close()
