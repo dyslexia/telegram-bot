@@ -5,7 +5,6 @@ import ca
 from datetime import datetime, timedelta, timezone
 from dateutil import parser
 import keys
-import logging
 import pytz
 import loans
 import main
@@ -24,6 +23,9 @@ import pandas as pd
 import pyttsx3
 import url
 import wikipediaapi
+
+async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    return
 
 # COMMANDS
 async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2432,6 +2434,7 @@ async def burn(update: Update, context: ContextTypes.DEFAULT_TYPE):
     im2 = ""
     burn_dollar = ""
     percent = ""
+    native = ""
     if chain == "" or chain == "eth":
         chain_name = "(ETH)"
         chain_url = url.ether_token
@@ -2439,37 +2442,42 @@ async def burn(update: Update, context: ContextTypes.DEFAULT_TYPE):
         percent = round(burn / ca.supply * 100, 2)
         burn_dollar = api.get_cg_price("x7r")["x7r"]["usd"] * float(burn)
         im2 = Image.open(media.eth_logo)
+        native = f'{str(burn_dollar / api.get_native_price("eth"))[:5]} ETH'
     if chain == "bsc" or chain == "bnb":
         chain_name = "(BSC)"
         chain_url = url.bsc_token
         burn = api.get_token_balance(ca.dead, ca.x7r, "bsc")
         percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.bsc_logo)
+        native = f'{str(burn_dollar / api.get_native_price("bnb"))[:7]} BNB'
     if chain == "polygon" or chain == "poly":
         chain_name = "(POLYGON)"
         chain_url = url.poly_token
         burn = api.get_token_balance(ca.dead, ca.x7r, "poly")
         percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.poly_logo)
+        native = f'{str(burn_dollar / api.get_native_price("matic"))[:7]} MATIC'
     if chain == "arbitrum" or chain == "arb":
         chain_name = "(ARB)"
         chain_url = url.arb_token
         burn = api.get_token_balance(ca.dead, ca.x7r, "arb")
         percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.arb_logo)
+        native = f'{str(burn_dollar / api.get_native_price("eth"))[:5]} ETH'
     if chain == "optimism" or chain == "arb":
         chain_name = "(OPTIMISM)"
         chain_url = url.opti_token
         burn = api.get_token_balance(ca.dead, ca.x7r, "opti")
         percent = round(burn / ca.supply * 100, 2)
         im2 = Image.open(media.opti_logo)
+        native = f'{str(burn_dollar / api.get_native_price("eth"))[:5]} ETH'
     im1 = Image.open((random.choice(media.blackhole)))
     im1.paste(im2, (720, 20), im2)
     i1 = ImageDraw.Draw(im1)
     myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
     i1.text((28, 36),
             f'X7R {chain_name} Tokens Burned:\n\n'
-            f'{"{:0,.0f}".format(float(burn))} (${"{:0,.0f}".format(float(burn_dollar))})\n'
+            f'{"{:0,.0f}".format(float(burn))} / {native} (${"{:0,.0f}".format(float(burn_dollar))})\n'
             f'{percent}% of Supply\n\n\n\n\n\n\n\n\n'
             f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
             font=myfont, fill=(255, 255, 255))
@@ -2477,7 +2485,7 @@ async def burn(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'\n\nX7R {chain_name} Tokens Burned:\nUse `/burn [chain-name]` for other chains\n\n'
-                f'{"{:0,.0f}".format(float(burn))} (${"{:0,.0f}".format(float(burn_dollar))})\n'
+                f'{"{:0,.0f}".format(float(burn))} / {native} (${"{:0,.0f}".format(float(burn_dollar))})\n'
                 f'{percent}% of Supply\n\n{api.get_quote()}',
         parse_mode="markdown",
         reply_markup=InlineKeyboardMarkup(
