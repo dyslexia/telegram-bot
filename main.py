@@ -11,11 +11,7 @@ import text
 import times
 import url
 
-async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    return
-
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 print('Bot Restarted')
 
@@ -168,7 +164,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('stop_auto', commands.stop_auto))
     application.add_handler(CommandHandler(['swap', 'xchange', 'dex'], commands.swap))
     application.add_handler(CommandHandler(['tax', 'slippage'], commands.tax_command))
-    application.add_handler(CommandHandler('test', test))
+    application.add_handler(CommandHandler('test', commands.test))
     application.add_handler(CommandHandler(['time', 'clock'], commands.time))
     application.add_handler(CommandHandler('today', commands.today))
     application.add_handler(CommandHandler('token', commands.token))
