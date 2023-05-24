@@ -355,11 +355,4 @@ def get_verified(contract, chain):
 auth = tweepy.OAuthHandler(keys.twitter_api, keys.twitter_api_secret)
 auth.set_access_token(keys.twitter_access, keys.twitter_access_secret)
 twitter = tweepy.API(auth)
-twitter_bearer = tweepy.Client(keys.twitter_bearer)
-
-def get_space(space_id):
-    url = f"https://api.twitter.com/2/spaces/{space_id}?space.fields=scheduled_start,title"
-    headers = {"Authorization": "Bearer {}".format(keys.twitter_bearer), "User-Agent": "v2SpacesLookupPython"}
-    response = requests.request("GET", url, headers=headers)
-    result = response.json()
-    return result["data"]
+twitter_v2 = tweepy.Client(keys.twitter_bearer)

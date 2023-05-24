@@ -186,17 +186,17 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler(['whitepaper', 'wp', 'wpquote'], commands.wp))
     application.job_queue.run_repeating(
         wp_message, times.wp_time * 60 * 60,
-        chat_id=ca.main_id,
+        chat_id=keys.main_id,
         name=str('WP Message'),
         data=times.wp_time * 60 * 60)
     application.job_queue.run_repeating(
         alert_message, times.alert_time * 60 * 60,
-        chat_id=ca.alerts_id,
+        chat_id=keys.alerts_id,
         name=str('Alert Message'),
         data=times.alert_time * 60 * 60)
     application.job_queue.run_repeating(
         raid_message, times.raid_time * 60 * 60,
-        chat_id=ca.main_id,
+        chat_id=keys.main_id,
         first=1800,
         name=str('Raid Message'),
         data=times.raid_time * 60 * 60)

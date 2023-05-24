@@ -18,7 +18,6 @@ import text
 import textwrap
 import times
 from translate import Translator
-import tweepy
 import pandas as pd
 import pyttsx3
 import url
@@ -26,26 +25,7 @@ import wikipediaapi
 import re
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    est_timezone = pytz.timezone('US/Eastern')
-    utc_timezone = pytz.timezone('UTC')
-
-    # Extract the time variable from the message
-    message = update.message.text.split(' ')
-    time_variable = message[1]
-
-    # Parse the time variable to a datetime object
-    est_time = datetime.strptime(time_variable, "%I%p")
-    est_time = est_timezone.localize(est_time)
-
-    # Convert EST time to UTC time
-    utc_time = est_time.astimezone(utc_timezone)
-    utc_time_str = utc_time.strftime("%I %p")
-
-    # Send the converted time as a response
-    response = f"The equivalent UTC time is {utc_time_str}"
-    await update.message.reply_text(
-        f'{response}',
-        parse_mode='Markdown')
+    return
 
 # COMMANDS
 async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -303,29 +283,6 @@ async def discount(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [[InlineKeyboardButton(text='Discount Application', url=url.dac)],
              [InlineKeyboardButton(text='X7 Lending Discount Contract',
                                    url=f'{url.ether_address}{ca.lending_discount}#code')], ]))
-
-async def draw(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    tweet = context.args[0]
-    chat_admins = await update.effective_chat.get_administrators()
-    if update.effective_user in (admin.user for admin in chat_admins):
-        start = tweet.index('status/')
-        end = tweet.index('?', start + 1)
-        tweet_id = tweet[start + 7:end]
-        rt_client = tweepy.Client(keys.twitter_bearer)
-        rt_auth = tweepy.OAuthHandler(keys.twitter_api, keys.twitter_api_secret)
-        rt_auth.set_access_token(keys.twitter_access, keys.twitter_access_secret)
-        twitterapi = tweepy.API(rt_auth)
-        response = rt_client.get_retweeters(tweet_id)
-        status = twitterapi.get_status(tweet_id)
-        retweet_count = status.retweet_count
-        count = '\n'.join(str(p) for p in response.data)
-        await update.message.reply_sticker(sticker=media.twitter_sticker)
-        await update.message.reply_text(
-            f'{retweet_count} Entries:\n\n{count}')
-        await update.message.reply_text(f'The Winner is....\n\n{random.choice(response.data)}\n\n'
-                                        f'Congratulations, Please DM @X7_Finance to verify your account')
-    else:
-        await update.message.reply_text(f'{text.mods_only}')
 
 async def ebb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -1446,10 +1403,8 @@ async def time(update: Update, context: CallbackContext):
         ("Europe/Berlin", "CET"),
         ("Asia/Dubai", "GST"),
         ("Asia/Tokyo", "JST")]
-
     current_time = datetime.now(pytz.timezone("UTC"))
     local_time = current_time.astimezone(pytz.timezone("GMT"))
-
     if len(message) > 1:
         time_variable = message[1]
         time_format = "%I%p"
@@ -1457,7 +1412,6 @@ async def time(update: Update, context: CallbackContext):
             time_format = "%I:%M%p" if re.match(r"\d{1,2}:\d{2}am", time_variable, re.IGNORECASE) else "%I:%M%p"
         input_time = datetime.strptime(time_variable, time_format).replace(
             year=local_time.year, month=local_time.month, day=local_time.day)
-
         if len(message) > 2:
             time_zone = message[2]
             for tz, tz_name in timezones:
@@ -1470,7 +1424,6 @@ async def time(update: Update, context: CallbackContext):
                         time_info += f"{converted_time.strftime('%I:%M %p')} - {tz_name_inner}\n"
                     await update.message.reply_text(time_info, parse_mode="Markdown")
                     return
-
         time_info = f"{input_time.strftime('%A %B %d %Y')}\n"
         time_info += f"{input_time.strftime('%I:%M %p')} - {time_variable.upper()}\n\n"
         for tz, tz_name in timezones:
@@ -1478,14 +1431,12 @@ async def time(update: Update, context: CallbackContext):
             time_info += f"{tz_time.strftime('%I:%M %p')} - {tz_name}\n"
         await update.message.reply_text(time_info, parse_mode="Markdown")
         return
-
     time_info = f"{local_time.strftime('%A %B %d %Y')}\n"
     time_info += f"{local_time.strftime('%I:%M %p')} - {local_time.strftime('%Z')}\n\n"
     for tz, tz_name in timezones:
         tz_time = local_time.astimezone(pytz.timezone(tz))
         time_info += f"{tz_time.strftime('%I:%M %p')} - {tz_name}\n"
     await update.message.reply_text(time_info, parse_mode="Markdown")
-
 
 async def today(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = api.get_today()
@@ -3108,13 +3059,32 @@ async def count(update: Update, context: ContextTypes.DEFAULT_TYPE):
     start = tweet.index('status/')
     end = tweet.index('?', start + 1)
     tweet_id = tweet[start + 7:end]
-    rt_response = api.twitter_bearer.get_retweeters(tweet_id)
+    response = api.twitter_v2.get_retweeters(tweet_id)
     status = api.twitter.get_status(tweet_id)
     retweet_count = status.retweet_count
-    rt_names = '\n'.join(str(p) for p in rt_response.data)
+    rt_names = '\n'.join(str(p) for p in response.data)
     await update.message.reply_sticker(sticker=media.twitter_sticker)
     await update.message.reply_text(
         f'Retweeted {retweet_count} times, by the following members:\n\n{rt_names}')
+
+async def draw(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_admins = await update.effective_chat.get_administrators()
+    if update.effective_user in (admin.user for admin in chat_admins):
+        tweet = context.args[0]
+        start = tweet.index('status/')
+        end = tweet.index('?', start + 1)
+        tweet_id = tweet[start + 7:end]
+        response = api.twitter_v2.get_retweeters(tweet_id)
+        status = api.twitter.get_status(tweet_id)
+        retweet_count = status.retweet_count
+        rt_names = '\n'.join(str(p) for p in response.data)
+        await update.message.reply_sticker(sticker=media.twitter_sticker)
+        await update.message.reply_text(
+            f'{retweet_count} Entries:\n\n{rt_names}')
+        await update.message.reply_text(f'The Winner is....\n\n{random.choice(response.data)}\n\n'
+                                        f'Congratulations, Please DM @X7_Finance to verify your account')
+    else:
+        await update.message.reply_text(f'{text.mods_only}')
 
 async def raid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_admins = await update.effective_chat.get_administrators()
@@ -3131,25 +3101,32 @@ async def raid(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f'{text.mods_only}')
 
 async def spaces(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    response = api.twitter_bearer.get_spaces(user_ids=1561721566689386496)
-    data = str(response[0])
-    start = data.index('=')
-    end = data.index(' ', start)
-    space_id = data[start + 1:end]
-    space = api.get_space(space_id)
-    then = parser.parse(space["scheduled_start"]).astimezone(pytz.utc)
-    now = datetime.now(timezone.utc)
-    duration = then - now
-    duration_in_s = duration.total_seconds()
-    days = divmod(duration_in_s, 86400)
-    hours = divmod(days[1], 3600)
-    minutes = divmod(hours[1], 60)
-    if duration < timedelta(0):
+    response = api.twitter_v2.get_spaces(user_ids=1561721566689386496)
+    if response[0] is None:
         await update.message.reply_photo(
             photo=open((random.choice(media.logos)), 'rb'),
             caption=f'X7 Finance Twitter space\n\nPlease check back for more details'
                     f'\n\n{api.get_quote()}', parse_mode="Markdown")
     else:
+        data = str(response[0])
+        start = data.index('=')
+        end = data.index(' ', start)
+        space_id = data[start + 1:end]
+
+        def get_space():
+            url = f"https://api.twitter.com/2/spaces/{space_id}?space.fields=scheduled_start,title"
+            headers = {"Authorization": "Bearer {}".format(keys.twitter_bearer), "User-Agent": "v2SpacesLookupPython"}
+            response = requests.request("GET", url, headers=headers)
+            result = response.json()
+            return result["data"]
+        space = get_space()
+        then = parser.parse(space["scheduled_start"]).astimezone(pytz.utc)
+        now = datetime.now(timezone.utc)
+        duration = then - now
+        duration_in_s = duration.total_seconds()
+        days = divmod(duration_in_s, 86400)
+        hours = divmod(days[1], 3600)
+        minutes = divmod(hours[1], 60)
         await update.message.reply_sticker(sticker=media.twitter_sticker)
         await update.message.reply_text(
             text=f'Next X7 Finance Twitter space:\n\n'
@@ -3159,10 +3136,11 @@ async def spaces(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  f'[Click here](https://twitter.com/i/spaces/{space_id}) to set a reminder!'
                  f'\n\n{api.get_quote()}', parse_mode="Markdown")
 
+
 async def twitter(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ext = " ".join(context.args)
     username = '@x7_finance'
-    tweet = api.twitter.user_timeline(screen_name=username, count=1)
+    tweet = api.twitter.user_timeline(screen_name=username, count=1, exclude_replies=True, include_rts=False)
     if ext == "":
         await update.message.reply_sticker(sticker=media.twitter_sticker)
         await update.message.reply_text(
@@ -3172,8 +3150,7 @@ async def twitter(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if ext == "count":
         chat_admins = await update.effective_chat.get_administrators()
         if update.effective_user in (admin.user for admin in chat_admins):
-            response = api.twitter_bearer.get_retweeters(tweet[0].id)
-            print(response)
+            response = api.twitter_v2.get_retweeters(tweet[0].id)
             status = api.twitter.get_status(tweet[0].id)
             retweet_count = status.retweet_count
             count = '\n'.join(str(p) for p in response.data)
