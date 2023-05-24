@@ -23,9 +23,29 @@ import pandas as pd
 import pyttsx3
 import url
 import wikipediaapi
+import re
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    return
+    est_timezone = pytz.timezone('US/Eastern')
+    utc_timezone = pytz.timezone('UTC')
+
+    # Extract the time variable from the message
+    message = update.message.text.split(' ')
+    time_variable = message[1]
+
+    # Parse the time variable to a datetime object
+    est_time = datetime.strptime(time_variable, "%I%p")
+    est_time = est_timezone.localize(est_time)
+
+    # Convert EST time to UTC time
+    utc_time = est_time.astimezone(utc_timezone)
+    utc_time_str = utc_time.strftime("%I %p")
+
+    # Send the converted time as a response
+    response = f"The equivalent UTC time is {utc_time_str}"
+    await update.message.reply_text(
+        f'{response}',
+        parse_mode='Markdown')
 
 # COMMANDS
 async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1082,6 +1102,20 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [[InlineKeyboardButton(text='Lending Pool Reserve Contract', url=f'{chain_url}{ca.lpool_reserve}')],
              [InlineKeyboardButton(text='X7 Deposit Contract', url=f'{chain_url}{ca.x7d}#code')], ]))
 
+async def proposal(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_photo(
+        photo=open((random.choice(media.logos)), 'rb'),
+        caption='*Listing proposal:*\n'
+                'X7 Finance does not prioritize paid listings. Instead, for CEXs to acquire the desired supply '
+                'amount needed to list X7 on their exchange, they will need to purchase it from existing markets.\n\n'
+                '*Marketing proposal:*\n'
+                'X7 Finance does not incur expenses for requested marketing activities. Instead, our team leverages '
+                'its extensive network and connections in the market to independently select and collaborate with '
+                'relevant parties.\n\n'
+                'If, despite this information, you still find it necessary to get in touch, you can always send a '
+                'DM to our Twitter account. Please be aware that responses to such DMs are not guaranteed.\n\n'
+                f'{api.get_quote()}', parse_mode="Markdown")
+
 async def potw(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -1090,6 +1124,15 @@ async def potw(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 'Week 15 - @Ahmed812007\n'
                 'Week 17 - @X7Nobody\n\n'
                 f'{api.get_quote()}', parse_mode="Markdown")
+
+async def question(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(f'Thanks {update.effective_message.from_user.username}, '
+                                    f'your question has been received')
+    message = str(update.effective_message.text[9:])
+    await context.bot.send_message(
+        keys.ama_id,
+        f'{message}\n\n'
+        f' - `{update.effective_message.from_user.name}`', parse_mode='Markdown')
 
 async def quote(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
@@ -1299,6 +1342,7 @@ async def snapshot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if duration < timedelta(0):
         countdown = "Vote Closed"
         caption = "View"
+        print(days, hours, minutes)
     else:
         countdown = f'Vote Closing in: {int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes'
         caption = "Vote"
@@ -1392,22 +1436,56 @@ async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'{chain_tax}\n\n{api.get_quote()}',
         parse_mode='Markdown')
 
-async def time(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def time(update: Update, context: CallbackContext):
+    message = update.message.text.split(' ')
     timezones = [
         ("America/Los_Angeles", "PST"),
         ("America/New_York", "EST"),
+        ("UTC", "UTC"),
         ("Europe/London", "GMT"),
         ("Europe/Berlin", "CET"),
         ("Asia/Dubai", "GST"),
-        ("Asia/Tokyo", "JST")
-    ]
-    current_time = datetime.now(timezone.utc)
-    time_info = f"{current_time.strftime('%A %B %d %Y')}\n"
-    time_info += f"{current_time.strftime('%I:%M %p')} - UTC\n\n"
+        ("Asia/Tokyo", "JST")]
+
+    current_time = datetime.now(pytz.timezone("UTC"))
+    local_time = current_time.astimezone(pytz.timezone("GMT"))
+
+    if len(message) > 1:
+        time_variable = message[1]
+        time_format = "%I%p"
+        if re.match(r"\d{1,2}:\d{2}([ap]m)?", time_variable):
+            time_format = "%I:%M%p" if re.match(r"\d{1,2}:\d{2}am", time_variable, re.IGNORECASE) else "%I:%M%p"
+        input_time = datetime.strptime(time_variable, time_format).replace(
+            year=local_time.year, month=local_time.month, day=local_time.day)
+
+        if len(message) > 2:
+            time_zone = message[2]
+            for tz, tz_name in timezones:
+                if time_zone.lower() == tz_name.lower():
+                    tz_time = pytz.timezone(tz).localize(input_time)
+                    time_info = f"{input_time.strftime('%A %B %d %Y')}\n"
+                    time_info += f"{input_time.strftime('%I:%M %p')} - {time_zone.upper()}\n\n"
+                    for tz_inner, tz_name_inner in timezones:
+                        converted_time = tz_time.astimezone(pytz.timezone(tz_inner))
+                        time_info += f"{converted_time.strftime('%I:%M %p')} - {tz_name_inner}\n"
+                    await update.message.reply_text(time_info, parse_mode="Markdown")
+                    return
+
+        time_info = f"{input_time.strftime('%A %B %d %Y')}\n"
+        time_info += f"{input_time.strftime('%I:%M %p')} - {time_variable.upper()}\n\n"
+        for tz, tz_name in timezones:
+            tz_time = input_time.astimezone(pytz.timezone(tz))
+            time_info += f"{tz_time.strftime('%I:%M %p')} - {tz_name}\n"
+        await update.message.reply_text(time_info, parse_mode="Markdown")
+        return
+
+    time_info = f"{local_time.strftime('%A %B %d %Y')}\n"
+    time_info += f"{local_time.strftime('%I:%M %p')} - {local_time.strftime('%Z')}\n\n"
     for tz, tz_name in timezones:
-        tz_time = current_time.astimezone(pytz.timezone(tz))
+        tz_time = local_time.astimezone(pytz.timezone(tz))
         time_info += f"{tz_time.strftime('%I:%M %p')} - {tz_name}\n"
     await update.message.reply_text(time_info, parse_mode="Markdown")
+
 
 async def today(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = api.get_today()
@@ -2742,7 +2820,7 @@ async def mcap(update: Update, context: ContextTypes.DEFAULT_TYPE):
     caps = {}
     for token in tokens:
         caps[token] = price[token]["usd"] * ca.supply
-    cons_cap = sum(caps.values()) - caps["x7r"]
+    cons_cap = sum(caps.values()) - caps["x7r"] - caps["x7dao"]
     total_cap = sum(caps.values())
     im1 = Image.open(random.choice(media.blackhole))
     im2 = Image.open(media.eth_logo)
@@ -3027,7 +3105,6 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # TWITTER COMMANDS
 async def count(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tweet = context.args[0]
-    print(tweet)
     start = tweet.index('status/')
     end = tweet.index('?', start + 1)
     tweet_id = tweet[start + 7:end]
