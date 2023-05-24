@@ -22,13 +22,14 @@ web3 = Web3(Web3.HTTPProvider(infura_url))
 
 factoryv2 = web3.eth.contract(address=ca.uniswapv2, abi=api.get_abi(ca.uniswapv2, "eth"))
 factoryv3 = web3.eth.contract(address=ca.uniswapv3, abi=api.get_abi(ca.uniswapv3, "eth"))
-xchangefactory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.uniswapv2, "eth"))
+
+factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.uniswapv2, "eth"))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "eth"))
 ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "eth"))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "eth"))
 timelock = web3.eth.contract(address=ca.time_lock, abi=api.get_abi(ca.time_lock, "eth"))
 
-async def new_xchange_pair(event):
+async def new_pair(event):
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
     liq = api.get_liquidity(event["args"]["pair"], "eth")
     if event["args"]["token0"] == ca.weth:
@@ -182,7 +183,7 @@ async def new_xchange_pair(event):
              [InlineKeyboardButton(text='Deployer TX', url=f'{url.ether_tx}{event["transactionHash"].hex()}')], ]))
     print(f'V2 Pair sent: ({token_name[1]}/{native[1]})')
 
-async def new_pair(event):
+async def new_v2_pair(event):
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
     liq = api.get_liquidity(event["args"]["pair"], "eth")
     if event["args"]["token0"] == ca.weth:
@@ -529,17 +530,16 @@ async def time_lock_extend(event):
                 f'{time}\n\n'
                 f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
 
-async def log_loop(
-        xchange_pair_filter, v2_pair_filter, v3_pair_filter, ill001_filter, ill002_filter, ill003_filter,
-        time_lock_filter, poll_interval):
+async def log_loop(pair_filter, v2_pair_filter, v3_pair_filter, ill001_filter, ill002_filter, ill003_filter,
+                   time_lock_filter, poll_interval):
     while True:
         try:
-            for PairCreated in xchange_pair_filter.get_new_entries():
+            for PairCreated in pair_filter.get_new_entries():
                 await new_pair(PairCreated)
                 application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
             await asyncio.sleep(poll_interval)
             for PairCreated in v2_pair_filter.get_new_entries():
-                await new_pair(PairCreated)
+                await new_v2_pair(PairCreated)
                 application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
             await asyncio.sleep(poll_interval)
             for PoolCreated in v3_pair_filter.get_new_entries():
@@ -565,23 +565,23 @@ async def log_loop(
         except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
             print(f'Error: {e}')
 
-
-def main():
+async def main():
     print("Scanning ETH Network")
-    xchange_pair_filter = xchangefactory.events.PairCreated.create_filter(fromBlock='latest')
     v2_pair_filter = factoryv2.events.PairCreated.create_filter(fromBlock='latest')
     v3_pair_filter = factoryv3.events.PoolCreated.create_filter(fromBlock='latest')
+
+    pair_filter = factory.events.PairCreated.create_filter(fromBlock='latest')
     ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock='latest')
     ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock='latest')
     ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock='latest')
-    time_lock_filter = ill003.events.LoanOriginated.create_filter(fromBlock='latest')
+    time_lock_filter = timelock.events.TokenUnlockTimeExtended.create_filter(fromBlock='latest')
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     while True:
         try:
-            loop.run_until_complete(asyncio.gather(log_loop(
-                xchange_pair_filter, v2_pair_filter, v3_pair_filter, ill001_filter, ill002_filter, ill003_filter,
-                time_lock_filter, 2)))
+            tasks = [log_loop(pair_filter, v2_pair_filter, v3_pair_filter, ill001_filter, ill002_filter, ill003_filter,
+                     time_lock_filter, 2)]
+            await asyncio.gather(*tasks)
         except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
             print(f'Main Error: {e}')
             break

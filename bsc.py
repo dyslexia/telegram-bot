@@ -3,7 +3,6 @@ from telegram import *
 import api
 import asyncio
 import ca
-from datetime import datetime, timezone
 import keys
 import logging
 import media
@@ -20,28 +19,11 @@ logger = logging.getLogger(__name__)
 getblock_url = f'https://bsc.getblock.io/{keys.getblock}'
 web3 = Web3(Web3.HTTPProvider(getblock_url))
 
-factory = web3.eth.contract(address=ca.pancake, abi=api.get_abi(ca.pancake, "bsc"))
+factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.uniswapv2, "eth"))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "bsc"))
 ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "bsc"))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "bsc"))
 time_lock = web3.eth.contract(address=ca.time_lock, abi=api.get_abi(ca.time_lock, "bsc"))
-
-async def new_loan(event):
-    im1 = Image.open((random.choice(media.blackhole)))
-    im2 = Image.open(media.eth_logo)
-    im1.paste(im2, (720, 20), im2)
-    myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
-    i1 = ImageDraw.Draw(im1)
-    i1.text((26, 30),
-            f'New Loan Originated (ETH)\n\n{event["loanID"]}\n\n'
-            f'https://etherscan.io/tx/{event["transactionHash"].hex()}',
-            font=myfont, fill=(255, 255, 255))
-    im1.save(r"media\blackhole.png")
-    await application.bot.send_photo(
-        "-1001780235511",
-        photo=open(r"media\blackhole.png", 'rb'),
-        caption=f'*New Loan Originated (ETH)*\n\n{event["loanID"]}\n\n'
-                f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
 
 async def new_pair(event):
     print("Pair found")
@@ -119,11 +101,11 @@ async def new_pair(event):
     lock = ""
     tax_warning = ""
     if verified == "Yes":
-        print(f'V2 Pair Found')
-        contract = web3.eth.contract(address=token_address, abi=api.get_abi(token_address, "eth"))
+        print(f'Pair Found')
+        contract = web3.eth.contract(address=token_address, abi=api.get_abi(token_address, "bsc"))
         verified = '✅ Contract Verified'
         time.sleep(10)
-        scan = api.get_scan(token_address, "eth")
+        scan = api.get_scan(token_address, "bsc")
         if scan[f'{str(token_address).lower()}']["is_open_source"] == "1":
             try:
                 if scan[f'{str(token_address).lower()}']["slippage_modifiable"] == "1":
@@ -211,7 +193,7 @@ async def new_pair(event):
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
-        keys.alerts_id,
+        keys.main_id,
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*New Pair Created (BSC)*\n\n'
                 f'{token_name[0]} ({token_name[1]}/{native[1]})\n\n'
@@ -228,37 +210,29 @@ async def new_pair(event):
              [InlineKeyboardButton(text='Deployer TX', url=f'{url.bsc_tx}{event["transactionHash"].hex()}')], ]))
     print(f'V2 Pair sent: ({token_name[1]}/{native[1]})')
 
-async def time_lock_extend(event):
-    token_name = api.get_token_name(event["args"]["tokenAddress"], "eth")
-    time = datetime.fromtimestamp(event["tokenAddress"], timezone.utc)
+async def new_loan(event):
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
     myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
     i1 = ImageDraw.Draw(im1)
     i1.text((26, 30),
-            f'Token Unlock Time Extended (ETH)\n\n*{token_name}*\n\n'
-            f'{event["tokenAddress"]}\n'
-            f'{time}\n\n'
+            f'New Loan Originated (ETH)\n\n{event["loanID"]}\n\n'
             f'https://etherscan.io/tx/{event["transactionHash"].hex()}',
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
-        "-1001780235511",
-        photo=open(r"media\blackhole.png"),
-        caption=f'*Token Unlock Time Extended (ETH)*\n\n*{token_name}*\n\n'
-                f'{event["tokenAddress"]}\n'
-                f'{time}\n\n'
+        keys.main_id,
+        photo=open(r"media\blackhole.png", 'rb'),
+        caption=f'*New Loan Originated (ETH)*\n\n{event["loanID"]}\n\n'
                 f'https://etherscan.io/tx/{event["transactionHash"].hex()}', parse_mode='Markdown')
 
-async def log_loop(
-        v2_pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval):
+async def log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval):
     while True:
         try:
-            for PairCreated in v2_pair_filter.get_new_entries():
+            for PairCreated in pair_filter.get_new_entries():
                 await new_pair(PairCreated)
                 application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
-            await asyncio.sleep(poll_interval)
             await asyncio.sleep(poll_interval)
             for LoanOriginated in ill001_filter.get_new_entries():
                 await new_loan(LoanOriginated)
@@ -285,15 +259,13 @@ def main():
     ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock='latest')
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    try:
-        loop.run_until_complete(asyncio.gather(log_loop(
-            pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)))
-    except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-        print(f'Error: {e}')
-        loop.close()
-        asyncio.run(main())
-    finally:
-        loop.close()
+    while True:
+        try:
+            tasks = [log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)]
+            await asyncio.gather(*tasks)
+        except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+            print(f'Main Error: {e}')
+            break
 
 
 if __name__ == "__main__":
