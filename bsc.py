@@ -211,7 +211,7 @@ async def new_pair(event):
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
-        ca.alerts_id,
+        keys.alerts_id,
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*New Pair Created (BSC)*\n\n'
                 f'{token_name[0]} ({token_name[1]}/{native[1]})\n\n'
