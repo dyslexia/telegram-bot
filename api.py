@@ -13,6 +13,13 @@ def get_abi(contract, chain):
         url = f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address=" + contract + keys.ether
     if chain == "bsc":
         url = f"https://api.bscscan.com/api?module=contract&action=getsourcecode&address=" + contract + keys.bsc
+    if chain == "arb":
+        url = f"https://api.arbiscan.io/api?module=contract&action=getsourcecode&address=" + contract + keys.arb
+    if chain == "opti":
+        url = f"https://api-optimistic.etherscan.io/api?module=contract&action=getsourcecode&address="\
+              + contract + keys.opti
+    if chain == "poly":
+        url = f"https://api.polygonscan.com/api?module=contract&action=getsourcecode&address=" + contract + keys.poly
     response = requests.get(url)
     data = response.json()
     result = data["result"][0]["ABI"]
@@ -221,6 +228,12 @@ def get_scan(token, chain):
         chain_number = 1
     if chain == "bsc":
         chain_number = 56
+    if chain == "arb":
+        chain_number = 42161
+    if chain == "opti":
+        chain_number = 10
+    if chain == "poly":
+        chain_number = 137
     url = f"https://api.gopluslabs.io/api/v1/token_security/{chain_number}?contract_addresses={token}"
     response = requests.get(url)
     data = response.json()
@@ -247,6 +260,13 @@ def get_supply(token, chain):
         url = f'https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress={token}{keys.ether}'
     if chain == "bsc":
         url = f'https://api.bscscan.com/api?module=stats&action=tokensupply&contractaddress={token}{keys.bsc}'
+    if chain == "arb":
+        url = f'https://api.arbiscan.io/api?module=stats&action=tokensupply&contractaddress={token}{keys.arb}'
+    if chain == "opti":
+        url = f'https://api.optimistic-etherscan.io/api?module=stats&action=tokensupply&contractaddress={token}' \
+              f'{keys.opti}'
+    if chain == "poly":
+        url = f'https://api.polygonscan.com/api?module=stats&action=tokensupply&contractaddress={token}{keys.poly}'
     response = requests.get(url)
     data = response.json()
     result = data["result"]
@@ -308,6 +328,12 @@ def get_token_data(token, chain):
     return result
 
 def get_token_name(token, chain):
+    if chain == "poly":
+        chain = "polygon"
+    if chain == "arb":
+        chain = "arbitrum"
+    else:
+        chain = chain
     result = evm_api.token.get_token_metadata(
         api_key=keys.moralis, params={"addresses": [f"{token}"], "chain": chain})
     return result[0]["name"], result[0]["symbol"]
