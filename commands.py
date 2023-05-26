@@ -1404,7 +1404,7 @@ async def time(update: Update, context: CallbackContext):
         ("Asia/Dubai", "GST"),
         ("Asia/Tokyo", "JST")]
     current_time = datetime.now(pytz.timezone("UTC"))
-    local_time = current_time.astimezone(pytz.timezone("GMT"))
+    local_time = current_time.astimezone(pytz.timezone("UTC"))
     if len(message) > 1:
         time_variable = message[1]
         time_format = "%I%p"
