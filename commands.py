@@ -230,7 +230,7 @@ async def deployer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     hours = divmod(days[1], 3600)
     minutes = divmod(hours[1], 60)
     if str(tx["result"][0]["to"]).lower() == "0x000000000000000000000000000000000000dead":
-        message = bytes.fromhex(tx[0]["input"][2:]).decode('utf-8')
+        message = bytes.fromhex(tx["result"][0]["input"][2:]).decode('utf-8')
         await update.message.reply_text(
             f'*Last On Chain Message:*\n\n{time} (UTC)\n'
             f'{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes ago:\n\n'
