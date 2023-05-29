@@ -712,8 +712,8 @@ async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
         dex_price = nfts.dex_price_eth
         liq_price = nfts.liq_price_eth
         magister_price = nfts.magister_price_eth
-        await update.message.reply_video(
-            video=open(media.nft_logo, 'rb'),
+        await update.message.reply_photo(
+            photo=open((random.choice(media.logos)), 'rb'),
             caption=f'*X7 Finance NFT Information {chain_name}*\nUse `/nft [chain-name]` for other chains\n\n'
                     f'*Ecosystem Maxi*\n{eco_price}\n'
                     f'Available - {500 - eco_count}\n'
@@ -800,8 +800,8 @@ async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
         dex_price = nfts.dex_price_arb
         liq_price = nfts.liq_price_arb
         magister_price = nfts.magister_price_arb
-    await update.message.reply_video(
-        video=open(media.nft_logo, 'rb'),
+    await update.message.reply_photo(
+        photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance NFT Information {chain_name}*\nUse `/nft [chain-name]` for other chains\n\n'
                 f'*Ecosystem Maxi*\n{eco_price}\n'
                 f'Available - {500 - eco_count}\n'
@@ -907,7 +907,7 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
         i1.text(
             (28, 36),
             f"X7 Pioneer NFT Info\n\n"
-            f"Floor Price: {floor} ETH (${'{:0,.0f}'.format(floor_dollar)})\n"
+            f"LooksRare Floor Price: {floor} ETH (${'{:0,.0f}'.format(floor_dollar)})\n"
             f"Average Price: {price} ETH (${'{:0,.0f}'.format(price_dollar)})\n"
             f"Market Cap: {cap} ETH (${'{:0,.0f}'.format(cap_dollar)})\n"
             f"Total Volume: {volume} ETH (${'{:0,.0f}'.format(volume_dollar)})\n"
@@ -923,7 +923,7 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", "rb"),
             caption=f"*X7 Pioneer NFT Info*\n\n"
-            f"Floor Price: {floor} ETH (${'{:0,.0f}'.format(floor_dollar)})\n"
+            f"LooksRare Floor Price: {floor} ETH (${'{:0,.0f}'.format(floor_dollar)})\n"
             f"Average Price: {price} ETH (${'{:0,.0f}'.format(price_dollar)})\n"
             f"Market Cap: {cap} ETH (${'{:0,.0f}'.format(cap_dollar)})\n"
             f"Total Volume: {volume} ETH (${'{:0,.0f}'.format(volume_dollar)})\n"
@@ -934,7 +934,11 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
             parse_mode="markdown",
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text="X7 Pioneer Dashboard", url="https://x7.finance/x/nft/pioneer")],
-                 [InlineKeyboardButton(text="Blur Marketplace",
+                 [InlineKeyboardButton(text="LooksRare",
+                                       url=f'https://looksrare.org/collections/{ca.pioneer}?filters=%7B%22attributes'
+                                           f'%22%3A%5B%7B%22traitType%22%3A%22Transfer+Lock+Status%22%2C%22values'
+                                           f'%22%3A%5B%22Unlocked%22%5D%7D%5D%7D')],
+                 [InlineKeyboardButton(text="Blur.io",
                                        url="https://blur.io/collection/x7-pioneer"
                                            "?traits=%7B%22Transfer%20Lock%20Status%22%3A%5B%22Unlocked%22%5D%7D")], ]))
     else:
@@ -948,12 +952,16 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
         await update.message.reply_text(
             f"*X7 Pioneer {pioneer_id} NFT Info*\n\n"
             f"Transfer Lock Status: {status}\n\n"
-            f"https://opensea.io/assets/ethereum/0x70000299ee8910ccacd97b1bb560e34f49c9e4f7/{pioneer_id}\n\n"
+            f"https://looksrare.org/collections/0x70000299ee8910ccacd97b1bb560e34f49c9e4f7/{pioneer_id}\n\n"
             f"{api.get_quote()}",
             parse_mode="markdown",
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text="X7 Pioneer Dashboard", url="https://x7.finance/x/nft/pioneer")],
-                 [InlineKeyboardButton(text="Blur Marketplace",
+                 [InlineKeyboardButton(text="LooksRare",
+                                       url=f'https://looksrare.org/collections/{ca.pioneer}?filters=%7B%22attributes'
+                                           f'%22%3A%5B%7B%22traitType%22%3A%22Transfer+Lock+Status%22%2C%22values'
+                                           f'%22%3A%5B%22Unlocked%22%5D%7D%5D%7D')],
+                 [InlineKeyboardButton(text="Blur.io",
                                        url="https://blur.io/collection/x7-pioneer?"
                                            "traits=%7B%22Transfer%20Lock%20Status%22%3A%5B%22Unlocked%22%5D%7D")], ]))
 

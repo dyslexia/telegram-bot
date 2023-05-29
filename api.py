@@ -159,8 +159,7 @@ def get_nft_floor(nft, chain):
     url = 'https://api.blockspan.com/v1/collections/contract/' + nft + chain
     response = requests.get(url, headers={"accept": "application/json", "X-API-KEY": keys.blockspan})
     data = response.json()
-    amount = data
-    return amount["exchange_data"][0]["stats"]["floor_price"]
+    return data["exchange_data"][0]["stats"]["floor_price"]
 
 def get_nft_price(nft, chain):
     if chain == "eth":
