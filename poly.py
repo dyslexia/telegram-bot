@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 alchemy_poly_url = f'https://polygon-mainnet.g.alchemy.com/v2/{keys.alchemy_poly}'
 web3 = Web3(Web3.HTTPProvider(alchemy_poly_url))
 
-factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.uniswapv2, "eth"))
+factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "poly"))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "poly"))
 ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "poly"))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "poly"))
@@ -97,6 +97,8 @@ async def new_pair(event):
             owner = contract.functions.owner().call()
             if owner == "0x0000000000000000000000000000000000000000":
                 renounced = '✅ Contract Renounced'
+            else:
+                renounced = '⚠️ Contract Not Renounced'
         except (Exception, TimeoutError, ValueError, StopAsyncIteration):
             print('Owner Error')
     time.sleep(10)

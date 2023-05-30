@@ -19,12 +19,14 @@ logger = logging.getLogger(__name__)
 infura_url = f'https://mainnet.infura.io/v3/{keys.infura}'
 web3 = Web3(Web3.HTTPProvider(infura_url))
 
-factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.uniswapv2, "eth"))
+factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "eth"))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "eth"))
 ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "eth"))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "eth"))
 
 async def new_pair(event):
+    print("Pair found")
+    print(event)
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
     liq = api.get_liquidity(event["args"]["pair"], "eth")
     if event["args"]["token0"] == ca.weth:
@@ -71,7 +73,6 @@ async def new_pair(event):
     tax = ""
     tax_warning = ""
     verified = ""
-    print(f'Pair Found')
     if verified_check == "No":
         verified = '⚠️ Contract Unverified'
     if verified_check == "Yes":
@@ -82,7 +83,7 @@ async def new_pair(event):
             if owner == "0x0000000000000000000000000000000000000000":
                 renounced = '✅ Contract Renounced'
             else:
-                renounced = ''
+                renounced = '⚠️ Contract Not Renounced'
         except (Exception, TimeoutError, ValueError, StopAsyncIteration):
             print('Owner Error')
     time.sleep(10)

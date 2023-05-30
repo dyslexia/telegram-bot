@@ -19,13 +19,14 @@ logger = logging.getLogger(__name__)
 getblock_url = f'https://bsc.getblock.io/{keys.getblock}'
 web3 = Web3(Web3.HTTPProvider(getblock_url))
 
-factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.uniswapv2, "bsc"))
+factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "bsc"))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "bsc"))
 ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "bsc"))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "bsc"))
 
 async def new_pair(event):
     print("Pair found")
+    print(event)
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "bsc")
     liq = api.get_liquidity(event["args"]["pair"], "bsc")
     if event["args"]["token0"] == ca.wbnb:
@@ -100,7 +101,6 @@ async def new_pair(event):
     tax = ""
     tax_warning = ""
     verified = ""
-    print(f'Pair Found')
     if verified_check == "No":
         verified = '⚠️ Contract Unverified'
     if verified_check == "Yes":
@@ -111,7 +111,7 @@ async def new_pair(event):
             if owner == "0x0000000000000000000000000000000000000000":
                 renounced = '✅ Contract Renounced'
             else:
-                renounced = ''
+                renounced = '⚠️ Contract Not Renounced'
         except (Exception, TimeoutError, ValueError, StopAsyncIteration):
             print('Owner Error')
     time.sleep(10)
@@ -248,7 +248,7 @@ async def log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, pol
                 application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
             await asyncio.sleep(poll_interval)
         except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-            print(f'Loop Error: {e}')
+            print(f'Error: {e}')
 
 async def main():
     print("Scanning BSC Network")
@@ -268,5 +268,6 @@ async def main():
 
 
 if __name__ == "__main__":
+
     application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
     asyncio.run(main())
