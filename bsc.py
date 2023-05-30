@@ -16,10 +16,10 @@ from web3.exceptions import Web3Exception
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-getblock_url = f'https://bsc.getblock.io/{keys.getblock}'
+getblock_url = "https://bsc-dataseed.binance.org/"
 web3 = Web3(Web3.HTTPProvider(getblock_url))
 
-factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "bsc"))
+factory = web3.eth.contract(address=ca.pancake, abi=api.get_abi(ca.pancake, "bsc"))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "bsc"))
 ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "bsc"))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "bsc"))
@@ -233,19 +233,19 @@ async def log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, pol
         try:
             for PairCreated in pair_filter.get_new_entries():
                 await new_pair(PairCreated)
-                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+#                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
             await asyncio.sleep(poll_interval)
             for LoanOriginated in ill001_filter.get_new_entries():
                 await new_loan(LoanOriginated)
-                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+#                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
             await asyncio.sleep(poll_interval)
             for LoanOriginated in ill002_filter.get_new_entries():
                 await new_loan(LoanOriginated)
-                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+#                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
             await asyncio.sleep(poll_interval)
             for LoanOriginated in ill003_filter.get_new_entries():
                 await new_loan(LoanOriginated)
-                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+#                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
             await asyncio.sleep(poll_interval)
         except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
             print(f'Error: {e}')
@@ -268,6 +268,6 @@ async def main():
 
 
 if __name__ == "__main__":
-
-    application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+    application = ApplicationBuilder().token(keys.token).build()
+#    application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
     asyncio.run(main())
