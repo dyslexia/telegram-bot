@@ -137,7 +137,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('launch', commands.launch))
     application.add_handler(CommandHandler(['links', 'socials'], commands.links))
     application.add_handler(CommandHandler('liquidity', commands.liquidity))
-    application.add_handler(CommandHandler(['loans', 'borrow'], commands.loans))
+    application.add_handler(CommandHandler(['loans', 'borrow'], commands.loans_command))
     application.add_handler(CommandHandler('magisters', commands.magisters))
     application.add_handler(CommandHandler(['mcap', 'marketcap', 'cap'], commands.mcap))
     application.add_handler(CommandHandler('media', commands.media_command))

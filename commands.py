@@ -25,8 +25,7 @@ import wikipediaapi
 import re
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    abi = api.get_abi(ca.pancake, "bsc")
-    print(abi)
+    return
 
 # COMMANDS
 async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
