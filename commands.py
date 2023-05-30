@@ -25,7 +25,8 @@ import wikipediaapi
 import re
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    return
+    abi = api.get_abi(ca.pancake, "bsc")
+    print(abi)
 
 # COMMANDS
 async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -958,12 +959,9 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text="X7 Pioneer Dashboard", url="https://x7.finance/x/nft/pioneer")],
                  [InlineKeyboardButton(text="LooksRare",
-                                       url=f'https://looksrare.org/collections/{ca.pioneer}?filters=%7B%22attributes'
-                                           f'%22%3A%5B%7B%22traitType%22%3A%22Transfer+Lock+Status%22%2C%22values'
-                                           f'%22%3A%5B%22Unlocked%22%5D%7D%5D%7D')],
+                                       url=f'https://looksrare.org/collections/{ca.pioneer}/{pioneer_id}')],
                  [InlineKeyboardButton(text="Blur.io",
-                                       url="https://blur.io/collection/x7-pioneer?"
-                                           "traits=%7B%22Transfer%20Lock%20Status%22%3A%5B%22Unlocked%22%5D%7D")], ]))
+                                       url=f"https://blur.io/asset/{ca.pioneer}/{pioneer_id}")], ]))
 
 async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -1104,11 +1102,11 @@ async def proposal(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def potw(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
-        caption='*Pioneer Of The Week*\n\n'
+        caption='Pioneer Of The Week\n\n'
                 'The following Pioneers have shown exemplary contributions towards X7 Finance\n\n'
                 'Week 15 - @Ahmed812007\n'
-                'Week 17 - @X7Nobody\n\n'
-                f'{api.get_quote()}', parse_mode="Markdown")
+                'Week 17 - @X7Nobody\n'
+                'Week 22 - @X7_Maxi\n\n')
 
 async def question(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f'Thanks {update.effective_message.from_user.username}, '
@@ -1138,23 +1136,26 @@ async def roadmap(update: Update, context: ContextTypes.DEFAULT_TYPE):
     out = Image.open((random.choice(media.blackhole)))
     im1 = ImageDraw.Draw(out)
     myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
-    ws1 = draw_progress_bar(im1, 80, 80, 200, 25, text.ws1)
-    ws2 = draw_progress_bar(im1, 80, 180, 200, 25, text.ws2)
-    ws3 = draw_progress_bar(im1, 80, 280, 200, 25, text.ws3)
-    ws4 = draw_progress_bar(im1, 80, 380, 200, 25, text.ws4)
-    ws5 = draw_progress_bar(im1, 80, 480, 200, 25, text.ws5)
-    ws6 = draw_progress_bar(im1, 480, 80, 200, 25, text.ws6)
-    ws7 = draw_progress_bar(im1, 480, 180, 200, 25, text.ws7)
-    ws8 = draw_progress_bar(im1, 480, 280, 200, 25, text.ws8)
-    ws9 = draw_progress_bar(im1, 480, 380, 200, 25, text.ws9)
+    ws1_1 = draw_progress_bar(im1, 80, 80, 200, 25, text.ws1_1)
+    ws1_2 = draw_progress_bar(im1, 80, 180, 200, 25, text.ws1_2)
+    ws2 = draw_progress_bar(im1, 80, 280, 200, 25, text.ws2)
+    ws3 = draw_progress_bar(im1, 80, 380, 200, 25, text.ws3)
+    ws4 = draw_progress_bar(im1, 80, 480, 200, 25, text.ws4)
+    ws5 = draw_progress_bar(im1, 480, 80, 200, 25, text.ws5)
+    ws6 = draw_progress_bar(im1, 480, 180, 200, 25, text.ws6)
+    ws7 = draw_progress_bar(im1, 480, 280, 200, 25, text.ws7)
+    ws8 = draw_progress_bar(im1, 480, 380, 200, 25, text.ws8)
+
+    ws9 = draw_progress_bar(im1, 480, 480, 200, 25, text.ws9)
     im1.text((80, 36),
-             f'WS 1 - {text.ws1 * 100}% \n\n\n'
+             f'WS 1.1 - {text.ws1_1 * 100}% \n\n\n'
+             f'WS 1.2 - {text.ws1_2 * 100}% \n\n\n'
              f'WS 2 - {text.ws2 * 100}% \n\n\n'
              f'WS 3 - {text.ws3 * 100}% \n\n\n'
-             f'WS 4 - {text.ws4 * 100}% \n\n\n'
-             f'WS 5 - {text.ws5 * 100}% \n\n\n',
+             f'WS 4 - {text.ws4 * 100}% \n\n\n',
              font=myfont, fill=(255, 255, 255))
     im1.text((480, 36),
+             f'WS 5 - {text.ws5 * 100}% \n\n\n'
              f'WS 6 - {text.ws6 * 100}%\n\n\n'
              f'WS 7 - {text.ws7 * 100}%\n\n\n'
              f'WS 8 - {text.ws8 * 100}%\n\n\n'
@@ -1164,7 +1165,8 @@ async def roadmap(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*X7 Finance Work Stream Status*\n\n'
-                f'WS1: Omni routing (multi dex routing "library" code) - {text.ws1*100}% \n\n'
+                f'WS1.1: Omni routing (multi dex routing "library" code) - {text.ws1_1*100}% \n\n'
+                f'WS1.2: Omni routing (multi dex routing "select" code) - {text.ws1_2*100}% \n\n'
                 f'WS2: Omni routing (UI) - {text.ws2*100}% \n\n'
                 f'WS3: Borrowing UI - {text.ws3*100}% \n\n'
                 f'WS4: Lending and Liquidation UI - {text.ws4*100}% \n\n'
