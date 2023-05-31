@@ -28,7 +28,11 @@ async def new_pair(event):
     print("Pair found")
     print(event)
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
-    liq = api.get_liquidity(event["args"]["pair"], "eth")
+    liq = {"reserve0": 0, "reserve1": 0}
+    try:
+        liq = api.get_liquidity(event["args"]["pair"], "eth")
+    except (Exception, TimeoutError, ValueError, StopAsyncIteration):
+        print('Liquidity Error')
     if event["args"]["token0"] == ca.weth:
         native = api.get_token_name(event["args"]["token0"], "eth")
         token_name = api.get_token_name(event["args"]["token1"], "eth")
@@ -87,62 +91,66 @@ async def new_pair(event):
         except (Exception, TimeoutError, ValueError, StopAsyncIteration):
             print('Owner Error')
     time.sleep(10)
-    scan = api.get_scan(token_address, "eth")
-    if scan[f'{str(token_address).lower()}']["is_open_source"] == "1":
-        try:
-            if scan[f'{str(token_address).lower()}']["slippage_modifiable"] == "1":
-                tax_warning = "(Changeable)"
-            else:
-                tax_warning = ""
-            if scan[f'{str(token_address).lower()}']["is_honeypot"] == "1":
-                print('Skip - Honey Pot')
-                return
-            if scan[f'{str(token_address).lower()}']["is_mintable"] == "1":
-                print('Skip - Mintable')
-                return
-        except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-            print(f'Initial Scan Error: {e}')
-    if scan[f'{str(token_address).lower()}']["is_in_dex"] == "1":
-        try:
-            if scan[f'{str(token_address).lower()}']["sell_tax"] == "1"\
-                    or scan[f'{str(token_address).lower()}']["buy_tax"] == "1":
-                print('Skip - Cannot Buy')
-                return
-            buy_tax_raw = float(scan[f'{str(token_address).lower()}']["buy_tax"]) * 100
-            sell_tax_raw = float(scan[f'{str(token_address).lower()}']["sell_tax"]) * 100
-            buy_tax = int(buy_tax_raw)
-            sell_tax = int(sell_tax_raw)
-            if sell_tax > 10 or buy_tax > 10:
-                tax = f'⚠️ Tax: {buy_tax}/{sell_tax} {tax_warning}'
-            else:
-                tax = f'✅️ Tax: {buy_tax}/{sell_tax} {tax_warning}'
-        except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-            print(f'Tax Error: {e}')
+    try:
+        scan = api.get_scan(token_address, "eth")
+        if scan[f'{str(token_address).lower()}']["is_open_source"] == "1":
+            try:
+                if scan[f'{str(token_address).lower()}']["slippage_modifiable"] == "1":
+                    tax_warning = "(Changeable)"
+                else:
+                    tax_warning = ""
+                if scan[f'{str(token_address).lower()}']["is_honeypot"] == "1":
+                    print('Skip - Honey Pot')
+                    return
+                if scan[f'{str(token_address).lower()}']["is_mintable"] == "1":
+                    print('Skip - Mintable')
+                    return
+            except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+                print(f'Initial Scan Error: {e}')
+        if scan[f'{str(token_address).lower()}']["is_in_dex"] == "1":
+            try:
+                if scan[f'{str(token_address).lower()}']["sell_tax"] == "1"\
+                        or scan[f'{str(token_address).lower()}']["buy_tax"] == "1":
+                    print('Skip - Cannot Buy')
+                    return
+                buy_tax_raw = float(scan[f'{str(token_address).lower()}']["buy_tax"]) * 100
+                sell_tax_raw = float(scan[f'{str(token_address).lower()}']["sell_tax"]) * 100
+                buy_tax = int(buy_tax_raw)
+                sell_tax = int(sell_tax_raw)
+                if sell_tax > 10 or buy_tax > 10:
+                    tax = f'⚠️ Tax: {buy_tax}/{sell_tax} {tax_warning}'
+                else:
+                    tax = f'✅️ Tax: {buy_tax}/{sell_tax} {tax_warning}'
+            except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+                print(f'Tax Error: {e}')
+                tax = f'⚠️ Tax: Unavailable {tax_warning}'
+            if "lp_holders" in scan[f'{str(token_address).lower()}']:
+                lp_holders = scan[f'{str(token_address).lower()}']["lp_holders"]
+            try:
+                if "lp_holder_count" in scan[f'{str(token_address).lower()}']:
+                    locked_lp_list = [
+                        lp for lp in scan[f'{str(token_address).lower()}']["lp_holders"]
+                        if lp["is_locked"] == 1 and lp["address"] != "0x0000000000000000000000000000000000000000"]
+                    if locked_lp_list:
+                        lp_with_locked_detail = [lp for lp in locked_lp_list if "locked_detail" in lp]
+                        if lp_with_locked_detail:
+                            lock =\
+                                f"✅ Liquidity Locked\n{locked_lp_list[0]['tag']} - " \
+                                f"{locked_lp_list[0]['percent'][:6]}%\n" \
+                                f"Unlock - {locked_lp_list[0]['locked_detail'][0]['end_time']}"
+                        else:
+                            lock = f"✅ Liquidity Locked\n{locked_lp_list[0]['tag']} - " \
+                                   f"{locked_lp_list[0]['percent'][:6]}%\n"
+                else:
+                    lock = ""
+            except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+                print(f'Liquidity Error: {e}')
+        else:
             tax = f'⚠️ Tax: Unavailable {tax_warning}'
-        if "lp_holders" in scan[f'{str(token_address).lower()}']:
-            lp_holders = scan[f'{str(token_address).lower()}']["lp_holders"]
-        try:
-            if "lp_holder_count" in scan[f'{str(token_address).lower()}']:
-                locked_lp_list = [
-                    lp for lp in scan[f'{str(token_address).lower()}']["lp_holders"]
-                    if lp["is_locked"] == 1 and lp["address"] != "0x0000000000000000000000000000000000000000"]
-                if locked_lp_list:
-                    lp_with_locked_detail = [lp for lp in locked_lp_list if "locked_detail" in lp]
-                    if lp_with_locked_detail:
-                        lock =\
-                            f"✅ Liquidity Locked\n{locked_lp_list[0]['tag']} - " \
-                            f"{locked_lp_list[0]['percent'][:6]}%\n" \
-                            f"Unlock - {locked_lp_list[0]['locked_detail'][0]['end_time']}"
-                    else:
-                        lock = f"✅ Liquidity Locked\n{locked_lp_list[0]['tag']} - " \
-                               f"{locked_lp_list[0]['percent'][:6]}%\n"
-            else:
-                lock = ""
-        except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-            print(f'Liquidity Error: {e}')
-    else:
-        tax = f'⚠️ Tax: Unavailable {tax_warning}'
-    status = f'{verified}\n{tax}\n{renounced}\n{lock}'
+        status = f'{verified}\n{tax}\n{renounced}\n{lock}'
+    except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+        print(f'Scan Error: {e}')
+        status = '⚠️ Scan Unavailable'
     pool = int(tx["result"]["value"], 0) / 10 ** 18
     if pool == 0 or pool == "" or not pool:
         pool_text = "Launched Pool Amount: Unavailable"
@@ -167,7 +175,7 @@ async def new_pair(event):
     await application.bot.send_photo(
         keys.alerts_id,
         photo=open(r"media\blackhole.png", 'rb'),
-        caption=f'*New Pair Created (Xchange ETH)*\n\n'
+        caption=f'*New Pair Created (ETH)*\n\n'
                 f'{token_name[0]} ({token_name[1]}/{native[1]})\n\n'
                 f'Token Address:\n`{token_address}`\n\n'
                 f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
