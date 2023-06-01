@@ -191,20 +191,25 @@ async def new_pair(event):
     print(f'Pair sent: ({token_name[1]}/{native[1]})')
 
 async def new_loan(event):
+    print(event)
+    tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
+    print(tx)
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
     myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
     i1 = ImageDraw.Draw(im1)
     i1.text((26, 30),
-            f'New Loan Originated (ETH)\n\n{event["loanID"]}\n\n'
+            f'New Loan Originated (ETH)\n\n'
+            f'Loan ID: {event["args"]["loanID"]}\n\n'
             f'{url.ether_tx}{event["transactionHash"].hex()}',
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
         keys.alerts_id,
         photo=open(r"media\blackhole.png", 'rb'),
-        caption=f'*New Loan Originated (ETH)*\n\n{event["loanID"]}\n\n'
+        caption=f'*New Loan Originated (ETH)*\n\n'
+                f'Loan ID: {event["args"]["loanID"]}\n\n'
                 f'{url.ether_tx}{event["transactionHash"].hex()}', parse_mode='Markdown')
 
 async def log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval):

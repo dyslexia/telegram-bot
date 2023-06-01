@@ -212,14 +212,16 @@ async def new_loan(event):
     myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
     i1 = ImageDraw.Draw(im1)
     i1.text((26, 30),
-            f'New Loan Originated (POLYGON)\n\n{event["loanID"]}\n\n'
+            f'New Loan Originated (POLYGON)\n\n'
+            f'Loan ID: {event["args"]["loanID"]}\n\n'
             f'{url.poly_tx}{event["transactionHash"].hex()}',
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
         keys.alerts_id,
         photo=open(r"media\blackhole.png", 'rb'),
-        caption=f'*New Loan Originated (POLYGON)*\n\n{event["loanID"]}\n\n'
+        caption=f'*New Loan Originated (POLYGON)*\n\n'
+                f'Loan ID: {event["args"]["loanID"]}\n\n'
                 f'{url.poly_tx}{event["transactionHash"].hex()}', parse_mode='Markdown')
 
 async def log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval):

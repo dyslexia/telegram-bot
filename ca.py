@@ -103,6 +103,59 @@ ill001 = "0x7400165E167479a3c81C8fC8CC3df3D2a92E9017"
 ill002 = "0x740019A6b3a9cF3bd193986a560B05726143B217"
 ill003 = "0x74001C747B6cc9091EE63bC9424DfF633FBAc617"
 
+# PAIRS
+pairsABI = [
+  {
+    "inputs": [],
+    "name": "token0",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "token1",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getReserves",
+    "outputs": [
+      {
+        "internalType": "uint112",
+        "name": "_reserve0",
+        "type": "uint112"
+      },
+      {
+        "internalType": "uint112",
+        "name": "_reserve1",
+        "type": "uint112"
+      },
+      {
+        "internalType": "uint32",
+        "name": "_blockTimestampLast",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
+
 # OTHER
 dead = '0x000000000000000000000000000000000000dEaD'
 supply = 100000000
