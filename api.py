@@ -343,6 +343,13 @@ def get_tx_from_hash(tx, chain):
         url = f'https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.ether}'
     if chain == "bsc":
         url = f'https://api.bscscan.com/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.bsc}'
+    if chain == "poly":
+        url = f'https://api.polygonscan.com/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.poly}'
+    if chain == "arb":
+        url = f'https://api.arbiscan.com/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.arb}'
+    if chain == "opti":
+        url = f'https://api.optimistic.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=' \
+              f'{tx}{keys.opti}'
     response = requests.get(url)
     data = response.json()
     return data
