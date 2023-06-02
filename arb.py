@@ -198,16 +198,16 @@ async def new_loan(event):
     i1 = ImageDraw.Draw(im1)
     i1.text((26, 30),
             f'New Loan Originated (ARB)\n\n'
-            f'Loan ID: {event["args"]["loanID"]}\n\n'
-            f'{url.arb_tx}{event["transactionHash"].hex()}',
+            f'Loan ID: {event["args"]["loanID"]}\n\n',
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
         keys.alerts_id,
         photo=open(r"media\blackhole.png", 'rb'),
-        caption=f'*New Loan Originated (ETH)*\n\n'
-                f'Loan ID: {event["args"]["loanID"]}\n\n'
-                f'{url.arb_tx}{event["transactionHash"].hex()}', parse_mode='Markdown')
+        caption=f'*New Loan Originated (ARB)*\n\n'
+                f'Loan ID: {event["args"]["loanID"]}\n\n', parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text=f'Loan TX', url=f'{url.arb_tx}{event["transactionHash"].hex()}')], ]))
 
 async def log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval):
     while True:
