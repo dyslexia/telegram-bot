@@ -23,6 +23,7 @@ import pyttsx3
 import url
 import wikipediaapi
 import re
+from web3 import Web3
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return
@@ -335,6 +336,18 @@ async def ecosystem(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Community Dashboard', url=f'{url.dashboard}')],
             [InlineKeyboardButton(text='Linktree', url=f'{url.linktree}')],
             [InlineKeyboardButton(text='Medium', url=f'{url.medium}')], ]))
+
+async def factory(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_photo(
+        photo=open((random.choice(media.logos)), 'rb'),
+        caption=f'*X7 Finance Factories*\n\n{api.get_quote()}',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='ETH', url=f'{url.ether_address}{ca.factory}')],
+            [InlineKeyboardButton(text='BSC', url=f'{url.bsc_address}{ca.factory}')],
+            [InlineKeyboardButton(text='Polygon', url=f'{url.poly_address}{ca.factory}')],
+            [InlineKeyboardButton(text='Arbitrum', url=f'{url.arb_address}{ca.factory}')],
+            [InlineKeyboardButton(text='Optimism', url=f'{url.opti_address}{ca.factory}')], ]))
 
 async def faq(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
@@ -884,6 +897,62 @@ async def opensea(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Borrowing Maxi', url=f'{url.os_borrow}{chain_url}')],
             [InlineKeyboardButton(text='Magister', url=f'{url.os_magister}{chain_url}')], ]))
 
+async def pair(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chain = " ".join(context.args).lower()
+    key = ""
+    buy_link = ""
+    native = ""
+    chart_link = ""
+    chain_link = ""
+    token = ""
+    if chain == "bsc":
+        key = "https://bsc-dataseed.binance.org/"
+        buy_link = url.xchange_buy_bsc
+        chart_link = url.dex_tools_bsc
+        native = ca.wbnb
+        chain_link = url.bsc_token
+    if chain == "eth":
+        key = f'https://mainnet.infura.io/v3/{keys.infura}'
+        buy_link = url.xchange_buy_eth
+        chart_link = url.dex_tools_eth
+        native = ca.weth
+        chain_link = url.ether_token
+    if chain == "arb":
+        key = f'https://arb-mainnet.g.alchemy.com/v2/{keys.alchemy_arb}'
+        buy_link = url.xchange_buy_arb
+        chart_link = url.dex_tools_arb
+        native = ca.weth
+        chain_link = url.arb_token
+    if chain == "poly":
+        key = f'https://polygon-mainnet.g.alchemy.com/v2/{keys.alchemy_poly}'
+        buy_link = url.xchange_buy_poly
+        chart_link = url.dex_tools_poly
+        native = ca.matic
+        chain_link = url.poly_token
+    web3 = Web3(Web3.HTTPProvider(key))
+    factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, chain))
+    total_pairs = factory.functions.allPairsLength().call()
+    last_pair = factory.functions.allPairs(total_pairs - 1).call()
+    pair_contract = web3.eth.contract(address=last_pair, abi=ca.pairsABI)
+    token0 = pair_contract.functions.token0().call()
+    token1 = pair_contract.functions.token1().call()
+    token_addresses = []
+    if token0 != native:
+        token = token0
+    if token1 != native:
+        token = token1
+    token_name = api.get_token_name(token, chain)
+    await update.message.reply_photo(
+        photo=open((random.choice(media.logos)), 'rb'),
+        caption=f'*Xchange - Last {chain.upper()} Pair Created*\n\n'
+                f'{token_name}\n\n'
+                f'`{token}`\n\n'
+                f'{api.get_quote()}', parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text=f'Buy', url=f'{buy_link}{token}')],
+             [InlineKeyboardButton(text='Chart', url=f'{chart_link}{token}')],
+             [InlineKeyboardButton(text='Contract', url=f'{chain_link}{token}')], ]))
+
 async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
     pioneer_id = " ".join(context.args)
     data = api.get_os_nft("/x7-pioneer")
@@ -1116,6 +1185,15 @@ async def question(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'{message}\n\n'
         f' - `{update.effective_message.from_user.name}`', parse_mode='Markdown')
 
+async def refer(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        f'{text.refer}',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='Application',
+                                  url=f'https://docs.google.com/forms/d/e/1F'
+                                      f'AIpQLSf5h3ngT_swsq2My5BfY1W_ZWv3jni9JeWEfgkWFgorNLknQg/viewform')], ]))
+
 async def quote(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -1175,6 +1253,18 @@ async def roadmap(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f'WS8: Decentralization in hosting - {text.ws8*100}%\n\n'
                 f'WS9: Developer Tools and Example Smart Contracts - {text.ws9*100}%\n\n{api.get_quote()}',
         parse_mode='Markdown')
+
+async def router(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_photo(
+        photo=open((random.choice(media.logos)), 'rb'),
+        caption=f'*X7 Finance Routers*\n\n{api.get_quote()}',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='ETH', url=f'{url.ether_address}{ca.router}')],
+            [InlineKeyboardButton(text='BSC', url=f'{url.bsc_address}{ca.router}')],
+            [InlineKeyboardButton(text='Polygon', url=f'{url.poly_address}{ca.router}')],
+            [InlineKeyboardButton(text='Arbitrum', url=f'{url.arb_address}{ca.router}')],
+            [InlineKeyboardButton(text='Optimism', url=f'{url.opti_address}{ca.router}')], ]))
 
 async def say(update: Update, context: ContextTypes.DEFAULT_TYPE):
     engine = pyttsx3.init()
@@ -1491,6 +1581,54 @@ async def token(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                     f'Logo: {info_bsc[0]["logo"]}\n'
                                     f'Created: {info_bsc[0]["created_at"]}\n'
                                     f'Possible Spam?: {info_bsc[0]["possible_spam"]}')
+
+async def volume(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chain = " ".join(context.args).lower()
+    link = ""
+    token = ""
+    chain_url = ""
+    if chain == "bsc":
+        link = url.bsc_address
+        token = "bnb"
+        chain_url = f"https://api.bscscan.com/api?module=account&action=txlist&address={ca.router}{keys.bsc}"
+    if chain == "eth":
+        link = url.ether_address
+        token = "eth"
+        chain_url = f"https://api.etherscan.io/api?module=account&action=txlist&address={ca.router}{keys.ether}"
+    if chain == "poly":
+        link = url.poly_address
+        token = "matic"
+        chain_url = f"https://api.polygonscan.com/api?module=account&action=txlist&address={ca.router}{keys.poly}"
+    if chain == "opti":
+        link = url.opti_address
+        token = "eth"
+        chain_url = f"https://api.optimistic.etherscan.io/api?module=account&action=txlist&address=" \
+                    f"{ca.router}{keys.opti}"
+    if chain == "arb":
+        link = url.arb_address
+        token = "eth"
+        chain_url = f"https://api.arbiscan.com/api?module=account&action=txlist&address={ca.router}{keys.arb}"
+
+    def calculate_total_transaction_value():
+        url = chain_url
+        response = requests.get(url)
+        transaction_data = response.json()['result']
+        total_value_eth = 0
+        total_value_usd = 0
+        for tx in transaction_data:
+            value_eth = float(tx['value']) / 1e18
+            total_value_eth += value_eth
+        total_value_usd = total_value_eth * api.get_native_price(token)
+        return total_value_eth, total_value_usd
+    total_tx_value_eth, total_tx_value_usd = calculate_total_transaction_value()
+    await update.message.reply_photo(
+        photo=open((random.choice(media.logos)), 'rb'),
+        caption=f"*{chain.upper()} Volume*\n\n"
+                f"{total_tx_value_eth} {token.upper()} (${total_tx_value_usd:.2f}) volume traded "
+                f"through {chain.upper()} router",
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='Router', url=f'{link}{ca.router}')], ]))
 
 async def voting(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(

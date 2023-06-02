@@ -1,11 +1,11 @@
 # URLS
 
 # XCHANGE
-xchange_buy_eth = 'https://app.x7.finance/#/swap?outputCurrency='
-xchange_buy_bsc = 'https://app.x7.finance/#/swap?outputCurrency='
-xchange_buy_poly = 'https://app.x7.finance/#/swap?outputCurrency='
-xchange_buy_arb = 'https://app.x7.finance/#/swap?outputCurrency='
-xchange_buy_opti = 'https://app.x7.finance/#/swap?outputCurrency='
+xchange_buy_eth = 'https://beta.x7.finance/#/swap?outputCurrency='
+xchange_buy_bsc = 'https://beta.x7.finance/#/swap?outputCurrency='
+xchange_buy_poly = 'https://beta.x7.finance/#/swap?outputCurrency='
+xchange_buy_arb = 'https://beta.x7.finance/#/swap?outputCurrency='
+xchange_buy_opti = 'https://beta.x7.finance/#/swap?outputCurrency='
 
 # ETHERSCAN
 ether_token = 'https://etherscan.io/token/'
