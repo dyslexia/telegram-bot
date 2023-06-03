@@ -921,7 +921,7 @@ async def pair(update: Update, context: ContextTypes.DEFAULT_TYPE):
         key = f'https://arb-mainnet.g.alchemy.com/v2/{keys.alchemy_arb}'
         buy_link = url.xchange_buy_arb
         chart_link = url.dex_tools_arb
-        native = ca.weth
+        native = ca.aweth
         chain_link = url.arb_token
     if chain == "poly":
         key = f'https://polygon-mainnet.g.alchemy.com/v2/{keys.alchemy_poly}'

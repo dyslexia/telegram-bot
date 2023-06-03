@@ -33,7 +33,7 @@ async def new_pair(event):
         liq = api.get_liquidity(event["args"]["pair"], "arbitrum")
     except (Exception, TimeoutError, ValueError, StopAsyncIteration):
         print('Liquidity Error')
-    if event["args"]["token0"] == ca.weth:
+    if event["args"]["token0"] == ca.aweth:
         native = api.get_token_name(event["args"]["token0"], "arb")
         token_name = api.get_token_name(event["args"]["token1"], "arb")
         token_address = event["args"]["token1"]
