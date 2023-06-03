@@ -24,6 +24,7 @@ import url
 import wikipediaapi
 import re
 from web3 import Web3
+from eth_utils import to_checksum_address
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return
@@ -606,6 +607,62 @@ async def links(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Reddit', url=f'{url.reddit}')],
             [InlineKeyboardButton(text='Youtube', url=f'{url.youtube}')],
             [InlineKeyboardButton(text='Github', url=f'{url.github}')], ]))
+
+async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    loan_id = ""
+    chain = ""
+    url = ""
+    token = ""
+    if len(context.args) >= 2:
+        chain = context.args[0]
+        loan_id = context.args[1]
+    else:
+        await update.message.reply_text(f'Please use /loan chain_name chain_id to see details')
+        return
+    if chain == "eth":
+        url = f'https://mainnet.infura.io/v3/{keys.infura}'
+        token = "ETH"
+    elif chain == "arb":
+        url = f"https://arb-mainnet.g.alchemy.com/v2/{keys.alchemy_arb}"
+        token = "ETH"
+    elif chain == "bsc":
+        url = "https://bsc-dataseed.binance.org/"
+        token = "BNB"
+    elif chain == "poly":
+        url = f'https://polygon-mainnet.g.alchemy.com/v2/{keys.alchemy_poly}'
+        token = "MATIC"
+    elif chain == "opti":
+        url = f'https://opt-mainnet.g.alchemy.com/v2/{keys.alchemy_opti}'
+        token = "ETH"
+    else:
+        await update.message.reply_text(f'Please use /loan chain_name chain_id to see details')
+        return
+    web3 = Web3(Web3.HTTPProvider(url))
+    address = to_checksum_address(ca.lpool)
+    contract = web3.eth.contract(address=address, abi=api.get_abi(ca.lpool, chain))
+    liability = contract.functions.getRemainingLiability(int(loan_id)).call() / 10 ** 18
+    remaining = f'Remaining Liability {liability} {token}'
+    schedule1 = contract.functions.getPremiumPaymentSchedule(int(loan_id)).call()
+    schedule2 = contract.functions.getPrincipalPaymentSchedule(int(loan_id)).call()
+    schedule_list = []
+    if len(schedule1[0]) > 0 and len(schedule1[1]) > 0:
+        for date, value in zip(schedule1[0], schedule1[1]):
+            formatted_date = datetime.fromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
+            formatted_value = value / 10 ** 18
+            sch = f'{formatted_date} - {formatted_value} {token}'
+            schedule_list.append(sch)
+    else:
+        for date, value in zip(schedule2[0], schedule2[1]):
+            formatted_date = datetime.fromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
+            formatted_value = value / 10 ** 18
+            sch = f'{formatted_date} - {formatted_value} {token}'
+            schedule_list.append(sch)
+    schedule_str = "\n".join(schedule_list)
+    await update.message.reply_photo(
+        photo=open((random.choice(media.logos)), 'rb'),
+        caption=f'*X7 Finance Initial Liquidity Loan - {loan_id} ({chain.upper()})*\n\n'
+                f'Payment Schedule:\n{schedule_str}\n\n'
+                f'{remaining}\n\n{api.get_quote()}', parse_mode='Markdown')
 
 async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     loan_type = " ".join(context.args).lower()
