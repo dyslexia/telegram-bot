@@ -346,7 +346,7 @@ def get_tx_from_hash(tx, chain):
     if chain == "poly":
         url = f'https://api.polygonscan.com/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.poly}'
     if chain == "arb":
-        url = f'https://api.arbiscan.com/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.arb}'
+        url = f'https://api.arbiscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.arb}'
     if chain == "opti":
         url = f'https://api.optimistic.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=' \
               f'{tx}{keys.opti}'
