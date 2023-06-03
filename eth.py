@@ -12,6 +12,7 @@ import time
 import url
 from web3 import Web3
 from web3.exceptions import Web3Exception
+from eth_utils import to_checksum_address
 
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -191,9 +192,16 @@ async def new_pair(event):
     print(f'Pair sent: ({token_name[1]}/{native[1]})')
 
 async def new_loan(event):
-    print(event)
-    tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
-    print(tx)
+    try:
+        address = to_checksum_address(ca.lpool)
+        contract = web3.eth.contract(address=address, abi=api.get_abi(ca.lpool, "eth"))
+        loan_id = event["args"]["loanID"]
+        function = contract.functions.getRemainingLiability(loan_id)
+        value = function.call()
+        total = f'Total Liability {value / 10 ** 18} ETH'
+    except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+        print(f' Liability error:{e}')
+        total = ""
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
@@ -201,14 +209,16 @@ async def new_loan(event):
     i1 = ImageDraw.Draw(im1)
     i1.text((26, 30),
             f'New Loan Originated (ETH)\n\n'
-            f'Loan ID: {event["args"]["loanID"]}\n\n',
+            f'Loan ID: {event["args"]["loanID"]}\n'
+            f'{total}',
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
         keys.alerts_id,
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*New Loan Originated (ETH)*\n\n'
-                f'Loan ID: {event["args"]["loanID"]}\n\n', parse_mode='Markdown',
+                f'Loan ID: {event["args"]["loanID"]}\n'
+                f'{total}', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'Loan TX', url=f'{url.ether_tx}{event["transactionHash"].hex()}')], ]))
 
