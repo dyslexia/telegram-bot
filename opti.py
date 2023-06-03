@@ -192,8 +192,7 @@ async def new_loan(event):
     try:
         address = to_checksum_address(ca.lpool)
         contract = web3.eth.contract(address=address, abi=api.get_abi(ca.lpool, "opti"))
-        liability = contract.functions.getRemainingLiability(int(event["args"]["loanID"]))
-        amount = liability.call() / 10 ** 18
+        amount = contract.functions.getRemainingLiability(int(event["args"]["loanID"])).call() / 10 ** 18
         schedule1 = contract.functions.getPremiumPaymentSchedule(int(event["args"]["loanID"])).call()
         schedule2 = contract.functions.getPrincipalPaymentSchedule(int(event["args"]["loanID"])).call()
         schedule_list = []
@@ -201,18 +200,19 @@ async def new_loan(event):
             for date, value in zip(schedule1[0], schedule1[1]):
                 formatted_date = datetime.fromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
                 formatted_value = value / 10 ** 18
-                sch = f"Payment Schedule:\n'{formatted_date} - {formatted_value} ETH\n\nf'Total {amount} ETH"
+                sch = f'{formatted_date} - {formatted_value} ETH'
                 schedule_list.append(sch)
         else:
             for date, value in zip(schedule2[0], schedule2[1]):
                 formatted_date = datetime.fromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
                 formatted_value = value / 10 ** 18
-                sch = f"Payment Schedule:\n'{formatted_date} - {formatted_value} ETH\n\nf'Total {amount} ETH"
+                sch = f'{formatted_date} - {formatted_value} ETH'
                 schedule_list.append(sch)
         schedule_str = "\n".join(schedule_list)
     except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
         print(f' Scan Error:{e}')
         schedule_str = ""
+        amount = ""
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.opti_logo)
     im1.paste(im2, (720, 20), im2)
@@ -220,18 +220,20 @@ async def new_loan(event):
     i1 = ImageDraw.Draw(im1)
     i1.text((26, 30),
             f'New Loan Originated (OPTIMISM)\n\n'
-            f'Loan ID: {event["args"]["loanID"]}'
+            f'Loan ID: {event["args"]["loanID"]}\n'
             f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH\n'
-            f'{schedule_str}',
+            f'Payment Schedule:\n{schedule_str}\n\n'
+            f'Total: {amount} ETH',
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
         keys.alerts_id,
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*New Loan Originated (OPTIMISM)*\n\n'
-                f'Loan ID: {event["args"]["loanID"]}'
+                f'Loan ID: {event["args"]["loanID"]}\n'
                 f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH\n'
-                f'{schedule_str}', parse_mode='Markdown',
+                f'Payment Schedule:\n{schedule_str}\n\n'
+                f'Total: {amount} ETH', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'Loan TX', url=f'{url.opti_tx}{event["transactionHash"].hex()}')], ]))
 
