@@ -13,6 +13,7 @@ import url
 from web3 import Web3
 from web3.exceptions import Web3Exception
 from eth_utils import to_checksum_address
+from datetime import datetime
 
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -192,16 +193,31 @@ async def new_pair(event):
     print(f'Pair sent: ({token_name[1]}/{native[1]})')
 
 async def new_loan(event):
+    tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
     try:
         address = to_checksum_address(ca.lpool)
         contract = web3.eth.contract(address=address, abi=api.get_abi(ca.lpool, "eth"))
-        loan_id = event["args"]["loanID"]
-        function = contract.functions.getRemainingLiability(loan_id)
-        value = function.call()
-        total = f'Total Liability {value / 10 ** 18} ETH'
+        liability = contract.functions.getRemainingLiability(int(event["args"]["loanID"]))
+        amount = liability.call() / 10 ** 18
+        schedule1 = contract.functions.getPremiumPaymentSchedule(int(event["args"]["loanID"])).call()
+        schedule2 = contract.functions.getPrincipalPaymentSchedule(int(event["args"]["loanID"])).call()
+        schedule_list = []
+        if len(schedule1[0]) > 0 and len(schedule1[1]) > 0:
+            for date, value in zip(schedule1[0], schedule1[1]):
+                formatted_date = datetime.fromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
+                formatted_value = value / 10 ** 18
+                sch = f"Payment Schedule:\n'{formatted_date} - {formatted_value} ETH\n\nf'Total {amount} ETH"
+                schedule_list.append(sch)
+        else:
+            for date, value in zip(schedule2[0], schedule2[1]):
+                formatted_date = datetime.fromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
+                formatted_value = value / 10 ** 18
+                sch = f"Payment Schedule:\n'{formatted_date} - {formatted_value} ETH\n\nf'Total {amount} ETH"
+                schedule_list.append(sch)
+        schedule_str = "\n".join(schedule_list)
     except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-        print(f' Liability error:{e}')
-        total = ""
+        print(f' Scan Error:{e}')
+        schedule_str = ""
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
@@ -210,7 +226,8 @@ async def new_loan(event):
     i1.text((26, 30),
             f'New Loan Originated (ETH)\n\n'
             f'Loan ID: {event["args"]["loanID"]}\n'
-            f'{total}',
+            f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH\n'
+            f'{schedule_str}',
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
@@ -218,7 +235,8 @@ async def new_loan(event):
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*New Loan Originated (ETH)*\n\n'
                 f'Loan ID: {event["args"]["loanID"]}\n'
-                f'{total}', parse_mode='Markdown',
+                f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH\n'
+                f'{schedule_str}', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'Loan TX', url=f'{url.ether_tx}{event["transactionHash"].hex()}')], ]))
 
