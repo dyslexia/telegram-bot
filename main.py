@@ -66,7 +66,8 @@ async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def raid_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
-    username = random.choice(text.usernamelist)
+#    username = random.choice(text.usernamelist)
+    username = '@x7_finance'
     tweet = api.twitter.user_timeline(screen_name=username, count=1, include_rts="false", exclude_replies="true")
     await context.bot.send_sticker(job.chat_id, sticker=media.twitter_sticker)
     await context.bot.send_message(
@@ -107,12 +108,11 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('alumni', commands.alumni))
     application.add_handler(CommandHandler('announcements', commands.announcements))
     application.add_handler(CommandHandler('ath', commands.ath))
-    application.add_handler(CommandHandler('beta', commands.beta))
     application.add_handler(CommandHandler(['bot', 'start', 'filters'], commands.bot))
     application.add_handler(CommandHandler('burn', commands.burn))
     application.add_handler(CommandHandler('buy', commands.buy))
     application.add_handler(CommandHandler(['buybots', 'bobby', 'buybot'], commands.buy_bots))
-    application.add_handler(CommandHandler('buyevenly', commands.buy_evenly))
+    application.add_handler(CommandHandler(['buyevenly', 'quintsevenly'], commands.buy_evenly))
     application.add_handler(CommandHandler('channels', commands.channels))
     application.add_handler(CommandHandler(['chart', 'charts'], commands.chart))
     application.add_handler(CommandHandler(['constellations', 'constellation', 'quints'], commands.constellations))

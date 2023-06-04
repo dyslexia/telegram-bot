@@ -369,7 +369,6 @@ async def faq(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def fg(update, context):
     fear_response = requests.get('https://api.alternative.me/fng/?limit=0')
     fear_data = fear_response.json()
-
     fear_values = []
     for i in range(7):
         timestamp = float(fear_data["data"][i]["timestamp"])
@@ -611,40 +610,58 @@ async def links(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     loan_id = ""
     chain = ""
-    url = ""
+    web_url = ""
     token = ""
+    scan_address = ""
+    scan_token = ""
     if len(context.args) >= 2:
-        chain = context.args[0]
+        chain = context.args[0].lower()
         loan_id = context.args[1]
     else:
-        await update.message.reply_text(f'Please use /loan chain_name chain_id to see details')
+        await update.message.reply_text(f'Please use /loan chain_name loan_id to see details')
         return
     if chain == "eth":
-        url = f'https://mainnet.infura.io/v3/{keys.infura}'
+        web_url = f'https://mainnet.infura.io/v3/{keys.infura}'
         token = "ETH"
+        scan_address = url.ether_address
+        scan_token = url.ether_token
     elif chain == "arb":
-        url = f"https://arb-mainnet.g.alchemy.com/v2/{keys.alchemy_arb}"
+        web_url = f"https://arb-mainnet.g.alchemy.com/v2/{keys.alchemy_arb}"
         token = "ETH"
+        scan_address = url.arb_address
+        scan_token = url.arb_token
     elif chain == "bsc":
-        url = "https://bsc-dataseed.binance.org/"
+        web_url = "https://bsc-dataseed.binance.org/"
         token = "BNB"
+        scan_address = url.bsc_address
+        scan_token = url.bsc_token
     elif chain == "poly":
-        url = f'https://polygon-mainnet.g.alchemy.com/v2/{keys.alchemy_poly}'
+        web_url = f'https://polygon-mainnet.g.alchemy.com/v2/{keys.alchemy_poly}'
         token = "MATIC"
+        scan_address = url.poly_address
+        scan_token = url.poly_token
     elif chain == "opti":
-        url = f'https://opt-mainnet.g.alchemy.com/v2/{keys.alchemy_opti}'
+        web_url = f'https://opt-mainnet.g.alchemy.com/v2/{keys.alchemy_opti}'
         token = "ETH"
+        scan_address = url.opti_address
+        scan_token = url.opti_token
     else:
-        await update.message.reply_text(f'Please use /loan chain_name chain_id to see details')
+        await update.message.reply_text(f'Please use /loan chain_name loan_id to see details')
         return
-    web3 = Web3(Web3.HTTPProvider(url))
+    web3 = Web3(Web3.HTTPProvider(web_url))
     address = to_checksum_address(ca.lpool)
     contract = web3.eth.contract(address=address, abi=api.get_abi(ca.lpool, chain))
+    liquidation = contract.functions.canLiquidate(int(loan_id)).call()
     liability = contract.functions.getRemainingLiability(int(loan_id)).call() / 10 ** 18
     remaining = f'Remaining Liability {liability} {token}'
     schedule1 = contract.functions.getPremiumPaymentSchedule(int(loan_id)).call()
     schedule2 = contract.functions.getPrincipalPaymentSchedule(int(loan_id)).call()
     schedule_list = []
+    liquidation_status = ""
+    if liquidation != 0:
+        liquidation_status = f'*Eligible For Liquidation*\n' \
+                           f'Cost: {liquidation} {token}\n' \
+                           f'Reward: {contract.functions.liquidationReward().call() /10 ** 17} {token}'
     if len(schedule1[0]) > 0 and len(schedule1[1]) > 0:
         for date, value in zip(schedule1[0], schedule1[1]):
             formatted_date = datetime.fromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
@@ -662,7 +679,16 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
         photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Initial Liquidity Loan - {loan_id} ({chain.upper()})*\n\n'
                 f'Payment Schedule:\n{schedule_str}\n\n'
-                f'{remaining}\n\n{api.get_quote()}', parse_mode='Markdown')
+                f'{remaining}\n\n'
+                f'{liquidation_status}\n\n{api.get_quote()}', parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text=f'Token Contract',
+                                   url=f'{scan_token}{contract.functions.loanToken(int(loan_id)).call()}')],
+             [InlineKeyboardButton(text=f'Borrower',
+                                   url=f'{scan_address}{contract.functions.loanBorrower(int(loan_id)).call()}')],
+             [InlineKeyboardButton(text=f'X7 Lending Pool Contract',
+                                   url=f'{scan_address}{ca.lpool}#code')],
+             ]))
 
 async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     loan_type = " ".join(context.args).lower()
@@ -676,23 +702,57 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text='X7 Finance Whitepaper', url=f'{url.wp_link}')], ]))
         return
-    loan_types = {
-        "ill001": (loans.ill001_name, loans.ill001_terms, ca.ill001),
-        "ill002": (loans.ill002_name, loans.ill002_terms, ca.ill002),
-        "ill003": (loans.ill003_name, loans.ill003_terms, ca.ill003)
-    }
-    if loan_type in loan_types:
-        loan_name, loan_terms, loan_ca = loan_types[loan_type]
-    await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), 'rb'),
-        caption=f'{loan_name}\n\n{loan_terms}\n\n',
-        parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text=f'Ethereum', url=f'{url.ether_address}{loan_ca}')],
-             [InlineKeyboardButton(text=f'BSC', url=f'{url.bsc_address}{loan_ca}')],
-             [InlineKeyboardButton(text=f'Polygon', url=f'{url.poly_address}{loan_ca}')],
-             [InlineKeyboardButton(text=f'Arbitrum', url=f'{url.arb_address}{loan_ca}')],
-             [InlineKeyboardButton(text=f'Optimism', url=f'{url.opti_address}{loan_ca}')], ]))
+    else:
+        loan_types = {
+            "ill001": (loans.ill001_name, loans.ill001_terms, ca.ill001),
+            "ill002": (loans.ill002_name, loans.ill002_terms, ca.ill002),
+            "ill003": (loans.ill003_name, loans.ill003_terms, ca.ill003)
+        }
+        if loan_type in loan_types:
+            loan_name, loan_terms, loan_ca = loan_types[loan_type]
+            await update.message.reply_photo(
+                photo=open((random.choice(media.logos)), 'rb'),
+                caption=f'{loan_name}\n\n{loan_terms}\n\n',
+                parse_mode="Markdown",
+                reply_markup=InlineKeyboardMarkup(
+                    [[InlineKeyboardButton(text=f'Ethereum', url=f'{url.ether_address}{loan_ca}')],
+                     [InlineKeyboardButton(text=f'BSC', url=f'{url.bsc_address}{loan_ca}')],
+                     [InlineKeyboardButton(text=f'Polygon', url=f'{url.poly_address}{loan_ca}')],
+                     [InlineKeyboardButton(text=f'Arbitrum', url=f'{url.arb_address}{loan_ca}')],
+                     [InlineKeyboardButton(text=f'Optimism', url=f'{url.opti_address}{loan_ca}')], ]))
+    if loan_type == "count":
+        networks = {
+            'ETH': f'https://mainnet.infura.io/v3/{keys.infura}',
+            'ARB': f"https://arb-mainnet.g.alchemy.com/v2/{keys.alchemy_arb}",
+            'BSC': "https://bsc-dataseed.binance.org/",
+            'POLY': f'https://polygon-mainnet.g.alchemy.com/v2/{keys.alchemy_poly}',
+            'OPTI': f'https://opt-mainnet.g.alchemy.com/v2/{keys.alchemy_opti}'
+        }
+        contract_networks = {
+            'ETH': 'eth',
+            'ARB': 'arb',
+            'BSC': 'bsc',
+            'POLY': 'poly',
+            'OPTI': 'opti'
+        }
+        contract_instances = {}
+        for network, web3_url in networks.items():
+            web3 = Web3(Web3.HTTPProvider(web3_url))
+            contract = web3.eth.contract(address=to_checksum_address(ca.lpool), abi=api.get_abi(ca.lpool,
+                                                                                                contract_networks[
+                                                                                                    network]))
+            amount = contract.functions.nextLoanID().call() - 1
+            contract_instances[network] = amount
+        await update.message.reply_photo(
+            photo=open((random.choice(media.logos)), 'rb'),
+            caption=f'*X7 Finance Loan Count*\n\n'
+                    f'`ETH:`       {contract_instances["ETH"]}\n'
+                    f'`BSC:`       {contract_instances["BSC"]}\n'
+                    f'`ARB:`       {contract_instances["ARB"]}\n'
+                    f'`POLY:`     {contract_instances["POLY"]}\n'
+                    f'`OPTI:`     {contract_instances["OPTI"]}\n\n'
+                    f'`TOTAL:`   {sum(contract_instances.values())}\n\n'
+                    f'{api.get_quote()}', parse_mode='Markdown')
 
 async def magisters(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
@@ -1540,7 +1600,7 @@ async def swap(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_sticker(
         sticker=media.swap,
         reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text='Xchange', url='https://app.x7.finance/#/swap')],
+            [[InlineKeyboardButton(text='Xchange', url='https://beta.x7.finance/#/swap')],
              [InlineKeyboardButton(text='Feedback', url='https://discord.com/channels/101665704'
                                                         '4553617428/1053206402065256498')], ]))
 
