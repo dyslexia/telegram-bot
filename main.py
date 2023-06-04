@@ -104,6 +104,7 @@ if __name__ == '__main__':
     application.add_error_handler(error)
     application.add_handler(CommandHandler('about', commands.about))
     application.add_handler(CommandHandler(['admin_commands', 'admin', 'admincommands'], commands.admin))
+    application.add_handler(CommandHandler('alerts', commands.alerts))
     application.add_handler(CommandHandler(['rollout', 'multichain', 'airdrop'], commands.airdrop))
     application.add_handler(CommandHandler('alumni', commands.alumni))
     application.add_handler(CommandHandler('announcements', commands.announcements))

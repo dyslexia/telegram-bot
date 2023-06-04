@@ -56,6 +56,14 @@ async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'are released on other chains.\n\nThese airdrop snapshots will occur just prior to the token launch\n\n'
         f'{api.get_quote()}', parse_mode='Markdown')
 
+async def alerts(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_photo(
+        photo=open((random.choice(media.logos)), 'rb'),
+        caption='Check out the link below for the Xchange Alerts channel',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text='XChange Alerts', url="https://t.me/xchange_alerts")], ]))
+
 async def alumni(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -618,7 +626,7 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chain = context.args[0].lower()
         loan_id = context.args[1]
     else:
-        await update.message.reply_text(f'Please use /loan chain_name loan_id to see details')
+        await update.message.reply_text(f'Please use `/loan chain_name loan_id` to see details', parse_mode='Markdown')
         return
     if chain == "eth":
         web_url = f'https://mainnet.infura.io/v3/{keys.infura}'
@@ -651,17 +659,20 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     web3 = Web3(Web3.HTTPProvider(web_url))
     address = to_checksum_address(ca.lpool)
     contract = web3.eth.contract(address=address, abi=api.get_abi(ca.lpool, chain))
-    liquidation = contract.functions.canLiquidate(int(loan_id)).call()
+    liquidation_status = ""
+    try:
+        liquidation = contract.functions.canLiquidate(int(loan_id)).call()
+        if liquidation != 0:
+            liquidation_status = f'*Eligible For Liquidation*\n' \
+                                 f'Cost: {liquidation} {token}\n' \
+                                 f'Reward: {contract.functions.liquidationReward().call() / 10 ** 17} {token}'
+    except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
+        pass
     liability = contract.functions.getRemainingLiability(int(loan_id)).call() / 10 ** 18
     remaining = f'Remaining Liability {liability} {token}'
     schedule1 = contract.functions.getPremiumPaymentSchedule(int(loan_id)).call()
     schedule2 = contract.functions.getPrincipalPaymentSchedule(int(loan_id)).call()
     schedule_list = []
-    liquidation_status = ""
-    if liquidation != 0:
-        liquidation_status = f'*Eligible For Liquidation*\n' \
-                           f'Cost: {liquidation} {token}\n' \
-                           f'Reward: {contract.functions.liquidationReward().call() /10 ** 17} {token}'
     if len(schedule1[0]) > 0 and len(schedule1[1]) > 0:
         for date, value in zip(schedule1[0], schedule1[1]):
             formatted_date = datetime.fromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
@@ -1195,11 +1206,11 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
         myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 28)
         i1.text((28, 36),
                 f'X7 Finance Lending Pool Info\n\n'
-                f'ETH: {eth_pool} ETH (${"{:0,.0f}".format(eth_dollar)})\n'
-                f'ARB: {arb_pool} ETH (${"{:0,.0f}".format(arb_dollar)})\n'
+                f'ETH:   {eth_pool} ETH (${"{:0,.0f}".format(eth_dollar)})\n'
+                f'ARB:   {arb_pool} ETH (${"{:0,.0f}".format(arb_dollar)})\n'
                 f'OPTI: {opti_pool} ETH (${"{:0,.0f}".format(opti_dollar)})\n'
-                f'BSC: {bsc_pool} BNB (${"{:0,.0f}".format(bsc_dollar)})\n'
-                f'POLY: {poly_pool} MATIC (${"{:0,.0f}".format(poly_dollar)})\n\n'
+                f'BSC:   {bsc_pool} BNB (${"{:0,.0f}".format(bsc_dollar)})\n'
+                f'POLY:  {poly_pool} MATIC (${"{:0,.0f}".format(poly_dollar)})\n\n'
                 f'TOTAL: ${"{:0,.0f}".format(total_dollar)}\n\n\n\n'
                 f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
                 font=myfont, fill=(255, 255, 255))
@@ -1207,11 +1218,11 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media\blackhole.png", 'rb'),
             caption=f'*X7 Finance Lending Pool Info *\nUse `/pool [chain-name]` for individual chains\n\n'
-                    f'ETH: {eth_pool} ETH (${"{:0,.0f}".format(eth_dollar)})\n'
-                    f'ARB: {arb_pool} ETH (${"{:0,.0f}".format(arb_dollar)})\n'
-                    f'OPTI: {opti_pool} ETH (${"{:0,.0f}".format(opti_dollar)})\n'
-                    f'BSC: {bsc_pool} BNB (${"{:0,.0f}".format(bsc_dollar)})\n'
-                    f'POLY: {poly_pool} MATIC (${"{:0,.0f}".format(poly_dollar)})\n\n'
+                    f'`ETH:`   {eth_pool} ETH (${"{:0,.0f}".format(eth_dollar)})\n'
+                    f'`ARB:`   {arb_pool} ETH (${"{:0,.0f}".format(arb_dollar)})\n'
+                    f'`OPTI:` {opti_pool} ETH (${"{:0,.0f}".format(opti_dollar)})\n'
+                    f'`BSC:`   {bsc_pool} BNB (${"{:0,.0f}".format(bsc_dollar)})\n'
+                    f'`POLY:`  {poly_pool} MATIC (${"{:0,.0f}".format(poly_dollar)})\n\n'
                     f'TOTAL: ${"{:0,.0f}".format(total_dollar)}\n\n'
                     f'{api.get_quote()}', parse_mode='Markdown')
         return
@@ -3073,16 +3084,16 @@ async def mcap(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*X7 Finance Market Cap Info (ETH)*\n\n'
-                f'X7R:            ${"{:0,.0f}".format(caps["x7r"])}\n'
-                f'X7DAO:        ${"{:0,.0f}".format(caps["x7dao"])}\n'
-                f'X7101:         ${"{:0,.0f}".format(caps["x7101"])}\n'
-                f'X7102:         ${"{:0,.0f}".format(caps["x7102"])}\n'
-                f'X7103:         ${"{:0,.0f}".format(caps["x7103"])}\n'
-                f'X7104:         ${"{:0,.0f}".format(caps["x7104"])}\n'
-                f'X7105:         ${"{:0,.0f}".format(caps["x7105"])}\n\n'
-                f'Constellations Combined:\n'
+                f'`X7R: `            ${"{:0,.0f}".format(caps["x7r"])}\n'
+                f'`X7DAO:`         ${"{:0,.0f}".format(caps["x7dao"])}\n'
+                f'`X7101:`         ${"{:0,.0f}".format(caps["x7101"])}\n'
+                f'`X7102:`         ${"{:0,.0f}".format(caps["x7102"])}\n'
+                f'`X7103:`         ${"{:0,.0f}".format(caps["x7103"])}\n'
+                f'`X7104:`         ${"{:0,.0f}".format(caps["x7104"])}\n'
+                f'`X7105:`         ${"{:0,.0f}".format(caps["x7105"])}\n\n'
+                f'`Constellations Combined:`\n'
                 f'${"{:0,.0f}".format(cons_cap)}\n\n'
-                f'Total Token Market Cap:\n'
+                f'`Total Token Market Cap:`\n'
                 f'${"{:0,.0f}".format(total_cap)}'
                 f'\n\n{api.get_quote()}',
         parse_mode="Markdown")
