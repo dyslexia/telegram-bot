@@ -19,7 +19,8 @@ logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 infura_url = f'https://mainnet.infura.io/v3/{keys.infura}'
-web3 = Web3(Web3.HTTPProvider(infura_url))
+alchemy_eth_url = f"https://eth-mainnet.g.alchemy.com/v2/{keys.alchemy_eth}"
+web3 = Web3(Web3.HTTPProvider(alchemy_eth_url))
 
 factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "eth"))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "eth"))
