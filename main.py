@@ -54,29 +54,27 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def error(update, context):
     print(f'Update {update} caused error: {context.error}')
 
-async def wp_message(context: ContextTypes.DEFAULT_TYPE) -> None:
+async def endorse_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
-    await context.bot.send_message(
+    await context.bot.send_photo(
         job.chat_id,
-        text=f'*X7 Finance Whitepaper Quote*\n\n{random.choice(text.quotes)}',
+        photo=open((random.choice(media.logos)), 'rb'),
+        caption=f'*X7 Finance Xchange Pairs*\n\n{text.endorse}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Website', url=f'{url.website}')],
-            [InlineKeyboardButton(text='Whitepaper', url=f'{url.wp_link}')], ]))
+            [InlineKeyboardButton(text='Xchange Alerts', url=f't.me/xchange_alerts')], ]))
 
-async def raid_message(context: ContextTypes.DEFAULT_TYPE) -> None:
+async def referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
-#    username = random.choice(text.usernamelist)
-    username = '@x7_finance'
-    tweet = api.twitter.user_timeline(screen_name=username, count=1, include_rts="false", exclude_replies="true")
-    await context.bot.send_sticker(job.chat_id, sticker=media.twitter_sticker)
-    await context.bot.send_message(
+    await context.bot.send_photo(
         job.chat_id,
-        f'🚨🚨 Raid {username} 🚨🚨\n\n'
-        f'{tweet[0].text}\n\n'
-        f'https://twitter.com/intent/'
-        f'tweet?text=@X7_Finance&hashtags=X7Finance%2CLongLiveDefi&in_reply_to={tweet[0].id}\n\n'
-        f'{random.choice(text.twitter_replies)}', disable_web_page_preview=True)
+        photo=f"https://img.x7.finance/pioneers/{api.get_random_pioneer_number()}.png",
+        caption=f"*X7 Finance Referral Scheme*\n\n{text.referral}",
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='Application',
+                                  url=f'https://docs.google.com/forms/d/e/1FAIpQLSf5h3ngT_swsq2My5BfY1W_'
+                                      f'ZWv3jni9JeWEfgkWFgorNLknQg/viewform')], ]))
 
 async def alert_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
@@ -192,19 +190,19 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler(['website', 'site'], commands.website))
     application.add_handler(CommandHandler(['whitepaper', 'wp', 'wpquote'], commands.wp))
     application.job_queue.run_repeating(
-        wp_message, times.wp_time * 60 * 60,
+        endorse_message, times.endorse_time * 60 * 60,
         chat_id=keys.main_id,
-        name=str('WP Message'),
-        data=times.wp_time * 60 * 60)
+        name=str('Endorsement Message'),
+        data=times.endorse_time * 60 * 60)
     application.job_queue.run_repeating(
         alert_message, times.alert_time * 60 * 60,
         chat_id=keys.alerts_id,
         name=str('Alert Message'),
         data=times.alert_time * 60 * 60)
     application.job_queue.run_repeating(
-        raid_message, times.raid_time * 60 * 60,
+        referral_message, times.referral_time * 60 * 60,
         chat_id=keys.main_id,
         first=1800,
-        name=str('Raid Message'),
-        data=times.raid_time * 60 * 60)
+        name=str('Referral Message'),
+        data=times.referral_time * 60 * 60)
     application.run_polling()
