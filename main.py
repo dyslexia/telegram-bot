@@ -156,7 +156,6 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('quote', commands.quote))
     application.add_handler(CommandHandler('raid', commands.raid))
     application.add_handler(CommandHandler(['referral', 'refer'], commands.refer))
-    application.add_handler(CommandHandler('roadmap', commands.roadmap))
     application.add_handler(CommandHandler('router', commands.router))
     application.add_handler(CommandHandler('say', commands.say))
     application.add_handler(CommandHandler('search', commands.search))

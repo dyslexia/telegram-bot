@@ -664,7 +664,7 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
         liquidation = contract.functions.canLiquidate(int(loan_id)).call()
         if liquidation != 0:
             liquidation_status = f'*Eligible For Liquidation*\n' \
-                                 f'Cost: {liquidation} {token}\n' \
+                                 f'Cost: {liquidation / 10 ** 18} {token}\n' \
                                  f'Reward: {contract.functions.liquidationReward().call() / 10 ** 17} {token}'
     except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
         pass
@@ -674,17 +674,25 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     schedule2 = contract.functions.getPrincipalPaymentSchedule(int(loan_id)).call()
     schedule_list = []
     if len(schedule1[0]) > 0 and len(schedule1[1]) > 0:
-        for date, value in zip(schedule1[0], schedule1[1]):
-            formatted_date = datetime.fromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
-            formatted_value = value / 10 ** 18
-            sch = f'{formatted_date} - {formatted_value} {token}'
-            schedule_list.append(sch)
+        if len(schedule2[0]) == len(schedule1[0]) and len(schedule2[1]) == len(schedule1[1]):
+            for date1, value1, value2 in zip(schedule1[0], schedule1[1], schedule2[1]):
+                formatted_date = datetime.fromtimestamp(date1).strftime('%Y-%m-%d %H:%M:%S')
+                combined_value = (value1 + value2) / 10 ** 18
+                sch = f'{formatted_date} - {combined_value} {token}'
+                schedule_list.append(sch)
+        else:
+            for date, value in zip(schedule1[0], schedule1[1]):
+                formatted_date = datetime.fromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
+                formatted_value = value / 10 ** 18
+                sch = f'{formatted_date} - {formatted_value} {token}'
+                schedule_list.append(sch)
     else:
         for date, value in zip(schedule2[0], schedule2[1]):
             formatted_date = datetime.fromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
             formatted_value = value / 10 ** 18
             sch = f'{formatted_date} - {formatted_value} {token}'
             schedule_list.append(sch)
+
     schedule_str = "\n".join(schedule_list)
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -1328,59 +1336,6 @@ async def quote(update: Update, context: ContextTypes.DEFAULT_TYPE):
         caption=f'{api.get_quote()}',
         parse_mode="Markdown")
 
-async def roadmap(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    def draw_progress_bar(d, x, y, w, h, progress, bg="black", fg="white"):
-        im1.ellipse((x + w, y, x + h + w, y + h), fill=bg)
-        im1.ellipse((x, y, x + h, y + h), fill=bg)
-        im1.rectangle((x + (h / 2), y, x + w + (h / 2), y + h), fill=bg)
-        w *= progress
-        im1.ellipse((x + w, y, x + h + w, y + h), fill=fg)
-        im1.ellipse((x, y, x + h, y + h), fill=fg)
-        im1.rectangle((x + (h / 2), y, x + w + (h / 2), y + h), fill=fg)
-        return im1
-    out = Image.open((random.choice(media.blackhole)))
-    im1 = ImageDraw.Draw(out)
-    myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
-    ws1_1 = draw_progress_bar(im1, 80, 80, 200, 25, text.ws1_1)
-    ws1_2 = draw_progress_bar(im1, 80, 180, 200, 25, text.ws1_2)
-    ws2 = draw_progress_bar(im1, 80, 280, 200, 25, text.ws2)
-    ws3 = draw_progress_bar(im1, 80, 380, 200, 25, text.ws3)
-    ws4 = draw_progress_bar(im1, 80, 480, 200, 25, text.ws4)
-    ws5 = draw_progress_bar(im1, 480, 80, 200, 25, text.ws5)
-    ws6 = draw_progress_bar(im1, 480, 180, 200, 25, text.ws6)
-    ws7 = draw_progress_bar(im1, 480, 280, 200, 25, text.ws7)
-    ws8 = draw_progress_bar(im1, 480, 380, 200, 25, text.ws8)
-
-    ws9 = draw_progress_bar(im1, 480, 480, 200, 25, text.ws9)
-    im1.text((80, 36),
-             f'WS 1.1 - {text.ws1_1 * 100}% \n\n\n'
-             f'WS 1.2 - {text.ws1_2 * 100}% \n\n\n'
-             f'WS 2 - {text.ws2 * 100}% \n\n\n'
-             f'WS 3 - {text.ws3 * 100}% \n\n\n'
-             f'WS 4 - {text.ws4 * 100}% \n\n\n',
-             font=myfont, fill=(255, 255, 255))
-    im1.text((480, 36),
-             f'WS 5 - {text.ws5 * 100}% \n\n\n'
-             f'WS 6 - {text.ws6 * 100}%\n\n\n'
-             f'WS 7 - {text.ws7 * 100}%\n\n\n'
-             f'WS 8 - {text.ws8 * 100}%\n\n\n'
-             f'WS 9 - {text.ws9 * 100}%\n\n\n',
-             font=myfont, fill=(255, 255, 255))
-    out.save(r"media\blackhole.png")
-    await update.message.reply_photo(
-        photo=open(r"media\blackhole.png", 'rb'),
-        caption=f'*X7 Finance Work Stream Status*\n\n'
-                f'WS1.1: Omni routing (multi dex routing "library" code) - {text.ws1_1*100}% \n\n'
-                f'WS1.2: Omni routing (multi dex routing "select" code) - {text.ws1_2*100}% \n\n'
-                f'WS2: Omni routing (UI) - {text.ws2*100}% \n\n'
-                f'WS3: Borrowing UI - {text.ws3*100}% \n\n'
-                f'WS4: Lending and Liquidation UI - {text.ws4*100}% \n\n'
-                f'WS5: DAO smart contracts - {text.ws5*100}% \n\n'
-                f'WS6: X7 DAO UI - {text.ws6*100}%\n\n'
-                f'WS7: Marketing "Pitch Deck" - {text.ws7*100}%\n\n'
-                f'WS8: Decentralization in hosting - {text.ws8*100}%\n\n'
-                f'WS9: Developer Tools and Example Smart Contracts - {text.ws9*100}%\n\n{api.get_quote()}',
-        parse_mode='Markdown')
 
 async def router(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
@@ -1722,7 +1677,7 @@ async def volume(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "eth":
         link = url.ether_address
         token = "eth"
-        chain_url = f"https://api.etherscan.io/api?module=account&action=txlist&address={ca.router}{keys.ether}"
+        chain_url = f"https://api.etherscan.io/api?module=account&action=txlistinternal&address={ca.router}{keys.ether}"
     if chain == "poly":
         link = url.poly_address
         token = "matic"
@@ -1752,7 +1707,7 @@ async def volume(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
         caption=f"*{chain.upper()} Volume*\n\n"
-                f"{total_tx_value_eth} {token.upper()} (${total_tx_value_usd:.2f}) volume traded "
+                f"{total_tx_value_eth} {token.upper()}\n(${total_tx_value_usd:,.2f})\nVolume traded "
                 f"through {chain.upper()} router",
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
