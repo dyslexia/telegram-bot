@@ -216,11 +216,18 @@ async def new_loan(event):
         schedule2 = contract.functions.getPrincipalPaymentSchedule(int(event["args"]["loanID"])).call()
         schedule_list = []
         if len(schedule1[0]) > 0 and len(schedule1[1]) > 0:
-            for date, value in zip(schedule1[0], schedule1[1]):
-                formatted_date = datetime.fromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
-                formatted_value = value / 10 ** 18
-                sch = f'{formatted_date} - {formatted_value} BNB'
-                schedule_list.append(sch)
+            if len(schedule2[0]) == len(schedule1[0]) and len(schedule2[1]) == len(schedule1[1]):
+                for date1, value1, value2 in zip(schedule1[0], schedule1[1], schedule2[1]):
+                    formatted_date = datetime.fromtimestamp(date1).strftime('%Y-%m-%d %H:%M:%S')
+                    combined_value = (value1 + value2) / 10 ** 18
+                    sch = f'{formatted_date} - {combined_value} MATIC'
+                    schedule_list.append(sch)
+            else:
+                for date, value in zip(schedule1[0], schedule1[1]):
+                    formatted_date = datetime.fromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
+                    formatted_value = value / 10 ** 18
+                    sch = f'{formatted_date} - {formatted_value} MATIC'
+                    schedule_list.append(sch)
         else:
             for date, value in zip(schedule2[0], schedule2[1]):
                 formatted_date = datetime.fromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
