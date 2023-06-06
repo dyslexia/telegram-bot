@@ -35,10 +35,8 @@ async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'{text.about}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Website', url=f'{url.website}')],
-            [InlineKeyboardButton(text='Community Dashboard', url=f'{url.dashboard}')],
-            [InlineKeyboardButton(text='Linktree', url=f'{url.linktree}')],
-            [InlineKeyboardButton(text='Medium', url=f'{url.medium}')], ]))
+            [InlineKeyboardButton(text='Xchange App', url=f'{url.xchange}')],
+            [InlineKeyboardButton(text='Website', url=f'{url.dashboard}')], ]))
 
 async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_sticker(sticker=media.chains)
@@ -341,10 +339,8 @@ async def ecosystem(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'\n\n{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Website', url=f'{url.website}')],
-            [InlineKeyboardButton(text='Community Dashboard', url=f'{url.dashboard}')],
-            [InlineKeyboardButton(text='Linktree', url=f'{url.linktree}')],
-            [InlineKeyboardButton(text='Medium', url=f'{url.medium}')], ]))
+            [InlineKeyboardButton(text='Xchange App', url=f'{url.xchange}')],
+            [InlineKeyboardButton(text='Website', url=f'{url.dashboard}')], ]))
 
 async def factory(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
@@ -604,10 +600,9 @@ async def links(update: Update, context: ContextTypes.DEFAULT_TYPE):
         caption=f'*X7 Finance links*\n\n{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Website', url=f'{url.website}')],
-            [InlineKeyboardButton(text='Community Dashboard', url=f'{url.dashboard}')],
+            [InlineKeyboardButton(text='Xchange App', url=f'{url.xchange}')],
+            [InlineKeyboardButton(text='Website', url=f'{url.dashboard}')],
             [InlineKeyboardButton(text='Snapshot', url=f'{url.snapshot}')],
-            [InlineKeyboardButton(text='Linktree', url=f'{url.linktree}')],
             [InlineKeyboardButton(text='Medium', url=f'{url.medium}')],
             [InlineKeyboardButton(text='Twitter', url=f'{url.twitter}')],
             [InlineKeyboardButton(text='Discord', url=f'{url.discord}')],
@@ -1745,8 +1740,8 @@ async def website(update: Update, context: ContextTypes.DEFAULT_TYPE):
         caption=f'*X7 Finance Website Links*\n\n{api.get_quote()}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Website', url=f'{url.website}')],
-            [InlineKeyboardButton(text='Community Dashboard', url=f'{url.dashboard}')], ]))
+            [InlineKeyboardButton(text='Xchange App', url=f'{url.xchange}')],
+            [InlineKeyboardButton(text='Website', url=f'{url.dashboard}')], ]))
 
 async def wei(update: Update, context: ContextTypes.DEFAULT_TYPE):
     eth = " ".join(context.args)
@@ -1762,7 +1757,7 @@ async def wp(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text=f'*X7 Finance Whitepaper Quote*\n\n{random.choice(text.quotes)}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Website', url=f'{url.website}')],
+            [InlineKeyboardButton(text='Website', url=f'{url.dashboard}')],
             [InlineKeyboardButton(text='Full WP', url=f'{url.wp_link}')],
             [InlineKeyboardButton(text='Short WP', url=f'{url.short_wp_link}')], ]))
 

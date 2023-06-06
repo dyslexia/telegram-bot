@@ -1,11 +1,17 @@
 # URLS
 
 # XCHANGE
+xchange = 'https://beta.x7.finance/'
 xchange_buy_eth = 'https://beta.x7.finance/#/swap?outputCurrency='
 xchange_buy_bsc = 'https://beta.x7.finance/#/swap?outputCurrency='
 xchange_buy_poly = 'https://beta.x7.finance/#/swap?outputCurrency='
 xchange_buy_arb = 'https://beta.x7.finance/#/swap?outputCurrency='
 xchange_buy_opti = 'https://beta.x7.finance/#/swap?outputCurrency='
+
+# TG
+tg_main = 't.me/x7m105portal'
+tg_alerts = 't.me/xchange_alerts'
+tg_announcements = 't.me/x7announcements'
 
 # ETHERSCAN
 ether_token = 'https://etherscan.io/token/'
@@ -40,9 +46,7 @@ dex_tools_arb = 'https://www.dextools.io/app/arbitrum/pair-explorer/'
 dex_tools_opti = 'https://www.dextools.io/app/optimism/pair-explorer/'
 
 # LINKS
-website = 'https://x7.finance'
 dashboard = 'https://www.x7finance.org/'
-linktree = 'https://linktr.ee/X7_Finance'
 medium = 'https://medium.com/@X7Finance'
 dune = 'https://dune.com/0xawesomedata/x7r'
 twitter = 'https://twitter.com/x7_finance'
@@ -55,6 +59,8 @@ dac = 'http://shorturl.at/ehnr9'
 github = 'https://github.com/x7finance/'
 ca_directory = 'https://medium.com/@mikemurpher/x7-finance-contracts-directory-fe3a9fee7b3c'
 snapshot = "https://snapshot.org/#/x7community.eth"
+referral = "https://docs.google.com/forms/d/e/1FAIpQLSf5h3ngT_swsq2My5BfY1W_ZWv3jni9JeWEfgkWFgorNLknQg/viewform"
+pioneers = "https://img.x7.finance/pioneers/"
 
 # OPENSEA
 os_eco = "https://opensea.io/collection/x7-ecosystem-maxi"

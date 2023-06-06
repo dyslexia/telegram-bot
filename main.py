@@ -62,19 +62,17 @@ async def endorse_message(context: ContextTypes.DEFAULT_TYPE) -> None:
         caption=f'*X7 Finance Xchange Pairs*\n\n{text.endorse}',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Xchange Alerts', url=f't.me/xchange_alerts')], ]))
+            [InlineKeyboardButton(text='Xchange Alerts', url=f'{url.tg_alerts}')], ]))
 
 async def referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
     await context.bot.send_photo(
         job.chat_id,
-        photo=f"https://img.x7.finance/pioneers/{api.get_random_pioneer_number()}.png",
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Referral Scheme*\n\n{text.referral}",
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Application',
-                                  url=f'https://docs.google.com/forms/d/e/1FAIpQLSf5h3ngT_swsq2My5BfY1W_'
-                                      f'ZWv3jni9JeWEfgkWFgorNLknQg/viewform')], ]))
+            [InlineKeyboardButton(text='Application', url=f'{url.referral}')], ]))
 
 async def alert_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
@@ -82,9 +80,8 @@ async def alert_message(context: ContextTypes.DEFAULT_TYPE) -> None:
         job.chat_id,
         photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance*\n\n{random.choice(text.quotes)}\n\n{api.get_quote()}\n\n'
-                f'🏠 [X7.Finance](http://x7.finance) ┃ 🔗 [X7finance.org](http://x7finance.org)\n'
-                f'💬 [Telegram](t.me/x7m105portal)   ┃ 💰 [Donate]({url.ether_address}'
-                f'0x89eE55b32B0E463C27508669fcFCf43D18e9833E)',
+                f'🏠 [Xchange]({url.xchange}) ┃ 🔗 [X7finance.org]({url.dashboard})\n'
+                f'💬 [Telegram]({url.tg_main})   ┃ 💬 [Twitter]({url.twitter}',
         parse_mode='Markdown')
 
 async def auto_message(context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -167,7 +164,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('supply', commands.supply))
     application.add_handler(CommandHandler('start_auto', commands.start_auto))
     application.add_handler(CommandHandler('stop_auto', commands.stop_auto))
-    application.add_handler(CommandHandler(['swap', 'xchange', 'dex'], commands.swap))
+    application.add_handler(CommandHandler(['beta', 'swap', 'xchange', 'dex'], commands.swap))
     application.add_handler(CommandHandler(['tax', 'slippage'], commands.tax_command))
     application.add_handler(CommandHandler('test', commands.test))
     application.add_handler(CommandHandler(['time', 'clock'], commands.time))
@@ -201,7 +198,7 @@ if __name__ == '__main__':
     application.job_queue.run_repeating(
         referral_message, times.referral_time * 60 * 60,
         chat_id=keys.main_id,
-        first=1800,
+        first=10800,
         name=str('Referral Message'),
         data=times.referral_time * 60 * 60)
     application.run_polling()
