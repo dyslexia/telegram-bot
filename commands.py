@@ -658,7 +658,7 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         liquidation = contract.functions.canLiquidate(int(loan_id)).call()
         if liquidation != 0:
-            liquidation_status = f'*Eligible For Liquidation*\n' \
+            liquidation_status = f'\n\n*Eligible For Liquidation*\n' \
                                  f'Cost: {liquidation / 10 ** 18} {token}\n' \
                                  f'Reward: {contract.functions.liquidationReward().call() / 10 ** 17} {token}'
     except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
@@ -693,7 +693,7 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
         photo=open((random.choice(media.logos)), 'rb'),
         caption=f'*X7 Finance Initial Liquidity Loan - {loan_id} ({chain.upper()})*\n\n'
                 f'Payment Schedule:\n{schedule_str}\n\n'
-                f'{remaining}\n\n'
+                f'{remaining}'
                 f'{liquidation_status}\n\n{api.get_quote()}', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'Token Contract',

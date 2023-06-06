@@ -19,15 +19,6 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = str(update.effective_message.text).lower()
     print(f'{update.effective_message.from_user.username} says "{message}" in: '
           f'{update.effective_message.chat.title}')
-    if "@devs" in message:
-        result = round(((api.get_token_balance(ca.dead, ca.x7r, "eth") / ca.supply) * 100), 6)
-        await update.message.reply_text(f'Please send 1000 X7R to the burn wallet:\n\n'
-                                        f'`0x000000000000000000000000000000000000dEaD`\n\nThank you for your '
-                                        f'contribution {update.message.from_user.username}\n\n'
-                                        f'X7R (ETH) Tokens Burned:\n'
-                                        f'{"{:,}".format(api.get_token_balance(ca.dead, ca.x7r, "eth"))}\n'
-                                        f'{result}% of Supply',
-                                        parse_mode='Markdown')
     if "rob the bank" in message:
         await update.message.reply_text(f'{text.rob}', parse_mode='Markdown')
     if "delay" in message:

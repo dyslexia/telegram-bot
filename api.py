@@ -227,7 +227,6 @@ def get_random_pioneer_number():
     number = random.randint(min_num, max_num)
     return str(number).zfill(4)
 
-
 def get_scan(token, chain):
     chain_number = ""
     if chain == "eth":
