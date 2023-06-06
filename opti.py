@@ -188,6 +188,7 @@ async def new_pair(event):
     print(f'V2 Pair sent: ({token_name[1]}/{native[1]})')
 
 async def new_loan(event):
+    print('Loan Originated')
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
     try:
         address = to_checksum_address(ca.lpool)
@@ -227,7 +228,7 @@ async def new_loan(event):
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
-        keys.alerts_id,
+        keys.main_id,
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*New Loan Originated (OPTIMISM)*\n\n'
                 f'Loan ID: {event["args"]["loanID"]}\n'
@@ -236,6 +237,7 @@ async def new_loan(event):
                 f'Total: {amount} ETH', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'Loan TX', url=f'{url.opti_tx}{event["transactionHash"].hex()}')], ]))
+    print(f'Loan {event["args"]["loanID"]} sent')
 
 async def log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval):
     while True:

@@ -28,7 +28,6 @@ ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "bsc"))
 
 async def new_pair(event):
     print("Pair found")
-    print(event)
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "bsc")
     liq = {"reserve0": 0, "reserve1": 0}
     try:
@@ -221,6 +220,7 @@ async def new_pair(event):
     print(f'Pair sent: ({token_name[1]}/{native[1]})')
 
 async def new_loan(event):
+    print('Loan Originated')
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "arb")
     try:
         address = to_checksum_address(ca.lpool)
@@ -267,7 +267,7 @@ async def new_loan(event):
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
-        keys.alerts_id,
+        keys.main_id,
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*New Loan Originated (BSC)*\n\n'
                 f'Loan ID: {event["args"]["loanID"]}\n'
@@ -276,6 +276,7 @@ async def new_loan(event):
                 f'Total: {amount} BNB', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'Loan TX', url=f'{url.bsc_tx}{event["transactionHash"].hex()}')], ]))
+    print(f'Loan {event["args"]["loanID"]} sent')
 
 async def log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval):
     while True:
