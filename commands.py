@@ -342,6 +342,14 @@ async def ecosystem(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text='Xchange App', url=f'{url.xchange}')],
             [InlineKeyboardButton(text='Website', url=f'{url.dashboard}')], ]))
 
+async def endorse(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_photo(
+        photo=open((random.choice(media.logos)), 'rb'),
+        caption=f'{text.endorse}',
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='X7 Xchange Alerts ', url=f'{url.tg_alerts}')], ]))
+
 async def factory(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -617,6 +625,7 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     token = ""
     scan_address = ""
     scan_token = ""
+    price = ""
     if len(context.args) >= 2:
         chain = context.args[0].lower()
         loan_id = context.args[1]
@@ -628,28 +637,33 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
         token = "ETH"
         scan_address = url.ether_address
         scan_token = url.ether_token
+        price = api.get_native_price("eth")
     elif chain == "arb":
         web_url = f"https://arb-mainnet.g.alchemy.com/v2/{keys.alchemy_arb}"
         token = "ETH"
         scan_address = url.arb_address
         scan_token = url.arb_token
+        price = api.get_native_price("eth")
     elif chain == "bsc":
         web_url = "https://bsc-dataseed.binance.org/"
         token = "BNB"
         scan_address = url.bsc_address
         scan_token = url.bsc_token
+        price = api.get_native_price("bnb")
     elif chain == "poly":
         web_url = f'https://polygon-mainnet.g.alchemy.com/v2/{keys.alchemy_poly}'
         token = "MATIC"
         scan_address = url.poly_address
         scan_token = url.poly_token
+        price = api.get_native_price("matic")
     elif chain == "opti":
         web_url = f'https://opt-mainnet.g.alchemy.com/v2/{keys.alchemy_opti}'
         token = "ETH"
         scan_address = url.opti_address
         scan_token = url.opti_token
+        price = api.get_native_price("eth")
     else:
-        await update.message.reply_text(f'Please use /loan chain_name loan_id to see details')
+        await update.message.reply_text(f'Please use `/loan chain_name loan_id` to see details', parse_mode='Markdown')
         return
     web3 = Web3(Web3.HTTPProvider(web_url))
     address = to_checksum_address(ca.lpool)
@@ -658,13 +672,15 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         liquidation = contract.functions.canLiquidate(int(loan_id)).call()
         if liquidation != 0:
+            reward = contract.functions.liquidationReward().call() / 10 ** 18
             liquidation_status = f'\n\n*Eligible For Liquidation*\n' \
-                                 f'Cost: {liquidation / 10 ** 18} {token}\n' \
-                                 f'Reward: {contract.functions.liquidationReward().call() / 10 ** 17} {token}'
+                                 f'Cost: {liquidation / 10 ** 18} {token} ' \
+                                 f'(${"{:0,.0f}".format(price*liquidation / 10 ** 18)})\n' \
+                                 f'Reward: {reward} {token} (${"{:0,.0f}".format(price*reward)})'
     except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
         pass
     liability = contract.functions.getRemainingLiability(int(loan_id)).call() / 10 ** 18
-    remaining = f'Remaining Liability {liability} {token}'
+    remaining = f'Remaining Liability {liability} {token} (${"{:0,.0f}".format(price*liability)})'
     schedule1 = contract.functions.getPremiumPaymentSchedule(int(loan_id)).call()
     schedule2 = contract.functions.getPrincipalPaymentSchedule(int(loan_id)).call()
     schedule_list = []
@@ -687,7 +703,6 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
             formatted_value = value / 10 ** 18
             sch = f'{formatted_date} - {formatted_value} {token}'
             schedule_list.append(sch)
-
     schedule_str = "\n".join(schedule_list)
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
@@ -1325,12 +1340,64 @@ async def refer(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                   url=f'https://docs.google.com/forms/d/e/1F'
                                       f'AIpQLSf5h3ngT_swsq2My5BfY1W_ZWv3jni9JeWEfgkWFgorNLknQg/viewform')], ]))
 
+async def roadmap(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def draw_progress_bar(d, x, y, w, h, progress, bg="black", fg="white"):
+        im1.ellipse((x + w, y, x + h + w, y + h), fill=bg)
+        im1.ellipse((x, y, x + h, y + h), fill=bg)
+        im1.rectangle((x + (h / 2), y, x + w + (h / 2), y + h), fill=bg)
+        w *= progress
+        im1.ellipse((x + w, y, x + h + w, y + h), fill=fg)
+        im1.ellipse((x, y, x + h, y + h), fill=fg)
+        im1.rectangle((x + (h / 2), y, x + w + (h / 2), y + h), fill=fg)
+        return im1
+    out = Image.open((random.choice(media.blackhole)))
+    im1 = ImageDraw.Draw(out)
+    myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
+    ws1_1 = draw_progress_bar(im1, 80, 80, 200, 25, text.ws1_1)
+    ws1_2 = draw_progress_bar(im1, 80, 180, 200, 25, text.ws1_2)
+    ws2 = draw_progress_bar(im1, 80, 280, 200, 25, text.ws2)
+    ws3 = draw_progress_bar(im1, 80, 380, 200, 25, text.ws3)
+    ws4 = draw_progress_bar(im1, 80, 480, 200, 25, text.ws4)
+    ws5 = draw_progress_bar(im1, 480, 80, 200, 25, text.ws5)
+    ws6 = draw_progress_bar(im1, 480, 180, 200, 25, text.ws6)
+    ws7 = draw_progress_bar(im1, 480, 280, 200, 25, text.ws7)
+    ws8 = draw_progress_bar(im1, 480, 380, 200, 25, text.ws8)
+    ws9 = draw_progress_bar(im1, 480, 480, 200, 25, text.ws9)
+    im1.text((80, 36),
+             f'WS 1.1 - {text.ws1_1 * 100}% \n\n\n'
+             f'WS 1.2 - {text.ws1_2 * 100}% \n\n\n'
+             f'WS 2 - {text.ws2 * 100}% \n\n\n'
+             f'WS 3 - {text.ws3 * 100}% \n\n\n'
+             f'WS 4 - {text.ws4 * 100}% \n\n\n',
+             font=myfont, fill=(255, 255, 255))
+    im1.text((480, 36),
+             f'WS 5 - {text.ws5 * 100}% \n\n\n'
+             f'WS 6 - {text.ws6 * 100}%\n\n\n'
+             f'WS 7 - {text.ws7 * 100}%\n\n\n'
+             f'WS 8 - {text.ws8 * 100}%\n\n\n'
+             f'WS 9 - {text.ws9 * 100}%\n\n\n',
+             font=myfont, fill=(255, 255, 255))
+    out.save(r"media\blackhole.png")
+    await update.message.reply_photo(
+        photo=open(r"media\blackhole.png", 'rb'),
+        caption=f'*X7 Finance Work Stream Status*\n\n'
+                f'WS1.1: Omni routing (multi dex routing "library" code) - {text.ws1_1*100}% \n\n'
+                f'WS1.2: Omni routing (multi dex routing "select" code) - {text.ws1_2*100}% \n\n'
+                f'WS2: Omni routing (UI) - {text.ws2*100}% \n\n'
+                f'WS3: Borrowing UI - {text.ws3*100}% \n\n'
+                f'WS4: Lending and Liquidation UI - {text.ws4*100}% \n\n'
+                f'WS5: DAO smart contracts - {text.ws5*100}% \n\n'
+                f'WS6: X7 DAO UI - {text.ws6*100}%\n\n'
+                f'WS7: Marketing "Pitch Deck" - {text.ws7*100}%\n\n'
+                f'WS8: Decentralization in hosting - {text.ws8*100}%\n\n'
+                f'WS9: Developer Tools and Example Smart Contracts - {text.ws9*100}%\n\n{api.get_quote()}',
+        parse_mode='Markdown')
+
 async def quote(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open((random.choice(media.logos)), 'rb'),
         caption=f'{api.get_quote()}',
         parse_mode="Markdown")
-
 
 async def router(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
@@ -1602,38 +1669,42 @@ async def time(update: Update, context: CallbackContext):
         ("Asia/Tokyo", "JST")]
     current_time = datetime.now(pytz.timezone("UTC"))
     local_time = current_time.astimezone(pytz.timezone("UTC"))
-    if len(message) > 1:
-        time_variable = message[1]
-        time_format = "%I%p"
-        if re.match(r"\d{1,2}:\d{2}([ap]m)?", time_variable):
-            time_format = "%I:%M%p" if re.match(r"\d{1,2}:\d{2}am", time_variable, re.IGNORECASE) else "%I:%M%p"
-        input_time = datetime.strptime(time_variable, time_format).replace(
-            year=local_time.year, month=local_time.month, day=local_time.day)
-        if len(message) > 2:
-            time_zone = message[2]
+    try:
+        if len(message) > 1:
+            time_variable = message[1]
+            time_format = "%I%p"
+            if re.match(r"\d{1,2}:\d{2}([ap]m)?", time_variable):
+                time_format = "%I:%M%p" if re.match(r"\d{1,2}:\d{2}am", time_variable, re.IGNORECASE) else "%I:%M%p"
+            input_time = datetime.strptime(time_variable, time_format).replace(
+                year=local_time.year, month=local_time.month, day=local_time.day)
+            if len(message) > 2:
+                time_zone = message[2]
+                for tz, tz_name in timezones:
+                    if time_zone.lower() == tz_name.lower():
+                        tz_time = pytz.timezone(tz).localize(input_time)
+                        time_info = f"{input_time.strftime('%A %B %d %Y')}\n"
+                        time_info += f"{input_time.strftime('%I:%M %p')} - {time_zone.upper()}\n\n"
+                        for tz_inner, tz_name_inner in timezones:
+                            converted_time = tz_time.astimezone(pytz.timezone(tz_inner))
+                            time_info += f"{converted_time.strftime('%I:%M %p')} - {tz_name_inner}\n"
+                        await update.message.reply_text(time_info, parse_mode="Markdown")
+                        return
+            time_info = f"{input_time.strftime('%A %B %d %Y')}\n"
+            time_info += f"{input_time.strftime('%I:%M %p')} - {time_variable.upper()}\n\n"
             for tz, tz_name in timezones:
-                if time_zone.lower() == tz_name.lower():
-                    tz_time = pytz.timezone(tz).localize(input_time)
-                    time_info = f"{input_time.strftime('%A %B %d %Y')}\n"
-                    time_info += f"{input_time.strftime('%I:%M %p')} - {time_zone.upper()}\n\n"
-                    for tz_inner, tz_name_inner in timezones:
-                        converted_time = tz_time.astimezone(pytz.timezone(tz_inner))
-                        time_info += f"{converted_time.strftime('%I:%M %p')} - {tz_name_inner}\n"
-                    await update.message.reply_text(time_info, parse_mode="Markdown")
-                    return
-        time_info = f"{input_time.strftime('%A %B %d %Y')}\n"
-        time_info += f"{input_time.strftime('%I:%M %p')} - {time_variable.upper()}\n\n"
+                tz_time = input_time.astimezone(pytz.timezone(tz))
+                time_info += f"{tz_time.strftime('%I:%M %p')} - {tz_name}\n"
+            await update.message.reply_text(time_info, parse_mode="Markdown")
+            return
+        time_info = f"{local_time.strftime('%A %B %d %Y')}\n"
+        time_info += f"{local_time.strftime('%I:%M %p')} - {local_time.strftime('%Z')}\n\n"
         for tz, tz_name in timezones:
-            tz_time = input_time.astimezone(pytz.timezone(tz))
+            tz_time = local_time.astimezone(pytz.timezone(tz))
             time_info += f"{tz_time.strftime('%I:%M %p')} - {tz_name}\n"
         await update.message.reply_text(time_info, parse_mode="Markdown")
-        return
-    time_info = f"{local_time.strftime('%A %B %d %Y')}\n"
-    time_info += f"{local_time.strftime('%I:%M %p')} - {local_time.strftime('%Z')}\n\n"
-    for tz, tz_name in timezones:
-        tz_time = local_time.astimezone(pytz.timezone(tz))
-        time_info += f"{tz_time.strftime('%I:%M %p')} - {tz_name}\n"
-    await update.message.reply_text(time_info, parse_mode="Markdown")
+    except (Exception, TimeoutError, ValueError, StopAsyncIteration):
+        await update.message.reply_text('use `/time HH:MMPM or HHAM TZ`', parse_mode="Markdown")
+
 
 async def today(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = api.get_today()

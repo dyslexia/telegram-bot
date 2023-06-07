@@ -254,17 +254,19 @@ async def new_loan(event):
         print(f' Scan Error:{e}')
         schedule_str = ""
         amount = ""
+    cost = int(tx["result"]["value"], 0) / 10 ** 18
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.bsc_logo)
     im1.paste(im2, (720, 20), im2)
     myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
     i1 = ImageDraw.Draw(im1)
     i1.text((26, 30),
-            f'New Loan Originated (BSC)\n\n'
+            f'*New Loan Originated (BSC)*\n\n'
             f'Loan ID: {event["args"]["loanID"]}\n'
-            f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} BNB\n\n'
+            f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} BNB '
+            f'(${"{:0,.0f}".format(api.get_native_price("bnb") * cost)})\n\n'
             f'Payment Schedule:\n{schedule_str}\n\n'
-            f'Total: {amount} BNB',
+            f'Total: {amount} BNB (${"{:0,.0f}".format(api.get_native_price("bnb") * amount)}',
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
@@ -272,9 +274,10 @@ async def new_loan(event):
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*New Loan Originated (BSC)*\n\n'
                 f'Loan ID: {event["args"]["loanID"]}\n'
-                f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} BNB\n\n'
+                f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} BNB '
+                f'(${"{:0,.0f}".format(api.get_native_price("bnb") * cost)})\n\n'
                 f'Payment Schedule:\n{schedule_str}\n\n'
-                f'Total: {amount} BNB', parse_mode='Markdown',
+                f'Total: {amount} BNB (${"{:0,.0f}".format(api.get_native_price("bnb") * amount)}',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'Loan TX', url=f'{url.bsc_tx}{event["transactionHash"].hex()}')], ]))
     print(f'Loan {event["args"]["loanID"]} sent')
