@@ -206,6 +206,7 @@ async def new_pair(event):
     print(f'Pair Sent: ({token_name[1]}/{native[1]})')
 
 async def new_loan(event):
+    application = ApplicationBuilder().token(keys.token).build()
     print('Loan Originated')
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "poly")
     try:
@@ -247,7 +248,7 @@ async def new_loan(event):
     i1.text((26, 30),
             f'New Loan Originated (POLYGON)\n\n'
             f'Loan ID: {event["args"]["loanID"]}\n'
-            f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} MATIC\n'
+            f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} MATIC\n\n'
             f'Payment Schedule:\n{schedule_str}\n\n'
             f'Total: {amount} MATIC',
             font=myfont, fill=(255, 255, 255))
@@ -257,7 +258,7 @@ async def new_loan(event):
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*New Loan Originated (POLYGON)*\n\n'
                 f'Loan ID: {event["args"]["loanID"]}'
-                f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} BNB\n'
+                f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} MATIC\n\n'
                 f'Payment Schedule:\n{schedule_str}\n\n'
                 f'Total: {amount} MATIC',
         parse_mode='Markdown',

@@ -381,6 +381,12 @@ def get_verified(contract, chain):
         url = f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address={contract}{keys.ether}"
     if chain == "bsc":
         url = f"https://api.bscscan.com/api?module=contract&action=getsourcecode&address={contract}{keys.bsc}"
+    if chain == "arb":
+        url = f"https://api.arbican.io/api?module=contract&action=getsourcecode&address={contract}{keys.arb}"
+    if chain == "poly":
+        url = f"https://api.polygonscan.com/api?module=contract&action=getsourcecode&address={contract}{keys.poly}"
+    if chain == "opti":
+        url = f"https://api.optimistic-etherscan.com/api?module=contract&action=getsourcecode&address={contract}{keys.opti}"
     response = requests.get(url)
     data = response.json()
     for result in data["result"][0]["SourceCode"]:

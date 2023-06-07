@@ -220,6 +220,7 @@ async def new_pair(event):
     print(f'Pair sent: ({token_name[1]}/{native[1]})')
 
 async def new_loan(event):
+    application = ApplicationBuilder().token(keys.token).build()
     print('Loan Originated')
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "arb")
     try:
@@ -261,7 +262,7 @@ async def new_loan(event):
     i1.text((26, 30),
             f'New Loan Originated (BSC)\n\n'
             f'Loan ID: {event["args"]["loanID"]}\n'
-            f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} BNB\n'
+            f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} BNB\n\n'
             f'Payment Schedule:\n{schedule_str}\n\n'
             f'Total: {amount} BNB',
             font=myfont, fill=(255, 255, 255))
@@ -271,7 +272,7 @@ async def new_loan(event):
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*New Loan Originated (BSC)*\n\n'
                 f'Loan ID: {event["args"]["loanID"]}\n'
-                f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} BNB\n'
+                f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} BNB\n\n'
                 f'Payment Schedule:\n{schedule_str}\n\n'
                 f'Total: {amount} BNB', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
@@ -283,19 +284,19 @@ async def log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, pol
         try:
             for PairCreated in pair_filter.get_new_entries():
                 await new_pair(PairCreated)
-#                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
             await asyncio.sleep(poll_interval)
             for LoanOriginated in ill001_filter.get_new_entries():
                 await new_loan(LoanOriginated)
-#                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
             await asyncio.sleep(poll_interval)
             for LoanOriginated in ill002_filter.get_new_entries():
                 await new_loan(LoanOriginated)
-#                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
             await asyncio.sleep(poll_interval)
             for LoanOriginated in ill003_filter.get_new_entries():
                 await new_loan(LoanOriginated)
-#                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+                application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
             await asyncio.sleep(poll_interval)
         except (Web3Exception, Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
             print(f'Error: {e}')
@@ -318,6 +319,5 @@ async def main():
 
 
 if __name__ == "__main__":
-    application = ApplicationBuilder().token(keys.token).build()
-#    application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
+    application = ApplicationBuilder().token(random.choice(keys.tokens)).connection_pool_size(512).build()
     asyncio.run(main())

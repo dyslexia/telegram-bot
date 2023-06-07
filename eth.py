@@ -194,6 +194,7 @@ async def new_pair(event):
 
 async def new_loan(event):
     print('Loan Originated')
+    application = ApplicationBuilder().token(keys.token).build()
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
     try:
         address = to_checksum_address(ca.lpool)
@@ -234,7 +235,7 @@ async def new_loan(event):
     i1.text((26, 30),
             f'New Loan Originated (ETH)\n\n'
             f'Loan ID: {event["args"]["loanID"]}\n'
-            f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH\n'
+            f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH\n\n'
             f'Payment Schedule:\n{schedule_str}\n\n'
             f'Total: {amount} ETH',
             font=myfont, fill=(255, 255, 255))
@@ -244,7 +245,7 @@ async def new_loan(event):
         photo=open(r"media\blackhole.png", 'rb'),
         caption=f'*New Loan Originated (ETH)*\n\n'
                 f'Loan ID: {event["args"]["loanID"]}\n'
-                f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH\n'
+                f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH\n\n'
                 f'Payment Schedule:\n{schedule_str}\n\n'
                 f'Total {amount} ETH', parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
