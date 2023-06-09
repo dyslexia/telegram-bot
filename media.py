@@ -1,6 +1,6 @@
 # MEDIA
-blackhole = [r'media\blackhole1.jpg', r'media\blackhole2.jpg', r'media\blackhole3.jpg', r'media\blackhole4.jpg',
-             r'media\blackhole5.jpg', r'media\blackhole6.jpg', r'media\blackhole7.jpg']
+blackhole = [r'https://assets.x7finance.org/images/banners/blackhole1.jpg', r'https://assets.x7finance.org/images/banners/blackhole2.jpg', r'https://assets.x7finance.org/images/banners/blackhole3.jpg', r'https://assets.x7finance.org/images/banners/blackhole4.jpg',
+             r'https://assets.x7finance.org/images/banners/blackhole5.jpg', r'https://assets.x7finance.org/images/banners/blackhole6.jpg', r'https://assets.x7finance.org/images/banners/blackhole7.jpg']
 logos = [r'media\logo1.png', r'media\logo2.png', r'media\logo3.png', r'media\logo4.png', r'media\logo4.png',
          r'media\logo5.png', r'media\logo6.png', r'media\logo7.png', r'media\logo8.png', r'media\logo9.png',
          r'media\logo10.png', r'media\logo11.png']
