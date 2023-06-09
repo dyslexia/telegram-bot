@@ -250,7 +250,7 @@ async def new_loan(event):
                 f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH '
                 f'(${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
                 f'Payment Schedule:\n{schedule_str}\n\n'
-                f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)}',
+                f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)})',
         parse_mode='Markdown',
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'Loan TX', url=f'{url.arb_tx}{event["transactionHash"].hex()}')], ]))

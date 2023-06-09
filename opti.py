@@ -221,12 +221,12 @@ async def new_loan(event):
     myfont = ImageFont.truetype(r'media\FreeMonoBold.ttf', 26)
     i1 = ImageDraw.Draw(im1)
     i1.text((26, 30),
-            f'*New Loan Originated (OPTIMISM)*\n\n'
+            f'New Loan Originated (OPTIMISM)\n\n'
             f'Loan ID: {event["args"]["loanID"]}\n'
             f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH '
             f'(${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
             f'Payment Schedule:\n{schedule_str}\n\n'
-            f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)}',
+            f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)})',
             font=myfont, fill=(255, 255, 255))
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
