@@ -190,7 +190,7 @@ async def new_pair(event):
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
-    myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
     i1 = ImageDraw.Draw(im1)
     i1.text(
         (26, 30),
@@ -305,7 +305,7 @@ async def new_loan(event):
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
-    myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
     i1 = ImageDraw.Draw(im1)
     i1.text(
         (26, 30),

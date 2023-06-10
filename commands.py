@@ -775,7 +775,7 @@ async def gas(update, context):
         return
     im1 = Image.open(random.choice(media.blackhole))
     im1.paste(im2, (720, 20), im2)
-    myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
     i1 = ImageDraw.Draw(im1)
     i1.text(
         (26, 30),
@@ -875,7 +875,7 @@ async def holders(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7r_holders = api.get_holders(ca.x7r)
     img = Image.open((random.choice(media.blackhole)))
     i1 = ImageDraw.Draw(img)
-    myfont = ImageFont.truetype(R"media\FreeMonoBold.ttf", 28)
+    myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
     i1.text(
         (28, 36),
         f"X7 Finance Token Holders (ETH)\n\n"
@@ -900,7 +900,7 @@ async def image(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = " ".join(context.args)
     img = Image.open((random.choice(media.blackhole)))
     i1 = ImageDraw.Draw(img)
-    myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 28)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 28)
     wrapper = textwrap.TextWrapper(width=50)
     word_list = wrapper.wrap(text=text)
     caption_new = ""
@@ -1719,7 +1719,7 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
     if pioneer_id == "":
         img = Image.open(random.choice(media.blackhole))
         i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 28)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 28)
         i1.text(
             (28, 36),
             f"X7 Pioneer NFT Info\n\n"
@@ -1869,7 +1869,7 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im2 = Image.open(media.x7d_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 28)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 28)
         i1.text(
             (28, 36),
             f"X7 Finance Lending Pool Info\n\n"
@@ -1935,7 +1935,7 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
     im1 = Image.open((random.choice(media.blackhole)))
     im1.paste(im2, (720, 20), im2)
     i1 = ImageDraw.Draw(im1)
-    myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 28)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 28)
     i1.text(
         (28, 36),
         f"X7 Finance Lending Pool Info {chain_name}\n\n"
@@ -2041,7 +2041,7 @@ async def roadmap(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     out = Image.open((random.choice(media.blackhole)))
     im1 = ImageDraw.Draw(out)
-    myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
     ws1_1 = draw_progress_bar(im1, 80, 80, 200, 25, text.ws1_1)
     ws1_2 = draw_progress_bar(im1, 80, 180, 200, 25, text.ws1_2)
     ws2 = draw_progress_bar(im1, 80, 280, 200, 25, text.ws2)
@@ -2779,7 +2779,7 @@ async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
     im2 = Image.open(media.x7d_logo)
     im1.paste(im2, (720, 20), im2)
     i1 = ImageDraw.Draw(im1)
-    myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 28)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 28)
     i1.text(
         (28, 36),
         f"X7D {chain_name} Info\n\n"
@@ -2834,7 +2834,7 @@ async def x7r(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7r_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -2857,7 +2857,7 @@ async def x7r(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7r_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -2892,7 +2892,7 @@ async def x7r(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7r_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(R"media\FreeMonoBold.ttf", 25)
+        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 25)
         im1.save(r"media\blackhole.png", quality=95)
         i1 = ImageDraw.Draw(im1)
         i1.text(
@@ -3006,7 +3006,7 @@ async def x7dao(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7dao_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -3031,7 +3031,7 @@ async def x7dao(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7dao_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -3056,7 +3056,7 @@ async def x7dao(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7dao_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -3087,7 +3087,7 @@ async def x7dao(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7dao_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 25)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 25)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (28, 36),
@@ -3197,7 +3197,7 @@ async def x7101(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7101_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -3220,7 +3220,7 @@ async def x7101(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7101_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -3245,7 +3245,7 @@ async def x7101(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im2 = Image.open(media.x7101_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1.text(
             (28, 36),
             f"X7101 Info (ETH)\n\n"
@@ -3346,7 +3346,7 @@ async def x7102(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7102_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -3369,7 +3369,7 @@ async def x7102(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7102_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -3394,7 +3394,7 @@ async def x7102(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im2 = Image.open(media.x7102_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1.text(
             (28, 36),
             f"X7102 Info (ETH)\n\n"
@@ -3495,7 +3495,7 @@ async def x7103(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7103_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -3518,7 +3518,7 @@ async def x7103(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7103_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -3543,7 +3543,7 @@ async def x7103(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im2 = Image.open(media.x7103_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 25)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 25)
         i1.text(
             (28, 36),
             f"X7103 Info (ETH)\n\n"
@@ -3644,7 +3644,7 @@ async def x7104(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7104_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -3667,7 +3667,7 @@ async def x7104(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7104_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 25)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 25)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -3691,7 +3691,7 @@ async def x7104(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7104_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (28, 36),
@@ -3793,7 +3793,7 @@ async def x7105(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7105_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -3816,7 +3816,7 @@ async def x7105(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7105_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -3840,7 +3840,7 @@ async def x7105(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7105_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (28, 36),
@@ -3939,7 +3939,7 @@ async def ath(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7dao_ath, x7dao_ath_change, x7dao_date = get_ath_info("x7dao")
     img = Image.open((random.choice(media.blackhole)))
     i1 = ImageDraw.Draw(img)
-    myfont = ImageFont.truetype(R"media\FreeMonoBold.ttf", 26)
+    myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 26)
     i1.text(
         (28, 36),
         f"X7 Finance ATH Info\n\n"
@@ -4014,7 +4014,7 @@ async def burn(update: Update, context: ContextTypes.DEFAULT_TYPE):
     im1 = Image.open((random.choice(media.blackhole)))
     im1.paste(im2, (720, 20), im2)
     i1 = ImageDraw.Draw(im1)
-    myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 28)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 28)
     i1.text(
         (28, 36),
         f"X7R {chain_name} Tokens Burned:\n\n"
@@ -4066,7 +4066,7 @@ async def constellations(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "":
         img = Image.open((random.choice(media.blackhole)))
         i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(R"media\FreeMonoBold.ttf", 20)
+        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 20)
         i1.text(
             (28, 36),
             f"X7 Finance Constellation Token Prices (ETH)\n\n"
@@ -4208,7 +4208,7 @@ async def liquidity(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im2 = Image.open(media.eth_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 20)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 20)
         i1.text(
             (28, 36),
             f"X7 Finance Token Liquidity (ETH)\n\n"
@@ -4297,7 +4297,7 @@ async def liquidity(update: Update, context: ContextTypes.DEFAULT_TYPE):
     im1 = Image.open((random.choice(media.blackhole)))
     im1.paste(im2, (720, 20), im2)
     i1 = ImageDraw.Draw(im1)
-    myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
     i1.text(
         (28, 36),
         f"X7 Finance Initial Liquidity {chain_title}\n\n"
@@ -4354,7 +4354,7 @@ async def mcap(update: Update, context: ContextTypes.DEFAULT_TYPE):
     im1 = Image.open(random.choice(media.blackhole))
     im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
-    myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 22)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 22)
     i1 = ImageDraw.Draw(im1)
     market_cap_info = f"X7 Finance Market Cap Info (ETH)\n\n"
     for token in tokens:
@@ -4404,7 +4404,7 @@ async def price(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im2 = Image.open(r"media\logo11.png")
         im1.paste(im2, (740, 20), im2)
         i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(R"media\FreeMonoBold.ttf", 28)
+        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
         i1.text(
             (28, 36),
             f"X7 Finance Token Price Info (ETH)\n\n"
@@ -4471,7 +4471,7 @@ async def price(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im1.paste(im2, (680, 20), im2)
         i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(R"media\FreeMonoBold.ttf", 28)
+        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
         i1.text(
             (28, 36),
             f"{symbol} price\n\n"
@@ -4516,7 +4516,7 @@ async def price(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(r"media\cgtokenlogo.png")
         im1.paste(im2, (680, 20), im2)
-        myfont = ImageFont.truetype(R"media\FreeMonoBold.ttf", 28)
+        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (28, 36),
@@ -4579,14 +4579,10 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
         com_x7d = api.get_token_balance(ca.com_multi_eth, ca.x7d, "eth")
         com_x7d_price = com_x7d * api.get_native_price("eth")
         com_total = com_x7r_price + com_dollar + com_x7d_price + com_x7dao_price
-        url = random.choice(
-            media.blackhole
-        )  # assuming media.blackhole is a list of URLs
-        response = requests.get(url)
-        im1 = Image.open(io.BytesIO(response.content))
+        im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.eth_logo)
         im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 20)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 20)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (28, 36),
@@ -4680,7 +4676,7 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im2 = Image.open(media.opti_logo)
     im1 = Image.open((random.choice(media.blackhole)))
     im1.paste(im2, (720, 20), im2)
-    myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 20)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 20)
     i1 = ImageDraw.Draw(im1)
     i1.text(
         (28, 36),

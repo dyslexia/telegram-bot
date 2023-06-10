@@ -19,33 +19,43 @@ print("Bot Restarted")
 
 
 async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    message = str(update.effective_message.text).lower()
+    message = str(update.effective_message.text)
+    lower_message = message.lower()
+
     print(
         f'{update.effective_message.from_user.username} says "{message}" in: '
         f"{update.effective_message.chat.title}"
     )
-    if "rob the bank" in message:
-        await update.message.reply_text(f"{text.rob}", parse_mode="Markdown")
-    if "delay" in message:
-        await update.message.reply_text(f"{text.delay}", parse_mode="markdown")
-    if "patience" in message:
-        await update.message.reply_text(f"{text.patience}", parse_mode="markdown")
-    if "https://twitter" in message:
-        await update.message.reply_text(f"{random.choice(text.twitter_replies)}")
-    if message.startswith("gm"):
-        await update.message.reply_sticker(sticker=media.gm)
-    if "new on chain message" in message:
-        await update.message.reply_sticker(sticker=media.chain)
-    if "lfg" in message:
-        await update.message.reply_sticker(sticker=media.lfg)
-    if "goat" in message:
-        await update.message.reply_sticker(sticker=media.goat)
-    if "smashed" in message:
-        await update.message.reply_sticker(sticker=media.smashed)
-    if "wagmi" in message:
-        await update.message.reply_sticker(sticker=media.wagmi)
-    if "slapped" in message:
-        await update.message.reply_sticker(sticker=media.slapped)
+
+    # Mapping of keywords to corresponding responses
+    keyword_to_response = {
+        "rob the bank": {"text": f"{text.rob}", "mode": "Markdown"},
+        "delay": {"text": f"{text.delay}", "mode": "Markdown"},
+        "patience": {"text": f"{text.patience}", "mode": "Markdown"},
+        "https://twitter": {
+            "text": f"{random.choice(text.twitter_replies)}",
+            "mode": None,
+        },
+        "gm": {"sticker": media.gm},
+        "new on chain message": {"sticker": media.chain},
+        "lfg": {"sticker": media.lfg},
+        "goat": {"sticker": media.goat},
+        "smashed": {"sticker": media.smashed},
+        "wagmi": {"sticker": media.wagmi},
+        "slapped": {"sticker": media.slapped},
+    }
+
+    for keyword, response in keyword_to_response.items():
+        # Use the original message for URLs, lowercase message for other keywords
+        target_message = message if "https://" in keyword else lower_message
+
+        if keyword in target_message:
+            if "text" in response:
+                await update.message.reply_text(
+                    response["text"], parse_mode=response["mode"]
+                )
+            elif "sticker" in response:
+                await update.message.reply_sticker(sticker=response["sticker"])
 
 
 async def error(update, context):
@@ -54,51 +64,91 @@ async def error(update, context):
 
 async def endorse_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
+
+    # Select a random logo from the media.logos list
+    selected_logo = open(random.choice(media.logos), "rb")
+
+    # Construct the caption
+    caption_text = f"*X7 Finance Xchange Pairs*\n\n{text.endorse}"
+
+    # Construct the keyboard markup
+    keyboard_markup = InlineKeyboardMarkup(
+        [[InlineKeyboardButton(text="Xchange Alerts", url=f"{url.tg_alerts}")]]
+    )
+
+    # Send a photo message
     await context.bot.send_photo(
-        job.chat_id,
-        photo=open((random.choice(media.logos)), "rb"),
-        caption=f"*X7 Finance Xchange Pairs*\n\n{text.endorse}",
+        chat_id=job.chat_id,
+        photo=selected_logo,
+        caption=caption_text,
         parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton(text="Xchange Alerts", url=f"{url.tg_alerts}")],
-            ]
-        ),
+        reply_markup=keyboard_markup,
     )
 
 
 async def referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
+
+    # Construct the URL of the photo
+    photo_url = f"{url.pioneers}{api.get_random_pioneer_number()}.png"
+
+    # Construct the caption
+    caption_text = f"*X7 Finance Referral Scheme*\n\n{text.referral}"
+
+    # Construct the keyboard markup
+    keyboard_markup = InlineKeyboardMarkup(
+        [[InlineKeyboardButton(text="Application", url=f"{url.referral}")]]
+    )
+
+    # Send a photo message
     await context.bot.send_photo(
-        job.chat_id,
-        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*X7 Finance Referral Scheme*\n\n{text.referral}",
+        chat_id=job.chat_id,
+        photo=photo_url,
+        caption=caption_text,
         parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton(text="Application", url=f"{url.referral}")],
-            ]
-        ),
+        reply_markup=keyboard_markup,
     )
 
 
 async def alert_message(context: ContextTypes.DEFAULT_TYPE) -> None:
+    # Retrieve the job from the context
     job = context.job
-    await context.bot.send_photo(
-        job.chat_id,
-        photo=open((random.choice(media.logos)), "rb"),
-        caption=f"*X7 Finance*\n\n{random.choice(text.quotes)}\n\n{api.get_quote()}\n\n"
+
+    # Select a random logo and read it into memory
+    with open(random.choice(media.logos), "rb") as photo_file:
+        photo_data = photo_file.read()
+
+    # Construct the message caption
+    caption_text = (
+        "*X7 Finance*\n\n"
+        f"{random.choice(text.quotes)}\n\n"
+        f"{api.get_quote()}\n\n"
         f"🏠 [Xchange]({url.xchange}) ┃ 🔗 [X7finance.org]({url.dashboard})\n"
-        f"💬 [Telegram]({url.tg_main})   ┃ 💬 [Twitter]({url.twitter}",
+        f"💬 [Telegram]({url.tg_main})   ┃ 💬 [Twitter]({url.twitter}"
+    )
+
+    # Send a photo message to the chat_id associated with the job
+    await context.bot.send_photo(
+        chat_id=job.chat_id,
+        photo=photo_data,
+        caption=caption_text,
         parse_mode="Markdown",
     )
 
 
 async def auto_message(context: ContextTypes.DEFAULT_TYPE) -> None:
+    # Get the job from the context
     job = context.job
+
+    # Open a random logo from the media.logos directory
+    photo_path = open(random.choice(media.logos), "rb")
+
+    # Send a photo message to the chat_id associated with the job
+    # The photo is the random logo selected earlier
+    # The caption for the photo is the data associated with the job
     await context.bot.send_photo(
         job.chat_id,
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=photo_path,
         caption=f"{job.data}",
     )
 

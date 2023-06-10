@@ -184,7 +184,7 @@ async def new_pair(event):
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.opti_logo)
     im1.paste(im2, (720, 20), im2)
-    myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
     i1 = ImageDraw.Draw(im1)
     i1.text(
         (26, 30),
@@ -284,7 +284,7 @@ async def new_loan(event):
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.opti_logo)
     im1.paste(im2, (720, 20), im2)
-    myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
     i1 = ImageDraw.Draw(im1)
     i1.text(
         (26, 30),
@@ -378,23 +378,19 @@ async def main():
     ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
     ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
     ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock="latest")
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    while True:
-        try:
-            tasks = [
-                log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)
-            ]
-            await asyncio.gather(*tasks)
-        except (
-            Web3Exception,
-            Exception,
-            TimeoutError,
-            ValueError,
-            StopAsyncIteration,
-        ) as e:
-            print(f"Main Error: {e}")
-            break
+
+    tasks = [log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)]
+
+    try:
+        await asyncio.gather(*tasks)
+    except (
+        Web3Exception,
+        Exception,
+        TimeoutError,
+        ValueError,
+        StopAsyncIteration,
+    ) as e:
+        print(f"Main Error: {e}")
 
 
 if __name__ == "__main__":
@@ -404,4 +400,8 @@ if __name__ == "__main__":
         .connection_pool_size(512)
         .build()
     )
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
     asyncio.run(main())

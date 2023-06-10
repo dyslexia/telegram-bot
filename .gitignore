@@ -9,4 +9,7 @@ times.py
 text.py
 times.py
 pyvenv.cfg
+myenv/
+.DS_Store
+```
 

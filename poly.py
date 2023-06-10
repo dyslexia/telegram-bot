@@ -23,10 +23,17 @@ logger = logging.getLogger(__name__)
 alchemy_poly_url = f"https://polygon-mainnet.g.alchemy.com/v2/{keys.alchemy_poly}"
 web3 = Web3(Web3.HTTPProvider(alchemy_poly_url))
 
-factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "poly"))
-ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "poly"))
-ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "poly"))
-ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "poly"))
+contracts = {
+    "factory": ca.factory,
+    "ill001": ca.ill001,
+    "ill002": ca.ill002,
+    "ill003": ca.ill003,
+}
+
+for contract_name, contract_address in contracts.items():
+    globals()[contract_name] = web3.eth.contract(
+        address=contract_address, abi=api.get_abi(contract_address, "poly")
+    )
 
 
 async def new_pair(event):
@@ -203,7 +210,7 @@ async def new_pair(event):
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.poly_logo)
     im1.paste(im2, (720, 20), im2)
-    myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
     i1 = ImageDraw.Draw(im1)
     i1.text(
         (26, 30),
@@ -318,7 +325,7 @@ async def new_loan(event):
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.poly_logo)
     im1.paste(im2, (720, 20), im2)
-    myfont = ImageFont.truetype(r"media\FreeMonoBold.ttf", 26)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
     i1 = ImageDraw.Draw(im1)
     i1.text(
         (26, 30),
@@ -356,46 +363,27 @@ async def new_loan(event):
     print(f'Loan {event["args"]["loanID"]} sent')
 
 
+async def process_new_entries(filter_obj, process_function):
+    # Create application object
+    token = random.choice(keys.tokens)
+    application = ApplicationBuilder().token(token).connection_pool_size(512).build()
+
+    for entry in filter_obj.get_new_entries():
+        await process_function(entry)
+
+
 async def log_loop(
     pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval
 ):
     while True:
         try:
-            for PairCreated in pair_filter.get_new_entries():
-                await new_pair(PairCreated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
+            await process_new_entries(pair_filter, new_pair)
             await asyncio.sleep(poll_interval)
-            for LoanOriginated in ill001_filter.get_new_entries():
-                await new_loan(LoanOriginated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
+            await process_new_entries(ill001_filter, new_loan)
             await asyncio.sleep(poll_interval)
-            for LoanOriginated in ill002_filter.get_new_entries():
-                await new_loan(LoanOriginated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
+            await process_new_entries(ill002_filter, new_loan)
             await asyncio.sleep(poll_interval)
-            for LoanOriginated in ill003_filter.get_new_entries():
-                await new_loan(LoanOriginated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
+            await process_new_entries(ill003_filter, new_loan)
             await asyncio.sleep(poll_interval)
         except (
             Web3Exception,
@@ -409,17 +397,19 @@ async def log_loop(
 
 async def main():
     print("Scanning POLYGON Network")
-    pair_filter = factory.events.PairCreated.create_filter(fromBlock="latest")
-    ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
-    ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
-    ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock="latest")
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+
+    # Create event filters
+    filters = [
+        factory.events.PairCreated.create_filter(fromBlock="latest"),
+        ill001.events.LoanOriginated.create_filter(fromBlock="latest"),
+        ill002.events.LoanOriginated.create_filter(fromBlock="latest"),
+        ill003.events.LoanOriginated.create_filter(fromBlock="latest"),
+    ]
+
     while True:
         try:
-            tasks = [
-                log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)
-            ]
+            # Prepare tasks to be run
+            tasks = [log_loop(*filters, poll_interval=2)]
             await asyncio.gather(*tasks)
         except (
             Web3Exception,
@@ -433,10 +423,7 @@ async def main():
 
 
 if __name__ == "__main__":
-    application = (
-        ApplicationBuilder()
-        .token(random.choice(keys.tokens))
-        .connection_pool_size(512)
-        .build()
-    )
+    token = random.choice(keys.tokens)
+    application = ApplicationBuilder().token(token).connection_pool_size(512).build()
+
     asyncio.run(main())

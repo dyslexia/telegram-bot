@@ -4,42 +4,24 @@ from moralis import evm_api
 import nfts
 from pycoingecko import CoinGeckoAPI
 import random
-import requests
 import tweepy
+import requests
 
 
 def get_abi(contract, chain):
-    url = ""
-    if chain == "eth":
-        url = (
-            f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address="
-            + contract
-            + keys.ether
-        )
-    if chain == "bsc":
-        url = (
-            f"https://api.bscscan.com/api?module=contract&action=getsourcecode&address="
-            + contract
-            + keys.bsc
-        )
-    if chain == "arb":
-        url = (
-            f"https://api.arbiscan.io/api?module=contract&action=getsourcecode&address="
-            + contract
-            + keys.arb
-        )
-    if chain == "opti":
-        url = (
-            f"https://api-optimistic.etherscan.io/api?module=contract&action=getsourcecode&address="
-            + contract
-            + keys.opti
-        )
-    if chain == "poly":
-        url = (
-            f"https://api.polygonscan.com/api?module=contract&action=getsourcecode&address="
-            + contract
-            + keys.poly
-        )
+    chains_info = {
+        "eth": {"url": "https://api.etherscan.io/api", "key": keys.ether},
+        "bsc": {"url": "https://api.bscscan.com/api", "key": keys.bsc},
+        "arb": {"url": "https://api.arbiscan.io/api", "key": keys.arb},
+        "opti": {"url": "https://api-optimistic.etherscan.io/api", "key": keys.opti},
+        "poly": {"url": "https://api.polygonscan.com/api", "key": keys.poly},
+    }
+
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+
+    url = f'{chains_info[chain]["url"]}?module=contract&action=getsourcecode&address={contract}{chains_info[chain]["key"]}'
+
     response = requests.get(url)
     data = response.json()
     result = data["result"][0]["ABI"]
@@ -47,16 +29,25 @@ def get_abi(contract, chain):
 
 
 def get_ath(token):
+    base_url = "https://api.coingecko.com/api/v3/coins"
     url = (
-        f"https://api.coingecko.com/api/v3/coins/{token}?localization=false&tickers=false&market_data="
-        "true&community_data=false&developer_data=false&sparkline=false"
+        f"{base_url}/{token}"
+        "?localization=false"
+        "&tickers=false"
+        "&market_data=true"
+        "&community_data=false"
+        "&developer_data=false"
+        "&sparkline=false"
     )
+
     response = requests.get(url)
     data = response.json()
-    value = data["market_data"]
-    ath = value["ath"]["usd"]
-    change = value["ath_change_percentage"]["usd"]
-    date = value["ath_date"]["usd"]
+    market_data = data["market_data"]
+
+    ath = market_data["ath"]["usd"]
+    change = market_data["ath_change_percentage"]["usd"]
+    date = market_data["ath_date"]["usd"]
+
     return ath, change, date
 
 
@@ -73,248 +64,179 @@ def get_cg_price(token):
 
 
 def get_cg_search(token):
-    url = "https://api.coingecko.com/api/v3/search?query=" + token
+    base_url = "https://api.coingecko.com/api/v3/search"
+    url = f"{base_url}?query={token}"
     response = requests.get(url)
     result = response.json()
     return result
 
 
 def get_gas(chain):
-    if chain == "eth":
-        url = (
-            "https://api.etherscan.io/api?module=gastracker&action=gasoracle"
-            + keys.ether
-        )
-        response = requests.get(url)
-        data = response.json()
-        return data
-    if chain == "poly":
-        url = (
-            "https://api.polygonscan.com/api?module=gastracker&action=gasoracle"
-            + keys.poly
-        )
-        response = requests.get(url)
-        data = response.json()
-        return data
-    if chain == "bsc":
-        url = (
-            "https://api.bscscan.com/api?module=gastracker&action=gasoracle" + keys.bsc
-        )
-        response = requests.get(url)
-        data = response.json()
-        return data
+    chains_info = {
+        "eth": {"url": "https://api.etherscan.io/api", "key": keys.ether},
+        "poly": {"url": "https://api.polygonscan.com/api", "key": keys.poly},
+        "bsc": {"url": "https://api.bscscan.com/api", "key": keys.bsc},
+    }
+
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+
+    url = f'{chains_info[chain]["url"]}?module=gastracker&action=gasoracle{chains_info[chain]["key"]}'
+    response = requests.get(url)
+    data = response.json()
+
+    return data
 
 
 def get_holders(token):
-    url = "https://api.ethplorer.io/getTokenInfo/" + token + keys.ethplorer
+    base_url = "https://api.ethplorer.io/getTokenInfo"
+    url = f"{base_url}/{token}{keys.ethplorer}"
     response = requests.get(url)
     data = response.json()
-    amount = data["holdersCount"]
-    return amount
+    return data.get("holdersCount")
 
 
 def get_liquidity(pair, chain):
-    amount = evm_api.defi.get_pair_reserves(
+    return evm_api.defi.get_pair_reserves(
         api_key=keys.moralis, params={"chain": chain, "pair_address": pair}
     )
-    return amount
 
 
 def get_native_balance(wallet, chain):
-    if chain == "opti":
-        key = keys.opti
-        link = (
-            "https://api-optimistic.etherscan.io/"
-            "api?module=account&action=balancemulti&address="
-        )
-        response = requests.get(link + wallet + "&tag=latest" + key)
-        data = response.json()
-        amount_raw = float(data["result"][0]["balance"])
-        amount = str(amount_raw / 10**18)
-        return amount
-    if chain == "eth":
-        key = keys.ether
-        link = (
-            "https://api.etherscan.io/"
-            "api?module=account&action=balancemulti&address="
-        )
-        response = requests.get(link + wallet + "&tag=latest" + key)
-        data = response.json()
-        amount_raw = float(data["result"][0]["balance"])
-        amount = str(amount_raw / 10**18)
-        return amount
-    if chain == "arb":
-        key = keys.arb
-        link = (
-            "https://api.arbiscan.io/" "api?module=account&action=balancemulti&address="
-        )
-        response = requests.get(link + wallet + "&tag=latest" + key)
-        data = response.json()
-        amount_raw = float(data["result"][0]["balance"])
-        amount = str(amount_raw / 10**18)
-        return amount
-    if chain == "bsc":
-        key = keys.bsc
-        link = (
-            "https://api.bscscan.com/" "api?module=account&action=balancemulti&address="
-        )
-        response = requests.get(link + wallet + "&tag=latest" + key)
-        data = response.json()
-        amount_raw = float(data["result"][0]["balance"])
-        amount = str(amount_raw / 10**18)
-        return amount
-    if chain == "poly":
-        key = keys.poly
-        link = (
-            "https://api.polygonscan.com/"
-            "api?module=account&action=balancemulti&address="
-        )
-        response = requests.get(link + wallet + "&tag=latest" + key)
-        data = response.json()
-        amount_raw = float(data["result"][0]["balance"])
-        amount = str(amount_raw / 10**18)
-        return amount
+    chains_info = {
+        "opti": {"url": "https://api-optimistic.etherscan.io/api", "key": keys.opti},
+        "eth": {"url": "https://api.etherscan.io/api", "key": keys.ether},
+        "arb": {"url": "https://api.arbiscan.io/api", "key": keys.arb},
+        "bsc": {"url": "https://api.bscscan.com/api", "key": keys.bsc},
+        "poly": {"url": "https://api.polygonscan.com/api", "key": keys.poly},
+    }
 
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
 
-def get_native_price(token):
-    if token == "eth":
-        url = "https://api.etherscan.io/api?module=stats&action=ethprice&" + keys.ether
-        response = requests.get(url)
-        data = response.json()
-        value = float(data["result"]["ethusd"])
-        return value
-    if token == "bnb":
-        url = "https://api.bscscan.com/api?module=stats&action=bnbprice&" + keys.bsc
-        response = requests.get(url)
-        data = response.json()
-        value = float(data["result"]["ethusd"])
-        return value
-    if token == "matic":
-        url = (
-            "https://api.polygonscan.com/api?module=stats&action=maticprice&"
-            + keys.poly
-        )
-        response = requests.get(url)
-        data = response.json()
-        value = float(data["result"]["maticusd"])
-        return value
-
-
-def get_nft_holder_list(nft, chain):
-    result = evm_api.nft.get_nft_owners(
-        api_key=keys.moralis,
-        params={"chain": chain, "format": "decimal", "address": nft},
-    )
-    return result
-
-
-def get_nft_holder_count(nft, chain):
-    url = "https://api.blockspan.com/v1/collections/contract/" + nft + chain
-    response = requests.get(
-        url, headers={"accept": "application/json", "X-API-KEY": keys.blockspan}
-    )
+    url = f'{chains_info[chain]["url"]}?module=account&action=balancemulti&address={wallet}&tag=latest{chains_info[chain]["key"]}'
+    response = requests.get(url)
     data = response.json()
-    amount = data["total_tokens"]
+    amount_raw = float(data["result"][0]["balance"])
+    amount = str(amount_raw / 10**18)
+
     return amount
 
 
-def get_nft_floor(nft, chain):
-    url = "https://api.blockspan.com/v1/collections/contract/" + nft + chain
+def get_native_price(token):
+    tokens_info = {
+        "eth": {
+            "url": "https://api.etherscan.io/api?module=stats&action=ethprice",
+            "key": keys.ether,
+            "field": "ethusd",
+        },
+        "bnb": {
+            "url": "https://api.bscscan.com/api?module=stats&action=bnbprice",
+            "key": keys.bsc,
+            "field": "ethusd",
+        },
+        "matic": {
+            "url": "https://api.polygonscan.com/api?module=stats&action=maticprice",
+            "key": keys.poly,
+            "field": "maticusd",
+        },
+    }
+
+    if token not in tokens_info:
+        raise ValueError(f"Invalid token: {token}")
+
+    url = f"{tokens_info[token]['url']}&{tokens_info[token]['key']}"
+    response = requests.get(url)
+    data = response.json()
+    value = float(data["result"][tokens_info[token]["field"]])
+
+    return value
+
+
+def get_nft_holder_list(nft, chain):
+    return evm_api.nft.get_nft_owners(
+        api_key=keys.moralis,
+        params={"chain": chain, "format": "decimal", "address": nft},
+    )
+
+
+def get_nft_holder_count(nft, chain):
+    url = f"https://api.blockspan.com/v1/collections/contract/{nft}{chain}"
     response = requests.get(
         url, headers={"accept": "application/json", "X-API-KEY": keys.blockspan}
     )
     data = response.json()
-    return data["exchange_data"][0]["stats"]["floor_price"]
+    return data.get("total_tokens")
+
+
+def get_nft_floor(nft, chain):
+    url = f"https://api.blockspan.com/v1/collections/contract/{nft}{chain}"
+    response = requests.get(
+        url, headers={"accept": "application/json", "X-API-KEY": keys.blockspan}
+    )
+    data = response.json()
+    return data["exchange_data"][0]["stats"].get("floor_price")
 
 
 def get_nft_price(nft, chain):
-    if chain == "eth":
-        return (
+    nft_prices = {
+        "eth": (
             nfts.eco_price_eth,
             nfts.liq_price_eth,
             nfts.borrow_price_eth,
             nfts.dex_price_eth,
             nfts.magister_price_eth,
-        )
-    if chain == "bsc":
-        return (
+        ),
+        "bsc": (
             nfts.eco_price_bsc,
             nfts.liq_price_bsc,
             nfts.borrow_price_bsc,
             nfts.dex_price_bsc,
             nfts.magister_price_bsc,
-        )
-    if chain == "poly":
-        return (
+        ),
+        "poly": (
             nfts.eco_price_poly,
             nfts.liq_price_poly,
             nfts.borrow_price_poly,
             nfts.dex_price_poly,
             nfts.magister_price_poly,
-        )
-    if chain == "opti":
-        return (
+        ),
+        "opti": (
             nfts.eco_price_opti,
             nfts.liq_price_opti,
             nfts.borrow_price_opti,
             nfts.dex_price_opti,
             nfts.magister_price_opti,
-        )
-    if chain == "arb":
-        return (
+        ),
+        "arb": (
             nfts.eco_price_arb,
             nfts.liq_price_arb,
             nfts.borrow_price_arb,
             nfts.dex_price_arb,
             nfts.magister_price_arb,
-        )
+        ),
+    }
+    return nft_prices.get(chain)
 
 
 def get_os_nft(slug):
-    slug = slug
-    headers = {"X-API-KEY": keys.os}
-    url = "https://api.opensea.io/api/v1/collection/" + slug
-    response = requests.get(url, headers=headers)
-    data = response.json()
-    return data
+    url = f"https://api.opensea.io/api/v1/collection/{slug}"
+    response = requests.get(url, headers={"X-API-KEY": keys.os})
+    return response.json()
 
 
 def get_pool_liq_balance(wallet, token, chain):
-    if chain == "eth":
-        url = f"https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress="
-        response = requests.get(
-            url + token + "&address=" + wallet + "&tag=latest" + keys.ether
-        )
-        data = response.json()
-        return int(data["result"])
-    if chain == "bsc":
-        url = f"https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress="
-        response = requests.get(
-            url + token + "&address=" + wallet + "&tag=latest" + keys.bsc
-        )
-        data = response.json()
-        return int(data["result"])
-    if chain == "arb":
-        url = f"https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress="
-        response = requests.get(
-            url + token + "&address=" + wallet + "&tag=latest" + keys.arb
-        )
-        data = response.json()
-        return int(data["result"])
-    if chain == "poly":
-        url = f"https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress="
-        response = requests.get(
-            url + token + "&address=" + wallet + "&tag=latest" + keys.poly
-        )
-        data = response.json()
-        return int(data["result"])
-    if chain == "opti":
-        url = f"https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress="
-        response = requests.get(
-            url + token + "&address=" + wallet + "&tag=latest" + keys.opti
-        )
-        data = response.json()
-        return int(data["result"])
+    chain_keys = {
+        "eth": keys.ether,
+        "bsc": keys.bsc,
+        "arb": keys.arb,
+        "poly": keys.poly,
+        "opti": keys.opti,
+    }
+    url = f"https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress={token}&address={wallet}&tag=latest{chain_keys.get(chain)}"
+    response = requests.get(url)
+    data = response.json()
+    return int(data.get("result", 0))
 
 
 def get_quote():
