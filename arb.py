@@ -340,47 +340,22 @@ async def new_loan(event):
     print(f'Loan {event["args"]["loanID"]} sent')
 
 
-async def log_loop(
-    pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval
-):
+async def log_loop(pair_filter, loan_filters, poll_interval):
     while True:
         try:
-            for PairCreated in pair_filter.get_new_entries():
-                await new_pair(PairCreated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
-            await asyncio.sleep(poll_interval)
-            for LoanOriginated in ill001_filter.get_new_entries():
-                await new_loan(LoanOriginated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
-            await asyncio.sleep(poll_interval)
-            for LoanOriginated in ill002_filter.get_new_entries():
-                await new_loan(LoanOriginated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
-            await asyncio.sleep(poll_interval)
-            for LoanOriginated in ill003_filter.get_new_entries():
-                await new_loan(LoanOriginated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
-            await asyncio.sleep(poll_interval)
+            for event_type, filter_instance in loan_filters.items():
+                for event in filter_instance.get_new_entries():
+                    if event_type == "PairCreated":
+                        await new_pair(event)
+                    else:
+                        await new_loan(event)
+
+            application = (
+                ApplicationBuilder()
+                .token(random.choice(keys.tokens))
+                .connection_pool_size(512)
+                .build()
+            )
         except (
             Web3Exception,
             Exception,
@@ -390,15 +365,14 @@ async def log_loop(
         ) as e:
             print(f"Error: {e}")
 
+        await asyncio.sleep(poll_interval)
 
-async def main():
-    print("Scanning ARB Network")
+
+async def log_arb_network(factory, ill001, ill002, ill003):
     pair_filter = factory.events.PairCreated.create_filter(fromBlock="latest")
     ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
     ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
     ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock="latest")
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
     while True:
         try:
             tasks = [
@@ -423,4 +397,4 @@ if __name__ == "__main__":
         .connection_pool_size(512)
         .build()
     )
-    asyncio.run(main())
+    asyncio.run(log_arb_network(factory, ill001, ill002, ill003))

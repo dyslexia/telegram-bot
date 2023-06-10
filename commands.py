@@ -511,7 +511,7 @@ async def ebb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         now = datetime.utcnow()
 
         def get_liquidity_data(hub_address):
-            hub = api.get_tx_internal(hub_address, "eth")
+            hub = api.get_tx(hub_address, "eth")
             hub_filter = [
                 d for d in hub["result"] if d["from"] in str(hub_address).lower()
             ]
@@ -4893,78 +4893,91 @@ async def countdown(update: Update, context: ContextTypes.DEFAULT_TYPE):
     then = times.countdown.astimezone(pytz.utc)
     now = datetime.now(timezone.utc)
     duration = then - now
-    duration_in_s = duration.total_seconds()
-    days = divmod(duration_in_s, 86400)
-    hours = divmod(days[1], 3600)
-    minutes = divmod(hours[1], 60)
+
     if duration < timedelta(0):
         await update.message.reply_photo(
-            photo=open((random.choice(media.logos)), "rb"),
-            caption=f"*X7 Finance Countdown*\n\nNo countdown set, Please check back for more details"
-            f"\n\n{api.get_quote()}",
+            photo=open(random.choice(media.logos), "rb"),
+            caption=f"*X7 Finance Countdown*\n\nNo countdown set, Please check back for more details\n\n{api.get_quote()}",
             parse_mode="Markdown",
         )
-    else:
-        await update.message.reply_text(
-            text=f"*X7 Finance Countdown:*\n\n"
-            f'{times.countdown_title}\n\n{then.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
-            f"{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n"
-            f"{times.countdown_desc}"
-            f"\n\n{api.get_quote()}",
-            parse_mode="Markdown",
-        )
+        return
+
+    duration_in_s = duration.total_seconds()
+    days, remainder = divmod(duration_in_s, 86400)
+    hours, remainder = divmod(remainder, 3600)
+    minutes, _ = divmod(remainder, 60)
+
+    await update.message.reply_text(
+        text=f"*X7 Finance Countdown:*\n\n"
+        f'{times.countdown_title}\n\n{then.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
+        f"{int(days)} days, {int(hours)} hours and {int(minutes)} minutes\n\n"
+        f"{times.countdown_desc}\n\n{api.get_quote()}",
+        parse_mode="Markdown",
+    )
 
 
 async def mods(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(f"{text.mods}")
+    await update.message.reply_text(text.mods)
+
+
+async def is_admin(update: Update) -> bool:
+    chat_admins = await update.effective_chat.get_administrators()
+    return update.effective_user in (admin.user for admin in chat_admins)
 
 
 async def show_auto(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    chat_admins = await update.effective_chat.get_administrators()
+    if not await is_admin(update):
+        await update.message.reply_text(text.mods_only)
+        return
+
     job_names = [job.name for job in context.job_queue.jobs()]
-    if update.effective_user in (admin.user for admin in chat_admins):
-        await update.message.reply_text(
-            f'X7 Finance Auto Messages set:\n\n{job_names}\n\nUse /stop_auto "name" '
-            f"to stop"
-        )
-    else:
-        await update.message.reply_text(f"{text.mods_only}")
+    await update.message.reply_text(
+        f'X7 Finance Auto Messages set:\n\n{job_names}\n\nUse /stop_auto "name" to stop'
+    )
+
+
+async def is_admin(update: Update) -> bool:
+    chat_admins = await update.effective_chat.get_administrators()
+    return update.effective_user in (admin.user for admin in chat_admins)
 
 
 async def start_auto(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    chat_id = update.effective_message.chat_id
-    chat_admins = await update.effective_chat.get_administrators()
-    name = context.args[0]
-    due = float(context.args[1])
-    message = " ".join(context.args[2:])
-    user = update.message.from_user.username
-    if update.effective_user in (admin.user for admin in chat_admins):
-        if due < 0:
-            await update.effective_message.reply_text(
-                "Sorry we can not go back to future!"
-            )
-            return
-        context.job_queue.run_repeating(
-            main.auto_message, due * 60 * 60, chat_id=chat_id, name=name, data=message
-        )
-        await update.effective_message.reply_text(
-            f"X7 Finance Auto Message: '{name}'\n\nSet every {due} "
-            f"Hours\n\n{message}\n\nby {user}"
-        )
-    else:
+    if not await is_admin(update):
         await update.message.reply_text(f"{text.mods_only}")
+        return
+
+    chat_id = update.effective_message.chat_id
+    name, due, *message_parts = context.args
+    due = float(due)
+    message = " ".join(message_parts)
+    user = update.message.from_user.username
+
+    if due < 0:
+        await update.effective_message.reply_text("Sorry we can not go back to future!")
+        return
+
+    context.job_queue.run_repeating(
+        main.auto_message, due * 60 * 60, chat_id=chat_id, name=name, data=message
+    )
+    await update.effective_message.reply_text(
+        f"X7 Finance Auto Message: '{name}'\n\nSet every {due} "
+        f"Hours\n\n{message}\n\nby {user}"
+    )
 
 
 async def stop_auto(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    chat_admins = await update.effective_chat.get_administrators()
-    if update.effective_user in (admin.user for admin in chat_admins):
-        for job in main.job_queue.get_jobs_by_name((" ".join(context.args))):
-            job.schedule_removal()
-            await update.message.reply_text(
-                f"X7 Finance auto message, {context.args} Stopped!"
-            )
-            return
-        else:
-            await update.message.reply_text(f"No active message named {context.args}.")
-    else:
+    if not await is_admin(update):
         await update.message.reply_text(f"{text.mods_only}")
+        return
+
+    job_name = " ".join(context.args)
+    jobs = main.job_queue.get_jobs_by_name(job_name)
+
+    if not jobs:
+        await update.message.reply_text(f"No active message named {job_name}.")
+        return
+
+    for job in jobs:
+        job.schedule_removal()
+
+    await update.message.reply_text(f"X7 Finance auto message, {job_name} Stopped!")

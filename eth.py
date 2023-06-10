@@ -14,6 +14,8 @@ from web3 import Web3
 from web3.exceptions import Web3Exception
 from eth_utils import to_checksum_address
 from datetime import datetime
+import os
+import random
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -247,10 +249,44 @@ async def new_pair(event):
     print(f"Pair sent: ({token_name[1]}/{native[1]})")
 
 
+async def format_schedule(schedule1, schedule2):
+    schedule_list = []
+    for date, value1, value2 in zip(schedule1[0], schedule1[1], schedule2[1]):
+        formatted_date = datetime.fromtimestamp(date).strftime("%Y-%m-%d %H:%M:%S")
+        combined_value = (value1 + value2) / 10**18
+        sch = f"{formatted_date} - {combined_value} ETH"
+        schedule_list.append(sch)
+    return "\n".join(schedule_list)
+
+
+async def create_image(event, cost, schedule_str, amount):
+    im1 = Image.open((random.choice(media.blackhole)))
+    im2 = Image.open(media.eth_logo)
+    im1.paste(im2, (720, 20), im2)
+    myfont = ImageFont.truetype(os.path.abspath(os.path.join("media", "FreeMonoBold.ttf")), 26)
+    i1 = ImageDraw.Draw(im1)
+    i1.text(
+        (26, 30),
+        f"*New Loan Originated (ETH)*\n
+"
+        f'Loan ID: {event["args"]["loanID"]}\n'
+        f'Initial Cost: {cost} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n
+'
+        f"Payment Schedule:\n{schedule_str}\n
+"
+        f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)}',
+        font=myfont,
+        fill=(255, 255, 255),
+    )
+    im1.save(os.path.abspath(os.path.join("media", "blackhole.png")))
+    return im1
+
+
 async def new_loan(event):
     print("Loan Originated")
     application = ApplicationBuilder().token(keys.token).build()
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
+
     try:
         address = to_checksum_address(ca.lpool)
         contract = web3.eth.contract(address=address, abi=api.get_abi(ca.lpool, "eth"))
@@ -266,66 +302,22 @@ async def new_loan(event):
         schedule2 = contract.functions.getPrincipalPaymentSchedule(
             int(event["args"]["loanID"])
         ).call()
-        schedule_list = []
-        if len(schedule1[0]) > 0 and len(schedule1[1]) > 0:
-            if len(schedule2[0]) == len(schedule1[0]) and len(schedule2[1]) == len(
-                schedule1[1]
-            ):
-                for date1, value1, value2 in zip(
-                    schedule1[0], schedule1[1], schedule2[1]
-                ):
-                    formatted_date = datetime.fromtimestamp(date1).strftime(
-                        "%Y-%m-%d %H:%M:%S"
-                    )
-                    combined_value = (value1 + value2) / 10**18
-                    sch = f"{formatted_date} - {combined_value} ETH"
-                    schedule_list.append(sch)
-            else:
-                for date, value in zip(schedule1[0], schedule1[1]):
-                    formatted_date = datetime.fromtimestamp(date).strftime(
-                        "%Y-%m-%d %H:%M:%S"
-                    )
-                    formatted_value = value / 10**18
-                    sch = f"{formatted_date} - {formatted_value} ETH"
-                    schedule_list.append(sch)
-        else:
-            for date, value in zip(schedule2[0], schedule2[1]):
-                formatted_date = datetime.fromtimestamp(date).strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                )
-                formatted_value = value / 10**18
-                sch = f"{formatted_date} - {formatted_value} ETH"
-                schedule_list.append(sch)
-        schedule_str = "\n".join(schedule_list)
+
+        schedule_str = await format_schedule(schedule1, schedule2)
     except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
         print(f" Scan Error:{e}")
         schedule_str = ""
         amount = ""
+
     cost = int(tx["result"]["value"], 0) / 10**18
-    im1 = Image.open((random.choice(media.blackhole)))
-    im2 = Image.open(media.eth_logo)
-    im1.paste(im2, (720, 20), im2)
-    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
-    i1 = ImageDraw.Draw(im1)
-    i1.text(
-        (26, 30),
-        f"*New Loan Originated (ETH)*\n\n"
-        f'Loan ID: {event["args"]["loanID"]}\n'
-        f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH '
-        f'(${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
-        f"Payment Schedule:\n{schedule_str}\n\n"
-        f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)}',
-        font=myfont,
-        fill=(255, 255, 255),
-    )
-    im1.save(r"media\blackhole.png")
+    im1 = await create_image(event, cost, schedule_str, amount)
+
     await application.bot.send_photo(
         keys.main_id,
         photo=open(r"media\blackhole.png", "rb"),
         caption=f"*New Loan Originated (ETH)*\n\n"
         f'Loan ID: {event["args"]["loanID"]}\n'
-        f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH '
-        f'(${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
+        f'Initial Cost: {cost} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
         f"Payment Schedule:\n{schedule_str}\n\n"
         f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)}',
         parse_mode="Markdown",
@@ -346,44 +338,36 @@ async def new_loan(event):
 async def log_loop(
     pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval
 ):
+    # Create the application outside the loop
+    application = (
+        ApplicationBuilder()
+        .token(random.choice(keys.tokens))
+        .connection_pool_size(512)
+        .build()
+    )
+
     while True:
         try:
             for PairCreated in pair_filter.get_new_entries():
                 await new_pair(PairCreated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
+
             await asyncio.sleep(poll_interval)
+
             for LoanOriginated in ill001_filter.get_new_entries():
                 await new_loan(LoanOriginated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
+
             await asyncio.sleep(poll_interval)
+
             for LoanOriginated in ill002_filter.get_new_entries():
                 await new_loan(LoanOriginated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
+
             await asyncio.sleep(poll_interval)
+
             for LoanOriginated in ill003_filter.get_new_entries():
                 await new_loan(LoanOriginated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
+
             await asyncio.sleep(poll_interval)
+
         except (
             Web3Exception,
             Exception,
@@ -396,12 +380,13 @@ async def log_loop(
 
 async def main():
     print("Scanning ETH Network")
+
+    # Initialize event filters
     pair_filter = factory.events.PairCreated.create_filter(fromBlock="latest")
     ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
     ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
     ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock="latest")
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+
     while True:
         try:
             tasks = [
@@ -419,11 +404,12 @@ async def main():
             break
 
 
+application = (
+    ApplicationBuilder()
+    .token(random.choice(keys.tokens))
+    .connection_pool_size(512)
+    .build()
+)
+
 if __name__ == "__main__":
-    application = (
-        ApplicationBuilder()
-        .token(random.choice(keys.tokens))
-        .connection_pool_size(512)
-        .build()
-    )
     asyncio.run(main())

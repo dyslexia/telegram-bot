@@ -6,21 +6,30 @@ from pycoingecko import CoinGeckoAPI
 import random
 import tweepy
 import requests
+from typing import Tuple
 
 
-def get_abi(contract, chain):
-    chains_info = {
-        "eth": {"url": "https://api.etherscan.io/api", "key": keys.ether},
-        "bsc": {"url": "https://api.bscscan.com/api", "key": keys.bsc},
-        "arb": {"url": "https://api.arbiscan.io/api", "key": keys.arb},
-        "opti": {"url": "https://api-optimistic.etherscan.io/api", "key": keys.opti},
-        "poly": {"url": "https://api.polygonscan.com/api", "key": keys.poly},
-    }
+class ChainInfo:
+    def __init__(self, url: str, key: str):
+        self.url = url
+        self.key = key
 
+
+chains_info = {
+    "eth": ChainInfo("https://api.etherscan.io/api", keys.ether),
+    "bsc": ChainInfo("https://api.bscscan.com/api", keys.bsc),
+    "arb": ChainInfo("https://api.arbiscan.io/api", keys.arb),
+    "opti": ChainInfo("https://api-optimistic.etherscan.io/api", keys.opti),
+    "poly": ChainInfo("https://api.polygonscan.com/api", keys.poly),
+}
+
+
+def get_abi(contract: str, chain: str) -> str:
     if chain not in chains_info:
         raise ValueError(f"Invalid chain: {chain}")
 
-    url = f'{chains_info[chain]["url"]}?module=contract&action=getsourcecode&address={contract}{chains_info[chain]["key"]}'
+    chain_info = chains_info[chain]
+    url = f"{chain_info.url}?module=contract&action=getsourcecode&address={contract}{chain_info.key}"
 
     response = requests.get(url)
     data = response.json()
@@ -28,39 +37,43 @@ def get_abi(contract, chain):
     return result
 
 
-def get_ath(token):
+def get_token_data(token_symbol):
     base_url = "https://api.coingecko.com/api/v3/coins"
-    url = (
-        f"{base_url}/{token}"
-        "?localization=false"
-        "&tickers=false"
-        "&market_data=true"
-        "&community_data=false"
-        "&developer_data=false"
-        "&sparkline=false"
+    endpoint = f"{base_url}/{token_symbol.lower()}"
+
+    query_params = {
+        "localization": "false",
+        "tickers": "false",
+        "market_data": "true",
+        "community_data": "false",
+        "developer_data": "false",
+        "sparkline": "false",
+    }
+
+    response = requests.get(endpoint, params=query_params)
+    response.raise_for_status()  # Raise an error if API request fails
+    token_data = response.json()["market_data"]
+
+    return (
+        token_data["ath"]["usd"],
+        token_data["ath_change_percentage"]["usd"],
+        token_data["ath_date"]["usd"],
     )
 
-    response = requests.get(url)
-    data = response.json()
-    market_data = data["market_data"]
 
-    ath = market_data["ath"]["usd"]
-    change = market_data["ath_change_percentage"]["usd"]
-    date = market_data["ath_date"]["usd"]
-
-    return ath, change, date
-
-
-def get_cg_price(token):
-    coingecko = CoinGeckoAPI()
-    cg = coingecko.get_price(
-        ids=token,
-        vs_currencies="usd",
-        include_24hr_change="true",
-        include_24hr_vol="true",
-        include_market_cap="true",
+def get_token_info(token: str):
+    """Get token's current price, 24h change, 24h volume, and market cap from Coingecko."""
+    cg = CoinGeckoAPI()
+    info = cg.get_coin_by_id(
+        id=token, localization="false", tickers="false", market_data="true"
     )
-    return cg
+
+    return {
+        "price": info["market_data"]["current_price"]["usd"],
+        "24h_change": info["market_data"]["price_change_percentage_24h"],
+        "24h_volume": info["market_data"]["total_volume"]["usd"],
+        "market_cap": info["market_data"]["market_cap"]["usd"],
+    }
 
 
 def get_cg_search(token):
@@ -178,45 +191,45 @@ def get_nft_floor(nft, chain):
     return data["exchange_data"][0]["stats"].get("floor_price")
 
 
-def get_nft_price(nft, chain):
+def get_nft_prices(nft):
     nft_prices = {
-        "eth": (
-            nfts.eco_price_eth,
-            nfts.liq_price_eth,
-            nfts.borrow_price_eth,
-            nfts.dex_price_eth,
-            nfts.magister_price_eth,
-        ),
-        "bsc": (
-            nfts.eco_price_bsc,
-            nfts.liq_price_bsc,
-            nfts.borrow_price_bsc,
-            nfts.dex_price_bsc,
-            nfts.magister_price_bsc,
-        ),
-        "poly": (
-            nfts.eco_price_poly,
-            nfts.liq_price_poly,
-            nfts.borrow_price_poly,
-            nfts.dex_price_poly,
-            nfts.magister_price_poly,
-        ),
-        "opti": (
-            nfts.eco_price_opti,
-            nfts.liq_price_opti,
-            nfts.borrow_price_opti,
-            nfts.dex_price_opti,
-            nfts.magister_price_opti,
-        ),
-        "arb": (
-            nfts.eco_price_arb,
-            nfts.liq_price_arb,
-            nfts.borrow_price_arb,
-            nfts.dex_price_arb,
-            nfts.magister_price_arb,
-        ),
+        "eth": [
+            nft.eco_price_eth,
+            nft.liq_price_eth,
+            nft.borrow_price_eth,
+            nft.dex_price_eth,
+            nft.magister_price_eth,
+        ],
+        "bsc": [
+            nft.eco_price_bsc,
+            nft.liq_price_bsc,
+            nft.borrow_price_bsc,
+            nft.dex_price_bsc,
+            nft.magister_price_bsc,
+        ],
+        "poly": [
+            nft.eco_price_poly,
+            nft.liq_price_poly,
+            nft.borrow_price_poly,
+            nft.dex_price_poly,
+            nft.magister_price_poly,
+        ],
+        "opti": [
+            nft.eco_price_opti,
+            nft.liq_price_opti,
+            nft.borrow_price_opti,
+            nft.dex_price_opti,
+            nft.magister_price_opti,
+        ],
+        "arb": [
+            nft.eco_price_arb,
+            nft.liq_price_arb,
+            nft.borrow_price_arb,
+            nft.dex_price_arb,
+            nft.magister_price_arb,
+        ],
     }
-    return nft_prices.get(chain)
+    return nft_prices
 
 
 def get_os_nft(slug):
@@ -225,18 +238,22 @@ def get_os_nft(slug):
     return response.json()
 
 
+CHAIN_KEYS = {
+    "eth": keys.ether,
+    "bsc": keys.bsc,
+    "arb": keys.arb,
+    "poly": keys.poly,
+    "opti": keys.opti,
+}
+
+BASE_API_URL = "https://api.etherscan.io/api"
+
+
 def get_pool_liq_balance(wallet, token, chain):
-    chain_keys = {
-        "eth": keys.ether,
-        "bsc": keys.bsc,
-        "arb": keys.arb,
-        "poly": keys.poly,
-        "opti": keys.opti,
-    }
-    url = f"https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress={token}&address={wallet}&tag=latest{chain_keys.get(chain)}"
-    response = requests.get(url)
+    url = f"{BASE_API_URL}?module=account&action=tokenbalance&contractaddress={token}&address={wallet}&tag=latest{CHAIN_KEYS.get(chain)}"
+    response = requests.Session().get(url)
     data = response.json()
-    return int(data.get("result", 0))
+    return int(data["result"] or 0)
 
 
 def get_quote():
@@ -255,22 +272,23 @@ def get_random_pioneer_number():
     return str(number).zfill(4)
 
 
-def get_scan(token, chain):
-    chain_number = ""
-    if chain == "eth":
-        chain_number = 1
-    if chain == "bsc":
-        chain_number = 56
-    if chain == "arb":
-        chain_number = 42161
-    if chain == "opti":
-        chain_number = 10
-    if chain == "poly":
-        chain_number = 137
+def get_scan(token: str, chain: str) -> dict:
+    # dictionary that maps chain name to chain number
+    chains = {"eth": 1, "bsc": 56, "arb": 42161, "opti": 10, "poly": 137}
+
+    # get the chain number corresponding to the input chain name
+    chain_number = chains.get(chain)
+
+    # raise a ValueError if the input chain name is not valid
+    if not chain_number:
+        raise ValueError(f"{chain} is not a valid chain")
+
+    # create the URL for the API call using the chain number and token address
     url = f"https://api.gopluslabs.io/api/v1/token_security/{chain_number}?contract_addresses={token}"
+
+    # make the API call and return the results as json
     response = requests.get(url)
-    data = response.json()
-    return data["result"]
+    return response.json()["result"]
 
 
 def get_signers(wallet):
@@ -322,143 +340,125 @@ def get_today():
     return data
 
 
-def get_token_balance(wallet, token, chain):
-    if chain == "eth":
-        url = (
-            "https://api.etherscan.io/"
-            "api?module=account&action=tokenbalance&contractaddress="
-        )
-        key = keys.ether
+def get_token_balance(wallet: str, token: str, chain: str) -> int:
+    # Create a dictionary to map chain names to their respective urls and api keys
+    chains = {
+        "eth": {
+            "url": "https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress=",
+            "key": keys.ether,
+        },
+        "bsc": {
+            "url": "https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress=",
+            "key": keys.bsc,
+        },
+        "opti": {
+            "url": "https://api-optimistic.etherscan.io/api?module=account&action=tokenbalance&contractaddress=",
+            "key": keys.opti,
+        },
+        "poly": {
+            "url": "https://api.polygonscan.com/api?module=account&action=tokenbalance&contractaddress=",
+            "key": keys.poly,
+        },
+        "arb": {
+            "url": "https://api.arbiscan.io/api?module=account&action=tokenbalance&contractaddress=",
+            "key": keys.arb,
+        },
+    }
+    # Check if the chain name is valid
+    if chain not in chains:
+        raise ValueError("Invalid chain name")
+
+        # Construct the url with the contract address of token and api key
+        url = chains[chain]["url"]
+        key = chains[chain]["key"]
         response = requests.get(
             url + token + "&address=" + wallet + "&tag=latest" + key
         )
         data = response.json()
-        amount = int(data["result"][:-18])
-        return amount
-    if chain == "bsc":
-        url = (
-            "https://api.bscscan.com/"
-            "api?module=account&action=tokenbalance&contractaddress="
-        )
-        key = keys.bsc
-        response = requests.get(
-            url + token + "&address=" + wallet + "&tag=latest" + key
-        )
-        data = response.json()
-        amount = int(data["result"][:-18])
-        return amount
-    if chain == "opti":
-        url = (
-            "https://api-optimistic.etherscan.io/"
-            "api?module=account&action=tokenbalance&contractaddress="
-        )
-        key = keys.opti
-        response = requests.get(
-            url + token + "&address=" + wallet + "&tag=latest" + key
-        )
-        data = response.json()
-        amount = int(data["result"][:-18])
-        return amount
-    if chain == "poly":
-        url = (
-            "https://api.polygonscan.com/"
-            "api?module=account&action=tokenbalance&contractaddress="
-        )
-        key = keys.poly
-        response = requests.get(
-            url + token + "&address=" + wallet + "&tag=latest" + key
-        )
-        data = response.json()
-        amount = int(data["result"][:-18])
-        return amount
-    if chain == "arb":
-        url = (
-            "https://api.arbiscan.io/"
-            "api?module=account&action=tokenbalance&contractaddress="
-        )
-        key = keys.arb
-        response = requests.get(
-            url + token + "&address=" + wallet + "&tag=latest" + key
-        )
-        data = response.json()
+        # Extract the amount and return it
         amount = int(data["result"][:-18])
         return amount
 
 
-def get_token_data(token, chain):
+def get_token_data(token: str, chain: str) -> dict:
+    # Create a dictionary to map chain names to their verbose names
+    chain_names = {"poly": "polygon", "arb": "arbitrum"}
+    # Check if the chain name is valid
+    if chain not in {"eth", "bsc", "opti", "poly", "arb"}:
+        raise ValueError("Invalid chain name")
+
+    # If chain name is present in chain_names then it must be updated to the verbose name
+    chain = chain_names.get(chain, chain)
+    # Get token metadata using Moralis API
     result = evm_api.token.get_token_metadata(
         api_key=keys.moralis, params={"addresses": [f"{token}"], "chain": chain}
     )
     return result
 
 
-def get_token_name(token, chain):
-    if chain == "poly":
-        chain = "polygon"
-    if chain == "arb":
-        chain = "arbitrum"
-    else:
-        chain = chain
-    result = evm_api.token.get_token_metadata(
-        api_key=keys.moralis, params={"addresses": [f"{token}"], "chain": chain}
-    )
+def get_token_name(token: str, chain: str) -> Tuple[str, str]:
+    # Call get_token_data function to get the token metadata
+    result = get_token_data(token, chain)
+    # Extract the name and symbol from token metadata and return as a tuple
     return result[0]["name"], result[0]["symbol"]
 
 
-def get_tx_from_hash(tx, chain):
-    url = ""
-    if chain == "eth":
-        url = f"https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.ether}"
-    if chain == "bsc":
-        url = f"https://api.bscscan.com/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.bsc}"
-    if chain == "poly":
-        url = f"https://api.polygonscan.com/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.poly}"
-    if chain == "arb":
-        url = f"https://api.arbiscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash={tx}{keys.arb}"
-    if chain == "opti":
-        url = (
-            f"https://api.optimistic.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash="
-            f"{tx}{keys.opti}"
-        )
+API_ENDPOINTS = {
+    "eth": "https://api.etherscan.io/api",
+    "bsc": "https://api.bscscan.com/api",
+    "poly": "https://api.polygonscan.com/api",
+    "arb": "https://api.arbiscan.io/api",
+    "opti": "https://api.optimistic.etherscan.io/api",
+}
+
+
+def get_tx_from_hash(tx, chain, api_key):
+    api_endpoint = API_ENDPOINTS.get(chain)
+
+    if api_endpoint is None:
+        raise ValueError(f"Unsupported chain: {chain}")
+
+    params = {
+        "module": "proxy",
+        "action": "eth_getTransactionByHash",
+        "txhash": f"{tx}{api_key}",
+    }
+
+    response = requests.get(api_endpoint, params=params)
+    response.raise_for_status()
+
+    return response.json()
+
+
+def get_tx(address: str, chain: str, internal: bool = False) -> dict:
+    """
+    Given an Ethereum address and chain name, retrieves the transactions for the address
+    from Etherscan's API.
+
+    address: str     - Ethereum address
+    chain: str       - Blockchain name. Supported: "eth"
+    internal: bool   - Flag to retrieve internal transactions as well (Default: False)
+
+    Returns: dict    - Transaction data in JSON format
+    """
+    action = "txlistinternal" if internal else "txlist"
+    url = f"https://api.etherscan.io/api?module=account&action={action}&sort=desc&address={address}{keys.ether}"
     response = requests.get(url)
     data = response.json()
     return data
 
 
-def get_tx(address, chain):
-    if chain == "eth":
-        url = f"https://api.etherscan.io/api?module=account&action=txlist&address={address}&sort=desc{keys.ether}"
-        response = requests.get(url)
-        data = response.json()
-        return data
-
-
-def get_tx_internal(address, chain):
-    if chain == "eth":
-        url = (
-            f"https://api.etherscan.io/api?module=account&action=txlistinternal&sort="
-            f"desc&address={address}{keys.ether}"
-        )
-        response = requests.get(url)
-        data = response.json()
-        return data
-
-
 def get_verified(contract, chain):
-    url = ""
-    if chain == "eth":
-        url = f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address={contract}{keys.ether}"
-    if chain == "bsc":
-        url = f"https://api.bscscan.com/api?module=contract&action=getsourcecode&address={contract}{keys.bsc}"
-    if chain == "arb":
-        url = f"https://api.arbican.io/api?module=contract&action=getsourcecode&address={contract}{keys.arb}"
-    if chain == "poly":
-        url = f"https://api.polygonscan.com/api?module=contract&action=getsourcecode&address={contract}{keys.poly}"
-    if chain == "opti":
-        url = f"https://api.optimistic-etherscan.com/api?module=contract&action=getsourcecode&address={contract}{keys.opti}"
-    response = requests.get(url)
+    api_url = {
+        "eth": f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address={contract}{keys.ether}",
+        "bsc": f"https://api.bscscan.com/api?module=contract&action=getsourcecode&address={contract}{keys.bsc}",
+        "arb": f"https://api.arbican.io/api?module=contract&action=getsourcecode&address={contract}{keys.arb}",
+        "poly": f"https://api.polygonscan.com/api?module=contract&action=getsourcecode&address={contract}{keys.poly}",
+        "opti": f"https://api.optimistic-etherscan.com/api?module=contract&action=getsourcecode&address={contract}{keys.opti}",
+    }
+    response = requests.get(api_url[chain])
     data = response.json()
-    for result in data["result"][0]["SourceCode"]:
+    if "SourceCode" in data["result"][0]:
         return "Yes"
     else:
         return "No"
