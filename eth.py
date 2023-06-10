@@ -3,7 +3,6 @@ from telegram import *
 import api
 import asyncio
 import ca
-import keys
 import logging
 import media
 from PIL import Image, ImageDraw, ImageFont
@@ -15,15 +14,24 @@ from web3.exceptions import Web3Exception
 from eth_utils import to_checksum_address
 from datetime import datetime
 import os
-import random
+from dotenv import load_dotenv
+
+# Load all environment variables
+load_dotenv()
+
+# Get the tokens, split by comma
+tokens = os.getenv("TOKENS").split(",")
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
-infura_url = f"https://mainnet.infura.io/v3/{keys.infura}"
-alchemy_eth_url = f"https://eth-mainnet.g.alchemy.com/v2/{keys.alchemy_eth}"
+
+alchemy_keys = os.getenv("ALCHEMY_ETH")
+
+infura_url = f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}"
+alchemy_eth_url = f"https://eth-mainnet.g.alchemy.com/v2/{alchemy_keys}"
 web3 = Web3(Web3.HTTPProvider(alchemy_eth_url))
 
 factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "eth"))
@@ -208,7 +216,7 @@ async def new_pair(event):
     )
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
-        keys.alerts_id,
+        os.getenv("ALERTS_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media\blackhole.png", "rb"),
         caption=f"*New Pair Created (ETH)*\n\n"
         f"{token_name[0]} ({token_name[1]}/{native[1]})\n\n"
@@ -259,32 +267,30 @@ async def format_schedule(schedule1, schedule2):
     return "\n".join(schedule_list)
 
 
-async def create_image(event, cost, schedule_str, amount):
+async def create_image(
+    event: dict, cost: float, schedule_str: str, amount: float
+) -> Image.Image:
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
-    myfont = ImageFont.truetype(os.path.abspath(os.path.join("media", "FreeMonoBold.ttf")), 26)
+
+    font_path = os.path.abspath(os.path.join("media", "FreeMonoBold.ttf"))
+    my_font = ImageFont.truetype(font_path, 26)
+
     i1 = ImageDraw.Draw(im1)
-    i1.text(
-        (26, 30),
-        f"*New Loan Originated (ETH)*\n
-"
-        f'Loan ID: {event["args"]["loanID"]}\n'
-        f'Initial Cost: {cost} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n
-'
-        f"Payment Schedule:\n{schedule_str}\n
-"
-        f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)}',
-        font=myfont,
-        fill=(255, 255, 255),
-    )
-    im1.save(os.path.abspath(os.path.join("media", "blackhole.png")))
+
+    text = f"*New Loan Originated (ETH)*\nLoan ID: {event['args']['loanID']}\nInitial Cost: {cost} ETH (${'{:0,.0f}'.format(api.get_native_price('eth') * cost)})\nPayment Schedule:\n{schedule_str}\nTotal: {amount} ETH (${'{:0,.0f}'.format(api.get_native_price('eth') * amount)})"
+    i1.text((26, 30), text, font=my_font, fill=(255, 255, 255))
+
+    image_path = os.path.abspath(os.path.join("media", "blackhole.png"))
+    im1.save(image_path)
+
     return im1
 
 
 async def new_loan(event):
     print("Loan Originated")
-    application = ApplicationBuilder().token(keys.token).build()
+    application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
 
     try:
@@ -313,7 +319,7 @@ async def new_loan(event):
     im1 = await create_image(event, cost, schedule_str, amount)
 
     await application.bot.send_photo(
-        keys.main_id,
+        os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media\blackhole.png", "rb"),
         caption=f"*New Loan Originated (ETH)*\n\n"
         f'Loan ID: {event["args"]["loanID"]}\n'
@@ -341,7 +347,7 @@ async def log_loop(
     # Create the application outside the loop
     application = (
         ApplicationBuilder()
-        .token(random.choice(keys.tokens))
+        .token(random.choice(tokens))
         .connection_pool_size(512)
         .build()
     )
@@ -405,10 +411,7 @@ async def main():
 
 
 application = (
-    ApplicationBuilder()
-    .token(random.choice(keys.tokens))
-    .connection_pool_size(512)
-    .build()
+    ApplicationBuilder().token(random.choice(tokens)).connection_pool_size(512).build()
 )
 
 if __name__ == "__main__":
