@@ -214,10 +214,10 @@ async def new_pair(event):
         font=myfont,
         fill=(255, 255, 255),
     )
-    im1.save(r"media\blackhole.png")
+    im1.save(r"media/blackhole.png")
     await application.bot.send_photo(
         os.getenv("ALERTS_TELEGRAM_CHANNEL_ID"),
-        photo=open(r"media\blackhole.png", "rb"),
+        photo=open(r"media/blackhole.png", "rb"),
         caption=f"*New Pair Created (ETH)*\n\n"
         f"{token_name[0]} ({token_name[1]}/{native[1]})\n\n"
         f"Token Address:\n`{token_address}`\n\n"
@@ -320,7 +320,7 @@ async def new_loan(event):
 
     await application.bot.send_photo(
         os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
-        photo=open(r"media\blackhole.png", "rb"),
+        photo=open(r"media/blackhole.png", "rb"),
         caption=f"*New Loan Originated (ETH)*\n\n"
         f'Loan ID: {event["args"]["loanID"]}\n'
         f'Initial Cost: {cost} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
