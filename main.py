@@ -1,9 +1,7 @@
 from telegram.ext import *
 from telegram import *
 import api
-import ca
 import commands
-import keys
 import logging
 import media
 import random
@@ -13,6 +11,7 @@ import url
 from dotenv import load_dotenv
 import os
 
+load_dotenv()
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
@@ -61,7 +60,7 @@ async def error(update, context):
     print(f"Update {update} caused error: {context.error}")
 
 
-async def endorse_message(context: ContextTypes.DEFAULT_TYPE) -> None:
+async def send_endorsement_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     """Endorse a message with an image and caption."""
 
     job = context.job
@@ -161,7 +160,7 @@ async def auto_message(context: ContextTypes.DEFAULT_TYPE) -> None:
 
 # RUN
 if __name__ == "__main__":
-    application = ApplicationBuilder().token(keys.token).build()
+    application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
     job_queue = application.job_queue
     application.add_handler(
         MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies)
@@ -282,23 +281,23 @@ if __name__ == "__main__":
         CommandHandler(["whitepaper", "wp", "wpquote"], commands.wp)
     )
     application.job_queue.run_repeating(
-        endorse_message,
+        send_endorsement_message,
         times.endorse_time * 60 * 60,
-        chat_id=keys.main_id,
+        chat_id=os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
         name=str("Endorsement Message"),
         data=times.endorse_time * 60 * 60,
     )
     application.job_queue.run_repeating(
-        alert_message,
+        send_alert_message,
         times.alert_time * 60 * 60,
-        chat_id=keys.alerts_id,
+        chat_id=os.getenv("ALERTS_ID"),
         name=str("Alert Message"),
         data=times.alert_time * 60 * 60,
     )
     application.job_queue.run_repeating(
-        referral_message,
+        send_referral_message,
         times.referral_time * 60 * 60,
-        chat_id=keys.main_id,
+        chat_id=os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
         first=10800,
         name=str("Referral Message"),
         data=times.referral_time * 60 * 60,

@@ -3,7 +3,6 @@ from telegram import *
 import api
 import asyncio
 import ca
-import keys
 import logging
 import media
 from PIL import Image, ImageDraw, ImageFont
@@ -14,13 +13,23 @@ from web3 import Web3
 from web3.exceptions import Web3Exception
 from eth_utils import to_checksum_address
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+# Load all environment variables
+load_dotenv()
+
+# Get the tokens, split by comma
+tokens = os.getenv("TOKENS").split(",")
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
-alchemy_opti_url = f"https://opt-mainnet.g.alchemy.com/v2/{keys.alchemy_opti}"
+alchemy_opti = os.getenv("ALCHEMY_OPTI")
+
+alchemy_opti_url = f"https://opt-mainnet.g.alchemy.com/v2/{alchemy_opti}"
 web3 = Web3(Web3.HTTPProvider(alchemy_opti_url))
 
 factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "opti"))
@@ -199,7 +208,7 @@ async def new_pair(event):
     )
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
-        keys.alert_id,
+        os.getenv("ALERTS_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media\blackhole.png", "rb"),
         caption=f"*New Pair Created (Xchange OPTIMISM)*\n\n"
         f"{token_name[0]} ({token_name[1]}/{native[1]})\n\n"
@@ -240,7 +249,7 @@ async def new_pair(event):
 
 
 async def new_loan(event):
-    application = ApplicationBuilder().token(keys.token).build()
+    application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
     print("Loan Originated")
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
     try:
@@ -299,7 +308,7 @@ async def new_loan(event):
     )
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
-        keys.main_id,
+        os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media\blackhole.png", "rb"),
         caption=f"*New Loan Originated (OPTIMISM)*\n\n"
         f'Loan ID: {event["args"]["loanID"]}\n'
@@ -330,7 +339,7 @@ async def log_loop(
                 await new_pair(PairCreated)
                 application = (
                     ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
+                    .token(random.choice(tokens))
                     .connection_pool_size(512)
                     .build()
                 )
@@ -339,7 +348,7 @@ async def log_loop(
                 await new_loan(LoanOriginated)
                 application = (
                     ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
+                    .token(random.choice(tokens))
                     .connection_pool_size(512)
                     .build()
                 )
@@ -348,7 +357,7 @@ async def log_loop(
                 await new_loan(LoanOriginated)
                 application = (
                     ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
+                    .token(random.choice(tokens))
                     .connection_pool_size(512)
                     .build()
                 )
@@ -357,7 +366,7 @@ async def log_loop(
                 await new_loan(LoanOriginated)
                 application = (
                     ApplicationBuilder()
-                    .token(random.choice(keys.tokens))
+                    .token(random.choice(tokens))
                     .connection_pool_size(512)
                     .build()
                 )
@@ -396,7 +405,7 @@ async def main():
 if __name__ == "__main__":
     application = (
         ApplicationBuilder()
-        .token(random.choice(keys.tokens))
+        .token(random.choice(tokens))
         .connection_pool_size(512)
         .build()
     )

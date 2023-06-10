@@ -4,7 +4,6 @@ import api
 import ca
 from datetime import datetime, timedelta, timezone
 from dateutil import parser
-import keys
 import pytz
 import loans
 import main
@@ -18,14 +17,28 @@ import text
 import textwrap
 import times
 from translate import Translator
+
 # import pandas as pd
 import pyttsx3
 import url
-import io
 import wikipediaapi
 import re
 from web3 import Web3
 from eth_utils import to_checksum_address
+import os
+from dotenv import load_dotenv
+
+# Load all environment variables
+load_dotenv()
+
+alchemy_arb = os.getenv("ALCHEMY_ARB")
+alchemy_poly = os.getenv("ALCHEMY_POLY")
+alchemy_opti = os.getenv("ALCHEMY_OPTI")
+bsc = os.getenv("BSC")
+ether = os.getenv("ETHER")
+poly = os.getenv("POLY")
+opti = os.getenv("OPTI")
+arb = os.getenv("ARB")
 
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1018,13 +1031,13 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     if chain == "eth":
-        web_url = f"https://mainnet.infura.io/v3/{keys.infura}"
+        web_url = f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}"
         token = "ETH"
         scan_address = url.ether_address
         scan_token = url.ether_token
         price = api.get_native_price("eth")
     elif chain == "arb":
-        web_url = f"https://arb-mainnet.g.alchemy.com/v2/{keys.alchemy_arb}"
+        web_url = f"https://arb-mainnet.g.alchemy.com/v2/{alchemy_arb}"
         token = "ETH"
         scan_address = url.arb_address
         scan_token = url.arb_token
@@ -1036,13 +1049,13 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
         scan_token = url.bsc_token
         price = api.get_native_price("bnb")
     elif chain == "poly":
-        web_url = f"https://polygon-mainnet.g.alchemy.com/v2/{keys.alchemy_poly}"
+        web_url = f"https://polygon-mainnet.g.alchemy.com/v2/{alchemy_poly}"
         token = "MATIC"
         scan_address = url.poly_address
         scan_token = url.poly_token
         price = api.get_native_price("matic")
     elif chain == "opti":
-        web_url = f"https://opt-mainnet.g.alchemy.com/v2/{keys.alchemy_opti}"
+        web_url = f"https://opt-mainnet.g.alchemy.com/v2/{alchemy_opti}"
         token = "ETH"
         scan_address = url.opti_address
         scan_token = url.opti_token
@@ -1196,11 +1209,11 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
     if loan_type == "count":
         networks = {
-            "ETH": f"https://mainnet.infura.io/v3/{keys.infura}",
-            "ARB": f"https://arb-mainnet.g.alchemy.com/v2/{keys.alchemy_arb}",
+            "ETH": f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}",
+            "ARB": f"https://arb-mainnet.g.alchemy.com/v2/{alchemy_arb}",
             "BSC": "https://bsc-dataseed.binance.org/",
-            "POLY": f"https://polygon-mainnet.g.alchemy.com/v2/{keys.alchemy_poly}",
-            "OPTI": f"https://opt-mainnet.g.alchemy.com/v2/{keys.alchemy_opti}",
+            "POLY": f"https://polygon-mainnet.g.alchemy.com/v2/{alchemy_poly}",
+            "OPTI": f"https://opt-mainnet.g.alchemy.com/v2/{alchemy_opti}",
         }
         contract_networks = {
             "ETH": "eth",
@@ -1653,19 +1666,19 @@ async def pair(update: Update, context: ContextTypes.DEFAULT_TYPE):
         native = ca.wbnb
         chain_link = url.bsc_token
     if chain == "eth":
-        key = f"https://mainnet.infura.io/v3/{keys.infura}"
+        key = f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}"
         buy_link = url.xchange_buy_eth
         chart_link = url.dex_tools_eth
         native = ca.weth
         chain_link = url.ether_token
     if chain == "arb":
-        key = f"https://arb-mainnet.g.alchemy.com/v2/{keys.alchemy_arb}"
+        key = f"https://arb-mainnet.g.alchemy.com/v2/{alchemy_arb}"
         buy_link = url.xchange_buy_arb
         chart_link = url.dex_tools_arb
         native = ca.aweth
         chain_link = url.arb_token
     if chain == "poly":
-        key = f"https://polygon-mainnet.g.alchemy.com/v2/{keys.alchemy_poly}"
+        key = f"https://polygon-mainnet.g.alchemy.com/v2/{alchemy_poly}"
         buy_link = url.xchange_buy_poly
         chart_link = url.dex_tools_poly
         native = ca.matic
@@ -1777,7 +1790,7 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
     else:
         base_url = "https://api.opensea.io/api/v1/asset/"
         slug = ca.pioneer + "/"
-        headers = {"X-API-KEY": keys.os}
+        headers = {"X-API-KEY": os.getenv("OPENSEA_API_KEY")}
         single_url = base_url + slug + pioneer_id + "/"
         single_response = requests.get(single_url, headers=headers)
         single_data = single_response.json()
@@ -2004,7 +2017,7 @@ async def question(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     message = str(update.effective_message.text[9:])
     await context.bot.send_message(
-        keys.ama_id,
+        os.getenv("AMA_TELEGRAM_CHANNEL_ID"),
         f"{message}\n\n" f" - `{update.effective_message.from_user.name}`",
         parse_mode="Markdown",
     )
@@ -2621,26 +2634,26 @@ async def volume(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "bsc":
         link = url.bsc_address
         token = "bnb"
-        chain_url = f"https://api.bscscan.com/api?module=account&action=txlist&address={ca.router}{keys.bsc}"
+        chain_url = f"https://api.bscscan.com/api?module=account&action=txlist&address={ca.router}{bsc}"
     if chain == "eth":
         link = url.ether_address
         token = "eth"
-        chain_url = f"https://api.etherscan.io/api?module=account&action=txlistinternal&address={ca.router}{keys.ether}"
+        chain_url = f"https://api.etherscan.io/api?module=account&action=txlistinternal&address={ca.router}{ether}"
     if chain == "poly":
         link = url.poly_address
         token = "matic"
-        chain_url = f"https://api.polygonscan.com/api?module=account&action=txlist&address={ca.router}{keys.poly}"
+        chain_url = f"https://api.polygonscan.com/api?module=account&action=txlist&address={ca.router}{poly}"
     if chain == "opti":
         link = url.opti_address
         token = "eth"
         chain_url = (
             f"https://api.optimistic.etherscan.io/api?module=account&action=txlist&address="
-            f"{ca.router}{keys.opti}"
+            f"{ca.router}{opti}"
         )
     if chain == "arb":
         link = url.arb_address
         token = "eth"
-        chain_url = f"https://api.arbiscan.com/api?module=account&action=txlist&address={ca.router}{keys.arb}"
+        chain_url = f"https://api.arbiscan.com/api?module=account&action=txlist&address={ca.router}{arb}"
 
     def calculate_total_transaction_value():
         url = chain_url
@@ -4796,7 +4809,7 @@ async def spaces(update: Update, context: ContextTypes.DEFAULT_TYPE):
         def get_space():
             url = f"https://api.twitter.com/2/spaces/{space_id}?space.fields=scheduled_start,title"
             headers = {
-                "Authorization": "Bearer {}".format(keys.twitter_bearer),
+                "Authorization": "Bearer {}".format(os.getenv("TWITTER_BEARER")),
                 "User-Agent": "v2SpacesLookupPython",
             }
             response = requests.request("GET", url, headers=headers)

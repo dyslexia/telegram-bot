@@ -3,7 +3,6 @@ from telegram import *
 import api
 import asyncio
 import ca
-import keys
 import logging
 import media
 from PIL import Image, ImageDraw, ImageFont
@@ -14,13 +13,23 @@ from web3 import Web3
 from web3.exceptions import Web3Exception
 from eth_utils import to_checksum_address
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+# Load all environment variables
+load_dotenv()
+
+# Get the tokens, split by comma
+tokens = os.getenv("TOKENS").split(",")
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
-alchemy_arb_url = f"https://arb-mainnet.g.alchemy.com/v2/{keys.alchemy_arb}"
+alchemy_arb = os.getenv("ALCHEMY_ARB")
+
+alchemy_arb_url = f"https://arb-mainnet.g.alchemy.com/v2/{alchemy_arb}"
 web3 = Web3(Web3.HTTPProvider(alchemy_arb_url))
 
 factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "arb"))
@@ -206,7 +215,7 @@ async def new_pair(event):
     )
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
-        keys.alerts_id,
+        os.getenv("ALERTS_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media\blackhole.png", "rb"),
         caption=f"*New Pair Created (ARB)*\n\n"
         f"{token_name[0]} ({token_name[1]}/{native[1]})\n\n"
@@ -317,7 +326,7 @@ async def new_loan(event):
     )
     im1.save(r"media\blackhole.png")
     await application.bot.send_photo(
-        keys.main_id,
+        os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media\blackhole.png", "rb"),
         caption=f"*New Loan Originated (ARB)*\n\n"
         f'Loan ID: {event["args"]["loanID"]}\n'
@@ -352,7 +361,7 @@ async def log_loop(pair_filter, loan_filters, poll_interval):
 
             application = (
                 ApplicationBuilder()
-                .token(random.choice(keys.tokens))
+                .token(random.choice(tokens))
                 .connection_pool_size(512)
                 .build()
             )
@@ -393,7 +402,7 @@ async def log_arb_network(factory, ill001, ill002, ill003):
 if __name__ == "__main__":
     application = (
         ApplicationBuilder()
-        .token(random.choice(keys.tokens))
+        .token(random.choice(tokens))
         .connection_pool_size(512)
         .build()
     )
