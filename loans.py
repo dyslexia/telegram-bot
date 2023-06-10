@@ -69,7 +69,7 @@ class LoanTerm:
         """
 
 
-ill001 = LoanTerm(
+ill001_terms = LoanTerm(
     "X7 Initial Liquidity Loan Term (001) - X7ILL001",
     0.5,
     5,
@@ -85,7 +85,7 @@ ill001 = LoanTerm(
     "5%",
 )
 
-ill002 = LoanTerm(
+ill002_terms = LoanTerm(
     "X7 Initial Liquidity Loan Term (002) - X7ILL002",
     0.5,
     5,
@@ -101,7 +101,7 @@ ill002 = LoanTerm(
     "5%",
 )
 
-ill003 = LoanTerm(
+ill003_terms = LoanTerm(
     "X7 Initial Liquidity Loan Term (003) - X7ILL003",
     0.5,
     5,
