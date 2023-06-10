@@ -52,48 +52,37 @@ def get_abi(contract: str, chain: str) -> str:
     return result
 
 
-def get_token_data(token_symbol):
-    base_url = "https://api.coingecko.com/api/v3/coins"
-    endpoint = f"{base_url}/{token_symbol.lower()}"
+COINGECKO_URL = "https://api.coingecko.com/api/v3"
 
-    query_params = {
-        "localization": "false",
-        "tickers": "false",
-        "market_data": "true",
-        "community_data": "false",
-        "developer_data": "false",
-        "sparkline": "false",
-    }
 
-    response = requests.get(endpoint, params=query_params)
-    response.raise_for_status()  # Raise an error if API request fails
-    token_data = response.json()["market_data"]
-
-    return (
-        token_data["ath"]["usd"],
-        token_data["ath_change_percentage"]["usd"],
-        token_data["ath_date"]["usd"],
+def get_ath(token):
+    url = (
+        f"https://api.coingecko.com/api/v3/coins/{token}?localization=false&tickers=false&market_data="
+        "true&community_data=false&developer_data=false&sparkline=false"
     )
+    response = requests.get(url)
+    data = response.json()
+    value = data["market_data"]
+    ath = value["ath"]["usd"]
+    change = value["ath_change_percentage"]["usd"]
+    date = value["ath_date"]["usd"]
+    return ath, change, date
 
 
-def get_token_info(token: str):
-    """Get token's current price, 24h change, 24h volume, and market cap from Coingecko."""
-    cg = CoinGeckoAPI()
-    info = cg.get_coin_by_id(
-        id=token, localization="false", tickers="false", market_data="true"
+def get_cg_price(token):
+    coingecko = CoinGeckoAPI()
+    cg = coingecko.get_price(
+        ids=token,
+        vs_currencies="usd",
+        include_24hr_change="true",
+        include_24hr_vol="true",
+        include_market_cap="true",
     )
-
-    return {
-        "price": info["market_data"]["current_price"]["usd"],
-        "24h_change": info["market_data"]["price_change_percentage_24h"],
-        "24h_volume": info["market_data"]["total_volume"]["usd"],
-        "market_cap": info["market_data"]["market_cap"]["usd"],
-    }
+    return cg
 
 
 def get_cg_search(token):
-    base_url = "https://api.coingecko.com/api/v3/search"
-    url = f"{base_url}?query={token}"
+    url = "https://api.coingecko.com/api/v3/search?query=" + token
     response = requests.get(url)
     result = response.json()
     return result
@@ -291,7 +280,7 @@ def get_quote():
 
 def get_random_pioneer_number():
     min_num = 1
-    max_num = 641
+    max_num = 4480
     number = random.randint(min_num, max_num)
     return str(number).zfill(4)
 
@@ -364,42 +353,65 @@ def get_today():
     return data
 
 
-def get_token_balance(wallet: str, token: str, chain: str) -> int:
-    # Create a dictionary to map chain names to their respective urls and api keys
-    chains = {
-        "eth": {
-            "url": "https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress=",
-            "key": ether,
-        },
-        "bsc": {
-            "url": "https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress=",
-            "key": bsc,
-        },
-        "opti": {
-            "url": "https://api-optimistic.etherscan.io/api?module=account&action=tokenbalance&contractaddress=",
-            "key": opti,
-        },
-        "poly": {
-            "url": "https://api.polygonscan.com/api?module=account&action=tokenbalance&contractaddress=",
-            "key": poly,
-        },
-        "arb": {
-            "url": "https://api.arbiscan.io/api?module=account&action=tokenbalance&contractaddress=",
-            "key": arb,
-        },
-    }
-    # Check if the chain name is valid
-    if chain not in chains:
-        raise ValueError("Invalid chain name")
-
-        # Construct the url with the contract address of token and api key
-        url = chains[chain]["url"]
-        key = chains[chain]["key"]
+def get_token_balance(wallet, token, chain):
+    if chain == "eth":
+        url = (
+            "https://api.etherscan.io/"
+            "api?module=account&action=tokenbalance&contractaddress="
+        )
+        key = ether
         response = requests.get(
             url + token + "&address=" + wallet + "&tag=latest" + key
         )
         data = response.json()
-        # Extract the amount and return it
+        amount = int(data["result"][:-18])
+        return amount
+    if chain == "bsc":
+        url = (
+            "https://api.bscscan.com/"
+            "api?module=account&action=tokenbalance&contractaddress="
+        )
+        key = bsc
+        response = requests.get(
+            url + token + "&address=" + wallet + "&tag=latest" + key
+        )
+        data = response.json()
+        amount = int(data["result"][:-18])
+        return amount
+    if chain == "opti":
+        url = (
+            "https://api-optimistic.etherscan.io/"
+            "api?module=account&action=tokenbalance&contractaddress="
+        )
+        key = opti
+        response = requests.get(
+            url + token + "&address=" + wallet + "&tag=latest" + key
+        )
+        data = response.json()
+        amount = int(data["result"][:-18])
+        return amount
+    if chain == "poly":
+        url = (
+            "https://api.polygonscan.com/"
+            "api?module=account&action=tokenbalance&contractaddress="
+        )
+        key = poly
+        response = requests.get(
+            url + token + "&address=" + wallet + "&tag=latest" + key
+        )
+        data = response.json()
+        amount = int(data["result"][:-18])
+        return amount
+    if chain == "arb":
+        url = (
+            "https://api.arbiscan.io/"
+            "api?module=account&action=tokenbalance&contractaddress="
+        )
+        key = arb
+        response = requests.get(
+            url + token + "&address=" + wallet + "&tag=latest" + key
+        )
+        data = response.json()
         amount = int(data["result"][:-18])
         return amount
 

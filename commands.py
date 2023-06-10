@@ -898,9 +898,9 @@ async def holders(update: Update, context: ContextTypes.DEFAULT_TYPE):
         font=myfont,
         fill=(255, 255, 255),
     )
-    img.save(r"media\blackhole.png")
+    img.save(r"media/blackhole.png")
     await update.message.reply_photo(
-        photo=open(r"media\blackhole.png", "rb"),
+        photo=open(r"media/blackhole.png", "rb"),
         caption=f"*X7 Finance Token Holders (ETH)*\n\n"
         f"X7R Holders: {x7r_holders}\n"
         f"X7DAO Holders: {x7dao_holders}\n\n"
@@ -920,7 +920,7 @@ async def image(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for ii in word_list:
         caption_new = caption_new + ii + "\n"
     i1.text((50, img.size[1] / 8), caption_new, font=myfont, fill=(255, 255, 255))
-    img.save(r"media\blackhole.png")
+    img.save(r"media/blackhole.png")
     i1.text(
         (50, 460),
         f"{update.message.from_user.username}\n"
@@ -928,8 +928,8 @@ async def image(update: Update, context: ContextTypes.DEFAULT_TYPE):
         font=myfont,
         fill=(255, 255, 255),
     )
-    img.save(r"media\blackhole.png")
-    await update.message.reply_photo(photo=open(r"media\blackhole.png", "rb"))
+    img.save(r"media/blackhole.png")
+    await update.message.reply_photo(photo=open(r"media/blackhole.png", "rb"))
 
 
 async def joke(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1748,9 +1748,9 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
             font=myfont,
             fill=(255, 255, 255),
         )
-        img.save(r"media\blackhole.png")
+        img.save(r"media/blackhole.png")
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f"*X7 Pioneer NFT Info*\n\n"
             f"LooksRare Floor Price: {floor} ETH (${'{:0,.0f}'.format(floor_dollar)})\n"
             f"Average Price: {price} ETH (${'{:0,.0f}'.format(price_dollar)})\n"
@@ -1896,9 +1896,10 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f"*X7 Finance Lending Pool Info *\nUse `/pool [chain-name]` for individual chains\n\n"
             f'`ETH:`   {eth_pool} ETH (${"{:0,.0f}".format(eth_dollar)})\n'
             f'`ARB:`   {arb_pool} ETH (${"{:0,.0f}".format(arb_dollar)})\n'
@@ -1957,9 +1958,10 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
         font=myfont,
         fill=(255, 255, 255),
     )
-    im1.save(r"media\blackhole.png")
+    img_path = os.path.join("media", "blackhole.png")
+    im1.save(img_path)
     await update.message.reply_photo(
-        photo=open(r"media\blackhole.png", "rb"),
+        photo=open(r"media/blackhole.png", "rb"),
         caption=f"*X7 Finance Lending Pool Info {chain_name}*\nUse `/pool [chain-name]` for other chains\n\n"
         f'{pool} {chain_token} (${"{:0,.0f}".format(pool_dollar)})\n\n'
         f"{api.get_quote()}",
@@ -2085,9 +2087,9 @@ async def roadmap(update: Update, context: ContextTypes.DEFAULT_TYPE):
         font=myfont,
         fill=(255, 255, 255),
     )
-    out.save(r"media\blackhole.png")
+    out.save(r"media/blackhole.png")
     await update.message.reply_photo(
-        photo=open(r"media\blackhole.png", "rb"),
+        photo=open(r"media/blackhole.png", "rb"),
         caption=f"*X7 Finance Work Stream Status*\n\n"
         f'WS1.1: Omni routing (multi dex routing "library" code) - {text.ws1_1*100}% \n\n'
         f'WS1.2: Omni routing (multi dex routing "select" code) - {text.ws1_2*100}% \n\n'
@@ -2719,25 +2721,27 @@ async def voting(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def website(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    photo_file = open((random.choice(media.logos)), "rb")
+    caption = f"*X7 Finance Website Links*\n{api.get_quote()}"
+    reply_markup = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton(text="Xchange App", url=f"{url.xchange}")],
+            [InlineKeyboardButton(text="Website", url=f"{url.dashboard}")],
+        ]
+    )
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
-        caption=f"*X7 Finance Website Links*\n\n{api.get_quote()}",
+        photo=photo_file,
+        caption=caption,
         parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton(text="Xchange App", url=f"{url.xchange}")],
-                [InlineKeyboardButton(text="Website", url=f"{url.dashboard}")],
-            ]
-        ),
+        reply_markup=reply_markup,
     )
 
 
 async def wei(update: Update, context: ContextTypes.DEFAULT_TYPE):
     eth = " ".join(context.args)
-    wei_raw = float(eth)
-    wei = wei_raw * 10**18
-    await update.message.reply_text(
-        f"{eth} ETH is equal to \n\n" f"`{wei:.0f}` wei", parse_mode="Markdown"
+    wei = int(float(eth) * 10**18)
+    update.message.reply_text(
+        f"{eth} ETH is equal to \n" f"`{wei}` wei", parse_mode="Markdown"
     )
 
 
@@ -2788,6 +2792,7 @@ async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7d_dollar = float(supply) * float(api.get_native_price("eth")) / 1**18
         chain_name = "(ARB)"
         chain_url = url.arb_address
+
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.x7d_logo)
     im1.paste(im2, (720, 20), im2)
@@ -2802,9 +2807,10 @@ async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
         font=myfont,
         fill=(255, 255, 255),
     )
-    im1.save(r"media\blackhole.png")
+    img_path = os.path.join("media", "blackhole.png")
+    im1.save(img_path)
     await update.message.reply_photo(
-        photo=open(r"media\blackhole.png", "rb"),
+        photo=open(r"media/blackhole.png", "rb"),
         caption=f"*X7D {chain_name} Info*\n"
         f"For other chains use `/x7d [chain-name]`\n\n"
         f'Supply: {supply[:5]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
@@ -2858,9 +2864,10 @@ async def x7r(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f'{chain} is currently worth:\n\n{"{:0,.0f}".format(amount)} '
             f"X7R (ETH) Tokens (Before Tax)\n\n{api.get_quote()}",
             parse_mode="Markdown",
@@ -2880,9 +2887,10 @@ async def x7r(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f'{chain} X7R (ETH) Currently Costs:\n\n${"{:0,.0f}".format(amount)}'
             f"\n\n{api.get_quote()}",
             parse_mode="Markdown",
@@ -2906,7 +2914,7 @@ async def x7r(update: Update, context: ContextTypes.DEFAULT_TYPE):
         im2 = Image.open(media.x7r_logo)
         im1.paste(im2, (720, 20), im2)
         myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 25)
-        im1.save(r"media\blackhole.png", quality=95)
+        im1.save(r"media/blackhole.png", quality=95)
         i1 = ImageDraw.Draw(im1)
         i1.text(
             (26, 30),
@@ -2925,9 +2933,10 @@ async def x7r(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f"*X7R Info (ETH)*\nUse `/x7r [chain-name]` for other chains\n\n"
             f'X7R Price: ${price["x7r"]["usd"]}\n'
             f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n'
@@ -3030,9 +3039,10 @@ async def x7dao(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f'{chain} Is currently worth:\n\n{"{:0,.0f}".format(amount)}'
             f" X7DAO (ETH) Tokens (before tax)\n\n{api.get_quote()}",
             parse_mode="Markdown",
@@ -3056,9 +3066,10 @@ async def x7dao(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f"Holding {chain} X7DAO Tokens will earn you the right to make proposals on X7 DAO dApp\n\n"
             f'{chain} X7DAO (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)}\n\n{api.get_quote()}',
             parse_mode="Markdown",
@@ -3079,9 +3090,10 @@ async def x7dao(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f'{chain} X7DAO (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n'
             f"{api.get_quote()}",
             parse_mode="Markdown",
@@ -3119,9 +3131,10 @@ async def x7dao(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f"*X7DAO (ETH) Info*\n\n"
             f'X7DAO Price: ${price["x7dao"]["usd"]}\n'
             f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 1)}%\n'
@@ -3221,9 +3234,10 @@ async def x7101(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f'{chain} Is currently worth:\n\n{"{:0,.0f}".format(amount)}'
             f" X7101 (ETH) Tokens (before tax)\n\n{api.get_quote()}",
             parse_mode="Markdown",
@@ -3243,9 +3257,10 @@ async def x7101(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f'{chain} X7101 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n'
             f"{api.get_quote()}",
             parse_mode="Markdown",
@@ -3272,9 +3287,10 @@ async def x7101(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f"*X7101 (ETH) Info*\nUse `/X7101 [chain-name]` for other chains\n\n"
             f'X7101 Price: ${price["x7101"]["usd"]}\n'
             f'24 Hour Change: {round(price["x7101"]["usd_24h_change"], 1)}%\n'
@@ -3370,9 +3386,10 @@ async def x7102(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f'{chain} Is currently worth:\n\n{"{:0,.0f}".format(amount)}'
             f" X7102 (ETH) Tokens (before tax)\n\n{api.get_quote()}",
             parse_mode="Markdown",
@@ -3392,9 +3409,10 @@ async def x7102(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f'{chain} X7102 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n'
             f"{api.get_quote()}",
             parse_mode="Markdown",
@@ -3421,9 +3439,10 @@ async def x7102(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f"*X7102 (ETH) Info*\nUse `/x7102 [chain-name]` for other chains\n\n"
             f'X7102 Price: ${price["x7102"]["usd"]}\n'
             f'24 Hour Change: {round(price["x7102"]["usd_24h_change"], 1)}%\n'
@@ -3519,9 +3538,10 @@ async def x7103(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f'{chain} Is currently worth:\n\n{"{:0,.0f}".format(amount)}'
             f" X7103 (ETH) Tokens (before tax)\n\n{api.get_quote()}",
             parse_mode="Markdown",
@@ -3541,9 +3561,10 @@ async def x7103(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f'{chain} X7103 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n'
             f"{api.get_quote()}",
             parse_mode="Markdown",
@@ -3570,9 +3591,10 @@ async def x7103(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f"*X7103 (ETH) Info*\nUse `/x7103` [chain-name] for other chains\n\n"
             f'X7103 Price: ${price["x7103"]["usd"]}\n'
             f'24 Hour Change: {round(price["x7103"]["usd_24h_change"],1)}%\n'
@@ -3668,9 +3690,10 @@ async def x7104(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f'{chain} Is currently worth:\n\n{"{:0,.0f}".format(amount)}'
             f" X7104 (ETH) Tokens (before tax)\n\n{api.get_quote()}",
             parse_mode="Markdown",
@@ -3690,9 +3713,10 @@ async def x7104(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f'{chain} X7104 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n'
             f"{api.get_quote()}",
             parse_mode="Markdown",
@@ -3719,9 +3743,10 @@ async def x7104(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f"*X7104 (ETH) Info*\n`Use /x7104 [chain-name]` for other chains\n\n"
             f'X7104 Price: ${price["x7104"]["usd"]}\n'
             f'24 Hour Change: {round(price["x7104"]["usd_24h_change"],1)}%\n'
@@ -3817,9 +3842,10 @@ async def x7105(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f'{chain} Is currently worth:\n\n{"{:0,.0f}".format(amount)}'
             f" X7105 (ETH) Tokens (before tax)\n\n{api.get_quote()}",
             parse_mode="Markdown",
@@ -3839,9 +3865,10 @@ async def x7105(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f'{chain} X7105 (ETH) currently costs:\n\n${"{:0,.0f}".format(amount)} (before tax)\n\n'
             f"{api.get_quote()}",
             parse_mode="Markdown",
@@ -3868,9 +3895,10 @@ async def x7105(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f"*X7105 (ETH) Info*\nUse `/x7105 [chain-name]` for other chains\n"
             f'X7105 Price: ${price["x7105"]["usd"]}\n'
             f'24 Hour Change: {round(price["x7105"]["usd_24h_change"],1)}%\n'
@@ -3965,7 +3993,7 @@ async def ath(update: Update, context: ContextTypes.DEFAULT_TYPE):
         font=myfont,
         fill=(255, 255, 255),
     )
-    img.save(r"media\blackhole.png")
+    img.save(r"media/blackhole.png")
     caption = (
         f"*X7 Finance ATH Info*\n\n"
         f'X7R - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change}%\n'
@@ -3975,7 +4003,7 @@ async def ath(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"{api.get_quote()}"
     )
     await update.message.reply_photo(
-        photo=open(r"media\blackhole.png", "rb"), caption=caption, parse_mode="Markdown"
+        photo=open(r"media/blackhole.png", "rb"), caption=caption, parse_mode="Markdown"
     )
 
 
@@ -4037,9 +4065,10 @@ async def burn(update: Update, context: ContextTypes.DEFAULT_TYPE):
         font=myfont,
         fill=(255, 255, 255),
     )
-    im1.save(r"media\blackhole.png")
+    img_path = os.path.join("media", "blackhole.png")
+    im1.save(img_path)
     await update.message.reply_photo(
-        photo=open(r"media\blackhole.png", "rb"),
+        photo=open(r"media/blackhole.png", "rb"),
         caption=f"\n\nX7R {chain_name} Tokens Burned:\nUse `/burn [chain-name]` for other chains\n\n"
         f'{"{:0,.0f}".format(float(burn))} / {native} (${"{:0,.0f}".format(float(burn_dollar))})\n'
         f"{percent}% of Supply\n\n{api.get_quote()}",
@@ -4108,9 +4137,9 @@ async def constellations(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        img.save(r"media\blackhole.png")
+        img.save(r"media/blackhole.png")
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f"*X7 Finance Constellation Token Prices (ETH)*\n\n"
             f"For more info use `/x7token-name`\n\n"
             f'X7101:      ${price["x7101"]["usd"]}\n'
@@ -4243,9 +4272,10 @@ async def liquidity(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f"*X7 Finance Token Liquidity (ETH)*\n"
             f"To show initial liquidity for other chains, Use `/liquidity "
             f"[chain-name]`\n\n"
@@ -4321,9 +4351,10 @@ async def liquidity(update: Update, context: ContextTypes.DEFAULT_TYPE):
         font=myfont,
         fill=(255, 255, 255),
     )
-    im1.save(r"media\blackhole.png")
+    img_path = os.path.join("media", "blackhole.png")
+    im1.save(img_path)
     await update.message.reply_photo(
-        photo=open(r"media\blackhole.png", "rb"),
+        photo=open(r"media/blackhole.png", "rb"),
         caption=f"*X7 Finance Initial Liquidity {chain_title}*\nUse `/liquidity [chain-name]` for other chains\n\n"
         f'X7R:\n{x7r_amount} {chain_token_name} (${"{:0,.0f}".format(x7r_dollar)})\n\n'
         f'X7DAO:\n{x7dao_amount} {chain_token_name} (${"{:0,.0f}".format(x7dao_dollar)})\n\n'
@@ -4378,9 +4409,9 @@ async def mcap(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}'
     )
     i1.text((28, 36), market_cap_info, font=myfont, fill=(255, 255, 255))
-    im1.save(r"media\blackhole.png")
+    im1.save(r"media/blackhole.png")
     await update.message.reply_photo(
-        photo=open(r"media\blackhole.png", "rb"),
+        photo=open(r"media/blackhole.png", "rb"),
         caption=f"*X7 Finance Market Cap Info (ETH)*\n\n"
         f'`X7R: `            ${"{:0,.0f}".format(caps["x7r"])}\n'
         f'`X7DAO:`         ${"{:0,.0f}".format(caps["x7dao"])}\n'
@@ -4429,9 +4460,10 @@ async def price(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f"*X7 Finance Token Price Info (ETH)*\n"
             f"Use `/x7r [chain]` or `/x7dao [chain]` for all other details\n"
             f"Use `/constellations` for constellations\n\n"
@@ -4498,9 +4530,10 @@ async def price(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f"*{symbol} price*\n\n"
             f'Price: ${price[cg_name]["usd"]}\n'
             f'24 Hour Change: {round(price[cg_name]["usd_24h_change"], 1)}%\n\n'
@@ -4541,9 +4574,9 @@ async def price(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png", quality=95)
+        im1.save(r"media/blackhole.png", quality=95)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption=f"*{symbol} price*\n\n"
             f'Price: ${float(token_price[token_id]["usd"])}\n'
             f'24 Hour Change: {round(token_price[token_id]["usd_24h_change"], 1)}%\n'
@@ -4611,9 +4644,10 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
             font=myfont,
             fill=(255, 255, 255),
         )
-        im1.save(r"media\blackhole.png")
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
         await update.message.reply_photo(
-            photo=open(r"media\blackhole.png", "rb"),
+            photo=open(r"media/blackhole.png", "rb"),
             caption="*X7 Finance Treasury (ETH)*\nUse `/treasury [chain-name]` for other chains\n\n"
             f'Pioneer Pool:\n{pioneer_eth[:4]}ETH (${"{:0,.0f}".format(pioneer_dollar)})\n\n'
             f'Developer Wallet:\n{dev_eth[:4]}ETH (${"{:0,.0f}".format(dev_dollar)})\n\n'
@@ -4701,9 +4735,10 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
         font=myfont,
         fill=(255, 255, 255),
     )
-    im1.save(r"media\blackhole.png")
+    img_path = os.path.join("media", "blackhole.png")
+    im1.save(img_path)
     await update.message.reply_photo(
-        photo=open(r"media\blackhole.png", "rb"),
+        photo=open(r"media/blackhole.png", "rb"),
         caption=f"*X7 Finance Treasury {chain_title}*\nUse `/treasury [chain-name]` for other chains\n\n"
         f'Developer Wallet:\n{dev_eth[:6]} {chain_token_name} (${"{:0,.0f}".format(dev_dollar)})\n\n'
         f'Community Wallet:\n{com_eth[:6]} {chain_token_name} (${"{:0,.0f}".format(com_dollar)})\n\n'
