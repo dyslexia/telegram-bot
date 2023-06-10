@@ -10,6 +10,8 @@ import random
 import text
 import times
 import url
+from dotenv import load_dotenv
+import os
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -19,21 +21,19 @@ print("Bot Restarted")
 
 
 async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_message.from_user.username
     message = str(update.effective_message.text)
+    chat_title = update.effective_message.chat.title
     lower_message = message.lower()
 
-    print(
-        f'{update.effective_message.from_user.username} says "{message}" in: '
-        f"{update.effective_message.chat.title}"
-    )
+    print(f'{user} says "{message}" in: {chat_title}')
 
-    # Mapping of keywords to corresponding responses
     keyword_to_response = {
-        "rob the bank": {"text": f"{text.rob}", "mode": "Markdown"},
-        "delay": {"text": f"{text.delay}", "mode": "Markdown"},
-        "patience": {"text": f"{text.patience}", "mode": "Markdown"},
+        "rob the bank": {"text": text.rob, "mode": "Markdown"},
+        "delay": {"text": text.delay, "mode": "Markdown"},
+        "patience": {"text": text.patience, "mode": "Markdown"},
         "https://twitter": {
-            "text": f"{random.choice(text.twitter_replies)}",
+            "text": random.choice(text.twitter_replies),
             "mode": None,
         },
         "gm": {"sticker": media.gm},
@@ -46,7 +46,6 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
 
     for keyword, response in keyword_to_response.items():
-        # Use the original message for URLs, lowercase message for other keywords
         target_message = message if "https://" in keyword else lower_message
 
         if keyword in target_message:
@@ -63,44 +62,48 @@ async def error(update, context):
 
 
 async def endorse_message(context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Endorse a message with an image and caption."""
+
     job = context.job
 
     # Select a random logo from the media.logos list
-    selected_logo = open(random.choice(media.logos), "rb")
+    logo_path = random.choice(media.logos)
+    with open(logo_path, "rb") as selected_logo:
+        # Construct the caption for the image
+        caption_text = f"*X7 Finance Xchange Pairs*\n\n{text.endorse}"
 
-    # Construct the caption
-    caption_text = f"*X7 Finance Xchange Pairs*\n\n{text.endorse}"
+        # Create an inline keyboard markup with a single button
+        keyboard_markup = InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text="Xchange Alerts", url=f"{url.tg_alerts}")]]
+        )
 
-    # Construct the keyboard markup
-    keyboard_markup = InlineKeyboardMarkup(
-        [[InlineKeyboardButton(text="Xchange Alerts", url=f"{url.tg_alerts}")]]
-    )
-
-    # Send a photo message
-    await context.bot.send_photo(
-        chat_id=job.chat_id,
-        photo=selected_logo,
-        caption=caption_text,
-        parse_mode="Markdown",
-        reply_markup=keyboard_markup,
-    )
+        # Send the logo as a photo message with caption and inline keyboard
+        await context.bot.send_photo(
+            chat_id=job.chat_id,
+            photo=selected_logo,
+            caption=caption_text,
+            parse_mode="Markdown",
+            reply_markup=keyboard_markup,
+        )
 
 
-async def referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
+async def send_referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Sends a referral message with an image and caption."""
+
     job = context.job
 
-    # Construct the URL of the photo
+    # Construct the photo URL using a random pioneer number
     photo_url = f"{url.pioneers}{api.get_random_pioneer_number()}.png"
 
-    # Construct the caption
+    # Create the caption for the image
     caption_text = f"*X7 Finance Referral Scheme*\n\n{text.referral}"
 
-    # Construct the keyboard markup
+    # Create an inline keyboard markup with a single button
     keyboard_markup = InlineKeyboardMarkup(
         [[InlineKeyboardButton(text="Application", url=f"{url.referral}")]]
     )
 
-    # Send a photo message
+    # Send the image as a photo message with caption and inline keyboard
     await context.bot.send_photo(
         chat_id=job.chat_id,
         photo=photo_url,
@@ -110,15 +113,18 @@ async def referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
 
-async def alert_message(context: ContextTypes.DEFAULT_TYPE) -> None:
+async def send_alert_message(context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Sends an alert message with a random logo image and a generated caption."""
+
     # Retrieve the job from the context
     job = context.job
 
-    # Select a random logo and read it into memory
+    # Choose a random logo from the media.logos list and open it as a binary file
     with open(random.choice(media.logos), "rb") as photo_file:
+        # Read the file data
         photo_data = photo_file.read()
 
-    # Construct the message caption
+    # Construct the caption for the message using random quotes and API data
     caption_text = (
         "*X7 Finance*\n\n"
         f"{random.choice(text.quotes)}\n\n"
@@ -127,7 +133,7 @@ async def alert_message(context: ContextTypes.DEFAULT_TYPE) -> None:
         f"💬 [Telegram]({url.tg_main})   ┃ 💬 [Twitter]({url.twitter}"
     )
 
-    # Send a photo message to the chat_id associated with the job
+    # Send the photo message to the chat_id associated with the job
     await context.bot.send_photo(
         chat_id=job.chat_id,
         photo=photo_data,
@@ -209,7 +215,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler(["fg", "feargreed"], commands.fg))
     application.add_handler(CommandHandler("gas", commands.gas))
     application.add_handler(CommandHandler("german", commands.german))
-    application.add_handler(CommandHandler("giveaway", commands.giveaway))
+    # application.add_handler(CommandHandler("giveaway", commands.giveaway))
     application.add_handler(CommandHandler("holders", commands.holders))
     application.add_handler(CommandHandler("image", commands.image))
     application.add_handler(CommandHandler("joke", commands.joke))
