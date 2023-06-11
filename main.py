@@ -10,6 +10,7 @@ import times
 import url
 from dotenv import load_dotenv
 import os
+import subprocess
 
 load_dotenv()
 logging.basicConfig(
@@ -96,6 +97,16 @@ async def send_referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
 # RUN
 if __name__ == "__main__":
     application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
+    scripts = ['eth.py', 'arb.py', 'poly.py', 'bsc.py', 'opti.py']
+    processes = []
+    for script in scripts:
+        command = ['python', script]
+        process = subprocess.Popen(command)
+        processes.append(process)
+
+    for process in processes:
+        process.wait()
+
     job_queue = application.job_queue
     application.add_handler(
         MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies)
