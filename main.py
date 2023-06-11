@@ -199,7 +199,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("token", commands.token))
     application.add_handler(CommandHandler("treasury", commands.treasury))
     application.add_handler(CommandHandler("twitter", commands.twitter))
-    application.add_handler(CommandHandler("volume", commands.volume))
+    application.add_handler(CommandHandler("website", commands.website))
     application.add_handler(CommandHandler("x7r", commands.x7r))
     application.add_handler(CommandHandler("x7d", commands.x7d))
     application.add_handler(CommandHandler(["x7dao", "dao"], commands.x7dao))

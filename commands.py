@@ -28,7 +28,6 @@ from eth_utils import to_checksum_address
 import os
 from dotenv import load_dotenv
 
-# Load all environment variables
 load_dotenv()
 
 alchemy_arb = os.getenv("ALCHEMY_ARB")
@@ -2493,7 +2492,7 @@ async def swap(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [
                 [
                     InlineKeyboardButton(
-                        text="Xchange", url="https://beta.x7.finance/#/swap"
+                        text="Xchange", url=f"{url.xchange}"
                     )
                 ],
                 [
@@ -2628,7 +2627,7 @@ async def token(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-async def volume(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def website(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     link = ""
     token = ""
@@ -2712,7 +2711,7 @@ async def voting(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [
                     InlineKeyboardButton(
                         text="X7 Finance Whitepaper",
-                        url="https://x7.finance/whitepaper",
+                        url=f"{url.wp_link}",
                     )
                 ],
             ]
@@ -2721,20 +2720,34 @@ async def voting(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def website(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-    caption = f"*X7 Finance Website Links*\n{api.get_quote()}"
-    reply_markup = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton(text="Xchange App", url=f"{url.xchange}")],
-            [InlineKeyboardButton(text="Website", url=f"{url.dashboard}")],
-        ]
-    )
     await update.message.reply_photo(
-        photo=photo,
-        caption=caption,
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+        caption=
+        f"{api.get_quote()}",
         parse_mode="Markdown",
-        reply_markup=reply_markup,
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        text="Xchange", url=f"{url.xchange}"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="X7.Finance",
+                        url=f"{url.website}",
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="X7Finance.org",
+                        url=f"{url.dashboard}",
+                    )
+                ],
+            ]
+        ),
     )
+
 
 
 async def wei(update: Update, context: ContextTypes.DEFAULT_TYPE):

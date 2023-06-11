@@ -46,6 +46,7 @@ dex_tools_arb = "https://www.dextools.io/app/arbitrum/pair-explorer/"
 dex_tools_opti = "https://www.dextools.io/app/optimism/pair-explorer/"
 
 # LINKS
+website = "https://x7.finance/"
 dashboard = "https://www.x7finance.org/"
 medium = "https://medium.com/@X7Finance"
 dune = "https://dune.com/0xawesomedata/x7r"
