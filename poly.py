@@ -17,7 +17,6 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-tokens = os.getenv("TOKENS").split(",")
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -365,13 +364,6 @@ async def new_loan(event):
 async def log_loop(
     pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval
 ):
-    application = (
-        ApplicationBuilder()
-        .token(random.choice(tokens))
-        .connection_pool_size(512)
-        .build()
-    )
-
     while True:
         try:
             for PairCreated in pair_filter.get_new_entries():
@@ -430,7 +422,7 @@ async def main():
 
 
 application = (
-    ApplicationBuilder().token(random.choice(tokens)).connection_pool_size(512).build()
+    ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).connection_pool_size(512).build()
 )
 
 if __name__ == "__main__":
