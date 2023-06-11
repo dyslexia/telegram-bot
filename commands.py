@@ -2730,7 +2730,7 @@ async def website(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
     )
     await update.message.reply_photo(
-        photo=photo_file,
+        photo=photo,
         caption=caption,
         parse_mode="Markdown",
         reply_markup=reply_markup,
