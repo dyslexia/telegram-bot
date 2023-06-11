@@ -182,7 +182,6 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("router", commands.router))
     application.add_handler(CommandHandler("say", commands.say))
     application.add_handler(CommandHandler("search", commands.search))
-    application.add_handler(CommandHandler("show_auto", commands.show_auto))
     application.add_handler(CommandHandler("signers", commands.signers))
     application.add_handler(CommandHandler("smart", commands.smart))
     application.add_handler(CommandHandler("snapshot", commands.snapshot))
