@@ -16,10 +16,7 @@ from datetime import datetime
 import os
 from dotenv import load_dotenv
 
-# Load all environment variables
 load_dotenv()
-
-# Get the tokens, split by comma
 tokens = os.getenv("TOKENS").split(",")
 
 logging.basicConfig(
@@ -315,7 +312,7 @@ async def new_loan(event):
         f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH '
         f'(${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
         f"Payment Schedule:\n{schedule_str}\n\n"
-        f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)}',
+        f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)})',
         reply_markup=InlineKeyboardMarkup(
             [
                 [

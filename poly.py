@@ -16,10 +16,7 @@ from datetime import datetime
 import os
 from dotenv import load_dotenv
 
-# Load all environment variables
 load_dotenv()
-
-# Get the tokens, split by comma
 tokens = os.getenv("TOKENS").split(",")
 
 logging.basicConfig(
@@ -32,17 +29,10 @@ alchemy_poly = os.getenv("ALCHEMY_POLY")
 alchemy_poly_url = f"https://polygon-mainnet.g.alchemy.com/v2/{alchemy_poly}"
 web3 = Web3(Web3.HTTPProvider(alchemy_poly_url))
 
-contracts = {
-    "factory": ca.factory,
-    "ill001": ca.ill001,
-    "ill002": ca.ill002,
-    "ill003": ca.ill003,
-}
-
-for contract_name, contract_address in contracts.items():
-    globals()[contract_name] = web3.eth.contract(
-        address=contract_address, abi=api.get_abi(contract_address, "poly")
-    )
+factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "poly"))
+ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "poly"))
+ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "poly"))
+ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "poly"))
 
 
 async def new_pair(event):
@@ -356,7 +346,7 @@ async def new_loan(event):
         f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} MATIC '
         f'(${"{:0,.0f}".format(api.get_native_price("matic") * cost)})\n\n'
         f"Payment Schedule:\n{schedule_str}\n\n"
-        f'Total: {amount} MATIC (${"{:0,.0f}".format(api.get_native_price("matic") * amount)}',
+        f'Total: {amount} MATIC (${"{:0,.0f}".format(api.get_native_price("matic") * amount)})',
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
@@ -372,28 +362,38 @@ async def new_loan(event):
     print(f'Loan {event["args"]["loanID"]} sent')
 
 
-async def process_new_entries(filter_obj, process_function):
-    # Create application object
-    token = random.choice(tokens)
-    application = ApplicationBuilder().token(token).connection_pool_size(512).build()
-
-    for entry in filter_obj.get_new_entries():
-        await process_function(entry)
-
-
 async def log_loop(
     pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval
 ):
+    application = (
+        ApplicationBuilder()
+        .token(random.choice(tokens))
+        .connection_pool_size(512)
+        .build()
+    )
+
     while True:
         try:
-            await process_new_entries(pair_filter, new_pair)
+            for PairCreated in pair_filter.get_new_entries():
+                await new_pair(PairCreated)
+
             await asyncio.sleep(poll_interval)
-            await process_new_entries(ill001_filter, new_loan)
+
+            for LoanOriginated in ill001_filter.get_new_entries():
+                await new_loan(LoanOriginated)
+
             await asyncio.sleep(poll_interval)
-            await process_new_entries(ill002_filter, new_loan)
+
+            for LoanOriginated in ill002_filter.get_new_entries():
+                await new_loan(LoanOriginated)
+
             await asyncio.sleep(poll_interval)
-            await process_new_entries(ill003_filter, new_loan)
+
+            for LoanOriginated in ill003_filter.get_new_entries():
+                await new_loan(LoanOriginated)
+
             await asyncio.sleep(poll_interval)
+
         except (
             Web3Exception,
             Exception,
@@ -407,18 +407,16 @@ async def log_loop(
 async def main():
     print("Scanning POLYGON Network")
 
-    # Create event filters
-    filters = [
-        factory.events.PairCreated.create_filter(fromBlock="latest"),
-        ill001.events.LoanOriginated.create_filter(fromBlock="latest"),
-        ill002.events.LoanOriginated.create_filter(fromBlock="latest"),
-        ill003.events.LoanOriginated.create_filter(fromBlock="latest"),
-    ]
+    pair_filter = factory.events.PairCreated.create_filter(fromBlock="latest")
+    ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
+    ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
+    ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock="latest")
 
     while True:
         try:
-            # Prepare tasks to be run
-            tasks = [log_loop(*filters, poll_interval=2)]
+            tasks = [
+                log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)
+            ]
             await asyncio.gather(*tasks)
         except (
             Web3Exception,
@@ -431,8 +429,9 @@ async def main():
             break
 
 
-if __name__ == "__main__":
-    token = random.choice(tokens)
-    application = ApplicationBuilder().token(token).connection_pool_size(512).build()
+application = (
+    ApplicationBuilder().token(random.choice(tokens)).connection_pool_size(512).build()
+)
 
+if __name__ == "__main__":
     asyncio.run(main())

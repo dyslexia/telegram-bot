@@ -61,22 +61,13 @@ async def error(update, context):
 
 
 async def send_endorsement_message(context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Endorse a message with an image and caption."""
-
     job = context.job
-
-    # Select a random logo from the media.logos list
     logo_path = random.choice(media.logos)
     with open(logo_path, "rb") as selected_logo:
-        # Construct the caption for the image
         caption_text = f"*X7 Finance Xchange Pairs*\n\n{text.endorse}"
-
-        # Create an inline keyboard markup with a single button
         keyboard_markup = InlineKeyboardMarkup(
             [[InlineKeyboardButton(text="Xchange Alerts", url=f"{url.tg_alerts}")]]
         )
-
-        # Send the logo as a photo message with caption and inline keyboard
         await context.bot.send_photo(
             chat_id=job.chat_id,
             photo=selected_logo,
@@ -87,74 +78,18 @@ async def send_endorsement_message(context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def send_referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Sends a referral message with an image and caption."""
-
     job = context.job
-
-    # Construct the photo URL using a random pioneer number
     photo_url = f"{url.pioneers}{api.get_random_pioneer_number()}.png"
-
-    # Create the caption for the image
     caption_text = f"*X7 Finance Referral Scheme*\n\n{text.referral}"
-
-    # Create an inline keyboard markup with a single button
     keyboard_markup = InlineKeyboardMarkup(
         [[InlineKeyboardButton(text="Application", url=f"{url.referral}")]]
     )
-
-    # Send the image as a photo message with caption and inline keyboard
     await context.bot.send_photo(
         chat_id=job.chat_id,
         photo=photo_url,
         caption=caption_text,
         parse_mode="Markdown",
         reply_markup=keyboard_markup,
-    )
-
-
-async def send_alert_message(context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Sends an alert message with a random logo image and a generated caption."""
-
-    # Retrieve the job from the context
-    job = context.job
-
-    # Choose a random logo from the media.logos list and open it as a binary file
-    with open(random.choice(media.logos), "rb") as photo_file:
-        # Read the file data
-        photo_data = photo_file.read()
-
-    # Construct the caption for the message using random quotes and API data
-    caption_text = (
-        "*X7 Finance*\n\n"
-        f"{random.choice(text.quotes)}\n\n"
-        f"{api.get_quote()}\n\n"
-        f"🏠 [Xchange]({url.xchange}) ┃ 🔗 [X7finance.org]({url.dashboard})\n"
-        f"💬 [Telegram]({url.tg_main})   ┃ 💬 [Twitter]({url.twitter}"
-    )
-
-    # Send the photo message to the chat_id associated with the job
-    await context.bot.send_photo(
-        chat_id=job.chat_id,
-        photo=photo_data,
-        caption=caption_text,
-        parse_mode="Markdown",
-    )
-
-
-async def auto_message(context: ContextTypes.DEFAULT_TYPE) -> None:
-    # Get the job from the context
-    job = context.job
-
-    # Open a random logo from the media.logos directory
-    photo_path = open(random.choice(media.logos), "rb")
-
-    # Send a photo message to the chat_id associated with the job
-    # The photo is the random logo selected earlier
-    # The caption for the photo is the data associated with the job
-    await context.bot.send_photo(
-        job.chat_id,
-        photo=photo_path,
-        caption=f"{job.data}",
     )
 
 
@@ -286,13 +221,6 @@ if __name__ == "__main__":
         chat_id=os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
         name=str("Endorsement Message"),
         data=times.endorse_time * 60 * 60,
-    )
-    application.job_queue.run_repeating(
-        send_alert_message,
-        times.alert_time * 60 * 60,
-        chat_id=os.getenv("ALERTS_ID"),
-        name=str("Alert Message"),
-        data=times.alert_time * 60 * 60,
     )
     application.job_queue.run_repeating(
         send_referral_message,

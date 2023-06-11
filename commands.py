@@ -97,7 +97,7 @@ async def alerts(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def alumni(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Alumni*\n\n"
         f"@Callmelandlord - The Godfather of the X7 Finance community, the OG, the creator - X7 God\n\n"
         f"@WoxieX - Creator of the OG dashboard -  x7community.space\n\n"
@@ -109,7 +109,7 @@ async def alumni(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def announcements(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption="Check out the link below for the announcement channel",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
@@ -155,7 +155,7 @@ async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         chain_name, chain_url = chain_mappings["eth"]
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Buy Links {chain_name}*\nUse `/buy [chain-name]` for other chains\n"
         f"Use `/constellations` for constellations\n\n{api.get_quote()}",
         parse_mode="Markdown",
@@ -178,7 +178,7 @@ async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def buy_bots(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Bobby Buy Bot Channels*\n\n{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
@@ -261,7 +261,7 @@ async def buy_evenly(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def contracts(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Contract Addresses for all chains*\n\n"
         f"*X7R - Rewards Token *\n`{ca.x7r}`\n\n"
         f"*X7DAO - Governance Token*\n`{ca.x7dao}`\n\n"
@@ -273,7 +273,7 @@ async def contracts(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def channels(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Community TG Channels*\n\n{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
@@ -331,7 +331,7 @@ async def chart(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
     else:
         chain_url, chain_name = chain_mappings["eth"]
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Chart Links* {chain_name}\nUse `/chart [chain-name]` for other chains\n"
         f"Use `/constellations` for constellations\n\n{api.get_quote()}",
         parse_mode="Markdown",
@@ -359,7 +359,7 @@ async def community(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def dashboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Dashboard*\n\n{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
@@ -450,7 +450,7 @@ async def deployer(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
     else:
         await update.message.reply_photo(
-            photo=open((random.choice(media.logos)), "rb"),
+            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
             caption=f"*Deployer Wallet last TX*\n\n{time} (UTC)\n"
             f"{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes ago:\n\n"
             f'*{tx["result"][0]["functionName"]}*\n\n'
@@ -564,7 +564,7 @@ async def ebb(update: Update, context: ContextTypes.DEFAULT_TYPE):
             x7100_minutes,
         ) = get_liquidity_data(ca.x7100_liq_hub)
         await update.message.reply_photo(
-            photo=open((random.choice(media.logos)), "rb"),
+            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
             caption=f"*X7 Finance Liquidity Hubs {chain_name}*\nUse `/ebb [chain-name]` for other chains\n\n"
             f'Last X7R Buy Back: {x7r_time}\n{x7r_value[:5]} ETH (${"{:0,.0f}".format(x7r_dollar)})\n'
             f"{x7r_days} days, {x7r_hours} hours and {x7r_minutes} minutes ago\n\n"
@@ -613,7 +613,7 @@ async def ecosystem(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def endorse(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"{text.endorse}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
@@ -630,7 +630,7 @@ async def endorse(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def factory(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Factories*\n\n{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
@@ -667,7 +667,7 @@ async def factory(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def faq(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance FAQ*\n\n{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
@@ -833,7 +833,7 @@ async def gas(update, context):
 #     minutes = divmod(hours[1], 60)
 #     if duration < timedelta(0):
 #         await update.message.reply_photo(
-#             photo=open((random.choice(media.logos)), "rb"),
+#             photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
 #             caption=f"X7 Finance Giveaway is now closed\n\nPlease check back for more details"
 #             f"\n\n{api.get_quote()}",
 #             parse_mode="Markdown",
@@ -841,7 +841,7 @@ async def gas(update, context):
 #     else:
 #         if ext == "":
 #             await update.message.reply_photo(
-#                 photo=open((random.choice(media.logos)), "rb"),
+#                 photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
 #                 caption=f"*X7 Finance 20,000 X7R Giveaway!*\n\n"
 #                 f'X7 Finance Giveaway ends:\n\n{giveaway_time.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
 #                 f"{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n"
@@ -861,7 +861,7 @@ async def gas(update, context):
 #         if ext == "entries":
 #             update_utc = times.giveaway_update.astimezone(pytz.utc)
 #             await update.message.reply_photo(
-#                 photo=open((random.choice(media.logos)), "rb"),
+#                 photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
 #                 caption=f"The following addresses are in the draw, weighted by minted amount"
 #                 f" (last 5 digits only):\n\n{last5}\n\nLast updated: "
 #                 f'{update_utc.strftime("%A %B %d %Y %I:%M %p")} UTC\n\n'
@@ -872,7 +872,7 @@ async def gas(update, context):
 #             chat_admins = await update.effective_chat.get_administrators()
 #             if update.effective_user in (admin.user for admin in chat_admins):
 #                 await update.message.reply_photo(
-#                     photo=open((random.choice(media.logos)), "rb"),
+#                     photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
 #                     caption=f"*X7 Finance 20,000 X7R Giveaway!*\n\n"
 #                     f"The winner of the *X7 Finance 20,000 X7R Giveaway!* is:\n\n"
 #                     f"{random.choice(last5)} (last 5 digits only)\n\n"
@@ -937,13 +937,13 @@ async def joke(update: Update, context: ContextTypes.DEFAULT_TYPE):
     joke = joke_response.json()
     if joke["type"] == "single":
         await update.message.reply_photo(
-            photo=open((random.choice(media.logos)), "rb"),
+            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
             caption=f'`{joke["joke"]}`',
             parse_mode="Markdown",
         )
     else:
         await update.message.reply_photo(
-            photo=open((random.choice(media.logos)), "rb"),
+            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
             caption=f'`{joke["setup"]}\n\n{joke["delivery"]}`',
             parse_mode="Markdown",
         )
@@ -966,7 +966,7 @@ async def launch(update: Update, context: ContextTypes.DEFAULT_TYPE):
     migration_hours, migration_remainder = divmod(migration_remainder, 3600)
     migration_minutes, _ = divmod(migration_remainder, 60)
     await update.message.reply_photo(
-        photo=open(random.choice(media.logos), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f'*X7 Finance Launch Info*\n\nX7M105 Stealth Launch\n{launch.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n'
         f"{int(launch_days)} days, {int(launch_hours)} hours and {int(launch_minutes)} minutes ago\n\n"
         f'V2 Migration\n{migration.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n'
@@ -1114,7 +1114,7 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
             schedule_list.append(sch)
     schedule_str = "\n".join(schedule_list)
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Initial Liquidity Loan - {loan_id} ({chain.upper()})*\n\n"
         f"Payment Schedule:\n{schedule_str}\n\n"
         f"{remaining}"
@@ -1174,7 +1174,7 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if loan_type in loan_types:
             loan_name, loan_terms, loan_ca = loan_types[loan_type]
             await update.message.reply_photo(
-                photo=open((random.choice(media.logos)), "rb"),
+                photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
                 caption=f"{loan_name}\n\n{loan_terms}\n\n",
                 parse_mode="Markdown",
                 reply_markup=InlineKeyboardMarkup(
@@ -1281,7 +1281,7 @@ async def magisters(update: Update, context: ContextTypes.DEFAULT_TYPE):
     magisters = [holder["owner_of"] for holder in response["result"]]
     address = "\n\n".join(map(str, magisters))
     await update.message.reply_photo(
-        photo=open(random.choice(media.logos), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Magister Holders {chain_name}*\n"
         f"Use `/magisters [chain-name]` or other chains\n\n"
         f"Holders - {holders}\n\n"
@@ -1302,7 +1302,7 @@ async def magisters(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def media_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Media Links*\n\n{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
@@ -1387,7 +1387,7 @@ async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
         liq_price = nfts.liq_price_eth
         magister_price = nfts.magister_price_eth
         await update.message.reply_photo(
-            photo=open((random.choice(media.logos)), "rb"),
+            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
             caption=f"*X7 Finance NFT Information {chain_name}*\nUse `/nft [chain-name]` for other chains\n\n"
             f"*Ecosystem Maxi*\n{eco_price}\n"
             f"Available - {500 - eco_count}\n"
@@ -1507,7 +1507,7 @@ async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
         liq_price = nfts.liq_price_arb
         magister_price = nfts.magister_price_arb
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance NFT Information {chain_name}*\nUse `/nft [chain-name]` for other chains\n\n"
         f"*Ecosystem Maxi*\n{eco_price}\n"
         f"Available - {500 - eco_count}\n"
@@ -1697,7 +1697,7 @@ async def pair(update: Update, context: ContextTypes.DEFAULT_TYPE):
         token = token1
     token_name = api.get_token_name(token, chain)
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*Xchange - Last {chain.upper()} Pair Created*\n\n"
         f"{token_name}\n\n"
         f"`{token}`\n\n"
@@ -1986,7 +1986,7 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def proposal(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption="*Listing proposal:*\n"
         "X7 Finance does not prioritize paid listings. Instead, for CEXs to acquire the desired supply "
         "amount needed to list X7 on their exchange, they will need to purchase it from existing markets.\n\n"
@@ -2003,7 +2003,7 @@ async def proposal(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def potw(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption="Pioneer Of The Week\n\n"
         "The following Pioneers have shown exemplary contributions towards X7 Finance\n\n"
         "Week 15 - @Ahmed812007\n"
@@ -2107,7 +2107,7 @@ async def roadmap(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def quote(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"{api.get_quote()}",
         parse_mode="Markdown",
     )
@@ -2115,7 +2115,7 @@ async def quote(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def router(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Routers*\n\n{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
@@ -2159,12 +2159,12 @@ async def search(update: Update, context: ContextTypes.DEFAULT_TYPE):
     page_py = wiki.page(keyword)
     if keyword == "":
         await update.message.reply_photo(
-            photo=open((random.choice(media.logos)), "rb"),
+            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
             caption="Please follow the command with your search",
         )
     if page_py.exists():
         await update.message.reply_photo(
-            photo=open((random.choice(media.logos)), "rb"),
+            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
             caption=f"Your search: {page_py.title}\n\n"
             f"{(page_py.summary[0:800])}"
             f"....[continue reading on wiki]({page_py.fullurl})\n\n"
@@ -2176,7 +2176,7 @@ async def search(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
     else:
         await update.message.reply_photo(
-            photo=open((random.choice(media.logos)), "rb"),
+            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
             caption=f"Your search: {keyword}\n\nNo description available\n\n"
             f"[Google](https://www.google.com/search?q={keyword})\n"
             f"[Twitter](https://twitter.com/search?q={keyword}&src=typed_query)\n"
@@ -2230,7 +2230,7 @@ async def signers(update: Update, context: ContextTypes.DEFAULT_TYPE):
     com_list = com_response["owners"]
     com_address = "\n\n".join(map(str, com_list))
     await update.message.reply_photo(
-        photo=open(random.choice(media.logos), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Multi-Sig Signers {chain_name}*\n"
         f"Use `/signers [chain-name]` or other chains\n\n"
         f"*Developer Signers*\n`{dev_address}`\n\n*Community Signers*\n`{com_address}`\n\n"
@@ -2278,7 +2278,7 @@ async def smart(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
     else:
         chain_name, chain_url = chain_mappings["eth"]
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Smart Contracts {chain_name}*\nUse `/smart [chain-name]` or other chains\n\n"
         f"{api.get_quote()}",
         parse_mode="Markdown",
@@ -2412,7 +2412,7 @@ async def snapshot(update: Update, context: ContextTypes.DEFAULT_TYPE):
         countdown = f"Vote Closing in: {int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes"
         caption = "Vote"
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Community Snapshot*\n\n"
         f"Latest Proposal:\n\n"
         f'{snapshot["data"]["proposals"][0]["title"]} by - '
@@ -2528,7 +2528,7 @@ async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chain_name = "(ARB)"
         chain_tax = tax.arb
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Tax Info {chain_name}*\nUse `/tax [chain-name]` for other chains\n\n"
         f"{chain_tax}\n\n{api.get_quote()}",
         parse_mode="Markdown",
@@ -2602,7 +2602,7 @@ async def today(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = api.get_today()
     today = random.choice(data["data"]["Events"])
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f'`On this day in {today["year"]}:\n\n{today["text"]}`',
         parse_mode="Markdown",
     )
@@ -2671,7 +2671,7 @@ async def volume(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     total_tx_value_eth, total_tx_value_usd = calculate_total_transaction_value()
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*{chain.upper()} Volume*\n\n"
         f"{total_tx_value_eth} {token.upper()}\n(${total_tx_value_usd:,.2f})\nVolume traded "
         f"through {chain.upper()} router",
@@ -2721,7 +2721,7 @@ async def voting(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def website(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    photo_file = open((random.choice(media.logos)), "rb")
+    photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
     caption = f"*X7 Finance Website Links*\n{api.get_quote()}"
     reply_markup = InlineKeyboardMarkup(
         [
@@ -4971,61 +4971,3 @@ async def mods(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def is_admin(update: Update) -> bool:
     chat_admins = await update.effective_chat.get_administrators()
     return update.effective_user in (admin.user for admin in chat_admins)
-
-
-async def show_auto(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if not await is_admin(update):
-        await update.message.reply_text(text.mods_only)
-        return
-
-    job_names = [job.name for job in context.job_queue.jobs()]
-    await update.message.reply_text(
-        f'X7 Finance Auto Messages set:\n\n{job_names}\n\nUse /stop_auto "name" to stop'
-    )
-
-
-async def is_admin(update: Update) -> bool:
-    chat_admins = await update.effective_chat.get_administrators()
-    return update.effective_user in (admin.user for admin in chat_admins)
-
-
-async def start_auto(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if not await is_admin(update):
-        await update.message.reply_text(f"{text.mods_only}")
-        return
-
-    chat_id = update.effective_message.chat_id
-    name, due, *message_parts = context.args
-    due = float(due)
-    message = " ".join(message_parts)
-    user = update.message.from_user.username
-
-    if due < 0:
-        await update.effective_message.reply_text("Sorry we can not go back to future!")
-        return
-
-    context.job_queue.run_repeating(
-        main.auto_message, due * 60 * 60, chat_id=chat_id, name=name, data=message
-    )
-    await update.effective_message.reply_text(
-        f"X7 Finance Auto Message: '{name}'\n\nSet every {due} "
-        f"Hours\n\n{message}\n\nby {user}"
-    )
-
-
-async def stop_auto(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if not await is_admin(update):
-        await update.message.reply_text(f"{text.mods_only}")
-        return
-
-    job_name = " ".join(context.args)
-    jobs = main.job_queue.get_jobs_by_name(job_name)
-
-    if not jobs:
-        await update.message.reply_text(f"No active message named {job_name}.")
-        return
-
-    for job in jobs:
-        job.schedule_removal()
-
-    await update.message.reply_text(f"X7 Finance auto message, {job_name} Stopped!")

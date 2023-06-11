@@ -16,10 +16,7 @@ from datetime import datetime
 import os
 from dotenv import load_dotenv
 
-# Load all environment variables
 load_dotenv()
-
-# Get the tokens, split by comma
 tokens = os.getenv("TOKENS").split(",")
 
 logging.basicConfig(
@@ -325,7 +322,7 @@ async def new_loan(event):
         f'Loan ID: {event["args"]["loanID"]}\n'
         f'Initial Cost: {cost} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
         f"Payment Schedule:\n{schedule_str}\n\n"
-        f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)}',
+        f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)})',
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
@@ -344,7 +341,6 @@ async def new_loan(event):
 async def log_loop(
     pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval
 ):
-    # Create the application outside the loop
     application = (
         ApplicationBuilder()
         .token(random.choice(tokens))
@@ -387,7 +383,6 @@ async def log_loop(
 async def main():
     print("Scanning ETH Network")
 
-    # Initialize event filters
     pair_filter = factory.events.PairCreated.create_filter(fromBlock="latest")
     ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
     ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")

@@ -16,10 +16,8 @@ from datetime import datetime
 import os
 from dotenv import load_dotenv
 
-# Load all environment variables
-load_dotenv()
 
-# Get the tokens, split by comma
+load_dotenv()
 tokens = os.getenv("TOKENS").split(",")
 
 logging.basicConfig(
@@ -320,7 +318,7 @@ async def new_loan(event):
         f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH '
         f'(${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
         f"Payment Schedule:\n{schedule_str}\n\n"
-        f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)}',
+        f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)})',
         font=myfont,
         fill=(255, 255, 255),
     )
@@ -349,22 +347,38 @@ async def new_loan(event):
     print(f'Loan {event["args"]["loanID"]} sent')
 
 
-async def log_loop(pair_filter, loan_filters, poll_interval):
+async def log_loop(
+    pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval
+):
+    application = (
+        ApplicationBuilder()
+        .token(random.choice(tokens))
+        .connection_pool_size(512)
+        .build()
+    )
+
     while True:
         try:
-            for event_type, filter_instance in loan_filters.items():
-                for event in filter_instance.get_new_entries():
-                    if event_type == "PairCreated":
-                        await new_pair(event)
-                    else:
-                        await new_loan(event)
+            for PairCreated in pair_filter.get_new_entries():
+                await new_pair(PairCreated)
 
-            application = (
-                ApplicationBuilder()
-                .token(random.choice(tokens))
-                .connection_pool_size(512)
-                .build()
-            )
+            await asyncio.sleep(poll_interval)
+
+            for LoanOriginated in ill001_filter.get_new_entries():
+                await new_loan(LoanOriginated)
+
+            await asyncio.sleep(poll_interval)
+
+            for LoanOriginated in ill002_filter.get_new_entries():
+                await new_loan(LoanOriginated)
+
+            await asyncio.sleep(poll_interval)
+
+            for LoanOriginated in ill003_filter.get_new_entries():
+                await new_loan(LoanOriginated)
+
+            await asyncio.sleep(poll_interval)
+
         except (
             Web3Exception,
             Exception,
@@ -374,14 +388,16 @@ async def log_loop(pair_filter, loan_filters, poll_interval):
         ) as e:
             print(f"Error: {e}")
 
-        await asyncio.sleep(poll_interval)
+
+async def main():
+    print("Scanning ARB Network")
 
 
-async def log_arb_network(factory, ill001, ill002, ill003):
     pair_filter = factory.events.PairCreated.create_filter(fromBlock="latest")
     ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
     ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
     ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock="latest")
+
     while True:
         try:
             tasks = [
@@ -399,11 +415,9 @@ async def log_arb_network(factory, ill001, ill002, ill003):
             break
 
 
+application = (
+    ApplicationBuilder().token(random.choice(tokens)).connection_pool_size(512).build()
+)
+
 if __name__ == "__main__":
-    application = (
-        ApplicationBuilder()
-        .token(random.choice(tokens))
-        .connection_pool_size(512)
-        .build()
-    )
-    asyncio.run(log_arb_network(factory, ill001, ill002, ill003))
+    asyncio.run(main())
