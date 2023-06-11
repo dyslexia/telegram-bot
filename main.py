@@ -11,6 +11,7 @@ import url
 from dotenv import load_dotenv
 import os
 import subprocess
+import sys
 
 load_dotenv()
 logging.basicConfig(
@@ -96,17 +97,16 @@ async def send_referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
 
 # RUN
 if __name__ == "__main__":
-    application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
-    scripts = ['eth.py', 'arb.py', 'poly.py', 'bsc.py', 'opti.py']
+    scripts = ['bsc.py', 'eth.py','arb.py', 'poly.py', 'opti.py']
+    python_executable = sys.executable
     processes = []
     for script in scripts:
-        command = ['python', script]
+        command = [python_executable, script]
         process = subprocess.Popen(command)
         processes.append(process)
-
     for process in processes:
         process.wait()
-
+    application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
     job_queue = application.job_queue
     application.add_handler(
         MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies)
@@ -238,4 +238,6 @@ if __name__ == "__main__":
         name=str("Referral Message"),
         data=times.referral_time * 60 * 60,
     )
+    
     application.run_polling()
+    
