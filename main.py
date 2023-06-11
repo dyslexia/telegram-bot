@@ -97,15 +97,6 @@ async def send_referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
 
 # RUN
 if __name__ == "__main__":
-    scripts = ['bsc.py', 'eth.py','arb.py', 'poly.py', 'opti.py']
-    python_executable = sys.executable
-    processes = []
-    for script in scripts:
-        command = [python_executable, script]
-        process = subprocess.Popen(command)
-        processes.append(process)
-    for process in processes:
-        process.wait()
     application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
     job_queue = application.job_queue
     application.add_handler(
@@ -239,5 +230,15 @@ if __name__ == "__main__":
         data=times.referral_time * 60 * 60,
     )
     
+    scripts = ['bsc.py', 'eth.py','arb.py', 'poly.py', 'opti.py']
+    python_executable = sys.executable
+    processes = []
+    for script in scripts:
+        command = [python_executable, script]
+        process = subprocess.Popen(command)
+        processes.append(process)
     application.run_polling()
+
+    
+
     
