@@ -18,7 +18,6 @@ from dotenv import load_dotenv
 
 
 load_dotenv()
-tokens = os.getenv("TOKENS").split(",")
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -352,7 +351,7 @@ async def log_loop(
 ):
     application = (
         ApplicationBuilder()
-        .token(random.choice(tokens))
+        .token(os.getenv("TELEGRAM_BOT_TOKEN"))
         .connection_pool_size(512)
         .build()
     )
@@ -415,9 +414,11 @@ async def main():
             break
 
 
-application = (
-    ApplicationBuilder().token(random.choice(tokens)).connection_pool_size(512).build()
-)
-
 if __name__ == "__main__":
+    application = (
+    ApplicationBuilder()
+    .token(os.getenv("TELEGRAM_BOT_TOKEN"))
+    .connection_pool_size(512)
+    .build()
+)
     asyncio.run(main())

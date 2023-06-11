@@ -17,7 +17,6 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-tokens = os.getenv("TOKENS").split(",")
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -334,39 +333,19 @@ async def log_loop(
         try:
             for PairCreated in pair_filter.get_new_entries():
                 await new_pair(PairCreated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
+
             await asyncio.sleep(poll_interval)
             for LoanOriginated in ill001_filter.get_new_entries():
                 await new_loan(LoanOriginated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
+
             await asyncio.sleep(poll_interval)
             for LoanOriginated in ill002_filter.get_new_entries():
                 await new_loan(LoanOriginated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
+
             await asyncio.sleep(poll_interval)
             for LoanOriginated in ill003_filter.get_new_entries():
                 await new_loan(LoanOriginated)
-                application = (
-                    ApplicationBuilder()
-                    .token(random.choice(tokens))
-                    .connection_pool_size(512)
-                    .build()
-                )
+
             await asyncio.sleep(poll_interval)
         except (
             Web3Exception,
@@ -402,12 +381,9 @@ async def main():
 if __name__ == "__main__":
     application = (
         ApplicationBuilder()
-        .token(random.choice(tokens))
+        .token(os.getenv("TELEGRAM_BOT_TOKEN"))
         .connection_pool_size(512)
         .build()
     )
-
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
 
     asyncio.run(main())
