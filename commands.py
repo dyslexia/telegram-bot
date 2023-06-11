@@ -80,7 +80,7 @@ async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def alerts(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption="Check out the link below for the Xchange Alerts channel",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
@@ -2740,7 +2740,7 @@ async def website(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def wei(update: Update, context: ContextTypes.DEFAULT_TYPE):
     eth = " ".join(context.args)
     wei = int(float(eth) * 10**18)
-    update.message.reply_text(
+    await update.message.reply_text(
         f"{eth} ETH is equal to \n" f"`{wei}` wei", parse_mode="Markdown"
     )
 
