@@ -188,8 +188,6 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("snapshot", commands.snapshot))
     application.add_handler(CommandHandler(["spaces", "space"], commands.spaces))
     application.add_handler(CommandHandler("supply", commands.supply))
-    application.add_handler(CommandHandler("start_auto", commands.start_auto))
-    application.add_handler(CommandHandler("stop_auto", commands.stop_auto))
     application.add_handler(
         CommandHandler(["beta", "swap", "xchange", "dex"], commands.swap)
     )
