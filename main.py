@@ -98,9 +98,7 @@ async def send_referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
 if __name__ == "__main__":
     application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
     job_queue = application.job_queue
-    application.add_handler(
-        MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies)
-    )
+    application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
     application.add_handler(CommandHandler("about", commands.about))
     application.add_handler(CommandHandler(["admin_commands", "admin", "admincommands"], commands.admin))

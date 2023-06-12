@@ -251,19 +251,23 @@ def get_os_nft(slug):
     return response.json()
 
 
-CHAIN_KEYS = {
-    "eth": ether,
-    "bsc": bsc,
-    "arb": arb,
-    "poly": poly,
-    "opti": opti,
-}
-
-BASE_API_URL = "https://api.etherscan.io/api"
-
-
 def get_pool_liq_balance(wallet, token, chain):
-    url = f"{BASE_API_URL}?module=account&action=tokenbalance&contractaddress={token}&address={wallet}&tag=latest{CHAIN_KEYS.get(chain)}"
+    if chain == "eth":
+        base = "https://api.etherscan.io/api"
+        key = ether
+    if chain == "bsc":
+        url = "https://api.bscscan.com/api"
+        key = bsc
+    if chain == "arb":
+        url = "https://api.arbiscan.io/api"
+        key = arb
+    if chain == "opti":
+        url = "https://api.optimistic-etherscan.io/api"
+        key = opti
+    if chain == "poly":
+        url = "https://api.polygonscan.com/api"
+        key = poly
+    url = f"{base}?module=account&action=tokenbalance&contractaddress={token}&address={wallet}&tag=latest{key}"
     response = requests.Session().get(url)
     data = response.json()
     return int(data["result"] or 0)
@@ -286,20 +290,11 @@ def get_random_pioneer_number():
 
 
 def get_scan(token: str, chain: str) -> dict:
-    # dictionary that maps chain name to chain number
     chains = {"eth": 1, "bsc": 56, "arb": 42161, "opti": 10, "poly": 137}
-
-    # get the chain number corresponding to the input chain name
     chain_number = chains.get(chain)
-
-    # raise a ValueError if the input chain name is not valid
     if not chain_number:
         raise ValueError(f"{chain} is not a valid chain")
-
-    # create the URL for the API call using the chain number and token address
     url = f"https://api.gopluslabs.io/api/v1/token_security/{chain_number}?contract_addresses={token}"
-
-    # make the API call and return the results as json
     response = requests.get(url)
     return response.json()["result"]
 
@@ -417,15 +412,11 @@ def get_token_balance(wallet, token, chain):
 
 
 def get_token_data(token: str, chain: str) -> dict:
-    # Create a dictionary to map chain names to their verbose names
     chain_names = {"poly": "polygon", "arb": "arbitrum"}
-    # Check if the chain name is valid
     if chain not in {"eth", "bsc", "opti", "poly", "arb"}:
         raise ValueError("Invalid chain name")
 
-    # If chain name is present in chain_names then it must be updated to the verbose name
     chain = chain_names.get(chain, chain)
-    # Get token metadata using Moralis API
     result = evm_api.token.get_token_metadata(
         api_key=os.getenv("MORALIS_API_KEY"),
         params={"addresses": [f"{token}"], "chain": chain},
@@ -434,9 +425,7 @@ def get_token_data(token: str, chain: str) -> dict:
 
 
 def get_token_name(token: str, chain: str) -> Tuple[str, str]:
-    # Call get_token_data function to get the token metadata
     result = get_token_data(token, chain)
-    # Extract the name and symbol from token metadata and return as a tuple
     return result[0]["name"], result[0]["symbol"]
 
 
