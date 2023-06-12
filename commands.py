@@ -972,7 +972,7 @@ async def launch(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def links(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
-        photo=open((random.choice(media.logos)), "rb"),
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance links*\n\n{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
