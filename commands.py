@@ -361,48 +361,26 @@ async def dashboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton(text="Live", url="https://www.x7finance.org/")],
+                [InlineKeyboardButton(text="Get Started", url="https://www.x7finance.org/getstarted/")],
                 [
                     InlineKeyboardButton(
-                        text="Docs", url="https://www.x7finance.org/dashboard/docs/"
+                        text="Tokens", url="https://www.x7finance.org/tokens/"
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="On-Chains", url="https://www.x7finance.org/docs/onchains"
+                        text="Docs", url="https://www.x7finance.org/docs/"
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Contracts",
-                        url="https://www.x7finance.org/dashboard/contracts/",
+                        text="Dashboard",
+                        url="https://www.x7finance.org/dashboard/",
                     )
                 ],
                 [
                     InlineKeyboardButton(
                         text="Loans", url="https://www.x7finance.org/loans/"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="Community", url="https://www.x7finance.org/community/"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="NFTs",
-                        url="https://www.x7finance.org/dashboard/marketplace/",
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="Whitepaper",
-                        url="https://www.x7finance.org/docs/whitepaper/",
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="FAQs", url="https://www.x7finance.org/docs/faq/"
                     )
                 ],
             ]
