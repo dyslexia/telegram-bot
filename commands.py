@@ -361,26 +361,29 @@ async def dashboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton(text="Get Started", url="https://www.x7finance.org/getstarted/")],
                 [
                     InlineKeyboardButton(
-                        text="Tokens", url="https://www.x7finance.org/tokens/"
+                        text="Get Started", url=f"{url.dashboard}getstarted/")
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Tokens", url=f"{url.dashboard}tokens/"
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Docs", url="https://www.x7finance.org/docs/"
+                        text="Docs", url=f"{url.dashboard}docs/"
                     )
                 ],
                 [
                     InlineKeyboardButton(
                         text="Dashboard",
-                        url="https://www.x7finance.org/dashboard/",
+                        url=f"{url.dashboard}dashboard/",
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Loans", url="https://www.x7finance.org/loans/"
+                        text="Loans", url=f"{url.dashboard}loans/"
                     )
                 ],
             ]
@@ -1566,7 +1569,7 @@ async def on_chain(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 ],
                 [
                     InlineKeyboardButton(
-                        text="View all on chains", url=f"{url.dashboard}onchains"
+                        text="View all on chains", url=f"{url.dashboard}/docs/onchains"
                     )
                 ],
             ]
