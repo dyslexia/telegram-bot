@@ -467,19 +467,15 @@ def get_tx_from_hash(tx, chain, api_key):
     return response.json()
 
 
-def get_tx(address: str, chain: str, internal: bool = False) -> dict:
-    """
-    Given an Ethereum address and chain name, retrieves the transactions for the address
-    from Etherscan's API.
+def get_tx(address, chain):
+    url = f"https://api.etherscan.io/api?module=account&action=txlist&sort=desc&address={address}{ether}"
+    response = requests.get(url)
+    data = response.json()
+    return data
 
-    address: str     - Ethereum address
-    chain: str       - Blockchain name. Supported: "eth"
-    internal: bool   - Flag to retrieve internal transactions as well (Default: False)
 
-    Returns: dict    - Transaction data in JSON format
-    """
-    action = "txlistinternal" if internal else "txlist"
-    url = f"https://api.etherscan.io/api?module=account&action={action}&sort=desc&address={address}{ether}"
+def get_internal_tx(address, chain):
+    url = f"https://api.etherscan.io/api?module=account&action=txlistinternal&sort=desc&address={address}{ether}"
     response = requests.get(url)
     data = response.json()
     return data

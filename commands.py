@@ -17,8 +17,6 @@ import text
 import textwrap
 import times
 from translate import Translator
-
-# import pandas as pd
 import pyttsx3
 import url
 import wikipediaapi
@@ -523,7 +521,7 @@ async def ebb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         now = datetime.utcnow()
 
         def get_liquidity_data(hub_address):
-            hub = api.get_tx(hub_address, "eth")
+            hub = api.get_internal_tx(hub_address, "eth")
             hub_filter = [
                 d for d in hub["result"] if d["from"] in str(hub_address).lower()
             ]
