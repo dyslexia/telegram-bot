@@ -64,19 +64,18 @@ async def error(update, context):
 
 async def send_endorsement_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
-    logo_path = random.choice(media.logos)
-    with open(logo_path, "rb") as selected_logo:
-        caption_text = f"*X7 Finance Xchange Pairs*\n\n{text.endorse}"
-        keyboard_markup = InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text="Xchange Alerts", url=f"{url.tg_alerts}")]]
-        )
-        await context.bot.send_photo(
-            chat_id=job.chat_id,
-            photo=selected_logo,
-            caption=caption_text,
-            parse_mode="Markdown",
-            reply_markup=keyboard_markup,
-        )
+    photo_url = f"{url.pioneers}{api.get_random_pioneer_number()}.png"
+    caption_text = f"*X7 Finance Xchange Pairs*\n\n{text.endorse}"
+    keyboard_markup = InlineKeyboardMarkup(
+        [[InlineKeyboardButton(text="Xchange Alerts", url=f"{url.tg_alerts}")]]
+    )
+    await context.bot.send_photo(
+        chat_id=job.chat_id,
+        photo=photo_url,
+        caption=caption_text,
+        parse_mode="Markdown",
+        reply_markup=keyboard_markup,
+    )
 
 
 async def send_referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -104,45 +103,27 @@ if __name__ == "__main__":
     )
     application.add_error_handler(error)
     application.add_handler(CommandHandler("about", commands.about))
-    application.add_handler(
-        CommandHandler(["admin_commands", "admin", "admincommands"], commands.admin)
-    )
+    application.add_handler(CommandHandler(["admin_commands", "admin", "admincommands"], commands.admin))
     application.add_handler(CommandHandler("alerts", commands.alerts))
-    application.add_handler(
-        CommandHandler(["rollout", "multichain", "airdrop"], commands.airdrop)
-    )
+    application.add_handler(CommandHandler(["rollout", "multichain", "airdrop"], commands.airdrop))
     application.add_handler(CommandHandler("alumni", commands.alumni))
     application.add_handler(CommandHandler("announcements", commands.announcements))
     application.add_handler(CommandHandler("ath", commands.ath))
     application.add_handler(CommandHandler(["bot", "start", "filters"], commands.bot))
     application.add_handler(CommandHandler("burn", commands.burn))
     application.add_handler(CommandHandler("buy", commands.buy))
-    application.add_handler(
-        CommandHandler(["buybots", "bobby", "buybot"], commands.buy_bots)
-    )
-    application.add_handler(
-        CommandHandler(["buyevenly", "quintsevenly"], commands.buy_evenly)
-    )
+    application.add_handler(CommandHandler(["buybots", "bobby", "buybot"], commands.buy_bots))
+    application.add_handler(CommandHandler(["buyevenly", "quintsevenly"], commands.buy_evenly))
     application.add_handler(CommandHandler("channels", commands.channels))
     application.add_handler(CommandHandler(["chart", "charts"], commands.chart))
-    application.add_handler(
-        CommandHandler(
-            ["constellations", "constellation", "quints"], commands.constellations
-        )
-    )
-    application.add_handler(
-        CommandHandler(["ca", "contract", "contracts"], commands.contracts)
-    )
+    application.add_handler(CommandHandler(["constellations", "constellation", "quints"], commands.constellations))
+    application.add_handler(CommandHandler(["ca", "contract", "contracts"], commands.contracts))
     application.add_handler(CommandHandler("community", commands.community))
     application.add_handler(CommandHandler("count", commands.count))
-    application.add_handler(
-        CommandHandler([f"{times.countdown_command}"], commands.countdown)
-    )
+    application.add_handler(CommandHandler([f"{times.countdown_command}"], commands.countdown))
     application.add_handler(CommandHandler(["docs", "dashboard"], commands.dashboard))
     application.add_handler(CommandHandler(["deployer", "devs"], commands.deployer))
-    application.add_handler(
-        CommandHandler(["discount", "dsc", "dac"], commands.discount)
-    )
+    application.add_handler(CommandHandler(["discount", "dsc", "dac"], commands.discount))
     application.add_handler(CommandHandler("draw", commands.draw))
     application.add_handler(CommandHandler(["ebb", "buybacks"], commands.ebb))
     application.add_handler(CommandHandler(["ecosystem", "tokens"], commands.ecosystem))
@@ -165,22 +146,19 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("media", commands.media_command))
     application.add_handler(CommandHandler("mods", commands.mods))
     application.add_handler(CommandHandler(["nft", "nfts"], commands.nft))
-    application.add_handler(
-        CommandHandler(["on_chain", "onchain", "message"], commands.on_chain)
-    )
+    application.add_handler(CommandHandler(["on_chain", "onchain", "message"], commands.on_chain))
     application.add_handler(CommandHandler(["opensea", "os"], commands.opensea))
     application.add_handler(CommandHandler("pair", commands.pair))
     application.add_handler(CommandHandler("pioneer", commands.pioneer))
     application.add_handler(CommandHandler("proposal", commands.proposal))
-    application.add_handler(
-        CommandHandler(["pool", "lpool", "lendingpool"], commands.pool)
-    )
+    application.add_handler(CommandHandler(["pool", "lpool", "lendingpool"], commands.pool))
     application.add_handler(CommandHandler("potw", commands.potw))
     application.add_handler(CommandHandler(["price", "prices"], commands.price))
     application.add_handler(CommandHandler("question", commands.question))
     application.add_handler(CommandHandler("quote", commands.quote))
     application.add_handler(CommandHandler("raid", commands.raid))
     application.add_handler(CommandHandler(["referral", "refer"], commands.refer))
+    application.add_handler(CommandHandler("roadmap", commands.roadmap))
     application.add_handler(CommandHandler("router", commands.router))
     application.add_handler(CommandHandler("say", commands.say))
     application.add_handler(CommandHandler("search", commands.search))
@@ -189,9 +167,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("snapshot", commands.snapshot))
     application.add_handler(CommandHandler(["spaces", "space"], commands.spaces))
     application.add_handler(CommandHandler("supply", commands.supply))
-    application.add_handler(
-        CommandHandler(["beta", "swap", "xchange", "dex"], commands.swap)
-    )
+    application.add_handler(CommandHandler(["beta", "swap", "xchange", "dex"], commands.swap))
     application.add_handler(CommandHandler(["tax", "slippage"], commands.tax_command))
     application.add_handler(CommandHandler("test", commands.test))
     application.add_handler(CommandHandler(["time", "clock"], commands.time))
@@ -211,9 +187,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("voting", commands.voting))
     application.add_handler(CommandHandler("wei", commands.wei))
     application.add_handler(CommandHandler(["website", "site"], commands.website))
-    application.add_handler(
-        CommandHandler(["whitepaper", "wp", "wpquote"], commands.wp)
-    )
+    application.add_handler(CommandHandler(["whitepaper", "wp", "wpquote"], commands.wp))
     application.job_queue.run_repeating(
         send_endorsement_message,
         times.endorse_time * 60 * 60,
