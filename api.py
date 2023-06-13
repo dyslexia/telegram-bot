@@ -9,8 +9,6 @@ import requests
 from typing import Tuple
 import os
 from dotenv import load_dotenv
-
-# Load all environment variables
 load_dotenv()
 
 
@@ -22,6 +20,7 @@ ether = os.getenv("ETHER")
 poly = os.getenv("POLY")
 opti = os.getenv("OPTI")
 arb = os.getenv("ARB")
+COINGECKO_URL = "https://api.coingecko.com/api/v3"
 
 
 class ChainInfo:
@@ -42,17 +41,12 @@ chains_info = {
 def get_abi(contract: str, chain: str) -> str:
     if chain not in chains_info:
         raise ValueError(f"Invalid chain: {chain}")
-
     chain_info = chains_info[chain]
     url = f"{chain_info.url}?module=contract&action=getsourcecode&address={contract}{chain_info.key}"
-
     response = requests.get(url)
     data = response.json()
     result = data["result"][0]["ABI"]
     return result
-
-
-COINGECKO_URL = "https://api.coingecko.com/api/v3"
 
 
 def get_ath(token):
@@ -89,19 +83,12 @@ def get_cg_search(token):
 
 
 def get_gas(chain):
-    chains_info = {
-        "eth": {"url": "https://api.etherscan.io/api", "key": ether},
-        "poly": {"url": "https://api.polygonscan.com/api", "key": poly},
-        "bsc": {"url": "https://api.bscscan.com/api", "key": bsc},
-    }
-
     if chain not in chains_info:
         raise ValueError(f"Invalid chain: {chain}")
-
-    url = f'{chains_info[chain]["url"]}?module=gastracker&action=gasoracle{chains_info[chain]["key"]}'
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=gastracker&action=gasoracle{chain_info.key}'
     response = requests.get(url)
     data = response.json()
-
     return data
 
 
@@ -121,18 +108,10 @@ def get_liquidity(pair, chain):
 
 
 def get_native_balance(wallet, chain):
-    chains_info = {
-        "opti": {"url": "https://api-optimistic.etherscan.io/api", "key": opti},
-        "eth": {"url": "https://api.etherscan.io/api", "key": ether},
-        "arb": {"url": "https://api.arbiscan.io/api", "key": arb},
-        "bsc": {"url": "https://api.bscscan.com/api", "key": bsc},
-        "poly": {"url": "https://api.polygonscan.com/api", "key": poly},
-    }
-
     if chain not in chains_info:
         raise ValueError(f"Invalid chain: {chain}")
-
-    url = f'{chains_info[chain]["url"]}?module=account&action=balancemulti&address={wallet}&tag=latest{chains_info[chain]["key"]}'
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=account&action=balancemulti&address={wallet}&tag=latest{chain_info.key}'
     response = requests.get(url)
     data = response.json()
     amount_raw = float(data["result"][0]["balance"])
@@ -252,22 +231,8 @@ def get_os_nft(slug):
 
 
 def get_pool_liq_balance(wallet, token, chain):
-    if chain == "eth":
-        base = "https://api.etherscan.io/api"
-        key = ether
-    if chain == "bsc":
-        url = "https://api.bscscan.com/api"
-        key = bsc
-    if chain == "arb":
-        url = "https://api.arbiscan.io/api"
-        key = arb
-    if chain == "opti":
-        url = "https://api.optimistic-etherscan.io/api"
-        key = opti
-    if chain == "poly":
-        url = "https://api.polygonscan.com/api"
-        key = poly
-    url = f"{base}?module=account&action=tokenbalance&contractaddress={token}&address={wallet}&tag=latest{key}"
+    chain_info = chains_info[chain]
+    url = f"{chain_info.url}?module=account&action=tokenbalance&contractaddress={token}&address={wallet}&tag=latest{chain_info.key}"
     response = requests.Session().get(url)
     data = response.json()
     return int(data["result"] or 0)
@@ -319,20 +284,10 @@ def get_snapshot():
 
 
 def get_supply(token, chain):
-    url = ""
-    if chain == "eth":
-        url = f"https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress={token}{ether}"
-    if chain == "bsc":
-        url = f"https://api.bscscan.com/api?module=stats&action=tokensupply&contractaddress={token}{bsc}"
-    if chain == "arb":
-        url = f"https://api.arbiscan.io/api?module=stats&action=tokensupply&contractaddress={token}{arb}"
-    if chain == "opti":
-        url = (
-            f"https://api.optimistic-etherscan.io/api?module=stats&action=tokensupply&contractaddress={token}"
-            f"{opti}"
-        )
-    if chain == "poly":
-        url = f"https://api.polygonscan.com/api?module=stats&action=tokensupply&contractaddress={token}{poly}"
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=stats&action=tokensupply&contractaddress={token}{chain_info.key}'
     response = requests.get(url)
     data = response.json()
     result = data["result"]
@@ -349,66 +304,14 @@ def get_today():
 
 
 def get_token_balance(wallet, token, chain):
-    if chain == "eth":
-        url = (
-            "https://api.etherscan.io/"
-            "api?module=account&action=tokenbalance&contractaddress="
-        )
-        key = ether
-        response = requests.get(
-            url + token + "&address=" + wallet + "&tag=latest" + key
-        )
-        data = response.json()
-        amount = int(data["result"][:-18])
-        return amount
-    if chain == "bsc":
-        url = (
-            "https://api.bscscan.com/"
-            "api?module=account&action=tokenbalance&contractaddress="
-        )
-        key = bsc
-        response = requests.get(
-            url + token + "&address=" + wallet + "&tag=latest" + key
-        )
-        data = response.json()
-        amount = int(data["result"][:-18])
-        return amount
-    if chain == "opti":
-        url = (
-            "https://api-optimistic.etherscan.io/"
-            "api?module=account&action=tokenbalance&contractaddress="
-        )
-        key = opti
-        response = requests.get(
-            url + token + "&address=" + wallet + "&tag=latest" + key
-        )
-        data = response.json()
-        amount = int(data["result"][:-18])
-        return amount
-    if chain == "poly":
-        url = (
-            "https://api.polygonscan.com/"
-            "api?module=account&action=tokenbalance&contractaddress="
-        )
-        key = poly
-        response = requests.get(
-            url + token + "&address=" + wallet + "&tag=latest" + key
-        )
-        data = response.json()
-        amount = int(data["result"][:-18])
-        return amount
-    if chain == "arb":
-        url = (
-            "https://api.arbiscan.io/"
-            "api?module=account&action=tokenbalance&contractaddress="
-        )
-        key = arb
-        response = requests.get(
-            url + token + "&address=" + wallet + "&tag=latest" + key
-        )
-        data = response.json()
-        amount = int(data["result"][:-18])
-        return amount
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=account&action=tokenbalance&contractaddress={token}&address={wallet}&tag=latest{chain_info.key}'
+    response = requests.get(url)
+    data = response.json()
+    amount = int(data["result"][:-18])
+    return amount
 
 
 def get_token_data(token: str, chain: str) -> dict:
@@ -429,56 +332,43 @@ def get_token_name(token: str, chain: str) -> Tuple[str, str]:
     return result[0]["name"], result[0]["symbol"]
 
 
-API_ENDPOINTS = {
-    "eth": "https://api.etherscan.io/api",
-    "bsc": "https://api.bscscan.com/api",
-    "poly": "https://api.polygonscan.com/api",
-    "arb": "https://api.arbiscan.io/api",
-    "opti": "https://api.optimistic.etherscan.io/api",
-}
 
-
-def get_tx_from_hash(tx, chain, api_key):
-    api_endpoint = API_ENDPOINTS.get(chain)
-
-    if api_endpoint is None:
-        raise ValueError(f"Unsupported chain: {chain}")
-
-    params = {
-        "module": "proxy",
-        "action": "eth_getTransactionByHash",
-        "txhash": f"{tx}{api_key}",
-    }
-
-    response = requests.get(api_endpoint, params=params)
-    response.raise_for_status()
-
-    return response.json()
+def get_tx_from_hash(tx, chain):
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=proxy&action=eth_getTransactionByHash&txhash={tx}{chain_info.key}'
+    response = requests.get(url)
+    data = response.json()
+    return data
 
 
 def get_tx(address, chain):
-    url = f"https://api.etherscan.io/api?module=account&action=txlist&sort=desc&address={address}{ether}"
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=account&action=txlist&sort=desc&address={address}{chain_info.key}'
     response = requests.get(url)
     data = response.json()
     return data
 
 
 def get_internal_tx(address, chain):
-    url = f"https://api.etherscan.io/api?module=account&action=txlistinternal&sort=desc&address={address}{ether}"
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=account&action=txlistinternal&sort=desc&address={address}{chain_info.key}'
     response = requests.get(url)
     data = response.json()
     return data
 
 
 def get_verified(contract, chain):
-    api_url = {
-        "eth": f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address={contract}{ether}",
-        "bsc": f"https://api.bscscan.com/api?module=contract&action=getsourcecode&address={contract}{bsc}",
-        "arb": f"https://api.arbican.io/api?module=contract&action=getsourcecode&address={contract}{arb}",
-        "poly": f"https://api.polygonscan.com/api?module=contract&action=getsourcecode&address={contract}{poly}",
-        "opti": f"https://api.optimistic-etherscan.com/api?module=contract&action=getsourcecode&address={contract}{opti}",
-    }
-    response = requests.get(api_url[chain])
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=contract&action=getsourcecode&address={contract}{chain_info.key}'
+    response = requests.get(url)
     data = response.json()
     if "SourceCode" in data["result"][0]:
         return "Yes"

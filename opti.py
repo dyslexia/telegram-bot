@@ -15,18 +15,13 @@ from eth_utils import to_checksum_address
 from datetime import datetime
 import os
 from dotenv import load_dotenv
-
 load_dotenv()
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(__name__)
 
 alchemy_opti = os.getenv("ALCHEMY_OPTI")
-
 alchemy_opti_url = f"https://opt-mainnet.g.alchemy.com/v2/{alchemy_opti}"
 web3 = Web3(Web3.HTTPProvider(alchemy_opti_url))
+
 
 factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "opti"))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "opti"))
@@ -89,8 +84,6 @@ async def new_pair(event):
     tax = ""
     tax_warning = ""
     verified = ""
-    if verified_check == "No":
-        verified = "⚠️ Contract Unverified"
     if verified_check == "Yes":
         contract = web3.eth.contract(
             address=token_address, abi=api.get_abi(token_address, "opti")
@@ -100,8 +93,13 @@ async def new_pair(event):
             owner = contract.functions.owner().call()
             if owner == "0x0000000000000000000000000000000000000000":
                 renounced = "✅ Contract Renounced"
+            else:
+                renounced = "⚠️ Contract Not Renounced"
         except (Exception, TimeoutError, ValueError, StopAsyncIteration):
             print("Owner Error")
+            renounced = "⚠️ Contract Not Renounced"
+    else:
+        verified = "⚠️ Contract Unverified"
     time.sleep(10)
     try:
         scan = api.get_scan(token_address, "opti")
@@ -193,7 +191,7 @@ async def new_pair(event):
     i1 = ImageDraw.Draw(im1)
     i1.text(
         (26, 30),
-        f"New Pair Created (Xchange OPTIMISM) \n\n"
+        f"New Pair Created (OPTIMISM)\n\n"
         f"{token_name[0]} ({token_name[1]}/{native[1]})\n\n"
         f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
         f"{pool_text}\n\n\n"
@@ -206,7 +204,7 @@ async def new_pair(event):
     await application.bot.send_photo(
         os.getenv("ALERTS_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media/blackhole.png", "rb"),
-        caption=f"*New Pair Created (Xchange OPTIMISM)*\n\n"
+        caption=f"*New Pair Created (OPTIMISM)*\n\n"
         f"{token_name[0]} ({token_name[1]}/{native[1]})\n\n"
         f"Token Address:\n`{token_address}`\n\n"
         f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'

@@ -39,7 +39,8 @@ arb = os.getenv("ARB")
 
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    return
+    abi = api.get_abi("0x6C3445405121C92836473273afd26ee9Cb96cbc2", "eth")
+    print(abi)
 
 
 # COMMANDS
@@ -59,17 +60,7 @@ async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_sticker(sticker=media.chains)
     await update.message.reply_text(
-        f"*X7 Finance Airdrop Information*\n\nThe rollout of the Ecosystem Contracts on BNB Smart Chain, Polygon "
-        f"(MATIC), Arbitrum, and Optimism has begun.\n\n"
-        f"We will go live with Xchange, borrowing, lending, revenue "
-        f"splitting, and profit splitting on other chains as soon as we can in concert with the full release on "
-        f"Ethereum.\n\nThe tokens however will not go live until we have built up a sufficient amount of initial "
-        f"liquidity for the tokens on any particular chain.\n\nWhen the tokens do go live all X7 token holders on "
-        f"Ethereum will be airdropped vested tokens and/or be given an opportunity to take a cash payout for their "
-        f"share of tokens. We will set prices and payouts to ensure that there will be no incentive to exit an "
-        f'Ethereum X7 Token position in order to gain an "early" L1 or L2 ecosystem X7 token position. On the '
-        f"contrary, the more tokens held on Ethereum, the greater the reward will be when the tokens and ecosystem "
-        f"are released on other chains.\n\nThese airdrop snapshots will occur just prior to the token launch\n\n"
+        f"{text.airdrop}\n\n"
         f"{api.get_quote()}",
         parse_mode="Markdown",
     )
@@ -84,7 +75,7 @@ async def alerts(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [
                 [
                     InlineKeyboardButton(
-                        text="XChange Alerts", url="https://t.me/xchange_alerts"
+                        text="XChange Alerts", url=f"{url.tg_alerts}"
                     )
                 ],
             ]
@@ -213,24 +204,7 @@ async def buy_bots(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def buy_evenly(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "*Buy All X7 Finance Constellation Tokens Evenly (ETH)*\n\n"
-        "Simply connect to https://dapp.x7community.space/constellation via metamask mobile or desktop"
-        " and enter your desired Eth amount\n\n"
-        "Alternatively you can interact with the follow contract and follow the steps "
-        "below:\n\n"
-        "1. Head over to the Buy Evenly contract:\nhttps://etherscan.io/address/0x0419074afe1a137dfa6afd5b6af5"
-        "771c3ffbea49#code\n"
-        '1.1. Press on "Contract" If it\'s not already selected.\n2. Press on "Write contract"\n'
-        '3. Press on "Connect to Web3" and connect your desired wallet to the website. \n'
-        "4. Deposit the desired values\n4.1. depositIntoX7SeriesTokens -> amount of ETH you want to spend (e.g. 0.5).\n"
-        "4.2. slippagePercent  -> desired slippage (e.g. 4)\n4.3 deadline -> Go to [epoch-converter]"
-        '(https://www.epochconverter.com/) and add like 500 to the current epoch. Click "Timestamp to Human date" '
-        'and verify that Relative is at least "In 1 minute" (e.g. 1667508502).\n'
-        '4.4 Copy the epoch to the "deadline" field\n4.4 Press "Write" and confirm the transaction in your wallet.\n'
-        "4.5 You should receive tokens to your wallet in few blocks.\n\n"
-        "*Testrun TX*:\n"
-        "https://etherscan.io/tx/0x321e5bb6cc1695d5d7085eceb92f01143b69c2274402aab46e4a0a47d069d0af\n\n"
-        f"Credit: @WoxieX\n\n{api.get_quote()}",
+        f"{text.evenly}\n\n{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [

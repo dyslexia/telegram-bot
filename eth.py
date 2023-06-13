@@ -15,25 +15,28 @@ from eth_utils import to_checksum_address
 from datetime import datetime
 import os
 from dotenv import load_dotenv
-
 load_dotenv()
-
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(__name__)
 
 
 alchemy_keys = os.getenv("ALCHEMY_ETH")
-
-infura_url = f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}"
 alchemy_eth_url = f"https://eth-mainnet.g.alchemy.com/v2/{alchemy_keys}"
 web3 = Web3(Web3.HTTPProvider(alchemy_eth_url))
+
 
 factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "eth"))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "eth"))
 ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "eth"))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "eth"))
+
+
+async def format_schedule(schedule1, schedule2):
+    schedule_list = []
+    for date, value1, value2 in zip(schedule1[0], schedule1[1], schedule2[1]):
+        formatted_date = datetime.fromtimestamp(date).strftime("%Y-%m-%d %H:%M:%S")
+        combined_value = (value1 + value2) / 10**18
+        sch = f"{formatted_date} - {combined_value} ETH"
+        schedule_list.append(sch)
+    return "\n".join(schedule_list)
 
 
 async def new_pair(event):
@@ -94,8 +97,6 @@ async def new_pair(event):
     tax = ""
     tax_warning = ""
     verified = ""
-    if verified_check == "No":
-        verified = "⚠️ Contract Unverified"
     if verified_check == "Yes":
         contract = web3.eth.contract(
             address=token_address, abi=api.get_abi(token_address, "eth")
@@ -109,6 +110,9 @@ async def new_pair(event):
                 renounced = "⚠️ Contract Not Renounced"
         except (Exception, TimeoutError, ValueError, StopAsyncIteration):
             print("Owner Error")
+            renounced = "⚠️ Contract Not Renounced"
+    else:
+        verified = "⚠️ Contract Unverified"
     time.sleep(10)
     try:
         scan = api.get_scan(token_address, "eth")
@@ -253,37 +257,6 @@ async def new_pair(event):
     print(f"Pair sent: ({token_name[1]}/{native[1]})")
 
 
-async def format_schedule(schedule1, schedule2):
-    schedule_list = []
-    for date, value1, value2 in zip(schedule1[0], schedule1[1], schedule2[1]):
-        formatted_date = datetime.fromtimestamp(date).strftime("%Y-%m-%d %H:%M:%S")
-        combined_value = (value1 + value2) / 10**18
-        sch = f"{formatted_date} - {combined_value} ETH"
-        schedule_list.append(sch)
-    return "\n".join(schedule_list)
-
-
-async def create_image(
-    event: dict, cost: float, schedule_str: str, amount: float
-) -> Image.Image:
-    im1 = Image.open((random.choice(media.blackhole)))
-    im2 = Image.open(media.eth_logo)
-    im1.paste(im2, (720, 20), im2)
-
-    font_path = os.path.abspath(os.path.join("media", "FreeMonoBold.ttf"))
-    my_font = ImageFont.truetype(font_path, 26)
-
-    i1 = ImageDraw.Draw(im1)
-
-    text = f"*New Loan Originated (ETH)*\nLoan ID: {event['args']['loanID']}\nInitial Cost: {cost} ETH (${'{:0,.0f}'.format(api.get_native_price('eth') * cost)})\nPayment Schedule:\n{schedule_str}\nTotal: {amount} ETH (${'{:0,.0f}'.format(api.get_native_price('eth') * amount)})"
-    i1.text((26, 30), text, font=my_font, fill=(255, 255, 255))
-
-    image_path = os.path.abspath(os.path.join("media", "blackhole.png"))
-    im1.save(image_path)
-
-    return im1
-
-
 async def new_loan(event):
     print("Loan Originated")
     application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
@@ -312,7 +285,23 @@ async def new_loan(event):
         amount = ""
 
     cost = int(tx["result"]["value"], 0) / 10**18
-    im1 = await create_image(event, cost, schedule_str, amount)
+    im1 = Image.open((random.choice(media.blackhole)))
+    im2 = Image.open(media.bsc_logo)
+    im1.paste(im2, (720, 20), im2)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
+    i1 = ImageDraw.Draw(im1)
+    i1.text(
+        (26, 30),
+        f"New Loan Originated (ETH)\n\n"
+        f'Loan ID: {event["args"]["loanID"]}\n'
+        f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH '
+        f'(${"{:0,.0f}".format(api.get_native_price("bnb") * cost)})\n\n'
+        f"Payment Schedule:\n{schedule_str}\n\n"
+        f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)})',
+        font=myfont,
+        fill=(255, 255, 255),
+    )
+    im1.save(r"media/blackhole.png")
 
     await application.bot.send_photo(
         os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),

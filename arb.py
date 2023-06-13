@@ -15,19 +15,13 @@ from eth_utils import to_checksum_address
 from datetime import datetime
 import os
 from dotenv import load_dotenv
-
-
 load_dotenv()
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(__name__)
 
 alchemy_arb = os.getenv("ALCHEMY_ARB")
-
 alchemy_arb_url = f"https://arb-mainnet.g.alchemy.com/v2/{alchemy_arb}"
 web3 = Web3(Web3.HTTPProvider(alchemy_arb_url))
+
 
 factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "arb"))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "arb"))
@@ -94,8 +88,6 @@ async def new_pair(event):
     tax = ""
     tax_warning = ""
     verified = ""
-    if verified_check == "No":
-        verified = "⚠️ Contract Unverified"
     if verified_check == "Yes":
         contract = web3.eth.contract(
             address=token_address, abi=api.get_abi(token_address, "arb")
@@ -109,6 +101,9 @@ async def new_pair(event):
                 renounced = "⚠️ Contract Not Renounced"
         except (Exception, TimeoutError, ValueError, StopAsyncIteration):
             print("Owner Error")
+            renounced = "⚠️ Contract Not Renounced"
+    else:
+        verified = "⚠️ Contract Unverified"
     time.sleep(10)
     try:
         scan = api.get_scan(token_address, "arb")
