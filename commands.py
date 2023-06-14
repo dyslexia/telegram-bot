@@ -1612,6 +1612,13 @@ async def pair(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chart_link = ""
     chain_link = ""
     token = ""
+    if chain == "":
+        await update.message.reply_photo(
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+        caption=f"*X7 Finance Loan Count*\n\n"
+        "use `/pair count` to see running total of pairs or `/pair [chain]` to see last pair created\n\n"
+        f"{api.get_quote()}",
+            parse_mode="Markdown",)
     if chain == "bsc":
         key = "https://bsc-dataseed.binance.org/"
         buy_link = url.xchange_buy_bsc
@@ -1636,6 +1643,42 @@ async def pair(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chart_link = url.dex_tools_poly
         native = ca.matic
         chain_link = url.poly_token
+    if chain == "count":
+        networks = {
+            "ETH": f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}",
+            "ARB": f"https://arb-mainnet.g.alchemy.com/v2/{alchemy_arb}",
+            "BSC": "https://bsc-dataseed.binance.org/",
+            "POLY": f"https://polygon-mainnet.g.alchemy.com/v2/{alchemy_poly}",
+            "OPTI": f"https://opt-mainnet.g.alchemy.com/v2/{alchemy_opti}",
+        }
+        contract_networks = {
+            "ETH": "eth",
+            "ARB": "arb",
+            "BSC": "bsc",
+            "POLY": "poly",
+            "OPTI": "opti",
+        }
+        contract_instances = {}
+        for network, web3_url in networks.items():
+            web3 = Web3(Web3.HTTPProvider(web3_url))
+            contract = web3.eth.contract(
+                address=to_checksum_address(ca.factory),
+                abi=api.get_abi(ca.factory, contract_networks[network]),
+            )
+            amount = contract.functions.allPairsLength().call()
+            contract_instances[network] = amount
+        await update.message.reply_photo(
+            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+            caption=f"*X7 Finance Loan Count*\n\n"
+            f'`ETH:`       {contract_instances["ETH"]}\n'
+            f'`BSC:`       {contract_instances["BSC"]}\n'
+            f'`ARB:`       {contract_instances["ARB"]}\n'
+            f'`POLY:`     {contract_instances["POLY"]}\n'
+            f'`OPTI:`     {contract_instances["OPTI"]}\n\n'
+            f"`TOTAL:`   {sum(contract_instances.values())}\n\n"
+            f"{api.get_quote()}",
+            parse_mode="Markdown",
+        )
     web3 = Web3(Web3.HTTPProvider(key))
     factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, chain))
     total_pairs = factory.functions.allPairsLength().call()
@@ -1664,6 +1707,7 @@ async def pair(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ]
         ),
     )
+    
 
 
 async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
