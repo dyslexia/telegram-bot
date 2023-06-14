@@ -1615,7 +1615,7 @@ async def pair(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "":
         await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*X7 Finance Loan Count*\n\n"
+        caption=f"*X7 Finance Pair Count*\n\n"
         "use `/pair count` to see running total of pairs or `/pair [chain]` to see last pair created\n\n"
         f"{api.get_quote()}",
             parse_mode="Markdown",)
@@ -1669,7 +1669,7 @@ async def pair(update: Update, context: ContextTypes.DEFAULT_TYPE):
             contract_instances[network] = amount
         await update.message.reply_photo(
             photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-            caption=f"*X7 Finance Loan Count*\n\n"
+            caption=f"*X7 Finance PAir Count*\n\n"
             f'`ETH:`       {contract_instances["ETH"]}\n'
             f'`BSC:`       {contract_instances["BSC"]}\n'
             f'`ARB:`       {contract_instances["ARB"]}\n'
