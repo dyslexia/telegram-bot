@@ -35,6 +35,7 @@ moralis==0.1.37
 multidict==6.0.4
 numpy==1.24.0
 oauthlib==3.2.2
+panads==2.0.2
 parsimonious==0.9.0
 Pillow==9.5.0
 platformdirs==3.5.1
