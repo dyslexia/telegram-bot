@@ -25,7 +25,7 @@ from web3 import Web3
 from eth_utils import to_checksum_address
 import os
 from dotenv import load_dotenv
-import pandas
+
 
 load_dotenv()
 
@@ -770,30 +770,31 @@ async def gas(update, context):
 
 
 async def giveaway(update: Update, context: ContextTypes.DEFAULT_TYPE):
-     ext = " ".join(context.args)
-     excel = r"raffle.csv"
-     df = pandas.read_csv(excel)
-     addresses = list(df.Address)
-     last5 = [entry[-5:] for entry in addresses]
-     giveaway_time = times.giveaway_time.astimezone(pytz.utc)
-     snapshot1 = times.snapshot1.astimezone(pytz.utc)
-     snapshot2 = times.snapshot2.astimezone(pytz.utc)
-     now = datetime.now(timezone.utc)
-     duration = giveaway_time - now
-     duration_in_s = duration.total_seconds()
-     days = divmod(duration_in_s, 86400)
-     hours = divmod(days[1], 3600)
-     minutes = divmod(hours[1], 60)
-     if duration < timedelta(0):
-         await update.message.reply_photo(
-             photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-             caption=f"X7 Finance Giveaway is now closed\n\nPlease check back for more details"
-             f"\n\n{api.get_quote()}",
-             parse_mode="Markdown",
-         )
-     else:
-         if ext == "":
-             await update.message.reply_photo(
+    ext = " ".join(context.args)
+    filename = 'raffle.csv'
+    column_index = 0
+    selected_column = api.read_csv_column(filename, column_index)
+    print(selected_column)
+    last5 = [entry[-5:] for entry in selected_column]
+    giveaway_time = times.giveaway_time.astimezone(pytz.utc)
+    snapshot1 = times.snapshot1.astimezone(pytz.utc)
+    snapshot2 = times.snapshot2.astimezone(pytz.utc)
+    now = datetime.now(timezone.utc)
+    duration = giveaway_time - now
+    duration_in_s = duration.total_seconds()
+    days = divmod(duration_in_s, 86400)
+    hours = divmod(days[1], 3600)
+    minutes = divmod(hours[1], 60)
+    if duration < timedelta(0):
+        await update.message.reply_photo(
+            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+            caption=f"X7 Finance Giveaway is now closed\n\nPlease check back for more details"
+            f"\n\n{api.get_quote()}",
+            parse_mode="Markdown",
+        )
+    else:
+        if ext == "":
+            await update.message.reply_photo(
                  photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
                  caption=f"*X7 Finance 20,000 X7R Giveaway!*\n\n"
                  f'X7 Finance Giveaway ends:\n\n{giveaway_time.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
@@ -811,29 +812,29 @@ async def giveaway(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  f"\n\n{api.get_quote()}",
                  parse_mode="Markdown",
              )
-         if ext == "entries":
-             update_utc = times.giveaway_update.astimezone(pytz.utc)
-             await update.message.reply_photo(
-                 photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-                 caption=f"The following addresses are in the draw, weighted by minted amount"
-                 f" (last 5 digits only):\n\n{last5}\n\nLast updated: "
-                 f'{update_utc.strftime("%A %B %d %Y %I:%M %p")} UTC\n\n'
-                 f"{api.get_quote()}",
-                 parse_mode="Markdown",
-             )
-         if ext == "run":
-             chat_admins = await update.effective_chat.get_administrators()
-             if update.effective_user in (admin.user for admin in chat_admins):
-                 await update.message.reply_photo(
-                     photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-                     caption=f"*X7 Finance 20,000 X7R Giveaway!*\n\n"
-                     f"The winner of the *X7 Finance 20,000 X7R Giveaway!* is:\n\n"
-                     f"{random.choice(last5)} (last 5 digits only)\n\n"
-                     f"Trust no one, trust code. Long live Defi!\n\n{api.get_quote()}",
-                     parse_mode="Markdown",
-                 )
-             else:
-                 await update.message.reply_text(f"{text.mods_only}")
+        if ext == "entries":
+            update_utc = times.giveaway_update.astimezone(pytz.utc)
+            await update.message.reply_photo(
+                photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+                caption=f"The following addresses are in the draw, weighted by minted amount"
+                f" (last 5 digits only):\n\n{last5}\n\nLast updated: "
+                f'{update_utc.strftime("%A %B %d %Y %I:%M %p")} UTC\n\n'
+                f"{api.get_quote()}",
+                parse_mode="Markdown",
+            )
+        if ext == "run":
+            chat_admins = await update.effective_chat.get_administrators()
+            if update.effective_user in (admin.user for admin in chat_admins):
+                await update.message.reply_photo(
+                    photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+                    caption=f"*X7 Finance 20,000 X7R Giveaway!*\n\n"
+                    f"The winner of the *X7 Finance 20,000 X7R Giveaway!* is:\n\n"
+                    f"{random.choice(last5)} (last 5 digits only)\n\n"
+                    f"Trust no one, trust code. Long live Defi!\n\n{api.get_quote()}",
+                    parse_mode="Markdown",
+                )
+            else:
+                await update.message.reply_text(f"{text.mods_only}")
 
 
 async def holders(update: Update, context: ContextTypes.DEFAULT_TYPE):

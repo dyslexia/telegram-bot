@@ -1,7 +1,6 @@
 from datetime import datetime
 from moralis import evm_api
-
-# import nfts
+import csv
 from pycoingecko import CoinGeckoAPI
 import random
 import tweepy
@@ -374,6 +373,17 @@ def get_verified(contract, chain):
         return "Yes"
     else:
         return "No"
+
+
+def read_csv_column(filename, column_index):
+    with open(filename, 'r') as file:
+        csv_reader = csv.reader(file)
+        header = next(csv_reader)
+        column_data = []
+        for row in csv_reader:
+            if len(row) > column_index and row[column_index] != '':
+                column_data.append(row[column_index])
+    return column_data
 
 
 # TWITTER
