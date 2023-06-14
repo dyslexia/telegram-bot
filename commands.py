@@ -40,9 +40,7 @@ arb = os.getenv("ARB")
 
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print(f"The winner of the {giveaway.header} is: (last 5 digits only)\n\n"
-        f"{random.choice(giveaway.last5())}\n\n"
-        f"Trust no one, trust code. Long live Defi!")
+    return
 
 
 # COMMANDS
@@ -1684,7 +1682,6 @@ async def pair(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ),
     )
     
-
 
 async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
     pioneer_id = " ".join(context.args)
