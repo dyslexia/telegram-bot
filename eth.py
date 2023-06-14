@@ -125,9 +125,6 @@ async def new_pair(event):
                 if scan[f"{str(token_address).lower()}"]["is_honeypot"] == "1":
                     print("Skip - Honey Pot")
                     return
-                if scan[f"{str(token_address).lower()}"]["is_mintable"] == "1":
-                    print("Skip - Mintable")
-                    return
             except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
                 print(f"Initial Scan Error: {e}")
         if scan[f"{str(token_address).lower()}"]["is_in_dex"] == "1":
