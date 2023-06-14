@@ -1287,7 +1287,7 @@ async def media_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
     chain = " ".join(context.args).lower()
     chain_name = ""
     eco_count = ""
@@ -1485,6 +1485,102 @@ async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [
                     InlineKeyboardButton(
                         text="Magister", url=f"{chain_url}{ca.magister}"
+                    )
+                ],
+            ]
+        ),
+    )
+
+
+async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chain = " ".join(context.args).lower().strip()
+    chain_url = ""
+
+    if chain == "" or chain == "eth":
+        chain = "eth"
+        chain_url = url.ether_address
+    elif chain == "poly" or chain == "polygon":
+        chain_url = url.poly_address
+    elif chain == "arb" or chain == "arbitrum":
+        chain_url = url.arb_address
+    elif chain == "opti" or chain == "optimism":
+        chain_url = url.opti_address
+    elif chain == "bsc" or chain == "binance" or chain == "binance smart chain":
+        chain_url = url.bsc_address
+    else:
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id, text="Invalid chain. Please provide a valid chain name."
+        )
+        return
+
+    chain_prices = nfts.prices.get(chain)
+    chain_counts = nfts.counts.get(chain)
+
+    if chain_prices is None or chain_counts is None:
+        if chain == "eth":
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id, text="Chain information not found."
+            )
+            return
+        else:
+            chain_prices = nfts.prices.get("eth")
+            chain_counts = nfts.counts.get("eth")
+
+            if chain_prices is None or chain_counts is None:
+                await context.bot.send_message(
+                    chat_id=update.effective_chat.id, text="Chain information not found."
+                )
+                return
+            
+    eco_price = chain_prices.get("eco")
+    liq_price = chain_prices.get("liq")
+    dex_price = chain_prices.get("dex")
+    borrow_price = chain_prices.get("borrow")
+    magister_price = chain_prices.get("magister")
+
+    eco_count = chain_counts.get("eco", 0)
+    liq_count = chain_counts.get("liq", 0)
+    dex_count = chain_counts.get("dex", 0)
+    borrow_count = chain_counts.get("borrow", 0)
+    magister_count = chain_counts.get("magister", 0)
+
+    eco_discount = nfts.discount.get("eco", {})
+    liq_discount = nfts.discount.get("liq", {})
+    dex_discount = nfts.discount.get("dex", {})
+    borrow_discount = nfts.discount.get("borrow", {})
+    magister_discount = nfts.discount.get("magister", {})
+
+    eco_discount_text = "\n".join([f"> {discount}% discount on {token}" for token, discount in eco_discount.items()])
+    liq_discount_text = "\n".join([f"> {discount}% discount on {token}" for token, discount in liq_discount.items()])
+    dex_discount_text = "\n".join([f"> {discount}" for discount in dex_discount])
+    borrow_discount_text = "\n".join([f"> {discount}" for discount in borrow_discount])
+    magister_discount_text = "\n".join([f"> {discount}% discount on {token}" for token, discount in magister_discount.items()])
+
+    await update.message.reply_photo(
+    photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+    caption=f"*NFT Info ({chain.upper()})*\nUse `/nft [chain-name]` for other chains\n\n"
+         f"*Ecosystem Maxi*\n{eco_price}\n"
+         f"Available - {500 - eco_count}\n"
+         f"{eco_discount_text}\n\n"
+         f"*Liquidity Maxi*\n{liq_price}\n"
+         f"Available - {2/50 - liq_count}\n"
+         f"{liq_discount_text}\n\n"
+         f"*Dex Maxi*\n{dex_price}\n"
+         f"Available - {250 - dex_count}\n"
+         f"{dex_discount_text}\n\n"
+         f"*Borrow Maxi*\n{borrow_price}\n"
+         f"Available - {100 - borrow_count}\n"
+         f"{borrow_discount_text}\n\n"
+         f"*Magister*\n{magister_price}\n"
+         f"Available - {49 - magister_count}\n"
+         f"{magister_discount_text}\n",
+    parse_mode="Markdown",
+    reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        text="Mint Here",
+                        url=f'https://x7.finance/x/nft/mint',
                     )
                 ],
             ]
@@ -2476,7 +2572,7 @@ async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if not chain:
         chain = "eth"
-        tax_info = tax.generate_info(chain)
+        tax_info = tax.generate_info(chain)  # Generate tax info for the default chain
     
     if tax_info:
         caption = f"{tax_info}\n\n{api.get_quote()}"

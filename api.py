@@ -166,7 +166,7 @@ def get_nft_holder_count(nft, chain):
         },
     )
     data = response.json()
-    return data.get("total_tokens")
+    return data.get("total_tokens", "0")
 
 
 def get_nft_floor(nft, chain):
