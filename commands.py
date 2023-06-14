@@ -25,7 +25,7 @@ from web3 import Web3
 from eth_utils import to_checksum_address
 import os
 from dotenv import load_dotenv
-import pandas as pd
+import pandas
 
 load_dotenv()
 
@@ -772,7 +772,7 @@ async def gas(update, context):
 async def giveaway(update: Update, context: ContextTypes.DEFAULT_TYPE):
      ext = " ".join(context.args)
      excel = r"raffle.csv"
-     df = pd.read_csv(excel)
+     df = pandas.read_csv(excel)
      addresses = list(df.Address)
      last5 = [entry[-5:] for entry in addresses]
      giveaway_time = times.giveaway_time.astimezone(pytz.utc)
