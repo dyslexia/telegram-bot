@@ -21,11 +21,6 @@ This is a repo is maintained and deployed by the X7DAO.
 
 Please feel free to contact the author of this repo directly with improvements
 
-@Adz1DoubleD
-/Discord
-/TG
-/Twitter
-
 <br />
 
 ## Getting Started
