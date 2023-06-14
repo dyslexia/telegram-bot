@@ -52,6 +52,7 @@ endorse = (
     "\n\n"
     "Trust No one, trust code. Long Live Defi"
 )
+
 refer = (
     "*XChange Referral Program*\n\nDriving new projects to take advantage of X7’s lending pool currently "
     "valued over 200k USD across 5 chains is a top priority to ensure successful adoption of XChange in the "
@@ -71,6 +72,7 @@ refer = (
     "NOTE: community multi-sig team has final discretion on payment. Any individual or group looking to "
     "exploit this program will not be eligible for a reward."
 )
+
 referral = (
     "We want *YOUR* Referrals\n\n"
     "Know someone who is launching a project? We want to reward you!\n"
@@ -87,7 +89,9 @@ referral = (
     "- HUGE Incentives\n\n"
     "DM `@gazuga` `@cryptod0c` `@robthebank44` to get started\n"
 )
+
 multi_sig = "https://t.me/X7announcements/195"
+
 usernamelist = (
     "davidgokhshtein",
     "cz_binance",
@@ -127,12 +131,14 @@ usernamelist = (
     "garyvee",
 )
 mods_only = "You do not have permission to do this. #TrustNoOne"
+
 mods = (
     f"Marketing Team\n@Robthebank44\n@cryptod0c\n\n"
     f"Sales Team\n@Gazuga"
     f"Socials Team\n@Phlux\n@SlumdOg_shillionaire2022\n@DallasX7\n@Gavalars\n@KBCrypto11\n@CoastCorn\n\n"
     f"Tech Team\n@Adz1DoubleD\n@MikeMurpher\n@cryptod0c"
 )
+
 commands = (
     "/about - Welcome to X7 Finance\n"
     "/ecosystem - Token Overview\n"
@@ -205,7 +211,9 @@ delay = (
     "- Shigeru Miyamoto`"
 )
 patience = "`Patience is bitter, but its fruit is sweet.\n\n- Aristotle`"
+
 rob = "`Rob The Bank (an outstanding community member and marketer)`\n\n`-X7 DAO founders`"
+
 admin_commands = (
     "To be run in main chat\n\n"
     "/settings - Open the setting menu\n"
@@ -218,6 +226,7 @@ admin_commands = (
     "/stop_auto [name]\n"
     "/view_auto\n\n"
 )
+
 ecosystem = (
     "*X7 Finance Ecosystem*\n\n• *X7R*\nX7's original launched token. Hodl as a percentage of all "
     "transaction fees are used to buy and burn tokens, reducing total supply of available tokens.\n\n"
@@ -236,6 +245,7 @@ ecosystem = (
     "mint a time-based interest-bearing NFT. X7D is always exchangeable with Ethereum at a 1-to-1 ratio.\n"
     "The X7 Finance protocol will only permit minting of new X7 Deposit tokens when on-chain reserves permit."
 )
+
 about = (
     "Welcome to X7 Finance - Home of Xchange.\n\n"
     "X7 Finance is an ecosystem of innovative smart contracts, and the centre of the ecosystem is the X7 Finance"
@@ -252,6 +262,7 @@ about = (
     "unflinching reliability of code and distributed consensus can provide capital while eliminating significant "
     "downside risk.`\n\n#LongLiveDefi"
 )
+
 twitter_replies = [
     "Raid!",
     "LFG",
@@ -277,6 +288,7 @@ twitter_replies = [
     "RAIIIIIIIIIID",
     "Tweet Twoooo",
 ]
+
 quotes = [
     "Ethos\n\nX7’s founding team believes that capital should be available to those with great ideas and that the "
     "unflinching reliability of code and distributed consensus can provide capital while eliminating significant "

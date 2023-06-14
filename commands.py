@@ -25,6 +25,7 @@ from web3 import Web3
 from eth_utils import to_checksum_address
 import os
 from dotenv import load_dotenv
+import pandas as pd
 
 load_dotenv()
 
@@ -114,7 +115,7 @@ async def announcements(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def beta(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(f"https://beta.x7.finance/")
+    await update.message.reply_text(url.xchange)
 
 
 async def bot(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -768,71 +769,71 @@ async def gas(update, context):
     )
 
 
-# async def giveaway(update: Update, context: ContextTypes.DEFAULT_TYPE):
-#     ext = " ".join(context.args)
-#     excel = r"raffle.csv"
-#     df = pd.read_csv(excel)
-#     addresses = list(df.Address)
-#     last5 = [entry[-5:] for entry in addresses]
-#     giveaway_time = times.giveaway_time.astimezone(pytz.utc)
-#     snapshot1 = times.snapshot1.astimezone(pytz.utc)
-#     snapshot2 = times.snapshot2.astimezone(pytz.utc)
-#     now = datetime.now(timezone.utc)
-#     duration = giveaway_time - now
-#     duration_in_s = duration.total_seconds()
-#     days = divmod(duration_in_s, 86400)
-#     hours = divmod(days[1], 3600)
-#     minutes = divmod(hours[1], 60)
-#     if duration < timedelta(0):
-#         await update.message.reply_photo(
-#             photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-#             caption=f"X7 Finance Giveaway is now closed\n\nPlease check back for more details"
-#             f"\n\n{api.get_quote()}",
-#             parse_mode="Markdown",
-#         )
-#     else:
-#         if ext == "":
-#             await update.message.reply_photo(
-#                 photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-#                 caption=f"*X7 Finance 20,000 X7R Giveaway!*\n\n"
-#                 f'X7 Finance Giveaway ends:\n\n{giveaway_time.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
-#                 f"{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n"
-#                 "For every 0.1 X7D minted,1 entry into the draw was generated!\n\n"
-#                 f'A Snapshot of minters was taken at {snapshot1.strftime("%A %B %d %Y %I:%M %p")} (UTC) '
-#                 f'and a second was at {snapshot2.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
-#                 f"The Diamond hands that have held for the entire duration are in the draw! The more minted, "
-#                 f"the better the chance!\n\n"
-#                 "Any withdrawals were deducted from the entries at the second snapshot.\n\n"
-#                 "To view entries "
-#                 "[click here](https://github.com/x7finance/telegram-bot/blob/main/raffle.csv)\n\n"
-#                 f'The draw will be made on {giveaway_time.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
-#                 f"Credit: Defi Dipper!"
-#                 f"\n\n{api.get_quote()}",
-#                 parse_mode="Markdown",
-#             )
-#         if ext == "entries":
-#             update_utc = times.giveaway_update.astimezone(pytz.utc)
-#             await update.message.reply_photo(
-#                 photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-#                 caption=f"The following addresses are in the draw, weighted by minted amount"
-#                 f" (last 5 digits only):\n\n{last5}\n\nLast updated: "
-#                 f'{update_utc.strftime("%A %B %d %Y %I:%M %p")} UTC\n\n'
-#                 f"{api.get_quote()}",
-#                 parse_mode="Markdown",
-#             )
-#         if ext == "run":
-#             chat_admins = await update.effective_chat.get_administrators()
-#             if update.effective_user in (admin.user for admin in chat_admins):
-#                 await update.message.reply_photo(
-#                     photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-#                     caption=f"*X7 Finance 20,000 X7R Giveaway!*\n\n"
-#                     f"The winner of the *X7 Finance 20,000 X7R Giveaway!* is:\n\n"
-#                     f"{random.choice(last5)} (last 5 digits only)\n\n"
-#                     f"Trust no one, trust code. Long live Defi!\n\n{api.get_quote()}",
-#                     parse_mode="Markdown",
-#                 )
-#             else:
-#                 await update.message.reply_text(f"{text.mods_only}")
+async def giveaway(update: Update, context: ContextTypes.DEFAULT_TYPE):
+     ext = " ".join(context.args)
+     excel = r"raffle.csv"
+     df = pd.read_csv(excel)
+     addresses = list(df.Address)
+     last5 = [entry[-5:] for entry in addresses]
+     giveaway_time = times.giveaway_time.astimezone(pytz.utc)
+     snapshot1 = times.snapshot1.astimezone(pytz.utc)
+     snapshot2 = times.snapshot2.astimezone(pytz.utc)
+     now = datetime.now(timezone.utc)
+     duration = giveaway_time - now
+     duration_in_s = duration.total_seconds()
+     days = divmod(duration_in_s, 86400)
+     hours = divmod(days[1], 3600)
+     minutes = divmod(hours[1], 60)
+     if duration < timedelta(0):
+         await update.message.reply_photo(
+             photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+             caption=f"X7 Finance Giveaway is now closed\n\nPlease check back for more details"
+             f"\n\n{api.get_quote()}",
+             parse_mode="Markdown",
+         )
+     else:
+         if ext == "":
+             await update.message.reply_photo(
+                 photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+                 caption=f"*X7 Finance 20,000 X7R Giveaway!*\n\n"
+                 f'X7 Finance Giveaway ends:\n\n{giveaway_time.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
+                 f"{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n"
+                 "For every 0.1 X7D minted,1 entry into the draw was generated!\n\n"
+                 f'A Snapshot of minters was taken at {snapshot1.strftime("%A %B %d %Y %I:%M %p")} (UTC) '
+                 f'and a second was at {snapshot2.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
+                 f"The Diamond hands that have held for the entire duration are in the draw! The more minted, "
+                 f"the better the chance!\n\n"
+                 "Any withdrawals were deducted from the entries at the second snapshot.\n\n"
+                 "To view entries "
+                 "[click here](https://github.com/x7finance/telegram-bot/blob/main/raffle.csv)\n\n"
+                 f'The draw will be made on {giveaway_time.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
+                 f"Credit: Defi Dipper!"
+                 f"\n\n{api.get_quote()}",
+                 parse_mode="Markdown",
+             )
+         if ext == "entries":
+             update_utc = times.giveaway_update.astimezone(pytz.utc)
+             await update.message.reply_photo(
+                 photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+                 caption=f"The following addresses are in the draw, weighted by minted amount"
+                 f" (last 5 digits only):\n\n{last5}\n\nLast updated: "
+                 f'{update_utc.strftime("%A %B %d %Y %I:%M %p")} UTC\n\n'
+                 f"{api.get_quote()}",
+                 parse_mode="Markdown",
+             )
+         if ext == "run":
+             chat_admins = await update.effective_chat.get_administrators()
+             if update.effective_user in (admin.user for admin in chat_admins):
+                 await update.message.reply_photo(
+                     photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+                     caption=f"*X7 Finance 20,000 X7R Giveaway!*\n\n"
+                     f"The winner of the *X7 Finance 20,000 X7R Giveaway!* is:\n\n"
+                     f"{random.choice(last5)} (last 5 digits only)\n\n"
+                     f"Trust no one, trust code. Long live Defi!\n\n{api.get_quote()}",
+                     parse_mode="Markdown",
+                 )
+             else:
+                 await update.message.reply_text(f"{text.mods_only}")
 
 
 async def holders(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1127,7 +1128,7 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             loan_name, loan_terms, loan_ca = loan_types[loan_type]
             await update.message.reply_photo(
                 photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-                caption=f"{loan_name}\n\n{loan_terms}\n\n",
+                caption=f"{loan_name}\n\n{loan_terms.generate_terms()}\n\n",
                 parse_mode="Markdown",
                 reply_markup=InlineKeyboardMarkup(
                     [

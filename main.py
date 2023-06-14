@@ -127,7 +127,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler(["fg", "feargreed"], commands.fg))
     application.add_handler(CommandHandler("gas", commands.gas))
     application.add_handler(CommandHandler("german", commands.german))
-    # application.add_handler(CommandHandler("giveaway", commands.giveaway))
+    application.add_handler(CommandHandler("giveaway", commands.giveaway))
     application.add_handler(CommandHandler("holders", commands.holders))
     application.add_handler(CommandHandler("image", commands.image))
     application.add_handler(CommandHandler("joke", commands.joke))
