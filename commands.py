@@ -43,6 +43,7 @@ async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return
 
 
+
 # COMMANDS
 async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
@@ -2471,27 +2472,21 @@ async def swap(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    chain_tax = ""
-    chain_name = ""
-    if chain == "eth" or chain == "":
-        chain_name = "(ETH)"
-        chain_tax = tax.eth
-    if chain == "bsc" or chain == "bnb":
-        chain_name = "(BSC)"
-        chain_tax = tax.bsc
-    if chain == "polygon" or chain == "poly":
-        chain_name = "(POLYGON)"
-        chain_tax = tax.poly
-    if chain == "optimism" or chain == "opti":
-        chain_name = "(OPTIMISM)"
-        chain_tax = tax.opti
-    if chain == "arbitrum" or chain == "arb":
-        chain_name = "(ARB)"
-        chain_tax = tax.arb
+    tax_info = tax.generate_info(chain)
+
+    if not chain:
+        chain = "eth"
+        tax_info = tax.generate_info(chain)
+    
+    if tax_info:
+        caption = f"{tax_info}\n\n{api.get_quote()}"
+    else:
+        await update.message.reply_text("Invalid or missing chain. Please provide a valid chain (eth, arb, poly, bsc, opti).")
+        return
+    caption = f"{chain.upper()}:\n{caption}\n\n{api.get_quote()}"  # Include the chain in the caption
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*X7 Finance Tax Info {chain_name}*\nUse `/tax [chain-name]` for other chains\n\n"
-        f"{chain_tax}\n\n{api.get_quote()}",
+        caption=caption,
         parse_mode="Markdown",
     )
 

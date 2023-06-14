@@ -8,7 +8,7 @@ header = ("")
 text = ('')
 
 # GIVEAWAY        Y   M   D   H   M  S
-time_raw = datetime(2024, 3, 30, 20, 30, 00)
+time_raw = datetime(2023, 3, 30, 20, 30, 00)
 update_raw = datetime(2023, 3, 29, 21, 30, 00)
 
 time = time_raw.astimezone(pytz.utc)
