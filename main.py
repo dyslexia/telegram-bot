@@ -23,9 +23,6 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = str(update.effective_message.text)
     chat_title = update.effective_message.chat.title
     lower_message = message.lower()
-
-    print(f'{user} says "{message}" in: {chat_title}')
-
     keyword_to_response = {
         "rob the bank": {"text": text.rob, "mode": "Markdown"},
         "delay": {"text": text.delay, "mode": "Markdown"},
@@ -127,7 +124,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler(["fg", "feargreed"], commands.fg))
     application.add_handler(CommandHandler("gas", commands.gas))
     application.add_handler(CommandHandler("german", commands.german))
-    application.add_handler(CommandHandler("giveaway", commands.giveaway))
+    application.add_handler(CommandHandler("giveaway", commands.giveaway_command))
     application.add_handler(CommandHandler("holders", commands.holders))
     application.add_handler(CommandHandler("image", commands.image))
     application.add_handler(CommandHandler("joke", commands.joke))
@@ -167,7 +164,6 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("test", commands.test))
     application.add_handler(CommandHandler(["time", "clock"], commands.time))
     application.add_handler(CommandHandler("today", commands.today))
-    application.add_handler(CommandHandler("token", commands.token))
     application.add_handler(CommandHandler("treasury", commands.treasury))
     application.add_handler(CommandHandler("twitter", commands.twitter))
     application.add_handler(CommandHandler("website", commands.website))

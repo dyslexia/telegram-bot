@@ -6,7 +6,6 @@ from datetime import datetime, timedelta, timezone
 from dateutil import parser
 import pytz
 import loans
-import main
 import media
 import nfts
 from PIL import Image, ImageDraw, ImageFont
@@ -16,6 +15,7 @@ import tax
 import text
 import textwrap
 import times
+import giveaway
 from translate import Translator
 import pyttsx3
 import url
@@ -40,8 +40,9 @@ arb = os.getenv("ARB")
 
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    abi = api.get_abi("0x6C3445405121C92836473273afd26ee9Cb96cbc2", "eth")
-    print(abi)
+    print(f"The winner of the {giveaway.header} is: (last 5 digits only)\n\n"
+        f"{random.choice(giveaway.last5())}\n\n"
+        f"Trust no one, trust code. Long live Defi!")
 
 
 # COMMANDS
@@ -769,22 +770,15 @@ async def gas(update, context):
     )
 
 
-async def giveaway(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def giveaway_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ext = " ".join(context.args)
-    filename = 'raffle.csv'
-    column_index = 0
-    selected_column = api.read_csv_column(filename, column_index)
-    print(selected_column)
-    last5 = [entry[-5:] for entry in selected_column]
-    giveaway_time = times.giveaway_time.astimezone(pytz.utc)
-    snapshot1 = times.snapshot1.astimezone(pytz.utc)
-    snapshot2 = times.snapshot2.astimezone(pytz.utc)
-    now = datetime.now(timezone.utc)
-    duration = giveaway_time - now
-    duration_in_s = duration.total_seconds()
-    days = divmod(duration_in_s, 86400)
-    hours = divmod(days[1], 3600)
-    minutes = divmod(hours[1], 60)
+    giveaway_time = giveaway.time
+    def calculate_duration(giveaway_time):
+        now = datetime.now(timezone.utc)
+        duration = giveaway_time - now
+        return duration
+    giveaway_time = giveaway.time
+    duration = calculate_duration(giveaway_time)
     if duration < timedelta(0):
         await update.message.reply_photo(
             photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
@@ -796,29 +790,13 @@ async def giveaway(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if ext == "":
             await update.message.reply_photo(
                  photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-                 caption=f"*X7 Finance 20,000 X7R Giveaway!*\n\n"
-                 f'X7 Finance Giveaway ends:\n\n{giveaway_time.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
-                 f"{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes\n\n"
-                 "For every 0.1 X7D minted,1 entry into the draw was generated!\n\n"
-                 f'A Snapshot of minters was taken at {snapshot1.strftime("%A %B %d %Y %I:%M %p")} (UTC) '
-                 f'and a second was at {snapshot2.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
-                 f"The Diamond hands that have held for the entire duration are in the draw! The more minted, "
-                 f"the better the chance!\n\n"
-                 "Any withdrawals were deducted from the entries at the second snapshot.\n\n"
-                 "To view entries "
-                 "[click here](https://github.com/x7finance/telegram-bot/blob/main/raffle.csv)\n\n"
-                 f'The draw will be made on {giveaway_time.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n\n'
-                 f"Credit: Defi Dipper!"
-                 f"\n\n{api.get_quote()}",
+                 caption=f"*{giveaway.header}*\n\n{giveaway.text}\n\n{giveaway.countdown()}\n\n{api.get_quote()}",
                  parse_mode="Markdown",
              )
         if ext == "entries":
-            update_utc = times.giveaway_update.astimezone(pytz.utc)
             await update.message.reply_photo(
                 photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-                caption=f"The following addresses are in the draw, weighted by minted amount"
-                f" (last 5 digits only):\n\n{last5}\n\nLast updated: "
-                f'{update_utc.strftime("%A %B %d %Y %I:%M %p")} UTC\n\n'
+                caption=f'*{giveaway.header}*\n\n{giveaway.entries()}\n\n'
                 f"{api.get_quote()}",
                 parse_mode="Markdown",
             )
@@ -827,10 +805,7 @@ async def giveaway(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if update.effective_user in (admin.user for admin in chat_admins):
                 await update.message.reply_photo(
                     photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-                    caption=f"*X7 Finance 20,000 X7R Giveaway!*\n\n"
-                    f"The winner of the *X7 Finance 20,000 X7R Giveaway!* is:\n\n"
-                    f"{random.choice(last5)} (last 5 digits only)\n\n"
-                    f"Trust no one, trust code. Long live Defi!\n\n{api.get_quote()}",
+                    caption=f"*{giveaway.header}*\n\n{giveaway.run()}\n\n{api.get_quote()}",
                     parse_mode="Markdown",
                 )
             else:
@@ -932,13 +907,13 @@ async def launch(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [
                     InlineKeyboardButton(
                         text="X7M105 Launch TX",
-                        url="https://etherscan.io/tx/0x11ff5b6a860170eaac5b33930680bf79dbf0656292cac039805dbcf34e8abdbf",
+                        url=f"{url.ether_tx}0x11ff5b6a860170eaac5b33930680bf79dbf0656292cac039805dbcf34e8abdbf",
                     )
                 ],
                 [
                     InlineKeyboardButton(
                         text="Migration Go Live TX",
-                        url="https://etherscan.io/tx/0x13e8ed59bcf97c5948837c8069f1d61e3b0f817d6912015427e468a77056fe41",
+                        url=f"{url.ether_tx}0x13e8ed59bcf97c5948837c8069f1d61e3b0f817d6912015427e468a77056fe41",
                     )
                 ],
             ]
@@ -1670,7 +1645,7 @@ async def pair(update: Update, context: ContextTypes.DEFAULT_TYPE):
             contract_instances[network] = amount
         await update.message.reply_photo(
             photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-            caption=f"*X7 Finance PAir Count*\n\n"
+            caption=f"*X7 Finance Pair Count*\n\n"
             f'`ETH:`       {contract_instances["ETH"]}\n'
             f'`BSC:`       {contract_instances["BSC"]}\n'
             f'`ARB:`       {contract_instances["ARB"]}\n'
@@ -1985,16 +1960,7 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def proposal(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption="*Listing proposal:*\n"
-        "X7 Finance does not prioritize paid listings. Instead, for CEXs to acquire the desired supply "
-        "amount needed to list X7 on their exchange, they will need to purchase it from existing markets.\n\n"
-        "*Marketing proposal:*\n"
-        "X7 Finance does not incur expenses for requested marketing activities. Instead, our team leverages "
-        "its extensive network and connections in the market to independently select and collaborate with "
-        "relevant parties.\n\n"
-        "If, despite this information, you still find it necessary to get in touch, you can always send a "
-        "DM to our Twitter account. Please be aware that responses to such DMs are not guaranteed.\n\n"
-        f"{api.get_quote()}",
+        caption=f"{text.proposals}\n\n{api.get_quote()}",
         parse_mode="Markdown",
     )
 
@@ -2606,26 +2572,6 @@ async def today(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-async def token(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    token = " ".join(context.args)
-    info_eth = api.get_token_data(token, "eth")
-    info_bsc = api.get_token_data(token, "bsc")
-    await update.message.reply_text(
-        f"ETH\n\n"
-        f'Name: {info_eth[0]["name"]}\n'
-        f'Decimals: {info_eth[0]["decimals"]}\n'
-        f'Logo: {info_eth[0]["logo"]}\n'
-        f'Created: {info_eth[0]["created_at"]}\n'
-        f'Possible Spam?: {info_eth[0]["possible_spam"]}\n\n'
-        f"BSC\n\n"
-        f'Name: {info_bsc[0]["name"]}\n'
-        f'Decimals: {info_bsc[0]["decimals"]}\n'
-        f'Logo: {info_bsc[0]["logo"]}\n'
-        f'Created: {info_bsc[0]["created_at"]}\n'
-        f'Possible Spam?: {info_bsc[0]["possible_spam"]}'
-    )
-
-
 async def website(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     link = ""
@@ -2684,25 +2630,7 @@ async def website(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def voting(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "*Proposals and Voting*\n\nVoting will occur in multiple phases, each of which has either a minimum or maximum"
-        " time phase duration.\n\n*Phase 1: Quorum-seeking*\nX7DAO token holders will be able to stake their tokens as "
-        "X7sDAO, a non-transferable staked version of X7DAO.\n\nA quorum is reached when more than 50% of circulating "
-        "X7DAO has been staked as X7sDAO.\n\nOnce a quorum is reached and a minimum quorum-seeking time period has "
-        "passed, the X7sDAO tokens are temporarily locked (and no more X7DAO tokens may be staked until the next Quorum"
-        " seeking period) and the governance process moves to the next phase\n\n*Phase 2: Proposal creation*\nA "
-        "proposal is created by running a transaction on the governance contract which specifies a specific transaction"
-        " on a specific contract (e.g. setFeeNumerator(0) on the X7R token contract).\n\nProposals are ordered, and any"
-        " proposals that are passed/adopted must be run in the order that they were created.\n\nProposals can be made "
-        "by X7sDAO stakes of 500,000 tokens or more. Additionally, holders of Magister tokens may make proposals. "
-        "Proposals may require a refundable proposal fee to prevent process griefing.\n\n*Phase 3: Proposal voting*\n"
-        "Each proposal may be voted on once by each address. The voter may specify the weight of their vote between 0 "
-        "and the total amount of X7sDAO they have staked.\n\nProposals pass by a majority vote of the quorum of X7sDAO "
-        "tokens.\n\nA parallel voting process will occur with Magister tokens, where each Magister token carries one "
-        "vote.\n\nIf a majority of magister token holders vote against a proposal, the proposal must reach an X7sDAO "
-        "vote of 75% of the quorum of X7sDAO tokens.\n\n*Phase 4: Proposal adoption*\nDuring this phase, proposals that"
-        " have passed will be enqueued for execution. This step ensures proper ordering and is a guard against various "
-        "forms of process griefing.\n\n*Phase 5: Proposal execution*\nAfter proposal adoption, all passed proposals "
-        f"must be executed before a new Quorum Seeking phase may commence.\n\n{api.get_quote()}",
+        f"{text.voting}\n\n{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
@@ -2746,7 +2674,6 @@ async def website(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ]
         ),
     )
-
 
 
 async def wei(update: Update, context: ContextTypes.DEFAULT_TYPE):

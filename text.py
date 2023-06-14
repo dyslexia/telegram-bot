@@ -9,6 +9,38 @@ ws7 = 0.95
 ws8 = 0.5
 ws9 = 0.85
 
+proposals = ("*Listing proposal:*\n"
+        "X7 Finance does not prioritize paid listings. Instead, for CEXs to acquire the desired supply "
+        "amount needed to list X7 on their exchange, they will need to purchase it from existing markets.\n\n"
+        "*Marketing proposal:*\n"
+        "X7 Finance does not incur expenses for requested marketing activities. Instead, our team leverages "
+        "its extensive network and connections in the market to independently select and collaborate with "
+        "relevant parties.\n\n"
+        "If, despite this information, you still find it necessary to get in touch, you can always send a "
+        "DM to our Twitter account. Please be aware that responses to such DMs are not guaranteed."
+)
+
+voting = ("*Proposals and Voting*\n\nVoting will occur in multiple phases, each of which has either a minimum or maximum"
+        " time phase duration.\n\n*Phase 1: Quorum-seeking*\nX7DAO token holders will be able to stake their tokens as "
+        "X7sDAO, a non-transferable staked version of X7DAO.\n\nA quorum is reached when more than 50% of circulating "
+        "X7DAO has been staked as X7sDAO.\n\nOnce a quorum is reached and a minimum quorum-seeking time period has "
+        "passed, the X7sDAO tokens are temporarily locked (and no more X7DAO tokens may be staked until the next Quorum"
+        " seeking period) and the governance process moves to the next phase\n\n*Phase 2: Proposal creation*\nA "
+        "proposal is created by running a transaction on the governance contract which specifies a specific transaction"
+        " on a specific contract (e.g. setFeeNumerator(0) on the X7R token contract).\n\nProposals are ordered, and any"
+        " proposals that are passed/adopted must be run in the order that they were created.\n\nProposals can be made "
+        "by X7sDAO stakes of 500,000 tokens or more. Additionally, holders of Magister tokens may make proposals. "
+        "Proposals may require a refundable proposal fee to prevent process griefing.\n\n*Phase 3: Proposal voting*\n"
+        "Each proposal may be voted on once by each address. The voter may specify the weight of their vote between 0 "
+        "and the total amount of X7sDAO they have staked.\n\nProposals pass by a majority vote of the quorum of X7sDAO "
+        "tokens.\n\nA parallel voting process will occur with Magister tokens, where each Magister token carries one "
+        "vote.\n\nIf a majority of magister token holders vote against a proposal, the proposal must reach an X7sDAO "
+        "vote of 75% of the quorum of X7sDAO tokens.\n\n*Phase 4: Proposal adoption*\nDuring this phase, proposals that"
+        " have passed will be enqueued for execution. This step ensures proper ordering and is a guard against various "
+        "forms of process griefing.\n\n*Phase 5: Proposal execution*\nAfter proposal adoption, all passed proposals "
+        f"must be executed before a new Quorum Seeking phase may commence."
+)
+
 evenly = (
     "*Buy All X7 Finance Constellation Tokens Evenly (ETH)*\n\n"
     "Simply connect to https://dapp.x7community.space/constellation via metamask mobile or desktop"
