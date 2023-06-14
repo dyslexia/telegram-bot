@@ -31,7 +31,6 @@ ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "arb"))
 
 async def new_pair(event):
     print("Pair found")
-    print(event)
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "arb")
     liq = {"reserve0": 0, "reserve1": 0}
     try:

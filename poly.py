@@ -258,7 +258,6 @@ async def new_pair(event):
 
 
 async def new_loan(event):
-    application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
     print("Loan Originated")
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "poly")
     try:
@@ -413,9 +412,12 @@ async def main():
             break
 
 
-application = (
-    ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).connection_pool_size(512).build()
-)
+
 
 if __name__ == "__main__":
     asyncio.run(main())
+    application = (
+    ApplicationBuilder()
+    .token(os.getenv("TELEGRAM_BOT_TOKEN"))
+    .connection_pool_size(512).build()
+)

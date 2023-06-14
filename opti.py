@@ -31,7 +31,6 @@ ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "opti")
 
 async def new_pair(event):
     print("Pair found")
-    print(event)
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "opti")
     #    liq = api.get_liquidity(event["args"]["pair"], "opti")
     if event["args"]["token0"] == ca.weth:
