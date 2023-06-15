@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 getblock= os.getenv("GETBLOCK_API_KEY")
-getblock_url = "https://bsc.getblock.io/"
+getblock_url = f"https://bsc.getblock.io/{getblock}"
 web3 = Web3(Web3.HTTPProvider(getblock_url))
 
 
