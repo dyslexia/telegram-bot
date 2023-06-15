@@ -1208,7 +1208,7 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             amount = contract.functions.nextLoanID().call() - 1
             contract_instances[network] = amount
         await update.message.reply_photo(
-            photo=open((random.choice(media.logos)), "rb"),
+            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
             caption=f"*X7 Finance Loan Count*\n\n"
             f'`ETH:`       {contract_instances["ETH"]}\n'
             f'`BSC:`       {contract_instances["BSC"]}\n'
