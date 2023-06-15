@@ -404,6 +404,7 @@ async def log_loop(
             StopAsyncIteration,
         ) as e:
             print(f"BSC Loop Error: {e}")
+            break
 
 
 async def main():
