@@ -3,7 +3,6 @@ from telegram import *
 import api
 import asyncio
 import ca
-import logging
 import media
 from PIL import Image, ImageDraw, ImageFont
 import random
@@ -419,6 +418,6 @@ if __name__ == "__main__":
     asyncio.run(main())
     application = (
     ApplicationBuilder()
-    .token(os.getenv("TELEGRAM_BOT_TOKEN"))
+    .token(os.getenv("TELEGRAM_BOT_TOKEN_POLY"))
     .connection_pool_size(512).build()
 )
