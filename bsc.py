@@ -404,7 +404,7 @@ async def log_loop(
             ValueError,
             StopAsyncIteration,
         ) as e:
-            print(f"Error: {e}")
+            print(f"BSC Loop Error: {e}")
 
 
 async def main():
@@ -428,7 +428,7 @@ async def main():
             ValueError,
             StopAsyncIteration,
         ) as e:
-            print(f"Main Error: {e}")
+            print(f"BSC Main Error: {e}")
             break
 
 

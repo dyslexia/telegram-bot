@@ -348,7 +348,7 @@ async def log_loop(
             ValueError,
             StopAsyncIteration,
         ) as e:
-            print(f"Error: {e}")
+            print(f"Opti Loop Error: {e}")
 
 
 async def main():
@@ -358,18 +358,22 @@ async def main():
     ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
     ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock="latest")
 
-    tasks = [log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)]
+    
 
-    try:
-        await asyncio.gather(*tasks)
-    except (
-        Web3Exception,
-        Exception,
-        TimeoutError,
-        ValueError,
-        StopAsyncIteration,
-    ) as e:
-        print(f"Main Error: {e}")
+    while True:
+        try:
+            tasks = [log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)
+            ]
+            await asyncio.gather(*tasks)
+        except (
+            Web3Exception,
+            Exception,
+            TimeoutError,
+            ValueError,
+            StopAsyncIteration,
+        ) as e:
+            print(f"Opti Main Error: {e}")
+            break
 
 
 if __name__ == "__main__":

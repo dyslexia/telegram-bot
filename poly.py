@@ -384,7 +384,8 @@ async def log_loop(
             ValueError,
             StopAsyncIteration,
         ) as e:
-            print(f"Error: {e}")
+            print(f"Poly LoopError: {e}")
+            break
 
 
 async def main():
@@ -408,7 +409,7 @@ async def main():
             ValueError,
             StopAsyncIteration,
         ) as e:
-            print(f"Main Error: {e}")
+            print(f"Poly Main Error: {e}")
             break
 
 
