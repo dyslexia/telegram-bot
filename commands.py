@@ -44,7 +44,6 @@ async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return
 
 
-
 # COMMANDS
 async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(

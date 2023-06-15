@@ -331,7 +331,6 @@ def get_token_name(token: str, chain: str) -> Tuple[str, str]:
     return result[0]["name"], result[0]["symbol"]
 
 
-
 def get_tx_from_hash(tx, chain):
     if chain not in chains_info:
         raise ValueError(f"Invalid chain: {chain}")

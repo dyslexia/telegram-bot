@@ -166,9 +166,9 @@ mods_only = "You do not have permission to do this. #TrustNoOne"
 
 mods = (
     f"Marketing Team\n@Robthebank44\n@cryptod0c\n\n"
-    f"Sales Team\n@Gazuga"
+    f"Sales Team\n@Gazuga\n\n"
     f"Socials Team\n@Phlux\n@SlumdOg_shillionaire2022\n@DallasX7\n@Gavalars\n@KBCrypto11\n@CoastCorn\n\n"
-    f"Tech Team\n@Adz1DoubleD\n@MikeMurpher\n@cryptod0c"
+    f"Tech Team\n@Adz1DoubleD\n@MikeMurpher\n@cryptod0c\n@CryptoA7"
 )
 
 commands = (
