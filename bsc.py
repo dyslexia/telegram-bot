@@ -3,7 +3,6 @@ from telegram import *
 import api
 import asyncio
 import ca
-import logging
 import media
 from PIL import Image, ImageDraw, ImageFont
 import random
@@ -17,8 +16,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-
-getblock_url = "https://bsc-dataseed.binance.org/"
+getblock= os.getenv("GETBLOCK_API_KEY")
+getblock_url = "https://bsc.getblock.io/"
 web3 = Web3(Web3.HTTPProvider(getblock_url))
 
 
@@ -435,7 +434,7 @@ async def main():
 if __name__ == "__main__":
     application = (
     ApplicationBuilder()
-    .token(os.getenv("TELEGRAM_BOT_TOKEN"))
+    .token(os.getenv("TELEGRAM_BOT_TOKEN_BSC"))
     .connection_pool_size(512)
     .build()
 )
