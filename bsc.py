@@ -16,9 +16,10 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-getblock= os.getenv("GETBLOCK_API_KEY")
-getblock_url = f"https://bsc.getblock.io/{getblock}"
-web3 = Web3(Web3.HTTPProvider(getblock_url))
+# getblock= os.getenv("GETBLOCK_API_KEY")
+# getblock_url = f"https://bsc.getblock.io/{getblock}"
+url = "https://bsc-dataseed.binance.org/"
+web3 = Web3(Web3.HTTPProvider(url))
 
 
 factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "bsc"))
