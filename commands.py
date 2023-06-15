@@ -22,6 +22,7 @@ import url
 import wikipediaapi
 import re
 from web3 import Web3
+from web3.exceptions import Web3Exception
 from eth_utils import to_checksum_address
 import os
 from dotenv import load_dotenv
@@ -939,6 +940,53 @@ async def links(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ]
         ),
     )
+
+
+async def liquidate(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chain = " ".join(context.args).lower()
+    if chain == "eth" or chain == "":
+        web3 = Web3(Web3.HTTPProvider(f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}",))
+        link = url.ether_address
+        chain = "eth"
+    elif chain == "arb":
+        web3 = Web3(Web3.HTTPProvider(f"https://arb-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ARB')}",))
+        link = url.arb_address
+    elif chain == "bsc":
+        web3 = Web3(Web3.HTTPProvider("https://bsc-dataseed.binance.org/",))
+        link = url.bsc_address
+    elif chain == "opti":
+        web3 = Web3(Web3.HTTPProvider(f"https://opt-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_OPTI')}",))
+        link = url.opti_address
+    elif chain == "poly":
+        web3 = Web3(Web3.HTTPProvider(f"https://polygon-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_POLY')}",))
+        link = url.poly_address
+
+    contract = web3.eth.contract(address=Web3.to_checksum_address(ca.lpool), abi=api.get_abi(ca.lpool,chain))
+    num_loans = contract.functions.nextLoanID().call()
+    liquidatable_loans = 0
+    results = []
+    for loan_id in range(num_loans + 1):
+        try:
+            result = contract.functions.canLiquidate(int(loan_id)).call()
+            if result == 1:
+                liquidatable_loans += 1
+                results.append(f"Loan ID {loan_id}")
+        except Exception:
+            continue
+        
+    liquidatable_loans_text = f"Total liquidatable loans: {liquidatable_loans}"
+    output = "\n".join([liquidatable_loans_text] + results)
+    await update.message.reply_photo(
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+        caption=f"*X7 Finance Loan Liquidations ({chain.upper()})*\nfor other chains use `/liquidity [chain-name]`\n\n{output}\n\n{api.get_quote()}",
+        parse_mode="Markdown",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton(text="Lending Pool Contract", url=f"{link}{ca.lpool}#writeContract")],
+            ]
+        ),
+    )
+
 
 
 async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
