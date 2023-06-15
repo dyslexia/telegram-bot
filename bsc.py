@@ -368,12 +368,6 @@ async def new_loan(event):
 async def log_loop(
     pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval
 ):
-    application = (
-        ApplicationBuilder()
-        .token(os.getenv("TELEGRAM_BOT_TOKEN"))
-        .connection_pool_size(512)
-        .build()
-    )
 
     while True:
         try:
