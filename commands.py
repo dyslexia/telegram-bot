@@ -978,7 +978,7 @@ async def liquidate(update: Update, context: ContextTypes.DEFAULT_TYPE):
     output = "\n".join([liquidatable_loans_text] + results)
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*X7 Finance Loan Liquidations ({chain.upper()})*\nfor other chains use `/liquidity [chain-name]`\n\n{output}\n\n{api.get_quote()}",
+        caption=f"*X7 Finance Loan Liquidations ({chain.upper()})*\nfor other chains use `/liquidate [chain-name]`\n\n{output}\n\n{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
