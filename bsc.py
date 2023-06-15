@@ -13,13 +13,20 @@ from web3.exceptions import Web3Exception
 from eth_utils import to_checksum_address
 from datetime import datetime
 import os
+import threading
 from dotenv import load_dotenv
 load_dotenv()
 
-# getblock= os.getenv("GETBLOCK_API_KEY")
-# getblock_url = f"https://bsc.getblock.io/{getblock}"
-url = "https://bsc-dataseed.binance.org/"
-web3 = Web3(Web3.HTTPProvider(url))
+def update_web3_url():
+    global web3
+    while True:
+        new_url = random.choice(url.bsc)
+        web3 = Web3(Web3.HTTPProvider(new_url))
+        print("Web3 URL updated to:", new_url)
+        time.sleep(600)
+
+url_update_thread = threading.Thread(target=update_web3_url)
+url_update_thread.start()
 
 
 factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "bsc"))
@@ -404,7 +411,6 @@ async def log_loop(
 
 async def main():
     print("Scanning BSC Network")
-
     pair_filter = factory.events.PairCreated.create_filter(fromBlock="latest")
     ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
     ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
