@@ -97,10 +97,13 @@ async def new_pair(event):
     tax_warning = ""
     verified = ""
     if verified_check == "Yes":
-        contract = web3.eth.contract(
+        try:
+            contract = web3.eth.contract(
             address=token_address, abi=api.get_abi(token_address, "eth")
         )
-        verified = "✅ Contract Verified"
+            verified = "✅ Contract Verified"
+        except (Exception, TimeoutError, ValueError, StopAsyncIteration):
+            print("Verified Error")
         try:
             owner = contract.functions.owner().call()
             if owner == "0x0000000000000000000000000000000000000000":
@@ -112,7 +115,6 @@ async def new_pair(event):
             renounced = "⚠️ Contract Not Renounced"
     else:
         verified = "⚠️ Contract Unverified"
-    time.sleep(10)
     try:
         scan = api.get_scan(token_address, "eth")
         if scan[f"{str(token_address).lower()}"]["is_open_source"] == "1":
