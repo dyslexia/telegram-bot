@@ -14,25 +14,26 @@ from eth_utils import to_checksum_address
 from datetime import datetime
 import os
 import threading
+import sys
 from dotenv import load_dotenv
+import subprocess
 load_dotenv()
 
-def update_web3_url():
-    global web3
-    while True:
-        new_url = random.choice(url.bsc)
-        web3 = Web3(Web3.HTTPProvider(new_url))
-        print("Web3 URL updated to:", new_url)
-        time.sleep(600)
-
-url_update_thread = threading.Thread(target=update_web3_url)
-url_update_thread.start()
-
+url = random.choice(url.bsc)
+web3 = Web3(Web3.HTTPProvider(url))
 
 factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "bsc"))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "bsc"))
 ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "bsc"))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "bsc"))
+
+def restart():
+    time.sleep(900)
+    python_executable = sys.executable
+    processes = []
+    command = [python_executable, 'bsc.py']
+    process = subprocess.Popen(command)
+    processes.append(process)
 
 
 async def new_pair(event):
@@ -415,7 +416,9 @@ async def main():
     ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
     ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
     ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock="latest")
-
+    restart_thread = threading.Thread(target=restart)
+    restart_thread.daemon = True
+    restart_thread.start()
     while True:
         try:
             tasks = [
