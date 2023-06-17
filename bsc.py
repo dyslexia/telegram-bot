@@ -28,12 +28,13 @@ ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "bsc"))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "bsc"))
 
 def restart():
-    time.sleep(900)
     python_executable = sys.executable
     processes = []
     command = [python_executable, 'bsc.py']
     process = subprocess.Popen(command)
     processes.append(process)
+    print(f'New BSC URL: {url}')
+    time.sleep(900)
 
 
 async def new_pair(event):
