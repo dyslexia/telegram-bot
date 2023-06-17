@@ -19,24 +19,6 @@ from dotenv import load_dotenv
 import subprocess
 load_dotenv()
 
-urls = random.choice(url.bsc)
-web3 = Web3(Web3.HTTPProvider(urls))
-
-factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "bsc"))
-ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "bsc"))
-ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "bsc"))
-ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "bsc"))
-
-async def restart():
-    while True:
-        python_executable = sys.executable
-        command = [python_executable, 'bsc.py']
-        process = subprocess.Popen(command)
-        print(f'New BSC URL: {urls}')
-        await asyncio.sleep(600) 
-
-
-
 async def new_pair(event):
     print("Pair found")
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "bsc")
@@ -376,6 +358,11 @@ async def new_loan(event):
     )
     print(f'Loan {event["args"]["loanID"]} sent')
 
+async def restart_main(interval):
+    while True:
+        await asyncio.sleep(interval)
+        asyncio.create_task(main())
+
 
 async def log_loop(
     pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval
@@ -402,7 +389,6 @@ async def log_loop(
                 await new_loan(LoanOriginated)
 
             await asyncio.sleep(poll_interval)
-
         except (
             Web3Exception,
             Exception,
@@ -416,12 +402,17 @@ async def log_loop(
 
 async def main():
     print("Scanning BSC Network")
+    factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "bsc"))
+    ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "bsc"))
+    ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "bsc"))
+    ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "bsc"))
+
+
     pair_filter = factory.events.PairCreated.create_filter(fromBlock="latest")
     ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
     ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
     ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock="latest")
-    
-    asyncio.create_task(restart())
+
 
     try:
         tasks = [
@@ -436,13 +427,20 @@ async def main():
         StopAsyncIteration,
     ) as e:
         print(f"BSC Main Error: {e}")
+    print("Restarting main after sleep...")
 
 
 if __name__ == "__main__":
+    web3_url = random.choice(url.bsc)
+    web3 = Web3(Web3.HTTPProvider(web3_url))
     application = (
     ApplicationBuilder()
     .token(os.getenv("TELEGRAM_BOT_TOKEN_BSC"))
     .connection_pool_size(512)
     .build()
 )
-    asyncio.run(main())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.create_task(main())
+    loop.create_task(restart_main(600))
+    loop.run_forever()
