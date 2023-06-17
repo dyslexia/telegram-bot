@@ -19,22 +19,22 @@ from dotenv import load_dotenv
 import subprocess
 load_dotenv()
 
-url = random.choice(url.bsc)
-web3 = Web3(Web3.HTTPProvider(url))
+urls = random.choice(url.bsc)
+web3 = Web3(Web3.HTTPProvider(urls))
 
 factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "bsc"))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "bsc"))
 ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "bsc"))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "bsc"))
 
-def restart():
-    python_executable = sys.executable
-    processes = []
-    command = [python_executable, 'bsc.py']
-    process = subprocess.Popen(command)
-    processes.append(process)
-    print(f'New BSC URL: {url}')
-    time.sleep(900)
+async def restart():
+    while True:
+        python_executable = sys.executable
+        command = [python_executable, 'bsc.py']
+        process = subprocess.Popen(command)
+        print(f'New BSC URL: {urls}')
+        await asyncio.sleep(600) 
+
 
 
 async def new_pair(event):
@@ -420,24 +420,22 @@ async def main():
     ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
     ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
     ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock="latest")
-    restart_thread = threading.Thread(target=restart)
-    restart_thread.daemon = True
-    restart_thread.start()
-    while True:
-        try:
-            tasks = [
-                log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)
-            ]
-            await asyncio.gather(*tasks)
-        except (
-            Web3Exception,
-            Exception,
-            TimeoutError,
-            ValueError,
-            StopAsyncIteration,
-        ) as e:
-            print(f"BSC Main Error: {e}")
-            break
+    
+    asyncio.create_task(restart())
+
+    try:
+        tasks = [
+            log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)
+        ]
+        await asyncio.gather(*tasks)
+    except (
+        Web3Exception,
+        Exception,
+        TimeoutError,
+        ValueError,
+        StopAsyncIteration,
+    ) as e:
+        print(f"BSC Main Error: {e}")
 
 
 if __name__ == "__main__":
