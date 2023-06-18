@@ -52,6 +52,8 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def error(update, context):
+    if update.edited_message:
+        return
     if isinstance(context.error, AttributeError):
         pass
     print(f"Update {update} caused error: {context.error}")
