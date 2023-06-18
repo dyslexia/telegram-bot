@@ -358,10 +358,9 @@ async def new_loan(event):
     )
     print(f'Loan {event["args"]["loanID"]} sent')
 
-async def restart_main(interval):
-    while True:
-        await asyncio.sleep(interval)
-        asyncio.create_task(main())
+async def restart_main():
+    print("Attempting Restart of BSC")
+    asyncio.create_task(main())
 
 
 async def log_loop(
@@ -397,7 +396,7 @@ async def log_loop(
             StopAsyncIteration,
         ) as e:
             print(f"BSC Loop Error: {e}")
-            break
+            restart_main()
 
 
 async def main():
@@ -427,7 +426,8 @@ async def main():
         StopAsyncIteration,
     ) as e:
         print(f"BSC Main Error: {e}")
-    print("Restarting main after sleep...")
+        restart_main()
+
 
 
 if __name__ == "__main__":
@@ -439,8 +439,4 @@ if __name__ == "__main__":
     .connection_pool_size(512)
     .build()
 )
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.create_task(main())
-    loop.create_task(restart_main(600))
-    loop.run_forever()
+    asyncio.run(main())
