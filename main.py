@@ -52,6 +52,8 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def error(update, context):
+    if update is None:
+        return
     if update.edited_message is not None:
         return
     if isinstance(context.error, AttributeError):
