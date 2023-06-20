@@ -395,7 +395,7 @@ async def deployer(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     ],
                     [
                         InlineKeyboardButton(
-                            text="View all on chains", url=f"{url.dashboard}onchains"
+                            text="View all on chains", url=f"{url.dashboard}docs/onchains"
                         )
                     ],
                 ]
@@ -421,7 +421,7 @@ async def deployer(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     ],
                     [
                         InlineKeyboardButton(
-                            text="View all on chains", url=f"{url.dashboard}onchains"
+                            text="View all on chains", url=f"{url.dashboard}docs/onchains"
                         )
                     ],
                 ]
