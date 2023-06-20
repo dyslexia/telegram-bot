@@ -1662,7 +1662,7 @@ async def on_chain(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 ],
                 [
                     InlineKeyboardButton(
-                        text="View all on chains", url=f"{url.dashboard}/docs/onchains"
+                        text="View all on chains", url=f"{url.dashboard}docs/onchains"
                     )
                 ],
             ]
