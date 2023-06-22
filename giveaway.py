@@ -3,12 +3,12 @@ import pytz
 import api
 import random
 
-header = ("")
+header = ("X7DAO BUY PARTY")
 
-text = ('')
+text = ('One buyer that bought X7DAO in increments of 7 (777, 7,777, 77,7777 etc) will be eligble to with 7,777 X7R!\n\n use /giveaway entries to view entries')
 
-# GIVEAWAY        Y   M   D   H   M  S
-time_raw = datetime(2023, 3, 30, 20, 30, 00)
+# GIVEAWAY            Y   M   D   H   M  S
+time_raw = datetime(2023, 6, 23, 4, 00, 00)
 update_raw = datetime(2023, 3, 29, 21, 30, 00)
 
 time = time_raw.astimezone(pytz.utc)
