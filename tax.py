@@ -3,8 +3,8 @@
 
 info = {
     'eth': {
-        'x7r': 6,
-        'x7dao': 6,
+        'x7r': 3,
+        'x7dao': 3,
         'x7100': 2,
         'liq_discount': 25,
         'eco_discount': 10,
