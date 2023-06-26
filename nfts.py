@@ -83,14 +83,14 @@ counts = {
 
 discount = {
     "eco": {
-        "x7100": 25,
-        "x7R": 10,
-        "x7DAO": 10,
+        "X7R": 10,
+        "X7DAO": 10,
+        "X7100": 25,
     },
     "liq": {
-        "x7100": 50,
-        "x7R": 25,
-        "x7DAO": 15,
+        "X7R": 25,
+        "X7DAO": 15,
+        "X7100": 50,
     },
     "dex": {
         "LP Fee discounts while trading on Xchange"
@@ -99,8 +99,8 @@ discount = {
         "Fee discounts for borrowing funds for ILL on Xchange"
     },
     "magister": {
-        "x7R": 25,
-        "x7100": 25,
+        "X7R": 25,
+        "X7100": 25,
 
     }
 }
