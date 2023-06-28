@@ -254,9 +254,6 @@ admin_commands = (
     "/antiflood - (Dis)Enable anti-flood mode\n"
     "/lock all - mutes chat\n"
     "/unlock all - unmute chat\n"
-    "/start_auto [name-one-word] [time-in-minutes] [message] \n"
-    "/stop_auto [name]\n"
-    "/view_auto\n\n"
 )
 
 ecosystem = (
