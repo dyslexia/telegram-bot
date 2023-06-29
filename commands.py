@@ -118,6 +118,23 @@ async def beta(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(url.xchange)
 
 
+async def blog(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_photo(
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+        caption=f"*X7 Finance Blog*\n\nCentralizing the best content on decentralized finance in one place.\n\n{api.get_quote()}",
+        parse_mode="Markdown",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        text="X7 Finance Blog", url=f"{url.dashboard}blog"
+                    )
+                ],
+            ]
+        ),
+    )
+
+
 async def bot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"{text.commands}")
 

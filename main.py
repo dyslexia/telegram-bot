@@ -106,6 +106,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("alumni", commands.alumni))
     application.add_handler(CommandHandler("announcements", commands.announcements))
     application.add_handler(CommandHandler("ath", commands.ath))
+    application.add_handler(CommandHandler("blog", commands.blog))
     application.add_handler(CommandHandler(["bot", "start", "filters"], commands.bot))
     application.add_handler(CommandHandler("burn", commands.burn))
     application.add_handler(CommandHandler("buy", commands.buy))
