@@ -284,7 +284,7 @@ async def new_loan(event):
 
     cost = int(tx["result"]["value"], 0) / 10**18
     im1 = Image.open((random.choice(media.blackhole)))
-    im2 = Image.open(media.bsc_logo)
+    im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
     myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
     i1 = ImageDraw.Draw(im1)
