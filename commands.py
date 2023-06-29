@@ -328,13 +328,13 @@ async def chart(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
             [
                 [
                     InlineKeyboardButton(
-                        text="X7R - Rewards Token", url=f"{chain_url}{ca.x7r_pair_eth}"
+                        text="X7R - Rewards Token", url=f"{chain_url}{ca.x7r}"
                     )
                 ],
                 [
                     InlineKeyboardButton(
                         text="X7DAO - Governance Token",
-                        url=f"{chain_url}{ca.x7dao_pair_eth}",
+                        url=f"{chain_url}{ca.x7dao}",
                     )
                 ],
             ]
