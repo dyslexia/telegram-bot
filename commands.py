@@ -2858,29 +2858,49 @@ async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain_name = ""
     chain_url = ""
     if chain == "" or chain == "eth":
-        supply = api.get_native_balance(ca.lpool_reserve, "eth")
+        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "eth")
+        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("eth")) / 1**18)
+        lpool = api.get_native_balance(ca.lpool, "eth")
+        lpool_dollar = float(lpool) * float(api.get_native_price("eth")) / 1**18
+        dollar = lpool_reserve_dollar + lpool_dollar
+        supply = round(float(lpool_reserve) + float(lpool), 2)
         holders = api.get_holders(ca.x7d)
-        x7d_dollar = float(supply) * float(api.get_native_price("eth")) / 1**18
         chain_name = "(ETH)"
         chain_url = url.ether_address
     if chain == "bsc" or chain == "bnb":
-        supply = api.get_native_balance(ca.lpool_reserve, "bnb")
-        x7d_dollar = float(supply) * float(api.get_native_price("bnb")) / 1**18
+        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "bsc")
+        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("bnb")) / 1**18)
+        lpool = api.get_native_balance(ca.lpool, "bsc")
+        lpool_dollar = float(lpool) * float(api.get_native_price("bnb")) / 1**18
+        dollar = lpool_reserve_dollar + lpool_dollar
+        supply = round(float(lpool_reserve) + float(lpool), 2)
         chain_name = "(BSC)"
         chain_url = url.bsc_address
     if chain == "polygon" or chain == "poly":
-        supply = api.get_native_balance(ca.lpool_reserve, "poly")
-        x7d_dollar = float(supply) * float(api.get_native_price("matic")) / 1**18
+        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "poly")
+        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("matic")) / 1**18)
+        lpool = api.get_native_balance(ca.lpool, "poly")
+        lpool_dollar = float(lpool) * float(api.get_native_price("matic")) / 1**18
+        dollar = lpool_reserve_dollar + lpool_dollar
+        supply = round(float(lpool_reserve) + float(lpool), 2)
         chain_name = "(POLYGON)"
         chain_url = url.poly_address
     if chain == "optimism" or chain == "opti":
-        supply = api.get_native_balance(ca.lpool_reserve, "opti")
-        x7d_dollar = float(supply) * float(api.get_native_price("eth")) / 1**18
+        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "opit")
+        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("eth")) / 1**18)
+        lpool = api.get_native_balance(ca.lpool, "opti")
+        lpool_dollar = float(lpool) * float(api.get_native_price("eth")) / 1**18
+        dollar = lpool_reserve_dollar + lpool_dollar
+        supply = round(float(lpool_reserve) + float(lpool), 2)
         chain_name = "(OPTIMISM)"
         chain_url = url.opti_address
     if chain == "arbitrum" or chain == "arb":
-        supply = api.get_native_balance(ca.lpool_reserve, "arb")
-        x7d_dollar = float(supply) * float(api.get_native_price("eth")) / 1**18
+        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "arb")
+        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("eth")) / 1**18)
+        lpool = api.get_native_balance(ca.lpool, "arb")
+        lpool_dollar = float(lpool) * float(api.get_native_price("eth")) / 1**18
+        dollar = lpool_reserve_dollar + lpool_dollar
+        supply = round(float(lpool_reserve) + float(lpool), 2)
         chain_name = "(ARB)"
         chain_url = url.arb_address
 
@@ -2892,8 +2912,8 @@ async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
     i1.text(
         (28, 36),
         f"X7D {chain_name} Info\n\n"
-        f'Supply: {supply[:5]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
-        f"Holders: {holders}\n\n"
+        f'Supply: {supply} X7D (${"{:0,.0f}".format(dollar)})\n'
+        f"Holders: {holders}\n\n\n\n\n\n\n\n\n"
         f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
         font=myfont,
         fill=(255, 255, 255),
@@ -2904,7 +2924,7 @@ async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
         photo=open(r"media/blackhole.png", "rb"),
         caption=f"*X7D {chain_name} Info*\n"
         f"For other chains use `/x7d [chain-name]`\n\n"
-        f'Supply: {supply[:5]} X7D (${"{:0,.0f}".format(x7d_dollar)})\n'
+        f'Supply: {supply} X7D (${"{:0,.0f}".format(dollar)})\n'
         f"Holders: {holders}\n\n"
         f"{api.get_quote()}",
         parse_mode="Markdown",
@@ -2913,7 +2933,7 @@ async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [
                     InlineKeyboardButton(
                         text="X7D Funding Dashboard",
-                        url="https://beta.x7.finance/#/fund",
+                        url="https://app.x7.finance/#/fund",
                     )
                 ],
                 [
