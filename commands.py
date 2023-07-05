@@ -3112,7 +3112,7 @@ async def x7r(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup(
                 [
-                    [InlineKeyboardButton(text=f"{scan_name}", url=f"{chart_url}")],
+                    [InlineKeyboardButton(text=f"{scan_name}", url=f"{scan_url}")],
                     [InlineKeyboardButton(text="Chart", url=f"{chart_url}")],
                     [
                         InlineKeyboardButton(
@@ -3307,7 +3307,7 @@ async def x7dao(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton(text=f"{scan_name}", url=f"{chart_url}")],
+                [InlineKeyboardButton(text=f"{scan_name}", url=f"{scan_url}")],
                 [InlineKeyboardButton(text="Chart", url=f"{chart_url}")],
                 [
                     InlineKeyboardButton(
@@ -3459,7 +3459,7 @@ async def x7101(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton(text=f"{scan_name}", url=f"{chart_url}")],
+                [InlineKeyboardButton(text=f"{scan_name}", url=f"{scan_url}")],
                 [InlineKeyboardButton(text="Chart", url=f"{chart_url}")],
                 [
                     InlineKeyboardButton(
@@ -3611,7 +3611,7 @@ async def x7102(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton(text=f"{scan_name}", url=f"{chart_url}")],
+                [InlineKeyboardButton(text=f"{scan_name}", url=f"{scan_url}")],
                 [InlineKeyboardButton(text="Chart", url=f"{chart_url}")],
                 [
                     InlineKeyboardButton(
@@ -3763,7 +3763,7 @@ async def x7103(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton(text=f"{scan_name}", url=f"{chart_url}")],
+                [InlineKeyboardButton(text=f"{scan_name}", url=f"{scan_url}")],
                 [InlineKeyboardButton(text="Chart", url=f"{chart_url}")],
                 [
                     InlineKeyboardButton(
@@ -3915,7 +3915,7 @@ async def x7104(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton(text=f"{scan_name}", url=f"{chart_url}")],
+                [InlineKeyboardButton(text=f"{scan_name}", url=f"{scan_url}")],
                 [InlineKeyboardButton(text="Chart", url=f"{chart_url}")],
                 [
                     InlineKeyboardButton(
@@ -4067,7 +4067,7 @@ async def x7105(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton(text=f"{scan_name}", url=f"{chart_url}")],
+                [InlineKeyboardButton(text=f"{scan_name}", url=f"{scan_url}")],
                 [InlineKeyboardButton(text="Chart", url=f"{chart_url}")],
                 [
                     InlineKeyboardButton(
