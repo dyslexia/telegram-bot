@@ -149,9 +149,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("pioneer", commands.pioneer))
     application.add_handler(CommandHandler("proposal", commands.proposal))
     application.add_handler(CommandHandler(["pool", "lpool", "lendingpool"], commands.pool))
-    application.add_handler(CommandHandler("potw", commands.potw))
     application.add_handler(CommandHandler(["price", "prices"], commands.price))
-    application.add_handler(CommandHandler("question", commands.question))
     application.add_handler(CommandHandler("quote", commands.quote))
     application.add_handler(CommandHandler("raid", commands.raid))
     application.add_handler(CommandHandler(["referral", "refer"], commands.refer))
@@ -200,13 +198,13 @@ if __name__ == "__main__":
         data=times.referral_time * 60 * 60,
     )
 
-    scripts = ['bsc.py', 'eth.py','arb.py', 'poly.py', 'opti.py']
-    python_executable = sys.executable
-    processes = []
-    for script in scripts:
-        command = [python_executable, script]
-        process = subprocess.Popen(command)
-        processes.append(process)
+#    scripts = ['bsc.py', 'eth.py','arb.py', 'poly.py', 'opti.py']
+#    python_executable = sys.executable
+#    processes = []
+#    for script in scripts:
+#        command = [python_executable, script]
+#        process = subprocess.Popen(command)
+#        processes.append(process)
     application.run_polling()
 
     
