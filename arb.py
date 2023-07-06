@@ -309,7 +309,7 @@ async def new_loan(event):
         f'Loan ID: {event["args"]["loanID"]}\n'
         f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH '
         f'(${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
-        f"Payment Schedule:\n{schedule_str}\n\n"
+        f"Payment Schedule (UTC):\n{schedule_str}\n\n"
         f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)})',
         font=myfont,
         fill=(255, 255, 255),
@@ -322,7 +322,7 @@ async def new_loan(event):
         f'Loan ID: {event["args"]["loanID"]}\n'
         f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH '
         f'(${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
-        f"Payment Schedule:\n{schedule_str}\n\n"
+        f"Payment Schedule (UTC):\n{schedule_str}\n\n"
         f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)}',
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(

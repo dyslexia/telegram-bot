@@ -1108,7 +1108,7 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Initial Liquidity Loan - {loan_id} ({chain.upper()})*\n\n"
-        f"Payment Schedule:\n{schedule_str}\n\n"
+        f"Payment Schedule (UTC):\n{schedule_str}\n\n"
         f"{remaining}"
         f"{liquidation_status}\n\n{api.get_quote()}",
         parse_mode="Markdown",
@@ -1561,16 +1561,16 @@ async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain_url = ""
 
     if chain == "" or chain == "eth":
-        chain = "eth"
+        chain = "ETH"
         chain_url = url.ether_address
     elif chain == "poly" or chain == "polygon":
-        chain_url = url.poly_address
+        chain = "POLY"
     elif chain == "arb" or chain == "arbitrum":
-        chain_url = url.arb_address
+        chain = "ARB"
     elif chain == "opti" or chain == "optimism":
-        chain_url = url.opti_address
+        chain = "OPTI"
     elif chain == "bsc" or chain == "binance" or chain == "binance smart chain":
-        chain_url = url.bsc_address
+        chain = "BSC"
     else:
         await context.bot.send_message(
             chat_id=update.effective_chat.id, text="Invalid chain. Please provide a valid chain name."
@@ -2854,7 +2854,7 @@ async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     supply = ""
     holders = ""
-    x7d_dollar = ""
+    dollar = ""
     chain_name = ""
     chain_url = ""
     if chain == "" or chain == "eth":

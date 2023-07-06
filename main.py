@@ -12,15 +12,14 @@ import os
 import subprocess
 import sys
 
+
 load_dotenv()
 
 print("Bot Restarted")
 
 
 async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_message.from_user.username
     message = str(update.effective_message.text)
-    chat_title = update.effective_message.chat.title
     lower_message = message.lower()
     keyword_to_response = {
         "rob the bank": {"text": text.rob, "mode": "Markdown"},
@@ -93,7 +92,6 @@ async def send_referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
 
-# RUN
 if __name__ == "__main__":
     application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
     job_queue = application.job_queue
@@ -201,7 +199,7 @@ if __name__ == "__main__":
         name=str("Referral Message"),
         data=times.referral_time * 60 * 60,
     )
-    
+
     scripts = ['bsc.py', 'eth.py','arb.py', 'poly.py', 'opti.py']
     python_executable = sys.executable
     processes = []
