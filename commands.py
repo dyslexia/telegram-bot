@@ -87,10 +87,8 @@ async def alerts(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def alumni(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*X7 Finance Alumni*\n\n"
-        f"@Callmelandlord - The Godfather of the X7 Finance community, the OG, the creator - X7 God\n\n"
-        f"@WoxieX - Creator of the OG dashboard -  x7community.space\n\n"
-        f"@Zaratustra  - Defi extraordinaire and protocol prophet\n\n"
+        caption=f"*X7 Finance Alumni*\n\n{text.alumni}"
+        
         f"{api.get_quote()}",
         parse_mode="Markdown",
     )
@@ -112,10 +110,6 @@ async def announcements(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ]
         ),
     )
-
-
-async def beta(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(url.xchange)
 
 
 async def blog(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -282,7 +276,11 @@ async def channels(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         text="Xchange Alerts", url="https://t.me/x7_alerts)"
                     )
                 ],
-                [InlineKeyboardButton(text="Media", url="https://t.me/X7MediaChannel")],
+                [
+                    InlineKeyboardButton(
+                        text="Media", url="https://t.me/X7MediaChannel"
+                    )
+                ],
                 [
                     InlineKeyboardButton(
                         text="Research Notes", url="https://t.me/X7m105_Research"
@@ -342,14 +340,10 @@ async def chart(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
     )
 
 
-async def community(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(f"{text.multi_sig}", parse_mode="Markdown")
-
-
-async def dashboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def docs(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*X7 Finance Dashboard*\n\n{api.get_quote()}",
+        caption=f"*X7 Finance Documents*\n\n{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
@@ -359,23 +353,22 @@ async def dashboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Tokens", url=f"{url.dashboard}tokens/"
+                        text="Trader", url=f"{url.dashboard}trader/"
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Docs", url=f"{url.dashboard}docs/"
+                        text="Project Launcher", url=f"{url.dashboard}launch/"
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Dashboard",
-                        url=f"{url.dashboard}dashboard/",
+                        text="Project Engineer", url=f"{url.dashboard}integrate/",
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Loans", url=f"{url.dashboard}loans/"
+                        text="Capital Allocator", url=f"{url.dashboard}lending/"
                     )
                 ],
             ]
@@ -448,29 +441,7 @@ async def deployer(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def discount(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "*X7 Finance Discount*\n\n"
-        "20 Lucrative X7 Borrowing Incentive NFTs have been minted, granting;\n\n"
-        "50% Origination fee discount\n"
-        "50% Premium fee discount\n\n"
-        "These are a consumable utility NFT offering fee discounts when borrowing funds for initial liquidity on "
-        "Xchange. The discount will be determined by the X7 Lending Discount Authority smart contract.\n\n"
-        "Usage will cause a token owned by the holder to be burned\n\n"
-        "To apply for a limited NFT see the link below\n\n"
-        " --------------- \n\n"
-        "There are four mechanisms to receive loan origination and premium discounts:\n\n"
-        "1. Holding the Borrowing Maxi NFT\n"
-        "2. Holding (and having consumed) the Borrowing Incentive NFT\n"
-        "3. Borrowing a greater amount\n"
-        "4. Borrowing for a shorter time\n\n"
-        "All discounts are additive.\n\n"
-        "The NFTs provide a fixed percentage discount. The Borrowing Incentive NFT is consumed upon "
-        "loan origination.\n\n"
-        "The latter two discounts provide a linear sliding scale, based on the minimum and maximum loan amounts and "
-        "loan periods. The starting values for these discounts are 0-10% discount.\n\n"
-        "The time based discount is imposing an opportunity cost of lent funds - and incentivizing taking out the "
-        "shortest loan possible.\n"
-        "The amount based discount is recognizing that a loan origination now is more valuable than a possible loan "
-        "origination later.\n\nThese sliding scales can be modified to ensure they have optimal market fit.",
+        f"*X7 Finance Discount*\n\n{text.discount}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
@@ -644,26 +615,32 @@ async def faq(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [
                 [
                     InlineKeyboardButton(
+                        text="Airdrop Questions",
+                        url="https://www.x7finance.org/docs/faq/airdrop",
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
                         text="Constellation Tokens",
-                        url="https://www.x7finance.org/faq/constellations",
+                        url="https://www.x7finance.org/docs/faq/constellations",
                     )
                 ],
                 [
                     InlineKeyboardButton(
                         text="Developer Questions",
-                        url="https://www.x7finance.org/faq/devs",
+                        url="https://www.x7finance.org/docs/faq/devs",
                     )
                 ],
                 [
                     InlineKeyboardButton(
                         text="General Questions",
-                        url="https://www.x7finance.org/faq/general",
+                        url="https://www.x7finance.org/docs/faq/general",
                     )
                 ],
                 [
                     InlineKeyboardButton(
                         text="Governance Questions",
-                        url="https://www.x7finance.org/faq/governance",
+                        url="https://www.x7finance.org/docs/faq/governance",
                     )
                 ],
                 [
@@ -675,12 +652,19 @@ async def faq(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [
                     InlineKeyboardButton(
                         text="Liquidity Lending Questions",
-                        url="https://www.x7finance.org/faq/liquiditylending",
+                        url="https://www.x7finance.org/docs/faq/liquiditylending",
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="NFT Questions", url="https://www.x7finance.org/faq/nfts"
+                        text="NFT Questions",
+                        url="https://www.x7finance.org/faq/nfts"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Snapshot.org Questions",
+                        url="https://www.x7finance.org/docs/faq/daosnapshot",
                     )
                 ],
                 [
@@ -947,7 +931,6 @@ async def links(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text="Xchange App", url=f"{url.xchange}")],
                 [InlineKeyboardButton(text="Website", url=f"{url.dashboard}")],
                 [InlineKeyboardButton(text="Snapshot", url=f"{url.snapshot}")],
-                [InlineKeyboardButton(text="Medium", url=f"{url.medium}")],
                 [InlineKeyboardButton(text="Twitter", url=f"{url.twitter}")],
                 [InlineKeyboardButton(text="Discord", url=f"{url.discord}")],
                 [InlineKeyboardButton(text="Reddit", url=f"{url.reddit}")],
@@ -1002,7 +985,6 @@ async def liquidate(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ]
         ),
     )
-
 
 
 async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1351,7 +1333,6 @@ async def media_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-
 async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower().strip()
     if chain == "" or chain == "eth":
@@ -1456,7 +1437,6 @@ async def on_chain(update: Update, context: ContextTypes.DEFAULT_TYPE):
     days = divmod(duration_in_s, 86400)
     hours = divmod(days[1], 3600)
     minutes = divmod(hours[1], 60)
-    print(tx_filter[0])
     await update.message.reply_text(
         f"*Last On Chain Message:*\n\n{time} (UTC)\n"
         f"{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes ago\n\n"
@@ -1516,7 +1496,10 @@ async def opensea(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         text="Liquidity Maxi", url=f"{url.os_liq}{chain_url}"
                     )
                 ],
-                [InlineKeyboardButton(text="DEX Maxi", url=f"{url.os_dex}{chain_url}")],
+                [   InlineKeyboardButton(
+                        text="DEX Maxi", url=f"{url.os_dex}{chain_url}"
+                    )
+                ],
                 [
                     InlineKeyboardButton(
                         text="Borrowing Maxi", url=f"{url.os_borrow}{chain_url}"
@@ -1911,7 +1894,6 @@ async def proposal(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-
 async def refer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"{text.refer}",
@@ -1921,8 +1903,7 @@ async def refer(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [
                     InlineKeyboardButton(
                         text="Application",
-                        url=f"https://docs.google.com/forms/d/e/1F"
-                        f"AIpQLSf5h3ngT_swsq2My5BfY1W_ZWv3jni9JeWEfgkWFgorNLknQg/viewform",
+                        url=f"{url.referral}",
                     )
                 ],
             ]
@@ -2012,7 +1993,11 @@ async def router(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         text="ETH", url=f"{url.ether_address}{ca.router}"
                     )
                 ],
-                [InlineKeyboardButton(text="BSC", url=f"{url.bsc_address}{ca.router}")],
+                [
+                    InlineKeyboardButton(
+                        text="BSC", url=f"{url.bsc_address}{ca.router}"
+                    )
+                ],
                 [
                     InlineKeyboardButton(
                         text="Polygon", url=f"{url.poly_address}{ca.router}"
@@ -2350,26 +2335,23 @@ async def supply(update: Update, context: ContextTypes.DEFAULT_TYPE):
         }
     img = Image.open((random.choice(media.blackhole)))
     draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype("media/FreeMonoBold.ttf", 22)
+    font = ImageFont.truetype("media/FreeMonoBold.ttf", 20)
     caption_lines = []
     for token, info in supply_info.items():
         balance_str = "{:0,.0f}".format(info["balance"])
         dollar_value_str = "${:0,.0f}".format(info["dollar_value"])
         percent_str = f"{info['percent']}%"
-        line = f"*{token.upper()}*\n{balance_str} {token.upper()} ({dollar_value_str}) {percent_str}"
+        line = f"{token.upper()}\n{balance_str} {token.upper()} ({dollar_value_str}) {percent_str}"
         caption_lines.append(line)
-    utc_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
-    caption = (
-        f"*X7 Finance Uniswap Supply*\n\n"
-        + "\n\n".join(caption_lines)
-        + f"\n\nUTC: {utc_time}\n{api.get_quote()}"
-    )
+    caption_text = "\n\n".join(caption_lines)
     for i, line in enumerate(caption_lines):
         y_offset = 36 + i * 72
         draw.text((28, y_offset), line, font=font, fill=(255, 255, 255))
+    utc_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+    draw.text((28, y_offset + 72), f"UTC: {utc_time}", font=font, fill=(255, 255, 255))
     img.save("media/blackhole.png")
     await update.message.reply_photo(
-        photo=open("media/blackhole.png", "rb"), caption=caption, parse_mode="Markdown"
+        photo=open("media/blackhole.png", "rb"), caption=f"*X7 Finance Uniswap Supply*\n\n{caption_text}", parse_mode="Markdown"
     )
 
 
@@ -2383,16 +2365,10 @@ async def swap(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         text="Xchange", url=f"{url.xchange}"
                     )
                 ],
-                [
-                    InlineKeyboardButton(
-                        text="Feedback",
-                        url="https://discord.com/channels/101665704"
-                        "4553617428/1053206402065256498",
-                    )
-                ],
             ]
         ),
     )
+
 
 
 async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -2422,10 +2398,12 @@ async def time(update: Update, context: CallbackContext):
         ("America/Los_Angeles", "PST"),
         ("America/New_York", "EST"),
         ("UTC", "UTC"),
+        ("Europe/Dublin", "IST"),
         ("Europe/London", "GMT"),
         ("Europe/Berlin", "CET"),
         ("Asia/Dubai", "GST"),
         ("Asia/Tokyo", "JST"),
+        ("Australia/Sydney", "AEST"),
     ]
     current_time = datetime.now(pytz.timezone("UTC"))
     local_time = current_time.astimezone(pytz.timezone("UTC"))
@@ -2489,62 +2467,6 @@ async def today(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-async def website(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chain = " ".join(context.args).lower()
-    link = ""
-    token = ""
-    chain_url = ""
-    if chain == "bsc":
-        link = url.bsc_address
-        token = "bnb"
-        chain_url = f"https://api.bscscan.com/api?module=account&action=txlist&address={ca.router}{bsc}"
-    if chain == "eth":
-        link = url.ether_address
-        token = "eth"
-        chain_url = f"https://api.etherscan.io/api?module=account&action=txlistinternal&address={ca.router}{ether}"
-    if chain == "poly":
-        link = url.poly_address
-        token = "matic"
-        chain_url = f"https://api.polygonscan.com/api?module=account&action=txlist&address={ca.router}{poly}"
-    if chain == "opti":
-        link = url.opti_address
-        token = "eth"
-        chain_url = (
-            f"https://api.optimistic.etherscan.io/api?module=account&action=txlist&address="
-            f"{ca.router}{opti}"
-        )
-    if chain == "arb":
-        link = url.arb_address
-        token = "eth"
-        chain_url = f"https://api.arbiscan.com/api?module=account&action=txlist&address={ca.router}{arb}"
-
-    def calculate_total_transaction_value():
-        url = chain_url
-        response = requests.get(url)
-        transaction_data = response.json()["result"]
-        total_value_eth = 0
-        total_value_usd = 0
-        for tx in transaction_data:
-            value_eth = float(tx["value"]) / 1e18
-            total_value_eth += value_eth
-        total_value_usd = total_value_eth * api.get_native_price(token)
-        return total_value_eth, total_value_usd
-
-    total_tx_value_eth, total_tx_value_usd = calculate_total_transaction_value()
-    await update.message.reply_photo(
-        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*{chain.upper()} Volume*\n\n"
-        f"{total_tx_value_eth} {token.upper()}\n(${total_tx_value_usd:,.2f})\nVolume traded "
-        f"through {chain.upper()} router",
-        parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton(text="Router", url=f"{link}{ca.router}")],
-            ]
-        ),
-    )
-
-
 async def voting(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"{text.voting}\n\n{api.get_quote()}",
@@ -2578,14 +2500,12 @@ async def website(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 ],
                 [
                     InlineKeyboardButton(
-                        text="X7.Finance",
-                        url=f"{url.website}",
+                        text="X7.Finance", url=f"{url.website}",
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="X7Finance.org",
-                        url=f"{url.dashboard}",
+                        text="X7Finance.org", url=f"{url.dashboard}",
                     )
                 ],
             ]
@@ -4468,8 +4388,6 @@ async def price(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    chain_name = ""
-    chain_token_api = ""
     chain_token_name = ""
     chain_title = ""
     im2 = ""
@@ -4552,7 +4470,6 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     if chain == "bsc" or chain == "bnb":
-        chain_name = "bsc"
         chain_token_name = "BNB"
         chain_title = "(BSC)"
         im2 = Image.open(media.bsc_logo)
@@ -4562,7 +4479,6 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
         dev_dollar = float(dev_eth) * float(api.get_native_price("bnb")) / 1**18
         com_dollar = float(com_eth) * float(api.get_native_price("bnb")) / 1**18
     if chain == "arbitrum" or chain == "arb":
-        chain_name = "arb"
         chain_token_name = "ETH"
         chain_title = "(ARB)"
         im2 = Image.open(media.arb_logo)
@@ -4572,7 +4488,6 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
         dev_dollar = float(dev_amount) * float(api.get_native_price("eth")) / 1**18
         com_dollar = float(com_amount) * float(api.get_native_price("eth")) / 1**18
     if chain == "polygon" or chain == "poly":
-        chain_name = "poly"
         chain_token_name = "MATIC"
         chain_title = "(POLYGON)"
         chain_url = url.poly_address
@@ -4582,7 +4497,6 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
         com_dollar = float(com_amount) * float(api.get_native_price("matic")) / 1**18
         im2 = Image.open(media.poly_logo)
     if chain == "optimism" or chain == "opti":
-        chain_name = "opti"
         chain_token_name = "ETH"
         chain_title = "(OPTI)"
         chain_url = url.opti_address

@@ -9,57 +9,31 @@ ws7 = 0.95
 ws8 = 0.5
 ws9 = 0.85
 
-proposals = ("*Listing proposal:*\n"
-        "X7 Finance does not prioritize paid listings. Instead, for CEXs to acquire the desired supply "
-        "amount needed to list X7 on their exchange, they will need to purchase it from existing markets.\n\n"
-        "*Marketing proposal:*\n"
-        "X7 Finance does not incur expenses for requested marketing activities. Instead, our team leverages "
-        "its extensive network and connections in the market to independently select and collaborate with "
-        "relevant parties.\n\n"
-        "If, despite this information, you still find it necessary to get in touch, you can always send a "
-        "DM to our Twitter account. Please be aware that responses to such DMs are not guaranteed."
+about = (
+    "Welcome to X7 Finance - Home of Xchange.\n\n"
+    "X7 Finance is an ecosystem of innovative smart contracts, and the centre of the ecosystem is the X7 Finance"
+    ' Lending Pool, a pool that provides those with visionary ideas access to Initial Liquidity Loans "ILL".\n\n'
+    "At its core, Initial Liquidity Loans will provide anyone with a good idea the ability to raise 10-1000X "
+    "the amount of capital in their wallet to launch projects on Xchange.\n\n"
+    "• The network effect of project launches will result in billions of dollars in trading volume on Xchange, "
+    "a percentage of this volume will flow back into the ecosystem into our native X7 tokens.\n\n"
+    "• X7 Finance has a novel DAO governance structure + IPFS website, that ensures complete decentralization "
+    "and censorship-resistance.\n\n"
+    "Our Telegram network and Twitter are community-run, in the spirit of decentralization.\n\n"
+    "• First target - Capturing 1% of the $100b daily trading volume on the Ethereum network.\n\n"
+    '`"X7’s founding team believes that capital should be available to those with great ideas and that the '
+    "unflinching reliability of code and distributed consensus can provide capital while eliminating significant "
+    "downside risk.`\n\n#LongLiveDefi"
 )
 
-voting = ("*Proposals and Voting*\n\nVoting will occur in multiple phases, each of which has either a minimum or maximum"
-        " time phase duration.\n\n*Phase 1: Quorum-seeking*\nX7DAO token holders will be able to stake their tokens as "
-        "X7sDAO, a non-transferable staked version of X7DAO.\n\nA quorum is reached when more than 50% of circulating "
-        "X7DAO has been staked as X7sDAO.\n\nOnce a quorum is reached and a minimum quorum-seeking time period has "
-        "passed, the X7sDAO tokens are temporarily locked (and no more X7DAO tokens may be staked until the next Quorum"
-        " seeking period) and the governance process moves to the next phase\n\n*Phase 2: Proposal creation*\nA "
-        "proposal is created by running a transaction on the governance contract which specifies a specific transaction"
-        " on a specific contract (e.g. setFeeNumerator(0) on the X7R token contract).\n\nProposals are ordered, and any"
-        " proposals that are passed/adopted must be run in the order that they were created.\n\nProposals can be made "
-        "by X7sDAO stakes of 500,000 tokens or more. Additionally, holders of Magister tokens may make proposals. "
-        "Proposals may require a refundable proposal fee to prevent process griefing.\n\n*Phase 3: Proposal voting*\n"
-        "Each proposal may be voted on once by each address. The voter may specify the weight of their vote between 0 "
-        "and the total amount of X7sDAO they have staked.\n\nProposals pass by a majority vote of the quorum of X7sDAO "
-        "tokens.\n\nA parallel voting process will occur with Magister tokens, where each Magister token carries one "
-        "vote.\n\nIf a majority of magister token holders vote against a proposal, the proposal must reach an X7sDAO "
-        "vote of 75% of the quorum of X7sDAO tokens.\n\n*Phase 4: Proposal adoption*\nDuring this phase, proposals that"
-        " have passed will be enqueued for execution. This step ensures proper ordering and is a guard against various "
-        "forms of process griefing.\n\n*Phase 5: Proposal execution*\nAfter proposal adoption, all passed proposals "
-        f"must be executed before a new Quorum Seeking phase may commence."
-)
-
-evenly = (
-    "*Buy All X7 Finance Constellation Tokens Evenly (ETH)*\n\n"
-    "Simply connect to https://dapp.x7community.space/constellation via metamask mobile or desktop"
-    " and enter your desired Eth amount\n\n"
-    "Alternatively you can interact with the follow contract and follow the steps "
-    "below:\n\n"
-    "1. Head over to the Buy Evenly contract:\nhttps://etherscan.io/address/0x0419074afe1a137dfa6afd5b6af5"
-    "771c3ffbea49#code\n"
-    '1.1. Press on "Contract" If it\'s not already selected.\n2. Press on "Write contract"\n'
-    '3. Press on "Connect to Web3" and connect your desired wallet to the website. \n'
-    "4. Deposit the desired values\n4.1. depositIntoX7SeriesTokens -> amount of ETH you want to spend (e.g. 0.5).\n"
-    "4.2. slippagePercent  -> desired slippage (e.g. 4)\n4.3 deadline -> Go to [epoch-converter]"
-    '(https://www.epochconverter.com/) and add like 500 to the current epoch. Click "Timestamp to Human date" '
-    'and verify that Relative is at least "In 1 minute" (e.g. 1667508502).\n'
-    '4.4 Copy the epoch to the "deadline" field\n4.4 Press "Write" and confirm the transaction in your wallet.\n'
-    "4.5 You should receive tokens to your wallet in few blocks.\n\n"
-    "*Testrun TX*:\n"
-    "https://etherscan.io/tx/0x321e5bb6cc1695d5d7085eceb92f01143b69c2274402aab46e4a0a47d069d0af\n\n"
-    "Credit: @WoxieX"
+admin_commands = (
+    "To be run in main chat\n\n"
+    "/settings - Open the setting menu\n"
+    "/setup - Setup the portal\n"
+    "/difficulty - Set the CAPTCHA difficulty\n"
+    "/antiflood - (Dis)Enable anti-flood mode\n"
+    "/lock all - mutes chat\n"
+    "/unlock all - unmute chat\n"
 )
 
 airdrop = (
@@ -76,100 +50,9 @@ airdrop = (
     "are released on other chains.\n\nThese airdrop snapshots will occur just prior to the token launch"
 )
 
-endorse = (
-    "The X7 Dev team or the community team will not endorse any particular token or launch on Xchange.\n\n"
-    "Xchange is a permissionless swap protocol. We encourage DeFi participants to exercise the same level of "
-    "caution they always should when evaluating a swap opportunity.\n\nPlease refrain from sharing Telegram "
-    "groups, contract addresses etc. in the main chat, for new token alerts see XChange Alerts channel below"
-    "\n\n"
-    "Trust No one, trust code. Long Live Defi"
-)
-
-refer = (
-    "*XChange Referral Program*\n\nDriving new projects to take advantage of X7’s lending pool currently "
-    "valued over 200k USD across 5 chains is a top priority to ensure successful adoption of XChange in the "
-    "market. Every individual who refers a project that successfully launches on XChange,\n\n"
-    "1. Earn $250 for each project you refer to XChange, for the first 10 projects\n\n"
-    "2.Earn $500 for each additional project you refer to XChange beyond the first 10 projects\n\n"
-    "3. There is no limit to how many projects you can refer.\n\n"
-    "For example, if you refer 15 projects to X7, you will earn $2,500 for the first 10 and $2,500 for the "
-    "last 5 for a total of $5,000. The more you refer, the more you earn.\n\n"
-    "*How to participate*\n\n"
-    "1. Refer a project to launch on XChange with an Initial Liquidity Loan (ILL) - (2 ETH minimum)\n\n"
-    "2. Ensure the referred project confirms your referral to ensure the referral is valid. (X7 Finance "
-    "Community Multi-Sig will have full discretion to validate or invalidate any referrals)\n\n"
-    "3. Submit these details via this the form below\n\n"
-    "4. Once the project launches successfully with an ILL, the reward will be deposited to your submitted "
-    "wallet address 2 weeks after the launch of the project.\n\n"
-    "NOTE: community multi-sig team has final discretion on payment. Any individual or group looking to "
-    "exploit this program will not be eligible for a reward."
-)
-
-referral = (
-    "We want *YOUR* Referrals\n\n"
-    "Know someone who is launching a project? We want to reward you!\n"
-    "- Earn $250 for each project you refer to XChange, for the first 10 projects\n"
-    "- Earn $500 for each additional project you refer to XChange beyond the first 10 projects\n"
-    "- NO CAP on the amount of projects you can refer!\n\n"
-    "For more details or to apply, visit our application page below\n\n"
-    "We want *YOUR* projects.\n\n"
-    "Building on XChange offers multiple benefits\n"
-    "- Liquidity Loans - leverage up to x1000 the eth in your wallet to jump start your project\n"
-    "- Lower LP fees\n"
-    "- Large community of X7 Maxis\n"
-    "- Technical Support\n"
-    "- HUGE Incentives\n\n"
-    "DM `@gazuga` `@cryptod0c` `@robthebank44` to get started\n"
-)
-
-multi_sig = "https://t.me/X7announcements/195"
-
-usernamelist = (
-    "davidgokhshtein",
-    "cz_binance",
-    "EricCryptoman",
-    "Yourpop8",
-    "Bitboy_Crypto",
-    "MarioNawfal",
-    "IncomeSharks",
-    "kyle_chasse",
-    "cryptoskullx",
-    "koreanjewcrypto",
-    "3orovik",
-    "Ralvero",
-    "jamiekingston",
-    "ChadCaff",
-    "gandalfcryptto",
-    "x7_finance",
-    "TheDefiSaint",
-    "DefiIgnas",
-    "thedefiedge",
-    "Darrenlautf",
-    "CrossChainAlex",
-    "DeFi_Dad",
-    "DeFi_Brian",
-    "JustinCBram",
-    "kamikaz_ETH",
-    "TraderDefi",
-    "DeFi_Made_Here",
-    "CamiRusso",
-    "RyanSAdams",
-    "sassal0x",
-    "Rewkang",
-    "delitzer",
-    "kaiynne",
-    "StaniKulechov",
-    "VitalikButerin",
-    "garyvee",
-)
-mods_only = "You do not have permission to do this. #TrustNoOne"
-
-mods = (
-    f"Marketing Team\n@Robthebank44\n@cryptod0c\n\n"
-    f"Sales Team\n@Gazuga\n\n"
-    f"Socials Team\n@Phlux\n@SlumdOg_shillionaire2022\n@DallasX7\n@Gavalars\n@KBCrypto11\n@CoastCorn\n\n"
-    f"Tech Team\n@Adz1DoubleD\n@MikeMurpher\n@cryptod0c\n@CryptoA7"
-)
+alumni = (f"@Callmelandlord - The Godfather of the X7 Finance community, the OG, the creator - X7 God\n\n"
+        f"@WoxieX - Creator of the OG dashboard -  x7community.space\n\n"
+        f"@Zaratustra  - Defi extraordinaire and protocol prophet\n\n")
 
 commands = (
     "/about - Welcome to X7 Finance\n"
@@ -232,6 +115,7 @@ commands = (
     "/bobby - Bobby BuyBot Channels\n"
     "/alumni - X7 Finance Alumni\n"
 )
+
 delay = (
     "To ensure our code is trusted and that the release is flawless, X7's "
     "Leveraged DEX trading will not begin until we have published third party "
@@ -242,19 +126,29 @@ delay = (
     "`A delayed game is eventually good, a bad game is bad forever.\n\n"
     "- Shigeru Miyamoto`"
 )
-patience = "`Patience is bitter, but its fruit is sweet.\n\n- Aristotle`"
 
-rob = "`Rob The Bank (an outstanding community member and marketer)`\n\n`-X7 DAO founders`"
-
-admin_commands = (
-    "To be run in main chat\n\n"
-    "/settings - Open the setting menu\n"
-    "/setup - Setup the portal\n"
-    "/difficulty - Set the CAPTCHA difficulty\n"
-    "/antiflood - (Dis)Enable anti-flood mode\n"
-    "/lock all - mutes chat\n"
-    "/unlock all - unmute chat\n"
-)
+discount = ("20 Lucrative X7 Borrowing Incentive NFTs have been minted, granting;\n\n"
+        "50% Origination fee discount\n"
+        "50% Premium fee discount\n\n"
+        "These are a consumable utility NFT offering fee discounts when borrowing funds for initial liquidity on "
+        "Xchange. The discount will be determined by the X7 Lending Discount Authority smart contract.\n\n"
+        "Usage will cause a token owned by the holder to be burned\n\n"
+        "To apply for a limited NFT see the link below\n\n"
+        " --------------- \n\n"
+        "There are four mechanisms to receive loan origination and premium discounts:\n\n"
+        "1. Holding the Borrowing Maxi NFT\n"
+        "2. Holding (and having consumed) the Borrowing Incentive NFT\n"
+        "3. Borrowing a greater amount\n"
+        "4. Borrowing for a shorter time\n\n"
+        "All discounts are additive.\n\n"
+        "The NFTs provide a fixed percentage discount. The Borrowing Incentive NFT is consumed upon "
+        "loan origination.\n\n"
+        "The latter two discounts provide a linear sliding scale, based on the minimum and maximum loan amounts and "
+        "loan periods. The starting values for these discounts are 0-10% discount.\n\n"
+        "The time based discount is imposing an opportunity cost of lent funds - and incentivizing taking out the "
+        "shortest loan possible.\n"
+        "The amount based discount is recognizing that a loan origination now is more valuable than a possible loan "
+        "origination later.\n\nThese sliding scales can be modified to ensure they have optimal market fit.")
 
 ecosystem = (
     "*X7 Finance Ecosystem*\n\n• *X7R*\nX7's original launched token. Hodl as a percentage of all "
@@ -275,48 +169,102 @@ ecosystem = (
     "The X7 Finance protocol will only permit minting of new X7 Deposit tokens when on-chain reserves permit."
 )
 
-about = (
-    "Welcome to X7 Finance - Home of Xchange.\n\n"
-    "X7 Finance is an ecosystem of innovative smart contracts, and the centre of the ecosystem is the X7 Finance"
-    ' Lending Pool, a pool that provides those with visionary ideas access to Initial Liquidity Loans "ILL".\n\n'
-    "At its core, Initial Liquidity Loans will provide anyone with a good idea the ability to raise 10-1000X "
-    "the amount of capital in their wallet to launch projects on Xchange.\n\n"
-    "• The network effect of project launches will result in billions of dollars in trading volume on Xchange, "
-    "a percentage of this volume will flow back into the ecosystem into our native X7 tokens.\n\n"
-    "• X7 Finance has a novel DAO governance structure + IPFS website, that ensures complete decentralization "
-    "and censorship-resistance.\n\n"
-    "Our Telegram network and Twitter are community-run, in the spirit of decentralization.\n\n"
-    "• First target - Capturing 1% of the $100b daily trading volume on the Ethereum network.\n\n"
-    '`"X7’s founding team believes that capital should be available to those with great ideas and that the '
-    "unflinching reliability of code and distributed consensus can provide capital while eliminating significant "
-    "downside risk.`\n\n#LongLiveDefi"
+endorse = (
+    "The X7 Dev team or the community team will not endorse any particular token or launch on Xchange.\n\n"
+    "Xchange is a permissionless swap protocol. We encourage DeFi participants to exercise the same level of "
+    "caution they always should when evaluating a swap opportunity.\n\nPlease refrain from sharing Telegram "
+    "groups, contract addresses etc. in the main chat, for new token alerts see XChange Alerts channel below"
+    "\n\n"
+    "Trust No one, trust code. Long Live Defi"
 )
 
-twitter_replies = [
-    "Raid!",
-    "LFG",
-    "Send it!",
-    "Twitter raid!",
-    "Like and Retweet!",
-    "GO GO GO!",
-    "X7 Force!",
-    "Raid it Fam!",
-    "Blow it up!",
-    "Full force!",
-    "Light it up!",
-    "Shill time!",
-    "Smash it!",
-    "Slap it!",
-    "Send it!",
-    "If Phlux says it, You do it!",
-    "Phlux it up!",
-    "Full Send!",
-    "Hit it Hard!",
-    "Insert inspirational raid quote here!",
-    "Let them know!",
-    "RAIIIIIIIIIID",
-    "Tweet Twoooo",
-]
+evenly = (
+    "*Buy All X7 Finance Constellation Tokens Evenly (ETH)*\n\n"
+    "Simply connect to https://dapp.x7community.space/constellation via metamask mobile or desktop"
+    " and enter your desired Eth amount\n\n"
+    "Alternatively you can interact with the follow contract and follow the steps "
+    "below:\n\n"
+    "1. Head over to the Buy Evenly contract:\nhttps://etherscan.io/address/0x0419074afe1a137dfa6afd5b6af5"
+    "771c3ffbea49#code\n"
+    '1.1. Press on "Contract" If it\'s not already selected.\n2. Press on "Write contract"\n'
+    '3. Press on "Connect to Web3" and connect your desired wallet to the website. \n'
+    "4. Deposit the desired values\n4.1. depositIntoX7SeriesTokens -> amount of ETH you want to spend (e.g. 0.5).\n"
+    "4.2. slippagePercent  -> desired slippage (e.g. 4)\n4.3 deadline -> Go to [epoch-converter]"
+    '(https://www.epochconverter.com/) and add like 500 to the current epoch. Click "Timestamp to Human date" '
+    'and verify that Relative is at least "In 1 minute" (e.g. 1667508502).\n'
+    '4.4 Copy the epoch to the "deadline" field\n4.4 Press "Write" and confirm the transaction in your wallet.\n'
+    "4.5 You should receive tokens to your wallet in few blocks.\n\n"
+    "*Testrun TX*:\n"
+    "https://etherscan.io/tx/0x321e5bb6cc1695d5d7085eceb92f01143b69c2274402aab46e4a0a47d069d0af\n\n"
+    "Credit: @WoxieX"
+)
+
+mods = (
+    f"Marketing Team\n@Robthebank44\n@cryptod0c\n\n"
+    f"Sales Team\n@Gazuga\n\n"
+    f"Socials Team\n@Phlux\n@SlumdOg_shillionaire2022\n@DallasX7\n@Gavalars\n@KBCrypto11\n@CoastCorn\n\n"
+    f"Tech Team\n@Adz1DoubleD\n@MikeMurpher\n@cryptod0c\n@CryptoA7"
+)
+
+mods_only = (
+    "You do not have permission to do this. #TrustNoOne"
+)
+
+patience = (
+    "`Patience is bitter, but its fruit is sweet.\n\n- Aristotle`"
+)
+
+proposals = ("*Listing proposal:*\n"
+        "X7 Finance does not prioritize paid listings. Instead, for CEXs to acquire the desired supply "
+        "amount needed to list X7 on their exchange, they will need to purchase it from existing markets.\n\n"
+        "*Marketing proposal:*\n"
+        "X7 Finance does not incur expenses for requested marketing activities. Instead, our team leverages "
+        "its extensive network and connections in the market to independently select and collaborate with "
+        "relevant parties.\n\n"
+        "If, despite this information, you still find it necessary to get in touch, you can always send a "
+        "DM to our Twitter account. Please be aware that responses to such DMs are not guaranteed."
+)
+
+refer = (
+    "*XChange Referral Program*\n\nDriving new projects to take advantage of X7’s lending pool currently "
+    "valued over 200k USD across 5 chains is a top priority to ensure successful adoption of XChange in the "
+    "market. Every individual who refers a project that successfully launches on XChange,\n\n"
+    "1. Earn $250 for each project you refer to XChange, for the first 10 projects\n\n"
+    "2.Earn $500 for each additional project you refer to XChange beyond the first 10 projects\n\n"
+    "3. There is no limit to how many projects you can refer.\n\n"
+    "For example, if you refer 15 projects to X7, you will earn $2,500 for the first 10 and $2,500 for the "
+    "last 5 for a total of $5,000. The more you refer, the more you earn.\n\n"
+    "*How to participate*\n\n"
+    "1. Refer a project to launch on XChange with an Initial Liquidity Loan (ILL) - (2 ETH minimum)\n\n"
+    "2. Ensure the referred project confirms your referral to ensure the referral is valid. (X7 Finance "
+    "Community Multi-Sig will have full discretion to validate or invalidate any referrals)\n\n"
+    "3. Submit these details via this the form below\n\n"
+    "4. Once the project launches successfully with an ILL, the reward will be deposited to your submitted "
+    "wallet address 2 weeks after the launch of the project.\n\n"
+    "NOTE: community multi-sig team has final discretion on payment. Any individual or group looking to "
+    "exploit this program will not be eligible for a reward."
+)
+
+referral = (
+    "We want *YOUR* Referrals\n\n"
+    "Know someone who is launching a project? We want to reward you!\n"
+    "- Earn $250 for each project you refer to XChange, for the first 10 projects\n"
+    "- Earn $500 for each additional project you refer to XChange beyond the first 10 projects\n"
+    "- NO CAP on the amount of projects you can refer!\n\n"
+    "For more details or to apply, visit our application page below\n\n"
+    "We want *YOUR* projects.\n\n"
+    "Building on XChange offers multiple benefits\n"
+    "- Liquidity Loans - leverage up to x1000 the eth in your wallet to jump start your project\n"
+    "- Lower LP fees\n"
+    "- Large community of X7 Maxis\n"
+    "- Technical Support\n"
+    "- HUGE Incentives\n\n"
+    "DM `@gazuga` `@cryptod0c` `@robthebank44` to get started\n"
+)
+
+rob = (
+    "`Rob The Bank (an outstanding community member and marketer)`\n\n`-X7 DAO founders`"
+    )
 
 quotes = [
     "Ethos\n\nX7’s founding team believes that capital should be available to those with great ideas and that the "
@@ -662,3 +610,89 @@ quotes = [
     " configurable or alternative automated marketing making capabilities\n● Non-native token (ETH, BNB, etc.) "
     "initial liquidity loans\n",
 ]
+
+twitter_replies = [
+    "Raid!",
+    "LFG",
+    "Send it!",
+    "Twitter raid!",
+    "Like and Retweet!",
+    "GO GO GO!",
+    "X7 Force!",
+    "Raid it Fam!",
+    "Blow it up!",
+    "Full force!",
+    "Light it up!",
+    "Shill time!",
+    "Smash it!",
+    "Slap it!",
+    "Send it!",
+    "If Phlux says it, You do it!",
+    "Phlux it up!",
+    "Full Send!",
+    "Hit it Hard!",
+    "Insert inspirational raid quote here!",
+    "Let them know!",
+    "RAIIIIIIIIIID",
+    "Tweet Twoooo",
+]
+
+usernamelist = (
+    "davidgokhshtein",
+    "cz_binance",
+    "EricCryptoman",
+    "Yourpop8",
+    "Bitboy_Crypto",
+    "MarioNawfal",
+    "IncomeSharks",
+    "kyle_chasse",
+    "cryptoskullx",
+    "koreanjewcrypto",
+    "3orovik",
+    "Ralvero",
+    "jamiekingston",
+    "ChadCaff",
+    "gandalfcryptto",
+    "x7_finance",
+    "TheDefiSaint",
+    "DefiIgnas",
+    "thedefiedge",
+    "Darrenlautf",
+    "CrossChainAlex",
+    "DeFi_Dad",
+    "DeFi_Brian",
+    "JustinCBram",
+    "kamikaz_ETH",
+    "TraderDefi",
+    "DeFi_Made_Here",
+    "CamiRusso",
+    "RyanSAdams",
+    "sassal0x",
+    "Rewkang",
+    "delitzer",
+    "kaiynne",
+    "StaniKulechov",
+    "VitalikButerin",
+    "garyvee",
+)
+
+voting = ("*Proposals and Voting*\n\nVoting will occur in multiple phases, each of which has either a minimum or maximum"
+        " time phase duration.\n\n*Phase 1: Quorum-seeking*\nX7DAO token holders will be able to stake their tokens as "
+        "X7sDAO, a non-transferable staked version of X7DAO.\n\nA quorum is reached when more than 50% of circulating "
+        "X7DAO has been staked as X7sDAO.\n\nOnce a quorum is reached and a minimum quorum-seeking time period has "
+        "passed, the X7sDAO tokens are temporarily locked (and no more X7DAO tokens may be staked until the next Quorum"
+        " seeking period) and the governance process moves to the next phase\n\n*Phase 2: Proposal creation*\nA "
+        "proposal is created by running a transaction on the governance contract which specifies a specific transaction"
+        " on a specific contract (e.g. setFeeNumerator(0) on the X7R token contract).\n\nProposals are ordered, and any"
+        " proposals that are passed/adopted must be run in the order that they were created.\n\nProposals can be made "
+        "by X7sDAO stakes of 500,000 tokens or more. Additionally, holders of Magister tokens may make proposals. "
+        "Proposals may require a refundable proposal fee to prevent process griefing.\n\n*Phase 3: Proposal voting*\n"
+        "Each proposal may be voted on once by each address. The voter may specify the weight of their vote between 0 "
+        "and the total amount of X7sDAO they have staked.\n\nProposals pass by a majority vote of the quorum of X7sDAO "
+        "tokens.\n\nA parallel voting process will occur with Magister tokens, where each Magister token carries one "
+        "vote.\n\nIf a majority of magister token holders vote against a proposal, the proposal must reach an X7sDAO "
+        "vote of 75% of the quorum of X7sDAO tokens.\n\n*Phase 4: Proposal adoption*\nDuring this phase, proposals that"
+        " have passed will be enqueued for execution. This step ensures proper ordering and is a guard against various "
+        "forms of process griefing.\n\n*Phase 5: Proposal execution*\nAfter proposal adoption, all passed proposals "
+        f"must be executed before a new Quorum Seeking phase may commence."
+)

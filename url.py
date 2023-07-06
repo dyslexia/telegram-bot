@@ -58,9 +58,7 @@ wp_link = "https://x7.finance/whitepaper"
 short_wp_link = "https://x7community.space/wp-short.pdf"
 dac = "http://shorturl.at/ehnr9"
 github = "https://github.com/x7finance/"
-ca_directory = (
-    "https://medium.com/@mikemurpher/x7-finance-contracts-directory-fe3a9fee7b3c"
-)
+ca_directory = "https://medium.com/@mikemurpher/x7-finance-contracts-directory-fe3a9fee7b3c"
 snapshot = "https://snapshot.org/#/x7community.eth"
 referral = "https://docs.google.com/forms/d/e/1FAIpQLSf5h3ngT_swsq2My5BfY1W_ZWv3jni9JeWEfgkWFgorNLknQg/viewform"
 pioneers = "https://img.x7.finance/pioneers/"

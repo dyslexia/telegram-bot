@@ -114,12 +114,11 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler(["chart", "charts"], commands.chart))
     application.add_handler(CommandHandler(["constellations", "constellation", "quints"], commands.constellations))
     application.add_handler(CommandHandler(["ca", "contract", "contracts"], commands.contracts))
-    application.add_handler(CommandHandler("community", commands.community))
     application.add_handler(CommandHandler("count", commands.count))
     application.add_handler(CommandHandler([f"{times.countdown_command}"], commands.countdown))
-    application.add_handler(CommandHandler(["docs", "dashboard"], commands.dashboard))
     application.add_handler(CommandHandler(["deployer", "devs"], commands.deployer))
     application.add_handler(CommandHandler(["discount", "dsc", "dac"], commands.discount))
+    application.add_handler(CommandHandler(["docs", "documents"], commands.docs))
     application.add_handler(CommandHandler("draw", commands.draw))
     application.add_handler(CommandHandler(["ebb", "buybacks"], commands.ebb))
     application.add_handler(CommandHandler(["ecosystem", "tokens"], commands.ecosystem))
@@ -198,13 +197,13 @@ if __name__ == "__main__":
         data=times.referral_time * 60 * 60,
     )
 
-#    scripts = ['bsc.py', 'eth.py','arb.py', 'poly.py', 'opti.py']
-#    python_executable = sys.executable
-#    processes = []
-#    for script in scripts:
-#        command = [python_executable, script]
-#        process = subprocess.Popen(command)
-#        processes.append(process)
+    scripts = ['bsc.py', 'eth.py','arb.py', 'poly.py', 'opti.py']
+    python_executable = sys.executable
+    processes = []
+    for script in scripts:
+        command = [python_executable, script]
+        process = subprocess.Popen(command)
+        processes.append(process)
     application.run_polling()
 
     
