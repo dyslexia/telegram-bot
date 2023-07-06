@@ -2101,13 +2101,8 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [
                 [
                     InlineKeyboardButton(
-                        text="Lending Pool Reserve Contract",
-                        url=f"{chain_url}{ca.lpool_reserve}",
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="X7 Deposit Contract", url=f"{chain_url}{ca.x7d}#code"
+                        text="Lending Pool Contract",
+                        url=f"{chain_url}{ca.lpool}",
                     )
                 ],
             ]
@@ -2934,12 +2929,6 @@ async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     InlineKeyboardButton(
                         text="X7D Funding Dashboard",
                         url="https://app.x7.finance/#/fund",
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="X7 Lending Pool Reserve Contract",
-                        url=f"{chain_url}{ca.lpool_reserve}#code",
                     )
                 ],
                 [
