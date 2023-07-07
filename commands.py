@@ -349,26 +349,26 @@ async def docs(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [
                 [
                     InlineKeyboardButton(
-                        text="Get Started", url=f"{url.dashboard}getstarted/")
+                        text="Get Started", url=f"{url.dashboard}/docs/getstarted/")
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Trader", url=f"{url.dashboard}trader/"
+                        text="Trader", url=f"{url.dashboard}/docs/trader/"
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Project Launcher", url=f"{url.dashboard}launch/"
+                        text="Project Launcher", url=f"{url.dashboard}/docs/launch/"
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Project Engineer", url=f"{url.dashboard}integrate/",
+                        text="Project Engineer", url=f"{url.dashboard}/docs/integrate/",
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Capital Allocator", url=f"{url.dashboard}lending/"
+                        text="Capital Allocator", url=f"{url.dashboard}/docs/lending/"
                     )
                 ],
             ]
