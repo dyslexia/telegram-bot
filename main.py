@@ -11,8 +11,6 @@ from dotenv import load_dotenv
 import os
 import subprocess
 import sys
-
-
 load_dotenv()
 
 print("Bot Restarted")
@@ -118,7 +116,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler([f"{times.countdown_command}"], commands.countdown))
     application.add_handler(CommandHandler(["deployer", "devs"], commands.deployer))
     application.add_handler(CommandHandler(["discount", "dsc", "dac"], commands.discount))
-    application.add_handler(CommandHandler(["docs", "documents"], commands.docs))
+    application.add_handler(CommandHandler(["docs", "documents",], commands.docs))
     application.add_handler(CommandHandler("draw", commands.draw))
     application.add_handler(CommandHandler(["ebb", "buybacks"], commands.ebb))
     application.add_handler(CommandHandler(["ecosystem", "tokens"], commands.ecosystem))
@@ -177,10 +175,12 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler(["x7103", "103"], commands.x7103))
     application.add_handler(CommandHandler(["x7104", "104"], commands.x7104))
     application.add_handler(CommandHandler(["x7105", "105"], commands.x7105))
+    application.add_handler(CommandHandler("volume", commands.volume))
     application.add_handler(CommandHandler("voting", commands.voting))
     application.add_handler(CommandHandler("wei", commands.wei))
     application.add_handler(CommandHandler(["website", "site"], commands.website))
     application.add_handler(CommandHandler(["whitepaper", "wp", "wpquote"], commands.wp))
+
     application.job_queue.run_repeating(
         send_endorsement_message,
         times.endorse_time * 60 * 60,

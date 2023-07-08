@@ -13,10 +13,7 @@ from web3.exceptions import Web3Exception
 from eth_utils import to_checksum_address
 from datetime import datetime
 import os
-import threading
-import sys
 from dotenv import load_dotenv
-import subprocess
 load_dotenv()
 
 async def new_pair(event):

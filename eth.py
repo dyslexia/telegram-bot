@@ -115,6 +115,7 @@ async def new_pair(event):
             renounced = "⚠️ Contract Not Renounced"
     else:
         verified = "⚠️ Contract Unverified"
+    time.sleep(10)
     try:
         scan = api.get_scan(token_address, "eth")
         if scan[f"{str(token_address).lower()}"]["is_open_source"] == "1":

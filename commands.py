@@ -26,8 +26,8 @@ from web3.exceptions import Web3Exception
 from eth_utils import to_checksum_address
 import os
 from dotenv import load_dotenv
-
-
+import dune
+import time as t
 load_dotenv()
 
 alchemy_arb = os.getenv("ALCHEMY_ARB")
@@ -87,9 +87,7 @@ async def alerts(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def alumni(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*X7 Finance Alumni*\n\n{text.alumni}"
-        
-        f"{api.get_quote()}",
+        caption=f"*X7 Finance Alumni*\n\n{text.alumni}\n\n{api.get_quote()}",
         parse_mode="Markdown",
     )
 
@@ -2464,6 +2462,28 @@ async def today(update: Update, context: ContextTypes.DEFAULT_TYPE):
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f'`On this day in {today["year"]}:\n\n{today["text"]}`',
         parse_mode="Markdown",
+    )
+
+
+async def volume(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    execution_id = dune.execute_query("2637346","medium")
+    t.sleep(10)
+    response = dune.get_query_results(execution_id)
+    data = response.json()
+    live_vol_value = data["result"]["rows"][0]["live_vol"]
+    await update.message.reply_photo(
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+        caption=f'*Xchange Total Volume*\n\n${"{:0,.0f}".format(live_vol_value)}\n\n{api.get_quote()}',
+        parse_mode="Markdown",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        text="@Mike_X7F X7 Dune Dashboard ", url=f"https://dune.com/mike_x7f/x7finance"
+                    )
+                ],
+            ]
+        ),
     )
 
 

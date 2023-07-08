@@ -50,7 +50,7 @@ airdrop = (
     "are released on other chains.\n\nThese airdrop snapshots will occur just prior to the token launch"
 )
 
-alumni = (f"@Callmelandlord - The Godfather of the X7 Finance community, the OG, the creator - X7 God\n\n"
+alumni = (f"@Callmelandlord - The Godfather of the X7 Finance community, the OG, the creator - X7 God"
         f"@WoxieX - Creator of the OG dashboard -  x7community.space\n\n"
         f"@Zaratustra  - Defi extraordinaire and protocol prophet\n\n")
 
