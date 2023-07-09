@@ -338,42 +338,6 @@ async def chart(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
     )
 
 
-async def docs(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_photo(
-        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*X7 Finance Documents*\n\n{api.get_quote()}",
-        parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        text="Get Started", url=f"{url.dashboard}/docs/getstarted/")
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="Trader", url=f"{url.dashboard}/docs/trader/"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="Project Launcher", url=f"{url.dashboard}/docs/launch/"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="Project Engineer", url=f"{url.dashboard}/docs/integrate/",
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="Capital Allocator", url=f"{url.dashboard}/docs/lending/"
-                    )
-                ],
-            ]
-        ),
-    )
-
-
 async def deployer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tx = api.get_tx(ca.deployer, "eth")
     time = datetime.utcfromtimestamp(int(tx["result"][0]["timeStamp"]))
@@ -448,6 +412,42 @@ async def discount(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     InlineKeyboardButton(
                         text="X7 Lending Discount Contract",
                         url=f"{url.ether_address}{ca.lending_discount}#code",
+                    )
+                ],
+            ]
+        ),
+    )
+
+
+async def docs(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_photo(
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+        caption=f"*X7 Finance Documents*\n\n{api.get_quote()}",
+        parse_mode="Markdown",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        text="Get Started", url=f"{url.dashboard}getstarted/")
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Trader", url=f"{url.dashboard}docs/guides/trade/"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Project Launcher", url=f"{url.dashboard}docs/guides/launch/"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Project Engineer", url=f"{url.dashboard}docs/guides/integrate/",
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Capital Allocator", url=f"{url.dashboard}docs/guides/lending/"
                     )
                 ],
             ]
@@ -934,6 +934,7 @@ async def links(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [InlineKeyboardButton(text="Reddit", url=f"{url.reddit}")],
                 [InlineKeyboardButton(text="Youtube", url=f"{url.youtube}")],
                 [InlineKeyboardButton(text="Github", url=f"{url.github}")],
+                [InlineKeyboardButton(text="Dune", url=f"{url.dune}")],
             ]
         ),
     )
@@ -1677,7 +1678,8 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
                     [
                         InlineKeyboardButton(
                             text="LooksRare",
-                            url=f"https://looksrare.org/collections/{ca.pioneer}?filters=%7B%22attributes"
+                            url=f"{url.lr_pioneer}"
+                            "?filters=%7B%22attributes"
                             f"%22%3A%5B%7B%22traitType%22%3A%22Transfer+Lock+Status%22%2C%22values"
                             f"%22%3A%5B%22Unlocked%22%5D%7D%5D%7D",
                         )
@@ -1685,7 +1687,7 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
                     [
                         InlineKeyboardButton(
                             text="Blur.io",
-                            url="https://blur.io/collection/x7-pioneer"
+                            url=f"{url.blur_pioneer}"
                             "?traits=%7B%22Transfer%20Lock%20Status%22%3A%5B%22Unlocked%22%5D%7D",
                         )
                     ],
@@ -1703,7 +1705,7 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
         await update.message.reply_text(
             f"*X7 Pioneer {pioneer_id} NFT Info*\n\n"
             f"Transfer Lock Status: {status}\n\n"
-            f"https://looksrare.org/collections/0x70000299ee8910ccacd97b1bb560e34f49c9e4f7/{pioneer_id}\n\n"
+            f"{url.lr_pioneer}/{pioneer_id}\n\n"
             f"{api.get_quote()}",
             parse_mode="markdown",
             reply_markup=InlineKeyboardMarkup(
@@ -2479,7 +2481,7 @@ async def volume(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [
                 [
                     InlineKeyboardButton(
-                        text="@Mike_X7F X7 Dune Dashboard ", url=f"https://dune.com/mike_x7f/x7finance"
+                        text="@Mike_X7F X7 Dune Dashboard ", url=f"{url.dune}"
                     )
                 ],
             ]
