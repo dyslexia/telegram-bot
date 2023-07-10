@@ -2377,14 +2377,14 @@ async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if not chain:
         chain = "eth"
-        tax_info = tax.generate_info(chain)  # Generate tax info for the default chain
+        tax_info = tax.generate_info(chain)
     
     if tax_info:
-        caption = f"{tax_info}\n\n{api.get_quote()}"
+        caption = f"{tax_info}"
     else:
         await update.message.reply_text("Invalid or missing chain. Please provide a valid chain (eth, arb, poly, bsc, opti).")
         return
-    caption = f"{chain.upper()}:\n{caption}\n\n{api.get_quote()}"  # Include the chain in the caption
+    caption = f"{chain.upper()}:\n{caption}\n\n{api.get_quote()}"
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=caption,
