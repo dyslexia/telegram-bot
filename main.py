@@ -17,10 +17,6 @@ print("Bot Restarted")
 
 
 async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat_id = update.effective_chat.id
-    main = os.getenv("MAIN_TELEGRAM_CHANNEL_ID")
-    if chat_id != main:
-        return
     message = str(update.effective_message.text)
     lower_message = message.lower()
     keyword_to_response = {
@@ -45,11 +41,11 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if keyword in target_message:
             if "text" in response:
-                await context.bot.send_message(
-                    response["text"], parse_mode=response["mode"]
+                await update.message.reply_text(
+                    text = response["text"], parse_mode=response["mode"]
                 )
             elif "sticker" in response:
-                await context.bot.send_sticker(sticker=response["sticker"])
+                await update.message.reply_sticker(sticker=response["sticker"])
 
 
 async def error(update, context):
