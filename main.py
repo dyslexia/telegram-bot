@@ -18,7 +18,7 @@ print("Bot Restarted")
 
 async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
-    main = os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
+    main = os.getenv("MAIN_TELEGRAM_CHANNEL_ID")
     if chat_id != main:
         return
     message = str(update.effective_message.text)
