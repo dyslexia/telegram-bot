@@ -45,11 +45,11 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if keyword in target_message:
             if "text" in response:
-                await update.message.reply_text(
+                await context.bot.send_message(
                     response["text"], parse_mode=response["mode"]
                 )
             elif "sticker" in response:
-                await update.message.reply_sticker(sticker=response["sticker"])
+                await context.bot.send_sticker(sticker=response["sticker"])
 
 
 async def error(update, context):
