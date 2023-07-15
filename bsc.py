@@ -16,6 +16,12 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+
+class FilterNotFoundError(Exception):
+    def __init__(self, message="Filter not found"):
+        self.message = message
+        super().__init__(self.message)
+
 async def new_pair(event):
     print("Pair found")
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "bsc")
@@ -386,13 +392,14 @@ async def log_loop(
 
             await asyncio.sleep(poll_interval)
         except (
-            Web3Exception,
-            Exception,
-            TimeoutError,
-            ValueError,
-            StopAsyncIteration,
+        Web3Exception,
+        Exception,
+        TimeoutError,
+        ValueError,
+        StopAsyncIteration,
+        FilterNotFoundError,
         ) as e:
-            print(f"BSC Loop Error: {e}")
+            print(f"BSC Main Error: {e}")
             restart_main()
 
 
@@ -402,8 +409,6 @@ async def main():
     ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "bsc"))
     ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "bsc"))
     ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "bsc"))
-
-
     pair_filter = factory.events.PairCreated.create_filter(fromBlock="latest")
     ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
     ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
@@ -421,6 +426,7 @@ async def main():
         TimeoutError,
         ValueError,
         StopAsyncIteration,
+        FilterNotFoundError,
     ) as e:
         print(f"BSC Main Error: {e}")
         restart_main()
