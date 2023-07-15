@@ -2949,8 +2949,8 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open(r"media/blackhole.png", "rb"),
         caption=f"*X7 Finance Treasury {chain_name}*\nUse `/treasury [chain-name]` for other chains\n\n"
-        f'Developer Wallet:\n{dev_eth[:4]}ETH (${"{:0,.0f}".format(dev_dollar)})\n\n'
-        f'Community Wallet:\n{com_eth[:4]}ETH (${"{:0,.0f}".format(com_dollar)})\n'
+        f'Developer Wallet:\n{dev_eth[:6]}ETH (${"{:0,.0f}".format(dev_dollar)})\n\n'
+        f'Community Wallet:\n{com_eth[:6]}ETH (${"{:0,.0f}".format(com_dollar)})\n'
         f'{com_x7d} X7D (${"{:0,.0f}".format(com_x7d_price)})\n'
         f'{"{:0,.0f}".format(com_x7r)} X7R (${"{:0,.0f}".format(com_x7r_price)})\n'
         f'{"{:0,.0f}".format(com_x7dao)} X7DAO (${"{:0,.0f}".format(com_x7dao_price)})\n'
