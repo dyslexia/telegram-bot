@@ -198,12 +198,12 @@ if __name__ == "__main__":
         data=times.referral_time * 60 * 60,
     )
 
-#    scripts = ['bsc.py', 'eth.py','arb.py', 'poly.py', 'opti.py']
-#    python_executable = sys.executable
-#    processes = []
-#    for script in scripts:
-#        command = [python_executable, script]
-#        process = subprocess.Popen(command)
-#        processes.append(process)
+    scripts = ['bsc.py', 'eth.py','arb.py', 'poly.py', 'opti.py']
+    python_executable = sys.executable
+    processes = []
+    for script in scripts:
+        command = [python_executable, script]
+        process = subprocess.Popen(command)
+        processes.append(process)
     application.run_polling()
 
