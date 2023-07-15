@@ -7,6 +7,7 @@ import tweepy
 import requests
 from typing import Tuple
 import os
+import ca
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -235,6 +236,20 @@ def get_pool_liq_balance(wallet, token, chain):
     response = requests.Session().get(url)
     data = response.json()
     return int(data["result"] or 0)
+
+
+def get_price(token, chain):
+    api_key = os.getenv("MORALIS_API_KEY")
+    params = {
+        "address": token,
+        "chain": "eth"
+    }
+
+    result = evm_api.token.get_token_price(
+        api_key=api_key,
+        params=params,
+    )
+    return result["usdPrice"]
 
 
 def get_quote():
