@@ -82,6 +82,12 @@ def get_cg_search(token):
     return result
 
 
+def get_fact():
+    response = requests.get("https://uselessfacts.jsph.pl/api/v2/facts/random")
+    quote = response.json()
+    return quote["text"]
+
+
 def get_gas(chain):
     if chain not in chains_info:
         raise ValueError(f"Invalid chain: {chain}")

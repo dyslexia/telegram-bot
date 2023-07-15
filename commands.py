@@ -689,6 +689,14 @@ async def endorse(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
+async def fact(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_photo(
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+        caption=f"*Fact!*\n\n{api.get_fact()}",
+        parse_mode="Markdown"
+    )
+
+
 async def factory(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",

@@ -120,6 +120,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("draw", commands.draw))
     application.add_handler(CommandHandler(["ebb", "buybacks"], commands.ebb))
     application.add_handler(CommandHandler(["ecosystem", "tokens"], commands.ecosystem))
+    application.add_handler(CommandHandler("fact", commands.fact))
     application.add_handler(CommandHandler("factory", commands.factory))
     application.add_handler(CommandHandler("faq", commands.faq))
     application.add_handler(CommandHandler(["fg", "feargreed"], commands.fg))
@@ -197,12 +198,12 @@ if __name__ == "__main__":
         data=times.referral_time * 60 * 60,
     )
 
-    scripts = ['bsc.py', 'eth.py','arb.py', 'poly.py', 'opti.py']
-    python_executable = sys.executable
-    processes = []
-    for script in scripts:
-        command = [python_executable, script]
-        process = subprocess.Popen(command)
-        processes.append(process)
+#    scripts = ['bsc.py', 'eth.py','arb.py', 'poly.py', 'opti.py']
+#    python_executable = sys.executable
+#    processes = []
+#    for script in scripts:
+#        command = [python_executable, script]
+#        process = subprocess.Popen(command)
+#        processes.append(process)
     application.run_polling()
 
