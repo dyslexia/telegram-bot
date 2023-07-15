@@ -4257,7 +4257,7 @@ async def price(update: Update, context: ContextTypes.DEFAULT_TYPE):
     token_price = api.get_cg_price(token_id)
     if search == "":
         im1 = Image.open((random.choice(media.blackhole)))
-        im2 = Image.open(r"media\logo11.png")
+        im2 = Image.open(r"media/logo11.png")
         im1.paste(im2, (740, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
@@ -4370,9 +4370,9 @@ async def price(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         img = Image.open(requests.get(thumb, stream=True).raw)
         result = img.convert("RGBA")
-        result.save(r"media\cgtokenlogo.png")
+        result.save(r"media/cgtokenlogo.png")
         im1 = Image.open((random.choice(media.blackhole)))
-        im2 = Image.open(r"media\cgtokenlogo.png")
+        im2 = Image.open(r"media/cgtokenlogo.png")
         im1.paste(im2, (680, 20), im2)
         myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
         i1 = ImageDraw.Draw(im1)
