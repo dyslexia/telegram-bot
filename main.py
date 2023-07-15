@@ -206,6 +206,3 @@ if __name__ == "__main__":
         processes.append(process)
     application.run_polling()
 
-    
-
-    
