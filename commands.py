@@ -34,18 +34,7 @@ load_dotenv()
 
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    holders = api.get_holders("0x117546D1467d80C6BdE13910412c724383260CF9")
-    await update.message.reply_text(
-        f"{holders}",
-        parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton(text="Xchange App", url=f"{url.xchange}")],
-                [InlineKeyboardButton(text="Website", url=f"{url.dashboard}")],
-            ]
-        ),
-    )
-
+    return
 
 # COMMANDS
 async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -73,7 +62,7 @@ async def airdrop(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def alerts(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption="Check out the link below for the Xchange Alerts channel",
+        caption=f"Check out the link below for the Xchange Alerts channel\n\n{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
@@ -2764,6 +2753,128 @@ async def snapshot(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ]
         ),
     )
+
+
+async def splitters(update: Update, context):
+    chain_mappings = {
+        "eth": {
+            "chain_name": "(ETH)",
+            "link": url.ether_address,
+            "native": "eth",
+            "chain": "eth"
+        },
+        "bsc": {
+            "chain_name": "(BSC)",
+            "link": url.bsc_address,
+            "native": "bnb",
+            "chain": "bsc"
+        },
+        "bnb": {
+            "chain_name": "(BSC)",
+            "link": url.bsc_address,
+            "native": "bnb",
+            "chain": "bsc"
+        },
+        "polygon": {
+            "chain_name": "(POLYGON)",
+            "link": url.poly_address,
+            "native": "matic",
+            "chain": "poly"
+        },
+        "poly": {
+            "chain_name": "(POLYGON)",
+            "link": url.poly_address,
+            "native": "matic",
+            "chain": "poly"
+        },
+        "optimism": {
+            "chain_name": "(OPTIMISM)",
+            "link": url.opti_address,
+            "native": "eth",
+            "chain": "opti"
+        },
+        "opti": {
+            "chain_name": "(OPTIMISM)",
+            "link": url.opti_address,
+            "native": "eth",
+            "chain": "opti"
+        },
+        "arbitrum": {
+            "chain_name": "(ARB)",
+            "link": url.arb_address,
+            "native": "eth",
+            "chain": "arb"
+        },
+        "arb": {
+            "chain_name": "(ARB)",
+            "link": url.arb_address,
+            "native": "eth",
+            "chain": "arb"
+        }
+    }
+    if len(context.args) > 1:
+        eth_value = float(context.args[1])
+        chain = context.args[0].lower()
+        if chain in chain_mappings:
+            mapping = chain_mappings[chain]
+            chain_name = mapping["chain_name"]
+            link = mapping["link"]
+            native = mapping["native"]
+            chain = mapping["chain"]
+        else:
+            await update.message.reply_text("Invalid chain. Please provide a valid chain name.")
+            return
+        distribution = api.get_split(eth_value)
+        message = f"*X7 Finance Ecosystem Splitters {chain_name}* \n\n{eth_value} {native.upper()}\n\n"
+        for location, share in distribution.items():
+            if location == "Treasury":
+                message += f"\n{location}: {share:.2f} {native.upper()}:\n"
+            else:
+                message += f"{location}: {share:.2f} {native.upper()}\n"
+
+        await update.message.reply_photo(
+            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+            caption=f"{message}\n\n{api.get_quote()}",
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [InlineKeyboardButton(text="Ecosystem Splitter", url=f"{link}{ca.eco_splitter}")],
+                    [InlineKeyboardButton(text="Treasury Splitter", url=f"{link}{ca.treasury_splitter}")],
+                ]
+            ),
+        )
+    elif len(context.args) == 1:
+        chain = context.args[0].lower()
+
+        if chain in chain_mappings:
+            mapping = chain_mappings[chain]
+            chain_name = mapping["chain_name"]
+            link = mapping["link"]
+            native = mapping["native"]
+            chain = mapping["chain"]
+        else:
+            await update.message.reply_text("Invalid chain. Please provide a valid chain name.")
+            return
+        treasury_eth = api.get_native_balance(ca.treasury_splitter, chain)
+        eco_eth = api.get_native_balance(ca.eco_splitter, chain)
+        native_price = api.get_native_price(native)
+        eco_dollar = float(eco_eth) * float(native_price)
+        treasury_dollar = float(treasury_eth) * float(native_price)
+        await update.message.reply_photo(
+            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+            caption=
+                f"*X7 Finance Ecosystem Splitters {chain_name}*\n\n"
+                f"Ecosystem Splitter: {eco_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(eco_dollar)})\n"
+                f"Treasury Splitter: {treasury_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(treasury_dollar)})\n\n"
+                f"For example of splitter allocation use\n`/splitter [chain-name] [amount]`\n\n{api.get_quote()}",
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [InlineKeyboardButton(text="Ecosystem Splitter", url=f"{link}{ca.eco_splitter}")],
+                    [InlineKeyboardButton(text="Treasury Splitter", url=f"{link}{ca.treasury_splitter}")],
+                ]
+            ),
+        )
 
 
 async def supply(update: Update, context: ContextTypes.DEFAULT_TYPE):

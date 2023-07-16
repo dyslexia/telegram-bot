@@ -302,6 +302,40 @@ def get_snapshot():
     data = response.json()
     return data
 
+def get_split(eth_value):
+    founding_dev_percentage = 0.07
+    pioneer_reward_pool_percentage = 0.06
+    community_multisig_percentage = 0.32
+    developers_multisig_percentage = 0.13
+    x7r_percentage = 0.10
+    x7dao_percentage = 0.10
+    x7_constellations_percentage = 0.10
+    lending_pool_percentage = 0.20
+    treasury_percentage = 0.50
+    treasury_share = eth_value * treasury_percentage
+    founding_dev_share = treasury_share * founding_dev_percentage * 7
+    pioneer_reward_pool_share = treasury_share * pioneer_reward_pool_percentage
+    community_multisig_share = treasury_share * community_multisig_percentage
+    developers_multisig_share = treasury_share * developers_multisig_percentage
+    x7r_share = eth_value * x7r_percentage
+    x7dao_share = eth_value * x7dao_percentage
+    x7_constellations_share = eth_value * x7_constellations_percentage
+    lending_pool_share = eth_value * lending_pool_percentage
+
+    distribution = {
+        "X7R": x7r_share,
+        "X7DAO": x7dao_share,
+        "X7 Constellations": x7_constellations_share,
+        "Lending Pool": lending_pool_share,
+        "Treasury": treasury_share,
+        "Founding X7 Devs Total": founding_dev_share,
+        "Pioneer Reward Pool": pioneer_reward_pool_share,
+        "Community Multi Sig": community_multisig_share,
+        "Developers Multi Sig": developers_multisig_share
+    }
+
+    return distribution
+
 
 def get_supply(token, chain):
     if chain not in chains_info:
