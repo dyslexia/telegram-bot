@@ -28,20 +28,23 @@ import os
 from dotenv import load_dotenv
 import dune
 import time as t
+from tokens import info, pairs, chains
+import traceback
 load_dotenv()
-
-alchemy_arb = os.getenv("ALCHEMY_ARB")
-alchemy_poly = os.getenv("ALCHEMY_POLY")
-alchemy_opti = os.getenv("ALCHEMY_OPTI")
-bsc = os.getenv("BSC")
-ether = os.getenv("ETHER")
-poly = os.getenv("POLY")
-opti = os.getenv("OPTI")
-arb = os.getenv("ARB")
 
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    return
+    holders = api.get_holders("0x117546D1467d80C6BdE13910412c724383260CF9")
+    await update.message.reply_text(
+        f"{holders}",
+        parse_mode="Markdown",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton(text="Xchange App", url=f"{url.xchange}")],
+                [InlineKeyboardButton(text="Website", url=f"{url.dashboard}")],
+            ]
+        ),
+    )
 
 
 # COMMANDS
@@ -1350,13 +1353,13 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     if chain == "eth":
-        web_url = f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}"
+        web_url = f"https://eth-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ETH')}"
         token = "ETH"
         scan_address = url.ether_address
         scan_token = url.ether_token
         price = api.get_native_price("eth")
     elif chain == "arb":
-        web_url = f"https://arb-mainnet.g.alchemy.com/v2/{alchemy_arb}"
+        web_url = f"https://arb-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ARB')}"
         token = "ETH"
         scan_address = url.arb_address
         scan_token = url.arb_token
@@ -1368,13 +1371,13 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
         scan_token = url.bsc_token
         price = api.get_native_price("bnb")
     elif chain == "poly":
-        web_url = f"https://polygon-mainnet.g.alchemy.com/v2/{alchemy_poly}"
+        web_url = f"https://polygon-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_POLY')}"
         token = "MATIC"
         scan_address = url.poly_address
         scan_token = url.poly_token
         price = api.get_native_price("matic")
     elif chain == "opti":
-        web_url = f"https://opt-mainnet.g.alchemy.com/v2/{alchemy_opti}"
+        web_url = f"https://opt-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_OPTI')}"
         token = "ETH"
         scan_address = url.opti_address
         scan_token = url.opti_token
@@ -1528,11 +1531,11 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
     if loan_type == "count":
         networks = {
-            "ETH": f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}",
-            "ARB": f"https://arb-mainnet.g.alchemy.com/v2/{alchemy_arb}",
+            "ETH": f"https://eth-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ETH')}",
+            "ARB": f"https://arb-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ARB')}",
             "BSC": "https://bsc-dataseed.binance.org/",
-            "POLY": f"https://polygon-mainnet.g.alchemy.com/v2/{alchemy_poly}",
-            "OPTI": f"https://opt-mainnet.g.alchemy.com/v2/{alchemy_opti}",
+            "POLY": f"https://polygon-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_POLY')}",
+            "OPTI": f"https://opt-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_OPTI')}",
         }
         contract_networks = {
             "ETH": "eth",
@@ -1938,52 +1941,24 @@ async def opensea(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-async def pair(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chain = " ".join(context.args).lower()
-    key = ""
-    buy_link = ""
-    native = ""
-    chart_link = ""
-    chain_link = ""
-    token = ""
-    if chain == "":
+async def pair(update: Update, context: CallbackContext):
+    token = " ".join(context.args).lower()
+    if token == "":
         await update.message.reply_photo(
-        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*X7 Finance Pair Count*\n\n"
-        "use `/pair count` to see running total of pairs or `/pair [chain]` to see last pair created\n\n"
-        f"{api.get_quote()}",
-            parse_mode="Markdown",)
-    if chain == "bsc":
-        key = "https://bsc-dataseed.binance.org/"
-        buy_link = url.xchange_buy_bsc
-        chart_link = url.dex_tools_bsc
-        native = ca.wbnb
-        chain_link = url.bsc_token
-    if chain == "eth":
-        key = f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}"
-        buy_link = url.xchange_buy_eth
-        chart_link = url.dex_tools_eth
-        native = ca.weth
-        chain_link = url.ether_token
-    if chain == "arb":
-        key = f"https://arb-mainnet.g.alchemy.com/v2/{alchemy_arb}"
-        buy_link = url.xchange_buy_arb
-        chart_link = url.dex_tools_arb
-        native = ca.aweth
-        chain_link = url.arb_token
-    if chain == "poly":
-        key = f"https://polygon-mainnet.g.alchemy.com/v2/{alchemy_poly}"
-        buy_link = url.xchange_buy_poly
-        chart_link = url.dex_tools_poly
-        native = ca.matic
-        chain_link = url.poly_token
-    if chain == "count":
+            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+            caption=f"*X7 Finance Pairs*\n\n"
+                    "`/pair count` to see the running total of pairs\n"
+                    "`/pair name` to see pair details\n\n"
+                    f"{api.get_quote()}",
+            parse_mode="Markdown",
+        )
+    elif token == "count":
         networks = {
-            "ETH": f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}",
-            "ARB": f"https://arb-mainnet.g.alchemy.com/v2/{alchemy_arb}",
+            "ETH": f"https://eth-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ETH')}",
+            "ARB": f"https://arb-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ARB')}",
             "BSC": "https://bsc-dataseed.binance.org/",
-            "POLY": f"https://polygon-mainnet.g.alchemy.com/v2/{alchemy_poly}",
-            "OPTI": f"https://opt-mainnet.g.alchemy.com/v2/{alchemy_opti}",
+            "POLY": f"https://polygon-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_POLY')}",
+            "OPTI": f"https://opt-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_OPTI')}",
         }
         contract_networks = {
             "ETH": "eth",
@@ -2004,44 +1979,105 @@ async def pair(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
             caption=f"*X7 Finance Pair Count*\n\n"
-            f'`ETH:`       {contract_instances["ETH"]}\n'
-            f'`BSC:`       {contract_instances["BSC"]}\n'
-            f'`ARB:`       {contract_instances["ARB"]}\n'
-            f'`POLY:`     {contract_instances["POLY"]}\n'
-            f'`OPTI:`     {contract_instances["OPTI"]}\n\n'
-            f"`TOTAL:`   {sum(contract_instances.values())}\n\n"
-            f"{api.get_quote()}",
+                    f'`ETH:`       {contract_instances["ETH"]}\n'
+                    f'`BSC:`       {contract_instances["BSC"]}\n'
+                    f'`ARB:`       {contract_instances["ARB"]}\n'
+                    f'`POLY:`     {contract_instances["POLY"]}\n'
+                    f'`OPTI:`     {contract_instances["OPTI"]}\n\n'
+                    f"`TOTAL:`   {sum(contract_instances.values())}\n\n"
+                    f"{api.get_quote()}",
             parse_mode="Markdown",
         )
-    web3 = Web3(Web3.HTTPProvider(key))
-    factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, chain))
-    total_pairs = factory.functions.allPairsLength().call()
-    last_pair = factory.functions.allPairs(total_pairs - 1).call()
-    pair_contract = web3.eth.contract(address=last_pair, abi=ca.pairsABI)
-    token0 = pair_contract.functions.token0().call()
-    token1 = pair_contract.functions.token1().call()
-    token_addresses = []
-    if token0 != native:
-        token = token0
-    if token1 != native:
-        token = token1
-    token_name = api.get_token_name(token, chain)
-    await update.message.reply_photo(
-        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*Xchange - Last {chain.upper()} Pair Created*\n\n"
-        f"{token_name}\n\n"
-        f"`{token}`\n\n"
-        f"{api.get_quote()}",
-        parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton(text=f"Buy", url=f"{buy_link}{token}")],
-                [InlineKeyboardButton(text="Chart", url=f"{chart_link}{token}")],
-                [InlineKeyboardButton(text="Contract", url=f"{chain_link}{token}")],
-            ]
-        ),
-    )
-    
+    else:
+        token_info = info.get(token)
+        if not token_info:
+            await update.message.reply_text(
+                f'{token.upper()} not found.\n\n'
+                f'To request a token added use /add followed by:\n`name`\n`ca`\n`pair address`\n`decimals`\n`chain` ',
+                parse_mode="Markdown")
+            return
+        if token_info.chain == "eth":
+            holders = api.get_holders(token_info.ca)
+        else:
+            holders = "N/A"
+        scan = chains[token_info.chain].scan
+        dext = chains[token_info.chain].dext
+        w3 = chains[token_info.chain].w3
+        contract = w3.eth.contract(address=Web3.to_checksum_address(token_info.pair), abi=pairs)
+        token0_address = contract.functions.token0().call()
+        token1_address = contract.functions.token1().call()
+        supply = contract.functions.totalSupply().call()
+        is_reserve_token0 = token_info.ca.lower() == token0_address.lower()
+        is_reserve_token1 = token_info.ca.lower() == token1_address.lower()
+        supply = int(api.get_supply(token_info.ca, token_info.chain))
+        eth = ""
+        token_res = ""
+        if is_reserve_token0:
+            eth = contract.functions.getReserves().call()[1]
+            token_res = contract.functions.getReserves().call()[0]
+        elif is_reserve_token1:
+            eth = contract.functions.getReserves().call()[0]
+            token_res = contract.functions.getReserves().call()[1]
+        liq = int(eth) * api.get_native_price(token_info.chain) * 2
+        formatted_liq = "${:,.2f}".format(liq / (10 ** 18))
+        if token_info.decimals < 18:
+            token_price = liq / supply / (10 ** token_info.decimals)
+        else:
+            token_price = liq / supply
+        formatted_token_price = "${:.8f}".format(token_price)
+        mcap = token_price * supply
+        formatted_mcap = "${:,.0f}".format(mcap / (10 ** token_info.decimals))
+        im1 = Image.open((random.choice(media.blackhole)))
+        try:
+            img = Image.open(requests.get(token_info.logo, stream=True).raw)
+            result = img.convert("RGBA")
+            result.save(r"media/tokenlogo.png")
+            im2 = Image.open(r"media/tokenlogo.png")
+        except Exception as e:
+            if token_info.chain == "eth":
+                im2 = Image.open(media.eth_logo)
+            if token_info.chain == "bsc":
+                im2 = Image.open(media.bsc_logo)
+            if token_info.chain == "poly":
+                im2 = Image.open(media.poly_logo)
+            if token_info.chain == "arb":
+                im2 = Image.open(media.arb_logo)
+            if token_info.chain == "opti":
+                im2 = Image.open(media.opti_logo)
+
+        im1.paste(im2, (720, 20), im2)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
+        i1 = ImageDraw.Draw(im1)
+        i1.text(
+            (26, 30),
+            f'Xchange Pair Info\n\n{token.upper()}\n\n'
+            f"Liquidity: {formatted_liq}\n"
+            f"Market Cap: {formatted_mcap}\n"
+            f"Token Price: {formatted_token_price}\n"
+            f"Holders: {holders}\n\n\n\n\n\n"
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont,
+            fill=(255, 255, 255),
+        )
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
+        await update.message.reply_photo(
+            photo=open(r"media/blackhole.png", "rb"),
+            caption=f'*Xchange Pair Info\n\n{token.upper()}*\n\n'
+                    f'`{token_info.ca}`\n\n'
+                    f"Liquidity: {formatted_liq}\n"
+                    f"Market Cap: {formatted_mcap}\n"
+                    f"Token Price: {formatted_token_price}\n"
+                    f"Holders: {holders}\n\n"
+            f"{api.get_quote()}",
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text="Chart", url=f"{dext}{token_info.pair}")],
+                [InlineKeyboardButton(text="Buy", url=f"{url.xchange}{token_info.ca}")],
+                [InlineKeyboardButton(text="Contract", url=f"{scan}{token_info.ca}")],
+            ]),
+        )
+
 
 async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
     pioneer_id = " ".join(context.args)
