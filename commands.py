@@ -2930,6 +2930,8 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
         link = url.ether_address
         native = "eth"
         chain = "eth"
+        com_multi = ca.com_multi_eth
+        dev_multi = ca.dev_multi_eth
     elif chain == "bsc" or chain == "bnb":
         im2 = Image.open(media.bsc_logo)
         chain_moralis = "bsc"
@@ -2937,6 +2939,8 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
         link = url.bsc_address
         native = "bnb"
         chain = "bsc"
+        com_multi = ca.com_multi_bsc
+        dev_multi = ca.dev_multi_bsc
     elif chain == "polygon" or chain == "poly":
         im2 = Image.open(media.poly_logo)
         chain_moralis = "polygon"
@@ -2944,6 +2948,8 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
         link = url.poly_address
         native = "matic"
         chain = "poly"
+        com_multi = ca.com_multi_poly
+        dev_multi = ca.dev_multi_poly
     elif chain == "optimism" or chain == "opti":
         im2 = Image.open(media.opti_logo)
         chain_moralis = "optimism"
@@ -2951,6 +2957,8 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
         link = url.opti_address
         native = "eth"
         chain = "opti"
+        com_multi = ca.com_multi_opti
+        dev_multi = ca.dev_multi_opti
     elif chain == "arbitrum" or chain == "arb":
         im2 = Image.open(media.arb_logo)
         chain_moralis = "arbitrum"
@@ -2958,68 +2966,98 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
         link = url.arb_address
         native = "eth"
         chain = "arb"
-
-    dev_eth = api.get_native_balance(ca.dev_multi_eth, chain)
-    com_eth = api.get_native_balance(ca.com_multi_eth, chain)
-    dev_dollar = float(dev_eth) * float(api.get_native_price(native)) / 1**18
-    com_dollar = float(com_eth) * float(api.get_native_price(native)) / 1**18
-    com_x7r = api.get_token_balance(ca.com_multi_eth, ca.x7r, chain)
-    com_x7dao = api.get_token_balance(ca.com_multi_eth, ca.x7dao, chain)
-    com_x7dao_price = com_x7dao * api.get_price(ca.x7dao, chain_moralis)
-    com_x7r_price = com_x7r * api.get_price(ca.x7r, chain_moralis)
-    com_x7d = api.get_token_balance(ca.com_multi_eth, ca.x7d, chain)
-    com_x7d_price = com_x7d * api.get_native_price(native)
+        com_multi = ca.com_multi_arb
+        dev_multi = ca.dev_multi_arb
+    native_price = api.get_native_price(native)
+    dev_eth = api.get_native_balance(dev_multi, chain)
+    com_eth = api.get_native_balance(com_multi, chain)
+    dev_dollar = float(dev_eth) * float(native_price)
+    com_dollar = float(com_eth) * float(native_price)
+    treasury_eth = api.get_native_balance(ca.treasury_splitter, chain)
+    eco_eth = api.get_native_balance(ca.eco_splitter, chain)
+    eco_dollar = float(eco_eth) * float(native_price)
+    treasury_dollar = float(treasury_eth) * float(native_price)
+    try:
+        com_x7r_balance = api.get_token_balance(com_multi, ca.x7r, chain)
+        com_x7r_price = com_x7r_balance * api.get_price(ca.x7r, chain_moralis)
+    except Exception as e:
+        com_x7r_balance = 0
+        com_x7r_price = 0
+    try:
+        com_x7dao_balance = api.get_token_balance(com_multi, ca.x7dao, chain)
+        com_x7dao_price = com_x7dao_balance * api.get_price(ca.x7dao, chain_moralis)
+    except Exception as e:
+        com_x7dao_balance = 0
+        com_x7dao_price = 0
+    try:
+        com_x7d_balance = api.get_token_balance(com_multi, ca.x7d, chain)
+        com_x7d_price = com_x7d_balance * api.get_native_price(native)
+    except Exception as e:
+        com_x7d_balance = 0
+        com_x7d_price = 0
     com_total = com_x7r_price + com_dollar + com_x7d_price + com_x7dao_price
     im1 = Image.open((random.choice(media.blackhole)))
-    im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
-    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 24)
     i1 = ImageDraw.Draw(im1)
     i1.text(
         (28, 36),
         f"X7 Finance Treasury {chain_name}\n\n"
-        f'Developer Wallet:\n{dev_eth[:6]}{native.upper()} (${"{:0,.0f}".format(dev_dollar)})\n\n'
-        f'Community Wallet:\n{com_eth[:6]}{native.upper()} (${"{:0,.0f}".format(com_dollar)})\n'
-        f'{com_x7d} X7D (${"{:0,.0f}".format(com_x7d_price)})\n'
-        f'{"{:0,.0f}".format(com_x7r)} X7R (${"{:0,.0f}".format(com_x7r_price)})\n'
-        f'{"{:0,.0f}".format(com_x7dao)} X7DAO (${"{:0,.0f}".format(com_x7dao_price)})\n'
-        f'Total: (${"{:0,.0f}".format(com_total)})\n\n\n'
-        f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+        f"Developer Wallet:\n{dev_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(dev_dollar)})\n\n"
+        f"Community Wallet:\n{com_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(com_dollar)})\n"
+        f"{com_x7d_balance} X7D (${'{:0,.0f}'.format(com_x7d_price)})\n"
+        f"{com_x7r_balance} X7R (${'{:0,.0f}'.format(com_x7r_price)})\n"
+        f"{com_x7dao_balance} X7DAO (${'{:0,.0f}'.format(com_x7dao_price)})\n"
+        f"Total: (${'{:0,.0f}'.format(com_total)})\n\n"
+        f"Ecosystem Splitter: {eco_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(eco_dollar)})\n"
+        f"Treasury Splitter: {treasury_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(treasury_dollar)})\n\n"
+        f"UTC: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}",
         font=myfont,
         fill=(255, 255, 255),
     )
+
     img_path = os.path.join("media", "blackhole.png")
     im1.save(img_path)
     await update.message.reply_photo(
         photo=open(r"media/blackhole.png", "rb"),
         caption=f"*X7 Finance Treasury {chain_name}*\nUse `/treasury [chain-name]` for other chains\n\n"
-        f'Developer Wallet:\n{dev_eth[:6]}ETH (${"{:0,.0f}".format(dev_dollar)})\n\n'
-        f'Community Wallet:\n{com_eth[:6]}ETH (${"{:0,.0f}".format(com_dollar)})\n'
-        f'{com_x7d} X7D (${"{:0,.0f}".format(com_x7d_price)})\n'
-        f'{"{:0,.0f}".format(com_x7r)} X7R (${"{:0,.0f}".format(com_x7r_price)})\n'
-        f'{"{:0,.0f}".format(com_x7dao)} X7DAO (${"{:0,.0f}".format(com_x7dao_price)})\n'
-        f'Total: (${"{:0,.0f}".format(com_total)})\n\n{api.get_quote()}',
+        f'Developer Wallet:\n{dev_eth[:6]} {native.upper()} (${"{:0,.0f}".format(dev_dollar)})\n\n'
+        f'Community Wallet:\n{com_eth[:6]} {native.upper()} (${"{:0,.0f}".format(com_dollar)})\n'
+        f'{com_x7d_balance} X7D (${"{:0,.0f}".format(com_x7d_price)})\n'
+        f'{"{:0,.0f}".format(com_x7r_balance)} X7R (${"{:0,.0f}".format(com_x7r_price)})\n'
+        f'{"{:0,.0f}".format(com_x7dao_balance)} X7DAO (${"{:0,.0f}".format(com_x7dao_price)})\n'
+        f'Total: (${"{:0,.0f}".format(com_total)})\n\n'
+        f"Ecosystem Splitter: {eco_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(eco_dollar)})\n"
+        f"Treasury Splitter: {treasury_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(treasury_dollar)})\n\n"
+        f"{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
+                [
+                    InlineKeyboardButton(
+                        text="Developer Multi-sig Wallet",
+                        url=f"{link}{dev_multi}",
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Community Multi-sig Wallet",
+                        url=f"{link}{com_multi}",
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Ecosystem Splitter Contract",
+                        url=f"{link}{ca.eco_splitter}",
+                    )
+                ],
                 [
                     InlineKeyboardButton(
                         text="Treasury Splitter Contract",
                         url=f"{link}{ca.treasury_splitter}",
                     )
                 ],
-                [
-                    InlineKeyboardButton(
-                        text="Developer Multi-sig Wallet",
-                        url=f"{link}{ca.dev_multi_eth}",
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="Community Multi-sig Wallet",
-                        url=f"{link}{ca.com_multi_eth}",
-                    )
-                ],
+                
             ]
         ),
     )
