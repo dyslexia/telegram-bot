@@ -1,4 +1,3 @@
-import keys
 from web3 import Web3
 import os
 from dotenv import load_dotenv
