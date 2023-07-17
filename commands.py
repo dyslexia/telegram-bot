@@ -1125,27 +1125,30 @@ async def joke(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def launch(update: Update, context: ContextTypes.DEFAULT_TYPE):
     launch_raw = datetime(2022, 8, 13, 14, 10, 17)
-    migration_raw = datetime(2022, 9, 25, 5, 00, 11)
-    launch = launch_raw.astimezone(pytz.utc)
-    migration = migration_raw.astimezone(pytz.utc)
-    now = datetime.now(timezone.utc)
-    launch_duration = now - launch
-    launch_days, launch_remainder = divmod(launch_duration.total_seconds(), 86400)
-    launch_hours, launch_remainder = divmod(launch_remainder, 3600)
-    launch_minutes, _ = divmod(launch_remainder, 60)
-    migration_duration = now - migration
-    migration_days, migration_remainder = divmod(
-        migration_duration.total_seconds(), 86400
-    )
-    migration_hours, migration_remainder = divmod(migration_remainder, 3600)
-    migration_minutes, _ = divmod(migration_remainder, 60)
+    migration_raw = datetime(2022, 9, 25, 5, 0, 11)
+    now = datetime.now()
+
+    launch_duration = now - launch_raw
+    launch_years = launch_duration.days // 365
+    launch_months = (launch_duration.days % 365) // 30
+    launch_weeks = ((launch_duration.days % 365) % 30) // 7
+    launch_days = ((launch_duration.days % 365) % 30) % 7
+
+    migration_duration = now - migration_raw
+    migration_years = migration_duration.days // 365
+    migration_months = (migration_duration.days % 365) // 30
+    migration_weeks = ((migration_duration.days % 365) % 30) // 7
+    migration_days = ((migration_duration.days % 365) % 30) % 7
+
+    reply_message = f'*X7 Finance Launch Info*\n\nX7M105 Stealth Launch\n{launch_raw.strftime("%A %B %d %Y %I:%M %p")}\n'
+    reply_message += f'{launch_years} years, {launch_months} months, {launch_weeks} weeks, and {launch_days} days ago\n\n'
+    reply_message += f'V2 Migration\n{migration_raw.strftime("%A %B %d %Y %I:%M %p")}\n'
+    reply_message += f'{migration_years} years, {migration_months} months, {migration_weeks} weeks, and {migration_days} days ago\n\n'
+    reply_message += api.get_quote()
+
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f'*X7 Finance Launch Info*\n\nX7M105 Stealth Launch\n{launch.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n'
-        f"{int(launch_days)} days, {int(launch_hours)} hours and {int(launch_minutes)} minutes ago\n\n"
-        f'V2 Migration\n{migration.strftime("%A %B %d %Y %I:%M %p")} (UTC)\n'
-        f"{int(migration_days)} days, {int(migration_hours)} hours and {int(migration_minutes)} minutes ago\n\n"
-        f"{api.get_quote()}",
+        caption=reply_message,
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
