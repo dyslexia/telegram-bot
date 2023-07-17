@@ -37,10 +37,6 @@ async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return
 
 
-
-
-
-
 async def compare(update: Update, context: ContextTypes.DEFAULT_TYPE):
     token_names = {
     "x7r": {
@@ -2980,29 +2976,59 @@ async def splitters(update: Update, context):
             link = mapping["link"]
             native = mapping["native"]
             chain = mapping["chain"]
+            treasury_eth = api.get_native_balance(ca.treasury_splitter, chain)
+            eco_eth = api.get_native_balance(ca.eco_splitter, chain)
+            native_price = api.get_native_price(native)
+            eco_dollar = float(eco_eth) * float(native_price)
+            treasury_dollar = float(treasury_eth) * float(native_price)
+            await update.message.reply_photo(
+                photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+                caption=
+                    f"*X7 Finance Ecosystem Splitters {chain_name}*\n\n"
+                    f"Ecosystem Splitter: {eco_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(eco_dollar)})\n"
+                    f"Treasury Splitter: {treasury_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(treasury_dollar)})\n\n"
+                    f"For example of splitter allocation use\n`/splitter [chain-name] [amount]`\n\n{api.get_quote()}",
+                parse_mode="Markdown",
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [InlineKeyboardButton(text="Ecosystem Splitter", url=f"{link}{ca.eco_splitter}")],
+                        [InlineKeyboardButton(text="Treasury Splitter", url=f"{link}{ca.treasury_splitter}")],
+                    ]
+                ),
+            )
         else:
             await update.message.reply_text("Invalid chain. Please provide a valid chain name.")
-            return
-        treasury_eth = api.get_native_balance(ca.treasury_splitter, chain)
-        eco_eth = api.get_native_balance(ca.eco_splitter, chain)
-        native_price = api.get_native_price(native)
-        eco_dollar = float(eco_eth) * float(native_price)
-        treasury_dollar = float(treasury_eth) * float(native_price)
-        await update.message.reply_photo(
-            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-            caption=
-                f"*X7 Finance Ecosystem Splitters {chain_name}*\n\n"
-                f"Ecosystem Splitter: {eco_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(eco_dollar)})\n"
-                f"Treasury Splitter: {treasury_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(treasury_dollar)})\n\n"
-                f"For example of splitter allocation use\n`/splitter [chain-name] [amount]`\n\n{api.get_quote()}",
-            parse_mode="Markdown",
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [InlineKeyboardButton(text="Ecosystem Splitter", url=f"{link}{ca.eco_splitter}")],
-                    [InlineKeyboardButton(text="Treasury Splitter", url=f"{link}{ca.treasury_splitter}")],
-                ]
-            ),
-        )
+    else:
+        chain = "eth"  # Assuming eth as the default chain
+
+        if chain in chain_mappings:
+            mapping = chain_mappings[chain]
+            chain_name = mapping["chain_name"]
+            link = mapping["link"]
+            native = mapping["native"]
+            chain = mapping["chain"]
+            treasury_eth = api.get_native_balance(ca.treasury_splitter, chain)
+            eco_eth = api.get_native_balance(ca.eco_splitter, chain)
+            native_price = api.get_native_price(native)
+            eco_dollar = float(eco_eth) * float(native_price)
+            treasury_dollar = float(treasury_eth) * float(native_price)
+            await update.message.reply_photo(
+                photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+                caption=
+                    f"*X7 Finance Ecosystem Splitters {chain_name}*\n\n"
+                    f"Ecosystem Splitter: {eco_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(eco_dollar)})\n"
+                    f"Treasury Splitter: {treasury_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(treasury_dollar)})\n\n"
+                    f"For example of splitter allocation use\n`/splitter [chain-name] [amount]`\n\n{api.get_quote()}",
+                parse_mode="Markdown",
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [InlineKeyboardButton(text="Ecosystem Splitter", url=f"{link}{ca.eco_splitter}")],
+                        [InlineKeyboardButton(text="Treasury Splitter", url=f"{link}{ca.treasury_splitter}")],
+                    ]
+                ),
+            )
+        else:
+            await update.message.reply_text("Invalid chain. Please provide a valid chain name or amount.")
 
 
 async def supply(update: Update, context: ContextTypes.DEFAULT_TYPE):
