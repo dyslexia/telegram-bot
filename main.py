@@ -112,6 +112,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler(["chart", "charts"], commands.chart))
     application.add_handler(CommandHandler(["constellations", "constellation", "quints"], commands.constellations))
     application.add_handler(CommandHandler(["ca", "contract", "contracts"], commands.contracts))
+    application.add_handler(CommandHandler("compare", commands.compare))
     application.add_handler(CommandHandler("count", commands.count))
     application.add_handler(CommandHandler([f"{times.countdown_command}"], commands.countdown))
     application.add_handler(CommandHandler(["deployer", "devs"], commands.deployer))

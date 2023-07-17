@@ -36,6 +36,52 @@ load_dotenv()
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return
 
+
+async def compare(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    token_names = {
+    "x7r": ca.x7r,
+    "x7dao": ca.x7dao,
+    "x7101": ca.x7101,
+    "x7102": ca.x7102,
+    "x7103": ca.x7103,
+    "x7104": ca.x7104,
+    "x7105":ca.x7105,
+    }
+
+    x7token = context.args[0].lower()
+    token2 = context.args[1].lower()
+    search = api.get_cg_search(token2)
+    token_id = search["coins"][0]["api_symbol"]
+    if x7token in token_names:
+        x7token = token_names[x7token]
+    else:
+        await update.message.reply_photo(
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+        caption=
+            f'*X7 Finance Market Cap Comparison*\n\n'
+            f"Please enter X7 token first followed by token to compare\n\n"
+            f"ie. `/compare x7r uni`\n\n{api.get_quote()}",
+            parse_mode="Markdown",
+        )
+        return
+    token_market_cap = api.get_mcap(token_id)
+    if x7token == ca.x7r:
+        x7_supply = ca.supply - api.get_token_balance(ca.dead, ca.x7r, "eth")
+    else:
+        x7_supply = ca.supply
+    token_value = token_market_cap / x7_supply
+
+    await update.message.reply_photo(
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+        caption=
+            f'*X7 Finance Market Cap Comparison*\n\n'
+            f"Token value of {context.args[0].upper()} at {context.args[1].upper()} Market Cap:\n"
+            f'${"{:,.2f}".format(token_market_cap)}\n\n'
+            f'${"{:,.2f}".format(token_value)}\n\n{api.get_quote()}',
+        parse_mode="Markdown",
+    )
+
+
 # COMMANDS
 async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(

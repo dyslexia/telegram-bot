@@ -112,6 +112,11 @@ def get_liquidity(pair, chain):
         params={"chain": chain, "pair_address": pair},
     )
 
+def get_mcap(token):
+    url = f"https://api.coingecko.com/api/v3/simple/price?ids={token}&vs_currencies=usd&include_market_cap=true"
+    response = requests.get(url)
+    data = response.json()
+    return data[token]["usd_market_cap"]
 
 def get_native_balance(wallet, chain):
     if chain not in chains_info:
