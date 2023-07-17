@@ -37,23 +37,117 @@ async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return
 
 
+
+
+
+
 async def compare(update: Update, context: ContextTypes.DEFAULT_TYPE):
     token_names = {
-    "x7r": ca.x7r,
-    "x7dao": ca.x7dao,
-    "x7101": ca.x7101,
-    "x7102": ca.x7102,
-    "x7103": ca.x7103,
-    "x7104": ca.x7104,
-    "x7105":ca.x7105,
+    "x7r": {
+        "contract": ca.x7r,
+        "image": media.x7r_logo
+    },
+    "x7dao": {
+        "contract": ca.x7dao,
+        "image": media.x7dao_logo
+    },
+    "x7101": {
+        "contract": ca.x7101,
+        "image": media.x7101_logo
+    },
+    "x7102": {
+        "contract": ca.x7102,
+        "image": media.x7102_logo
+    },
+    "x7103": {
+        "symbol": ca.x7103,
+        "image": media.x7103_logo
+    },
+    "x7104": {
+        "contract": ca.x7104,
+        "image": media.x7104_logo
+    },
+    "x7105": {
+        "contract": ca.x7105,
+        "image": media.x7105_logo
+        }
     }
 
     x7token = context.args[0].lower()
     token2 = context.args[1].lower()
     search = api.get_cg_search(token2)
     token_id = search["coins"][0]["api_symbol"]
+    thumb = search["coins"][0]["large"]
+
     if x7token in token_names:
-        x7token = token_names[x7token]
+        token_info = token_names[x7token]
+        x7_price = api.get_price(token_info["contract"], "eth")
+        image = token_info["image"]
+        token_market_cap = api.get_mcap(token_id)
+        if token_market_cap == 0:
+            await update.message.reply_photo(
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+        caption=
+            f'*X7 Finance Market Cap Comparison*\n\n'
+            f"No Market Cap data found for {token2.upper()}\n\n{api.get_quote()}",
+            parse_mode="Markdown",
+        )
+        if x7token == ca.x7r:
+            x7_supply = ca.supply - api.get_token_balance(ca.dead, ca.x7r, "eth")
+        else:
+            x7_supply = ca.supply
+        x7_market_cap = x7_price * x7_supply
+        percent = ((token_market_cap - x7_market_cap) / x7_market_cap) * 100
+        x = ((token_market_cap - x7_market_cap) / x7_market_cap)
+        token_value = token_market_cap / x7_supply
+        img = Image.open(requests.get(thumb, stream=True).raw)
+        result = img.convert("RGBA")
+        result.save(r"media/cgtokenlogo.png")
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(r"media/cgtokenlogo.png")
+        im2_resized = im2.resize((200, 200))
+        im3 = Image.open(image)
+        im1.paste(im2_resized, (680, 20), im2_resized)
+        im1.paste(im3, (680, 200), im3)
+        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
+        i1 = ImageDraw.Draw(im1)
+        i1.text(
+            (28, 36),
+            f'X7 Finance Market Cap Comparison\n\n'
+            f"Token value of {context.args[0].upper()} at {context.args[1].upper()} Market Cap:\n"
+            f'${"{:,.2f}".format(token_market_cap)}\n\n'
+            f'${"{:,.2f}".format(token_value)}\n'
+            f'{"{:,.0f}%".format(percent)}\n'
+            f'{"{:,.0f}x".format(x)}\n\n\n\n\n\n'
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont,
+            fill=(255, 255, 255),
+        )
+        im1.save(r"media/blackhole.png", quality=95)
+        await update.message.reply_photo(
+            photo=open(r"media/blackhole.png", "rb"),
+            caption=
+                f'*X7 Finance Market Cap Comparison*\n\n'
+                f"Token value of {context.args[0].upper()} at {context.args[1].upper()} Market Cap:\n"
+                f'${"{:,.2f}".format(token_market_cap)}\n\n'
+                f'${"{:,.2f}".format(token_value)}\n'
+                f'{"{:,.0f}%".format(percent)}\n'
+                f'{"{:,.0f}x".format(x)}\n\n{api.get_quote()}',
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            text=f"{context.args[1].upper()} Chart",
+                            url=f"https://www.coingecko.com/en/coins/{token_id}",
+                        )
+                    ],
+                ]
+            ),
+        )
+
+
+
     else:
         await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
@@ -64,22 +158,7 @@ async def compare(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="Markdown",
         )
         return
-    token_market_cap = api.get_mcap(token_id)
-    if x7token == ca.x7r:
-        x7_supply = ca.supply - api.get_token_balance(ca.dead, ca.x7r, "eth")
-    else:
-        x7_supply = ca.supply
-    token_value = token_market_cap / x7_supply
 
-    await update.message.reply_photo(
-        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=
-            f'*X7 Finance Market Cap Comparison*\n\n'
-            f"Token value of {context.args[0].upper()} at {context.args[1].upper()} Market Cap:\n"
-            f'${"{:,.2f}".format(token_market_cap)}\n\n'
-            f'${"{:,.2f}".format(token_value)}\n\n{api.get_quote()}',
-        parse_mode="Markdown",
-    )
 
 
 # COMMANDS
