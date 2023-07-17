@@ -5002,19 +5002,36 @@ async def spaces(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def twitter(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ext = " ".join(context.args)
     username = "@x7_finance"
-    tweet = api.twitter.user_timeline(
-        screen_name=username, count=1, exclude_replies=True, include_rts=False
-    )
     if ext == "":
-        await update.message.reply_sticker(sticker=media.twitter_sticker)
-        await update.message.reply_text(
-            f"Latest X7 Finance Tweet\n\n{tweet[0].text}\n\n"
-            f"https://twitter.com/X7_Finance/status/{tweet[0].id}\n\n"
-            f"{random.choice(text.twitter_replies)}"
-        )
+        try:
+            tweet = api.twitter.user_timeline(screen_name=username, count=1, exclude_replies=True, include_rts=False)
+            await update.message.reply_sticker(sticker=media.twitter_sticker)
+            await update.message.reply_text(
+                f"Latest X7 Finance Tweet\n\n{tweet[0].text}\n\n"
+                f"{url.twitter}status/{tweet[0].id}\n\n"
+                f"{random.choice(text.twitter_replies)}"
+            )
+        except Exception as e:
+            await update.message.reply_sticker(sticker=media.twitter_sticker)
+            await update.message.reply_text(
+                f"*X7 Finance Twitter*\n\n"
+                f"{random.choice(text.twitter_replies)}",
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            text="X7 Finance Twitter",
+                            url=f"{url.twitter}",
+                        )
+                    ],
+                ]
+            ),
+            )
     if ext == "count":
         chat_admins = await update.effective_chat.get_administrators()
         if update.effective_user in (admin.user for admin in chat_admins):
+            tweet = api.twitter.user_timeline(screen_name=username, count=1, exclude_replies=True, include_rts=False)
             response = api.twitter_v2.get_retweeters(tweet[0].id)
             status = api.twitter.get_status(tweet[0].id)
             retweet_count = status.retweet_count
@@ -5022,7 +5039,7 @@ async def twitter(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_sticker(sticker=media.twitter_sticker)
             await update.message.reply_text(
                 f"Latest X7 Finance Tweet\n\n{tweet[0].text}\n\n"
-                f"https://twitter.com/X7_Finance/status/{tweet[0].id}\n\n"
+                f"{url.twitter}status/{tweet[0].id}\n\n"
                 f"Retweeted {retweet_count} times, by the following members:\n\n{count}"
             )
         else:
