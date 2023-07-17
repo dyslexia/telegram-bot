@@ -470,6 +470,88 @@ async def compare(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
 
+async def constellations(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chain = " ".join(context.args).lower()
+    price = api.get_cg_price("x7101, x7102, x7103, x7104, x7105")
+    x7101mc = price["x7101"]["usd"] * ca.supply
+    x7102mc = price["x7102"]["usd"] * ca.supply
+    x7103mc = price["x7103"]["usd"] * ca.supply
+    x7104mc = price["x7104"]["usd"] * ca.supply
+    x7105mc = price["x7105"]["usd"] * ca.supply
+    const_mc = x7101mc + x7102mc + x7103mc + x7104mc + x7105mc
+    if price["x7101"]["usd_24h_change"] is None:
+        price["x7101"]["usd_24h_change"] = 0
+    if price["x7102"]["usd_24h_change"] is None:
+        price["x7102"]["usd_24h_change"] = 0
+    if price["x7103"]["usd_24h_change"] is None:
+        price["x7103"]["usd_24h_change"] = 0
+    if price["x7104"]["usd_24h_change"] is None:
+        price["x7104"]["usd_24h_change"] = 0
+    if price["x7105"]["usd_24h_change"] is None:
+        price["x7105"]["usd_24h_change"] = 0
+    if chain == "":
+        img = Image.open((random.choice(media.blackhole)))
+        i1 = ImageDraw.Draw(img)
+        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 20)
+        i1.text(
+            (28, 36),
+            f"X7 Finance Constellation Token Prices (ETH)\n\n"
+            f'X7101:      ${price["x7101"]["usd"]}\n'
+            f'24 Hour Change: {round(price["x7101"]["usd_24h_change"], 1)}%\n'
+            f'Market Cap:  ${"{:0,.0f}".format(x7101mc)}\n\n'
+            f'X7102:      ${price["x7102"]["usd"]}\n'
+            f'24 Hour Change: {round(price["x7102"]["usd_24h_change"], 1)}%\n'
+            f'Market Cap:  ${"{:0,.0f}".format(x7102mc)}\n\n'
+            f'X7103:      ${price["x7103"]["usd"]}\n'
+            f'24 Hour Change: {round(price["x7103"]["usd_24h_change"], 1)}%\n'
+            f'Market Cap:  ${"{:0,.0f}".format(x7103mc)}\n\n\n\n\n'
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont,
+            fill=(255, 255, 255),
+        )
+        i1.text(
+            (522, 90),
+            f'X7104:      ${price["x7104"]["usd"]}\n'
+            f'24 Hour Change: {round(price["x7104"]["usd_24h_change"], 1)}%\n'
+            f'Market Cap:  ${"{:0,.0f}".format(x7104mc)}\n\n'
+            f'X7105:      ${price["x7105"]["usd"]}\n'
+            f'24 Hour Change: {round(price["x7105"]["usd_24h_change"], 1)}%\n'
+            f'Market Cap:  ${"{:0,.0f}".format(x7105mc)}\n\n'
+            f'Combined Market Cap:\n${"{:0,.0f}".format(const_mc)}\n',
+            font=myfont,
+            fill=(255, 255, 255),
+        )
+        img.save(r"media/blackhole.png")
+        await update.message.reply_photo(
+            photo=open(r"media/blackhole.png", "rb"),
+            caption=f"*X7 Finance Constellation Token Prices (ETH)*\n\n"
+            f"For more info use `/x7token-name`\n\n"
+            f'X7101:      ${price["x7101"]["usd"]}\n'
+            f'24 Hour Change: {round(price["x7101"]["usd_24h_change"], 1)}%\n'
+            f'Market Cap:  ${"{:0,.0f}".format(x7101mc)}\n'
+            f"CA: `{ca.x7101}\n\n`"
+            f'X7102:      ${price["x7102"]["usd"]}\n'
+            f'24 Hour Change: {round(price["x7102"]["usd_24h_change"], 1)}%\n'
+            f'Market Cap:  ${"{:0,.0f}".format(x7102mc)}\n'
+            f"CA: `{ca.x7102}\n\n`"
+            f'X7103:      ${price["x7103"]["usd"]}\n'
+            f'24 Hour Change: {round(price["x7103"]["usd_24h_change"], 1)}%\n'
+            f'Market Cap:  ${"{:0,.0f}".format(x7103mc)}\n'
+            f"CA: `{ca.x7103}\n\n`"
+            f'X7104:      ${price["x7104"]["usd"]}\n'
+            f'24 Hour Change: {round(price["x7104"]["usd_24h_change"], 1)}%\n'
+            f'Market Cap:  ${"{:0,.0f}".format(x7104mc)}\n'
+            f"CA: `{ca.x7104}\n\n`"
+            f'X7105:      ${price["x7105"]["usd"]}\n'
+            f'24 Hour Change: {round(price["x7105"]["usd_24h_change"], 1)}%\n'
+            f'Market Cap:  ${"{:0,.0f}".format(x7105mc)}\n'
+            f"CA: `{ca.x7105}\n\n`"
+            f'Combined Market Cap: ${"{:0,.0f}".format(const_mc)}\n\n'
+            f"{api.get_quote()}",
+            parse_mode="Markdown",
+        )
+
+
 async def contracts(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
@@ -2448,6 +2530,183 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
+async def price(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    search = " ".join(context.args).lower()
+    cg_name = ""
+    price = ""
+    gas_data = ""
+    im2 = ""
+    token = api.get_cg_search(search)
+    token_id = token["coins"][0]["api_symbol"]
+    symbol = token["coins"][0]["symbol"]
+    thumb = token["coins"][0]["large"]
+    price = api.get_cg_price("x7r, x7dao")
+    x7r_change = price["x7r"]["usd_24h_change"]
+    if x7r_change is None:
+        x7r_change = 0
+    x7dao_change = price["x7dao"]["usd_24h_change"]
+    if x7dao_change is None:
+        x7dao_change = 0
+    token_price = api.get_cg_price(token_id)
+    if search == "":
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(r"media/logo11.png")
+        im1.paste(im2, (740, 20), im2)
+        i1 = ImageDraw.Draw(im1)
+        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
+        i1.text(
+            (28, 36),
+            f"X7 Finance Token Price Info (ETH)\n\n"
+            f'X7R:    ${price["x7r"]["usd"]}\n'
+            f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n\n'
+            f'X7DAO:  ${price["x7dao"]["usd"]}\n'
+            f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 0)}%\n\n\n\n\n\n'
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont,
+            fill=(255, 255, 255),
+        )
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
+        await update.message.reply_photo(
+            photo=open(r"media/blackhole.png", "rb"),
+            caption=f"*X7 Finance Token Price Info (ETH)*\n"
+            f"Use `/x7r [chain]` or `/x7dao [chain]` for all other details\n"
+            f"Use `/constellations` for constellations\n\n"
+            f'X7R:    ${price["x7r"]["usd"]}\n'
+            f'24 Hour Change: {round(x7r_change, 1)}%\n\n'
+            f'X7DAO:  ${price["x7dao"]["usd"]}\n'
+            f'24 Hour Change: {round(x7dao_change, 0)}%\n\n'
+            f"{api.get_quote()}",
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            text="X7R Chart - Rewards Token",
+                            url=f"{url.dex_tools_eth}{ca.x7r_pair_eth}",
+                        )
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            text="X7DAO Chart - Governance Token",
+                            url=f"{url.dex_tools_eth}{ca.x7dao_pair_eth}",
+                        )
+                    ],
+                ]
+            ),
+        )
+        return
+    if (
+        search == "eth"
+        or search == "bnb"
+        or search == "matic"
+        or search == "poly"
+        or search == "polygon"
+    ):
+        if search == "eth":
+            cg_name = "ethereum"
+            price = api.get_cg_price("ethereum")
+            gas_data = api.get_gas("eth")
+            im2 = Image.open(requests.get(thumb, stream=True).raw)
+        if search == "bnb":
+            cg_name = "binancecoin"
+            price = api.get_cg_price("binancecoin")
+            gas_data = api.get_gas("bsc")
+            im2 = Image.open(requests.get(thumb, stream=True).raw)
+        if search == "matic" or search == "poly" or search == "polygon":
+            cg_name = "matic-network"
+            price = api.get_cg_price("matic-network")
+            gas_data = api.get_gas("poly")
+            im2 = Image.open(requests.get(thumb, stream=True).raw)
+        price_change = token_price[cg_name]["usd_24h_change"]
+        if price_change is None:
+            price_change = 0
+        im1 = Image.open((random.choice(media.blackhole)))
+        im1.paste(im2, (680, 20), im2)
+        i1 = ImageDraw.Draw(im1)
+        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
+        i1.text(
+            (28, 36),
+            f"{symbol} price\n\n"
+            f'Price: ${price[cg_name]["usd"]}\n'
+            f'24 Hour Change: {round(price_change, 1)}%\n\n'
+            f"Gas Prices:\n"
+            f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
+            f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
+            f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n\n\n'
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont,
+            fill=(255, 255, 255),
+        )
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
+        await update.message.reply_photo(
+            photo=open(r"media/blackhole.png", "rb"),
+            caption=f"*{symbol} price*\n\n"
+            f'Price: ${price[cg_name]["usd"]}\n'
+            f'24 Hour Change: {round(price[cg_name]["usd_24h_change"], 1)}%\n\n'
+            f"Gas Prices:\n"
+            f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
+            f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
+            f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n'
+            f"{api.get_quote()}",
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            text="Chart",
+                            url=f"https://www.coingecko.com/en/coins/{cg_name}",
+                        )
+                    ],
+                ]
+            ),
+        )
+        return
+    else:
+        price_change = token_price[token_id]["usd_24h_change"]
+        if price_change is None:
+            price_change = 0
+        img = Image.open(requests.get(thumb, stream=True).raw)
+        result = img.convert("RGBA")
+        result.save(r"media/cgtokenlogo.png")
+        im1 = Image.open((random.choice(media.blackhole)))
+        im2 = Image.open(r"media/cgtokenlogo.png")
+        im1.paste(im2, (680, 20), im2)
+        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
+        i1 = ImageDraw.Draw(im1)
+        i1.text(
+            (28, 36),
+            f"{symbol} price\n\n"
+            f'Price: ${float(token_price[token_id]["usd"])}\n'
+            f'24 Hour Change: {round(price_change, 1)}%\n'
+            f'Market Cap: ${"{:0,.0f}".format(token_price[token_id]["usd_market_cap"])}\n\n\n\n\n\n\n\n'
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont,
+            fill=(255, 255, 255),
+        )
+        im1.save(r"media/blackhole.png", quality=95)
+        await update.message.reply_photo(
+            photo=open(r"media/blackhole.png", "rb"),
+            caption=f"*{symbol} price*\n\n"
+            f'Price: ${float(token_price[token_id]["usd"])}\n'
+            f'24 Hour Change: {round(token_price[token_id]["usd_24h_change"], 1)}%\n'
+            f'Market Cap: ${"{:0,.0f}".format(token_price[token_id]["usd_market_cap"])}\n\n'
+            f"{api.get_quote()}",
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            text="Chart",
+                            url=f"https://www.coingecko.com/en/coins/{token_id}",
+                        )
+                    ],
+                ]
+            ),
+        )
+
+
 async def proposal(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
@@ -3084,7 +3343,6 @@ async def swap(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-
 async def tax_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     tax_info = tax.generate_info(chain)
@@ -3413,103 +3671,6 @@ async def wp(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chain = " ".join(context.args).lower()
-    supply = ""
-    holders = ""
-    dollar = ""
-    chain_name = ""
-    chain_url = ""
-    if chain == "" or chain == "eth":
-        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "eth")
-        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("eth")) / 1**18)
-        lpool = api.get_native_balance(ca.lpool, "eth")
-        lpool_dollar = float(lpool) * float(api.get_native_price("eth")) / 1**18
-        dollar = lpool_reserve_dollar + lpool_dollar
-        supply = round(float(lpool_reserve) + float(lpool), 2)
-        holders = api.get_holders(ca.x7d)
-        chain_name = "(ETH)"
-        chain_url = url.ether_address
-    if chain == "bsc" or chain == "bnb":
-        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "bsc")
-        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("bnb")) / 1**18)
-        lpool = api.get_native_balance(ca.lpool, "bsc")
-        lpool_dollar = float(lpool) * float(api.get_native_price("bnb")) / 1**18
-        dollar = lpool_reserve_dollar + lpool_dollar
-        supply = round(float(lpool_reserve) + float(lpool), 2)
-        chain_name = "(BSC)"
-        chain_url = url.bsc_address
-    if chain == "polygon" or chain == "poly":
-        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "poly")
-        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("matic")) / 1**18)
-        lpool = api.get_native_balance(ca.lpool, "poly")
-        lpool_dollar = float(lpool) * float(api.get_native_price("matic")) / 1**18
-        dollar = lpool_reserve_dollar + lpool_dollar
-        supply = round(float(lpool_reserve) + float(lpool), 2)
-        chain_name = "(POLYGON)"
-        chain_url = url.poly_address
-    if chain == "optimism" or chain == "opti":
-        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "opit")
-        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("eth")) / 1**18)
-        lpool = api.get_native_balance(ca.lpool, "opti")
-        lpool_dollar = float(lpool) * float(api.get_native_price("eth")) / 1**18
-        dollar = lpool_reserve_dollar + lpool_dollar
-        supply = round(float(lpool_reserve) + float(lpool), 2)
-        chain_name = "(OPTIMISM)"
-        chain_url = url.opti_address
-    if chain == "arbitrum" or chain == "arb":
-        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "arb")
-        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("eth")) / 1**18)
-        lpool = api.get_native_balance(ca.lpool, "arb")
-        lpool_dollar = float(lpool) * float(api.get_native_price("eth")) / 1**18
-        dollar = lpool_reserve_dollar + lpool_dollar
-        supply = round(float(lpool_reserve) + float(lpool), 2)
-        chain_name = "(ARB)"
-        chain_url = url.arb_address
-
-    im1 = Image.open((random.choice(media.blackhole)))
-    im2 = Image.open(media.x7d_logo)
-    im1.paste(im2, (720, 20), im2)
-    i1 = ImageDraw.Draw(im1)
-    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 28)
-    i1.text(
-        (28, 36),
-        f"X7D {chain_name} Info\n\n"
-        f'Supply: {supply} X7D (${"{:0,.0f}".format(dollar)})\n'
-        f"Holders: {holders}\n\n\n\n\n\n\n\n\n"
-        f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-        font=myfont,
-        fill=(255, 255, 255),
-    )
-    img_path = os.path.join("media", "blackhole.png")
-    im1.save(img_path)
-    await update.message.reply_photo(
-        photo=open(r"media/blackhole.png", "rb"),
-        caption=f"*X7D {chain_name} Info*\n"
-        f"For other chains use `/x7d [chain-name]`\n\n"
-        f'Supply: {supply} X7D (${"{:0,.0f}".format(dollar)})\n'
-        f"Holders: {holders}\n\n"
-        f"{api.get_quote()}",
-        parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        text="X7D Funding Dashboard",
-                        url="https://app.x7.finance/#/fund",
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="X7 Deposit Contract", url=f"{chain_url}{ca.x7d}#code"
-                    )
-                ],
-            ]
-        ),
-    )
-
-
-# CG COMMANDS
 async def x7r(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
     dollar = chain.startswith("$")
@@ -3679,6 +3840,102 @@ async def x7r(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 ]
             ),
         )
+
+
+async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chain = " ".join(context.args).lower()
+    supply = ""
+    holders = ""
+    dollar = ""
+    chain_name = ""
+    chain_url = ""
+    if chain == "" or chain == "eth":
+        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "eth")
+        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("eth")) / 1**18)
+        lpool = api.get_native_balance(ca.lpool, "eth")
+        lpool_dollar = float(lpool) * float(api.get_native_price("eth")) / 1**18
+        dollar = lpool_reserve_dollar + lpool_dollar
+        supply = round(float(lpool_reserve) + float(lpool), 2)
+        holders = api.get_holders(ca.x7d)
+        chain_name = "(ETH)"
+        chain_url = url.ether_address
+    if chain == "bsc" or chain == "bnb":
+        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "bsc")
+        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("bnb")) / 1**18)
+        lpool = api.get_native_balance(ca.lpool, "bsc")
+        lpool_dollar = float(lpool) * float(api.get_native_price("bnb")) / 1**18
+        dollar = lpool_reserve_dollar + lpool_dollar
+        supply = round(float(lpool_reserve) + float(lpool), 2)
+        chain_name = "(BSC)"
+        chain_url = url.bsc_address
+    if chain == "polygon" or chain == "poly":
+        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "poly")
+        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("matic")) / 1**18)
+        lpool = api.get_native_balance(ca.lpool, "poly")
+        lpool_dollar = float(lpool) * float(api.get_native_price("matic")) / 1**18
+        dollar = lpool_reserve_dollar + lpool_dollar
+        supply = round(float(lpool_reserve) + float(lpool), 2)
+        chain_name = "(POLYGON)"
+        chain_url = url.poly_address
+    if chain == "optimism" or chain == "opti":
+        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "opit")
+        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("eth")) / 1**18)
+        lpool = api.get_native_balance(ca.lpool, "opti")
+        lpool_dollar = float(lpool) * float(api.get_native_price("eth")) / 1**18
+        dollar = lpool_reserve_dollar + lpool_dollar
+        supply = round(float(lpool_reserve) + float(lpool), 2)
+        chain_name = "(OPTIMISM)"
+        chain_url = url.opti_address
+    if chain == "arbitrum" or chain == "arb":
+        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "arb")
+        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("eth")) / 1**18)
+        lpool = api.get_native_balance(ca.lpool, "arb")
+        lpool_dollar = float(lpool) * float(api.get_native_price("eth")) / 1**18
+        dollar = lpool_reserve_dollar + lpool_dollar
+        supply = round(float(lpool_reserve) + float(lpool), 2)
+        chain_name = "(ARB)"
+        chain_url = url.arb_address
+
+    im1 = Image.open((random.choice(media.blackhole)))
+    im2 = Image.open(media.x7d_logo)
+    im1.paste(im2, (720, 20), im2)
+    i1 = ImageDraw.Draw(im1)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 28)
+    i1.text(
+        (28, 36),
+        f"X7D {chain_name} Info\n\n"
+        f'Supply: {supply} X7D (${"{:0,.0f}".format(dollar)})\n'
+        f"Holders: {holders}\n\n\n\n\n\n\n\n\n"
+        f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+        font=myfont,
+        fill=(255, 255, 255),
+    )
+    img_path = os.path.join("media", "blackhole.png")
+    im1.save(img_path)
+    await update.message.reply_photo(
+        photo=open(r"media/blackhole.png", "rb"),
+        caption=f"*X7D {chain_name} Info*\n"
+        f"For other chains use `/x7d [chain-name]`\n\n"
+        f'Supply: {supply} X7D (${"{:0,.0f}".format(dollar)})\n'
+        f"Holders: {holders}\n\n"
+        f"{api.get_quote()}",
+        parse_mode="Markdown",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        text="X7D Funding Dashboard",
+                        url="https://app.x7.finance/#/fund",
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="X7 Deposit Contract", url=f"{chain_url}{ca.x7d}#code"
+                    )
+                ],
+            ]
+        ),
+    )
 
 
 async def x7dao(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -4673,255 +4930,6 @@ async def x7105(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-async def constellations(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chain = " ".join(context.args).lower()
-    price = api.get_cg_price("x7101, x7102, x7103, x7104, x7105")
-    x7101mc = price["x7101"]["usd"] * ca.supply
-    x7102mc = price["x7102"]["usd"] * ca.supply
-    x7103mc = price["x7103"]["usd"] * ca.supply
-    x7104mc = price["x7104"]["usd"] * ca.supply
-    x7105mc = price["x7105"]["usd"] * ca.supply
-    const_mc = x7101mc + x7102mc + x7103mc + x7104mc + x7105mc
-    if price["x7101"]["usd_24h_change"] is None:
-        price["x7101"]["usd_24h_change"] = 0
-    if price["x7102"]["usd_24h_change"] is None:
-        price["x7102"]["usd_24h_change"] = 0
-    if price["x7103"]["usd_24h_change"] is None:
-        price["x7103"]["usd_24h_change"] = 0
-    if price["x7104"]["usd_24h_change"] is None:
-        price["x7104"]["usd_24h_change"] = 0
-    if price["x7105"]["usd_24h_change"] is None:
-        price["x7105"]["usd_24h_change"] = 0
-    if chain == "":
-        img = Image.open((random.choice(media.blackhole)))
-        i1 = ImageDraw.Draw(img)
-        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 20)
-        i1.text(
-            (28, 36),
-            f"X7 Finance Constellation Token Prices (ETH)\n\n"
-            f'X7101:      ${price["x7101"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7101"]["usd_24h_change"], 1)}%\n'
-            f'Market Cap:  ${"{:0,.0f}".format(x7101mc)}\n\n'
-            f'X7102:      ${price["x7102"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7102"]["usd_24h_change"], 1)}%\n'
-            f'Market Cap:  ${"{:0,.0f}".format(x7102mc)}\n\n'
-            f'X7103:      ${price["x7103"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7103"]["usd_24h_change"], 1)}%\n'
-            f'Market Cap:  ${"{:0,.0f}".format(x7103mc)}\n\n\n\n\n'
-            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-            font=myfont,
-            fill=(255, 255, 255),
-        )
-        i1.text(
-            (522, 90),
-            f'X7104:      ${price["x7104"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7104"]["usd_24h_change"], 1)}%\n'
-            f'Market Cap:  ${"{:0,.0f}".format(x7104mc)}\n\n'
-            f'X7105:      ${price["x7105"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7105"]["usd_24h_change"], 1)}%\n'
-            f'Market Cap:  ${"{:0,.0f}".format(x7105mc)}\n\n'
-            f'Combined Market Cap:\n${"{:0,.0f}".format(const_mc)}\n',
-            font=myfont,
-            fill=(255, 255, 255),
-        )
-        img.save(r"media/blackhole.png")
-        await update.message.reply_photo(
-            photo=open(r"media/blackhole.png", "rb"),
-            caption=f"*X7 Finance Constellation Token Prices (ETH)*\n\n"
-            f"For more info use `/x7token-name`\n\n"
-            f'X7101:      ${price["x7101"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7101"]["usd_24h_change"], 1)}%\n'
-            f'Market Cap:  ${"{:0,.0f}".format(x7101mc)}\n'
-            f"CA: `{ca.x7101}\n\n`"
-            f'X7102:      ${price["x7102"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7102"]["usd_24h_change"], 1)}%\n'
-            f'Market Cap:  ${"{:0,.0f}".format(x7102mc)}\n'
-            f"CA: `{ca.x7102}\n\n`"
-            f'X7103:      ${price["x7103"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7103"]["usd_24h_change"], 1)}%\n'
-            f'Market Cap:  ${"{:0,.0f}".format(x7103mc)}\n'
-            f"CA: `{ca.x7103}\n\n`"
-            f'X7104:      ${price["x7104"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7104"]["usd_24h_change"], 1)}%\n'
-            f'Market Cap:  ${"{:0,.0f}".format(x7104mc)}\n'
-            f"CA: `{ca.x7104}\n\n`"
-            f'X7105:      ${price["x7105"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7105"]["usd_24h_change"], 1)}%\n'
-            f'Market Cap:  ${"{:0,.0f}".format(x7105mc)}\n'
-            f"CA: `{ca.x7105}\n\n`"
-            f'Combined Market Cap: ${"{:0,.0f}".format(const_mc)}\n\n'
-            f"{api.get_quote()}",
-            parse_mode="Markdown",
-        )
-
-
-async def price(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    search = " ".join(context.args).lower()
-    cg_name = ""
-    price = ""
-    gas_data = ""
-    im2 = ""
-    token = api.get_cg_search(search)
-    token_id = token["coins"][0]["api_symbol"]
-    symbol = token["coins"][0]["symbol"]
-    thumb = token["coins"][0]["large"]
-    price = api.get_cg_price("x7r, x7dao")
-    x7r_change = price["x7r"]["usd_24h_change"]
-    x7dao_change = price["x7dao"]["usd_24h_change"]
-    token_price = api.get_cg_price(token_id)
-    if search == "":
-        im1 = Image.open((random.choice(media.blackhole)))
-        im2 = Image.open(r"media/logo11.png")
-        im1.paste(im2, (740, 20), im2)
-        i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
-        i1.text(
-            (28, 36),
-            f"X7 Finance Token Price Info (ETH)\n\n"
-            f'X7R:    ${price["x7r"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n\n'
-            f'X7DAO:  ${price["x7dao"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 0)}%\n\n\n\n\n\n'
-            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-            font=myfont,
-            fill=(255, 255, 255),
-        )
-        img_path = os.path.join("media", "blackhole.png")
-        im1.save(img_path)
-        await update.message.reply_photo(
-            photo=open(r"media/blackhole.png", "rb"),
-            caption=f"*X7 Finance Token Price Info (ETH)*\n"
-            f"Use `/x7r [chain]` or `/x7dao [chain]` for all other details\n"
-            f"Use `/constellations` for constellations\n\n"
-            f'X7R:    ${price["x7r"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n\n'
-            f'X7DAO:  ${price["x7dao"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 0)}%\n\n'
-            f"{api.get_quote()}",
-            parse_mode="Markdown",
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            text="X7R Chart - Rewards Token",
-                            url=f"{url.dex_tools_eth}{ca.x7r_pair_eth}",
-                        )
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            text="X7DAO Chart - Governance Token",
-                            url=f"{url.dex_tools_eth}{ca.x7dao_pair_eth}",
-                        )
-                    ],
-                ]
-            ),
-        )
-        return
-    if (
-        search == "eth"
-        or search == "bnb"
-        or search == "matic"
-        or search == "poly"
-        or search == "polygon"
-    ):
-        if search == "eth":
-            cg_name = "ethereum"
-            price = api.get_cg_price("ethereum")
-            gas_data = api.get_gas("eth")
-            im2 = Image.open(requests.get(thumb, stream=True).raw)
-        if search == "bnb":
-            cg_name = "binancecoin"
-            price = api.get_cg_price("binancecoin")
-            gas_data = api.get_gas("bsc")
-            im2 = Image.open(requests.get(thumb, stream=True).raw)
-        if search == "matic" or search == "poly" or search == "polygon":
-            cg_name = "matic-network"
-            price = api.get_cg_price("matic-network")
-            gas_data = api.get_gas("poly")
-            im2 = Image.open(requests.get(thumb, stream=True).raw)
-        im1 = Image.open((random.choice(media.blackhole)))
-        im1.paste(im2, (680, 20), im2)
-        i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
-        i1.text(
-            (28, 36),
-            f"{symbol} price\n\n"
-            f'Price: ${price[cg_name]["usd"]}\n'
-            f'24 Hour Change: {round(price[cg_name]["usd_24h_change"], 1)}%\n\n'
-            f"Gas Prices:\n"
-            f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
-            f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
-            f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n\n\n'
-            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-            font=myfont,
-            fill=(255, 255, 255),
-        )
-        img_path = os.path.join("media", "blackhole.png")
-        im1.save(img_path)
-        await update.message.reply_photo(
-            photo=open(r"media/blackhole.png", "rb"),
-            caption=f"*{symbol} price*\n\n"
-            f'Price: ${price[cg_name]["usd"]}\n'
-            f'24 Hour Change: {round(price[cg_name]["usd_24h_change"], 1)}%\n\n'
-            f"Gas Prices:\n"
-            f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
-            f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
-            f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n'
-            f"{api.get_quote()}",
-            parse_mode="Markdown",
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            text="Chart",
-                            url=f"https://www.coingecko.com/en/coins/{cg_name}",
-                        )
-                    ],
-                ]
-            ),
-        )
-        return
-    else:
-        img = Image.open(requests.get(thumb, stream=True).raw)
-        result = img.convert("RGBA")
-        result.save(r"media/cgtokenlogo.png")
-        im1 = Image.open((random.choice(media.blackhole)))
-        im2 = Image.open(r"media/cgtokenlogo.png")
-        im1.paste(im2, (680, 20), im2)
-        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
-        i1 = ImageDraw.Draw(im1)
-        i1.text(
-            (28, 36),
-            f"{symbol} price\n\n"
-            f'Price: ${float(token_price[token_id]["usd"])}\n'
-            f'24 Hour Change: {round(token_price[token_id]["usd_24h_change"], 1)}%\n'
-            f'Market Cap: ${"{:0,.0f}".format(token_price[token_id]["usd_market_cap"])}\n\n\n\n\n\n\n\n'
-            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-            font=myfont,
-            fill=(255, 255, 255),
-        )
-        im1.save(r"media/blackhole.png", quality=95)
-        await update.message.reply_photo(
-            photo=open(r"media/blackhole.png", "rb"),
-            caption=f"*{symbol} price*\n\n"
-            f'Price: ${float(token_price[token_id]["usd"])}\n'
-            f'24 Hour Change: {round(token_price[token_id]["usd_24h_change"], 1)}%\n'
-            f'Market Cap: ${"{:0,.0f}".format(token_price[token_id]["usd_market_cap"])}\n\n'
-            f"{api.get_quote()}",
-            parse_mode="Markdown",
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            text="Chart",
-                            url=f"https://www.coingecko.com/en/coins/{token_id}",
-                        )
-                    ],
-                ]
-            ),
-        )
-
-
 # TWITTER COMMANDS
 async def count(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tweet = context.args[0]
@@ -5136,7 +5144,3 @@ async def countdown(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def mods(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(text.mods)
 
-
-async def is_admin(update: Update) -> bool:
-    chat_admins = await update.effective_chat.get_administrators()
-    return update.effective_user in (admin.user for admin in chat_admins)

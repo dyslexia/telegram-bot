@@ -112,11 +112,13 @@ def get_liquidity(pair, chain):
         params={"chain": chain, "pair_address": pair},
     )
 
+
 def get_mcap(token):
     url = f"https://api.coingecko.com/api/v3/simple/price?ids={token}&vs_currencies=usd&include_market_cap=true"
     response = requests.get(url)
     data = response.json()
     return data[token]["usd_market_cap"]
+
 
 def get_native_balance(wallet, chain):
     if chain not in chains_info:
@@ -307,6 +309,7 @@ def get_snapshot():
     data = response.json()
     return data
 
+
 def get_split(eth_value):
     founding_dev_percentage = 0.07
     pioneer_reward_pool_percentage = 0.06
@@ -433,16 +436,6 @@ def get_verified(contract, chain):
     else:
         return "No"
 
-
-def read_csv_column(filename, column_index):
-    with open(filename, 'r') as file:
-        csv_reader = csv.reader(file)
-        header = next(csv_reader)
-        column_data = []
-        for row in csv_reader:
-            if len(row) > column_index and row[column_index] != '':
-                column_data.append(row[column_index])
-    return column_data
 
 
 # TWITTER
