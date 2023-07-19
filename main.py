@@ -13,7 +13,7 @@ import subprocess
 import sys
 load_dotenv()
 
-print("Bot Restarted")
+print("Bot Starting...")
 
 
 async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -58,6 +58,16 @@ async def error(update, context):
     print(f"Update {update} caused error: {context.error}")
 
 
+def scanner_start():
+    scripts = ['bsc.py', 'eth.py','arb.py', 'poly.py', 'opti.py']
+    python_executable = sys.executable
+    processes = []
+    for script in scripts:
+        command = [python_executable, script]
+        process = subprocess.Popen(command)
+        processes.append(process)
+
+
 async def send_endorsement_message(context: ContextTypes.DEFAULT_TYPE) -> None:
     job = context.job
     photo_url = f"{url.pioneers}{api.get_random_pioneer_number()}.png"
@@ -92,9 +102,8 @@ async def send_referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
 
 if __name__ == "__main__":
     application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
-    job_queue = application.job_queue
-    application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_error_handler(error)
+    application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
     application.add_handler(CommandHandler("about", commands.about))
     application.add_handler(CommandHandler(["admin_commands", "admin", "admincommands"], commands.admin))
     application.add_handler(CommandHandler("alerts", commands.alerts))
@@ -184,6 +193,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler(["website", "site"], commands.website))
     application.add_handler(CommandHandler(["whitepaper", "wp", "wpquote"], commands.wp))
 
+    job_queue = application.job_queue
     application.job_queue.run_repeating(
         send_endorsement_message,
         times.endorse_time * 60 * 60,
@@ -200,12 +210,8 @@ if __name__ == "__main__":
         data=times.referral_time * 60 * 60,
     )
 
-    scripts = ['bsc.py', 'eth.py','arb.py', 'poly.py', 'opti.py']
-    python_executable = sys.executable
-    processes = []
-    for script in scripts:
-        command = [python_executable, script]
-        process = subprocess.Popen(command)
-        processes.append(process)
+    scanner_start()
+    print("Bot Started")
     application.run_polling()
+    
 
