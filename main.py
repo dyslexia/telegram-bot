@@ -48,14 +48,19 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await update.message.reply_sticker(sticker=response["sticker"])
 
 
-async def error(update, context):
+async def error(update: Update, context: CallbackContext):
     if update is None:
         return
     if update.edited_message is not None:
         return
     if isinstance(context.error, AttributeError):
-        pass
-    print(f"Update {update} caused error: {context.error}")
+        return
+
+    message: Message = update.message
+    if message is not None and message.text is not None:
+        print(f"{message.text} caused error: {context.error}")
+    else:
+        print(f"Error occurred without a valid message: {context.error}")
 
 
 def scanner_start():

@@ -50,9 +50,10 @@ airdrop = (
     "are released on other chains.\n\nThese airdrop snapshots will occur just prior to the token launch"
 )
 
-alumni = (f"@Callmelandlord - The Godfather of the X7 Finance community, the OG, the creator - X7 God"
-        f"@WoxieX - Creator of the OG dashboard -  x7community.space\n\n"
-        f"@Zaratustra  - Defi extraordinaire and protocol prophet\n\n")
+alumni = (
+    "@Callmelandlord - The Godfather of the X7 Finance community, the OG, the creator - X7 God"
+    "@WoxieX - Creator of the OG dashboard -  x7community.space\n\n"
+    "@Zaratustra  - Defi extraordinaire and protocol prophet\n\n")
 
 commands = (
     "/about - Welcome to X7 Finance\n"
@@ -75,6 +76,7 @@ commands = (
     "/buyevenly - A Guide to buying constellation series evenly\n"
     "/contract - Token Contract Addresses\n"
     "/chart - Chart Links\n"
+    "/compare - Compair Market Caps\n"
     "/price - [any-token]  CG Price Info\n"
     "/buy - Buy Links\n"
     "/wp - Whitepaper\n"
@@ -86,6 +88,8 @@ commands = (
     "/magisters - Track Magister Holders\n"
     "/signers - List of X7 Signer Wallets\n"
     "/loans - Loan Term Info\n"
+    "/loan [loan-id] - Loan Info\n"
+    "/pair [token-name]- Xchange Token Info\n"
     "/burn - X7R Burn \n"
     "/holders - Token Holder Info\n"
     "/airdrop - Airdrop/Snapshot Info\n"
@@ -127,28 +131,29 @@ delay = (
     "- Shigeru Miyamoto`"
 )
 
-discount = ("20 Lucrative X7 Borrowing Incentive NFTs have been minted, granting;\n\n"
-        "50% Origination fee discount\n"
-        "50% Premium fee discount\n\n"
-        "These are a consumable utility NFT offering fee discounts when borrowing funds for initial liquidity on "
-        "Xchange. The discount will be determined by the X7 Lending Discount Authority smart contract.\n\n"
-        "Usage will cause a token owned by the holder to be burned\n\n"
-        "To apply for a limited NFT see the link below\n\n"
-        " --------------- \n\n"
-        "There are four mechanisms to receive loan origination and premium discounts:\n\n"
-        "1. Holding the Borrowing Maxi NFT\n"
-        "2. Holding (and having consumed) the Borrowing Incentive NFT\n"
-        "3. Borrowing a greater amount\n"
-        "4. Borrowing for a shorter time\n\n"
-        "All discounts are additive.\n\n"
-        "The NFTs provide a fixed percentage discount. The Borrowing Incentive NFT is consumed upon "
-        "loan origination.\n\n"
-        "The latter two discounts provide a linear sliding scale, based on the minimum and maximum loan amounts and "
-        "loan periods. The starting values for these discounts are 0-10% discount.\n\n"
-        "The time based discount is imposing an opportunity cost of lent funds - and incentivizing taking out the "
-        "shortest loan possible.\n"
-        "The amount based discount is recognizing that a loan origination now is more valuable than a possible loan "
-        "origination later.\n\nThese sliding scales can be modified to ensure they have optimal market fit.")
+discount = (
+    "20 Lucrative X7 Borrowing Incentive NFTs have been minted, granting;\n\n"
+    "50% Origination fee discount\n"
+    "50% Premium fee discount\n\n"
+    "These are a consumable utility NFT offering fee discounts when borrowing funds for initial liquidity on "
+    "Xchange. The discount will be determined by the X7 Lending Discount Authority smart contract.\n\n"
+    "Usage will cause a token owned by the holder to be burned\n\n"
+    "To apply for a limited NFT see the link below\n\n"
+    " --------------- \n\n"
+    "There are four mechanisms to receive loan origination and premium discounts:\n\n"
+    "1. Holding the Borrowing Maxi NFT\n"
+    "2. Holding (and having consumed) the Borrowing Incentive NFT\n"
+    "3. Borrowing a greater amount\n"
+    "4. Borrowing for a shorter time\n\n"
+    "All discounts are additive.\n\n"
+    "The NFTs provide a fixed percentage discount. The Borrowing Incentive NFT is consumed upon "
+    "loan origination.\n\n"
+    "The latter two discounts provide a linear sliding scale, based on the minimum and maximum loan amounts and "
+    "loan periods. The starting values for these discounts are 0-10% discount.\n\n"
+    "The time based discount is imposing an opportunity cost of lent funds - and incentivizing taking out the "
+    "shortest loan possible.\n"
+    "The amount based discount is recognizing that a loan origination now is more valuable than a possible loan "
+    "origination later.\n\nThese sliding scales can be modified to ensure they have optimal market fit.")
 
 ecosystem = (
     "*X7 Finance Ecosystem*\n\n• *X7R*\nX7's original launched token. Hodl as a percentage of all "
@@ -200,10 +205,10 @@ evenly = (
 )
 
 mods = (
-    f"Marketing Team\n@Robthebank44\n@cryptod0c\n\n"
-    f"Sales Team\n@Gazuga\n\n"
-    f"Socials Team\n@Phlux\n@SlumdOg_shillionaire2022\n@DallasX7\n@Gavalars\n@KBCrypto11\n@CoastCorn\n\n"
-    f"Tech Team\n@Adz1DoubleD\n@MikeMurpher\n@cryptod0c\n@CryptoA7"
+    "Marketing Team\n@Robthebank44\n@cryptod0c\n\n"
+    "Sales Team\n@Gazuga\n\n"
+    "Socials Team\n@Phlux\n@SlumdOg_shillionaire2022\n@DallasX7\n@Gavalars\n@KBCrypto11\n@CoastCorn\n\n"
+    "Tech Team\n@Adz1DoubleD\n@MikeMurpher\n@cryptod0c\n@CryptoA7"
 )
 
 mods_only = (
@@ -214,15 +219,16 @@ patience = (
     "`Patience is bitter, but its fruit is sweet.\n\n- Aristotle`"
 )
 
-proposals = ("*Listing proposal:*\n"
-        "X7 Finance does not prioritize paid listings. Instead, for CEXs to acquire the desired supply "
-        "amount needed to list X7 on their exchange, they will need to purchase it from existing markets.\n\n"
-        "*Marketing proposal:*\n"
-        "X7 Finance does not incur expenses for requested marketing activities. Instead, our team leverages "
-        "its extensive network and connections in the market to independently select and collaborate with "
-        "relevant parties.\n\n"
-        "If, despite this information, you still find it necessary to get in touch, you can always send a "
-        "DM to our Twitter account. Please be aware that responses to such DMs are not guaranteed."
+proposals = (
+    "*Listing proposal:*\n"
+    "X7 Finance does not prioritize paid listings. Instead, for CEXs to acquire the desired supply "
+    "amount needed to list X7 on their exchange, they will need to purchase it from existing markets.\n\n"
+    "*Marketing proposal:*\n"
+    "X7 Finance does not incur expenses for requested marketing activities. Instead, our team leverages "
+    "its extensive network and connections in the market to independently select and collaborate with "
+    "relevant parties.\n\n"
+    "If, despite this information, you still find it necessary to get in touch, you can always send a "
+    "DM to our Twitter account. Please be aware that responses to such DMs are not guaranteed."
 )
 
 refer = (
@@ -749,7 +755,8 @@ usernamelist = (
     "garyvee",
 )
 
-voting = ("*Proposals and Voting*\n\nVoting will occur in multiple phases, each of which has either a minimum or maximum"
+voting = (
+    "*Proposals and Voting*\n\nVoting will occur in multiple phases, each of which has either a minimum or maximum"
         " time phase duration.\n\n*Phase 1: Quorum-seeking*\nX7DAO token holders will be able to stake their tokens as "
         "X7sDAO, a non-transferable staked version of X7DAO.\n\nA quorum is reached when more than 50% of circulating "
         "X7DAO has been staked as X7sDAO.\n\nOnce a quorum is reached and a minimum quorum-seeking time period has "
@@ -767,5 +774,5 @@ voting = ("*Proposals and Voting*\n\nVoting will occur in multiple phases, each 
         "vote of 75% of the quorum of X7sDAO tokens.\n\n*Phase 4: Proposal adoption*\nDuring this phase, proposals that"
         " have passed will be enqueued for execution. This step ensures proper ordering and is a guard against various "
         "forms of process griefing.\n\n*Phase 5: Proposal execution*\nAfter proposal adoption, all passed proposals "
-        f"must be executed before a new Quorum Seeking phase may commence."
+        "must be executed before a new Quorum Seeking phase may commence."
 )

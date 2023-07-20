@@ -18,7 +18,7 @@ load_dotenv()
 
 
 class FilterNotFoundError(Exception):
-    def __init__(self, message="Filter not found"):
+    def __init__(self, message="filter not found"):
         self.message = message
         super().__init__(self.message)
 
