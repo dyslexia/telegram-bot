@@ -6,6 +6,7 @@ import tweepy
 import requests
 from typing import Tuple
 import os
+import csv
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -435,6 +436,15 @@ def get_verified(contract, chain):
         return "No"
 
 
+def read_csv_column(filename, column_index):
+    with open(filename, 'r') as file:
+        csv_reader = csv.reader(file)
+        header = next(csv_reader)
+        column_data = []
+        for row in csv_reader:
+            if len(row) > column_index and row[column_index] != '':
+                column_data.append(row[column_index])
+    return column_data
 
 # TWITTER
 auth = tweepy.OAuthHandler(os.getenv("TWITTER_API"), os.getenv("TWITTER_API_SECRET"))
