@@ -1,13 +1,11 @@
 from datetime import datetime
 from moralis import evm_api
-import csv
 from pycoingecko import CoinGeckoAPI
 import random
 import tweepy
 import requests
 from typing import Tuple
 import os
-import ca
 from dotenv import load_dotenv
 load_dotenv()
 

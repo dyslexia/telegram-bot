@@ -11,9 +11,13 @@ from dotenv import load_dotenv
 import os
 import subprocess
 import sys
+import sentry_sdk
 load_dotenv()
 
-print("Bot Starting...")
+sentry_sdk.init(
+  dsn=os.getenv("SENTRY_DSN"),
+  traces_sample_rate=1.0
+)
 
 
 async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -49,18 +53,22 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def error(update: Update, context: CallbackContext):
-    if update is None:
-        return
-    if update.edited_message is not None:
-        return
-    if isinstance(context.error, AttributeError):
-        return
+    try:
+        if update is None:
+            return
+        if update.edited_message is not None:
+            return
+        if isinstance(context.error, AttributeError):
+            return
 
-    message: Message = update.message
-    if message is not None and message.text is not None:
-        print(f"{message.text} caused error: {context.error}")
-    else:
-        print(f"Error occurred without a valid message: {context.error}")
+        message: Message = update.message
+        if message is not None and message.text is not None:
+            await update.message.reply_text("Error while loading data, please try again")
+            sentry_sdk.capture_exception(Exception(f"{message.text} caused error: {context.error}"))
+        else:
+            sentry_sdk.capture_exception(Exception(f"Error occurred without a valid message: {context.error}"))
+    except Exception as e:
+        sentry_sdk.capture_exception(e)
 
 
 def scanner_start():
@@ -106,6 +114,7 @@ async def send_referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 if __name__ == "__main__":
+
     application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
     application.add_error_handler(error)
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
@@ -214,9 +223,7 @@ if __name__ == "__main__":
         name=str("Referral Message"),
         data=times.referral_time * 60 * 60,
     )
-
     scanner_start()
-    print("Bot Started")
     application.run_polling()
     
 

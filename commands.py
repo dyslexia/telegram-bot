@@ -30,7 +30,14 @@ import dune
 import time as t
 from tokens import info, pairs, chains
 import traceback
+import sentry_sdk
 load_dotenv()
+
+
+sentry_sdk.init(
+  dsn=os.getenv("SENTRY_DSN"),
+  traces_sample_rate=1.0
+)
 
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -104,8 +111,6 @@ async def announcements(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def ath(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    coins = ["x7r", "x7dao"]
-
     def get_ath_info(coin):
         ath, ath_change, date = api.get_ath(coin)
         ath_change_str = str(ath_change)
@@ -1899,7 +1904,8 @@ async def media_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [
                 [
                     InlineKeyboardButton(
-                        text="X7 Official Images", url="https://imgur.com/a/WEszZTa"
+                        text="X7 Official Images", 
+                        url="https://imgur.com/a/WEszZTa"
                     )
                 ],
                 [
@@ -2223,7 +2229,7 @@ async def pair(update: Update, context: CallbackContext):
             result = img.convert("RGBA")
             result.save(r"media/tokenlogo.png")
             im2 = Image.open(r"media/tokenlogo.png")
-        except Exception as e:
+        except Exception:
             if token_info.chain == "eth":
                 im2 = Image.open(media.eth_logo)
             if token_info.chain == "bsc":
@@ -3423,7 +3429,7 @@ async def time(update: Update, context: CallbackContext):
             tz_time = local_time.astimezone(pytz.timezone(tz))
             time_info += f"{tz_time.strftime('%I:%M %p')} - {tz_name}\n"
         await update.message.reply_text(time_info, parse_mode="Markdown")
-    except (Exception, TimeoutError, ValueError, StopAsyncIteration):
+    except Exception:
         await update.message.reply_text(
             "use `/time HH:MMPM or HHAM TZ`", parse_mode="Markdown"
         )
@@ -3498,19 +3504,19 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         com_x7r_balance = api.get_token_balance(com_multi, ca.x7r, chain)
         com_x7r_price = com_x7r_balance * api.get_price(ca.x7r, chain_moralis)
-    except Exception as e:
+    except Exception:
         com_x7r_balance = 0
         com_x7r_price = 0
     try:
         com_x7dao_balance = api.get_token_balance(com_multi, ca.x7dao, chain)
         com_x7dao_price = com_x7dao_balance * api.get_price(ca.x7dao, chain_moralis)
-    except Exception as e:
+    except Exception:
         com_x7dao_balance = 0
         com_x7dao_price = 0
     try:
         com_x7d_balance = api.get_token_balance(com_multi, ca.x7d, chain)
         com_x7d_price = com_x7d_balance * api.get_native_price(native)
-    except Exception as e:
+    except Exception:
         com_x7d_balance = 0
         com_x7d_price = 0
     com_total = com_x7r_price + com_dollar + com_x7d_price + com_x7dao_price

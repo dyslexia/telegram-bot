@@ -14,27 +14,59 @@ from eth_utils import to_checksum_address
 from datetime import datetime
 import os
 from dotenv import load_dotenv
+import sentry_sdk
 load_dotenv()
+
 
 alchemy_poly = os.getenv("ALCHEMY_POLY")
 alchemy_poly_url = f"https://polygon-mainnet.g.alchemy.com/v2/{alchemy_poly}"
 web3 = Web3(Web3.HTTPProvider(alchemy_poly_url))
-
-
+    
 factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "poly"))
 ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "poly"))
 ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "poly"))
 ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "poly"))
 
+pair_filter = factory.events.PairCreated.create_filter(fromBlock="latest")
+ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
+ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
+ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock="latest")
+
+
+sentry_sdk.init(
+  dsn=os.getenv("SENTRY_DSN"),
+  traces_sample_rate=1.0
+)
+
+
+class FilterNotFoundError(Exception):
+    def __init__(self, message="filter not found"):
+        self.message = message
+        super().__init__(self.message)
+
+
+async def restart_main():
+    print("Attempting Restart of POLY")
+    asyncio.create_task(main())
+
+
+async def format_schedule(schedule1, schedule2):
+    schedule_list = []
+    for date, value1, value2 in zip(schedule1[0], schedule1[1], schedule2[1]):
+        formatted_date = datetime.fromtimestamp(date).strftime("%Y-%m-%d %H:%M:%S")
+        combined_value = (value1 + value2) / 10**18
+        sch = f"{formatted_date} - {combined_value} ETH"
+        schedule_list.append(sch)
+    return "\n".join(schedule_list)
+
 
 async def new_pair(event):
-    print("Pair found")
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "poly")
     liq = {"reserve0": 0, "reserve1": 0}
     try:
         liq = api.get_liquidity(event["args"]["pair"], "poly")
-    except (Exception, TimeoutError, ValueError, StopAsyncIteration):
-        print("Liquidity Error")
+    except Exception:
+        pass
     if event["args"]["token0"] == ca.matic:
         weth_address = event["args"]["token0"]
         native = api.get_token_name(event["args"]["token0"], "poly")
@@ -105,16 +137,15 @@ async def new_pair(event):
                 address=token_address, abi=api.get_abi(token_address, "poly")
             )
             verified = "✅ Contract Verified"
-        except (Exception, TimeoutError, ValueError, StopAsyncIteration):
-            print("Verified Error")
+        except Exception:
+            verified = "⚠️ Contract Unverified"
         try:
             owner = contract.functions.owner().call()
             if owner == "0x0000000000000000000000000000000000000000":
                 renounced = "✅ Contract Renounced"
             else:
                 renounced = "⚠️ Contract Not Renounced"
-        except (Exception, TimeoutError, ValueError, StopAsyncIteration):
-            print("Owner Error")
+        except Exception:
             renounced = "⚠️ Contract Not Renounced"
     else:
         verified = "⚠️ Contract Unverified"
@@ -128,17 +159,15 @@ async def new_pair(event):
                 else:
                     tax_warning = ""
                 if scan[f"{str(token_address).lower()}"]["is_honeypot"] == "1":
-                    print("Skip - Honey Pot")
                     return
-            except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-                print(f"Initial Scan Error: {e}")
+            except Exception as e:
+                tax_warning = ""
         if scan[f"{str(token_address).lower()}"]["is_in_dex"] == "1":
             try:
                 if (
                     scan[f"{str(token_address).lower()}"]["sell_tax"] == "1"
                     or scan[f"{str(token_address).lower()}"]["buy_tax"] == "1"
                 ):
-                    print("Skip - Cannot Buy")
                     return
                 buy_tax_raw = (
                     float(scan[f"{str(token_address).lower()}"]["buy_tax"]) * 100
@@ -152,8 +181,7 @@ async def new_pair(event):
                     tax = f"⚠️ Tax: {buy_tax}/{sell_tax} {tax_warning}"
                 else:
                     tax = f"✅️ Tax: {buy_tax}/{sell_tax} {tax_warning}"
-            except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-                print(f"Tax Error: {e}")
+            except Exception:
                 tax = f"⚠️ Tax: Unavailable {tax_warning}"
             if "lp_holders" in scan[f"{str(token_address).lower()}"]:
                 lp_holders = scan[f"{str(token_address).lower()}"]["lp_holders"]
@@ -183,13 +211,12 @@ async def new_pair(event):
                             )
                 else:
                     lock = ""
-            except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-                print(f"Liquidity Error: {e}")
+            except Exception as e:
+                sentry_sdk.capture_exception(f"POLY LP Error:{e}")
         else:
             tax = f"⚠️ Tax: Unavailable {tax_warning}"
         status = f"{verified}\n{tax}\n{renounced}\n{lock}"
-    except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-        print(f"Scan Error: {e}")
+    except Exception as e:
         status = "⚠️ Scan Unavailable"
     pool = int(tx["result"]["value"], 0) / 10**18
     if pool == 0 or pool == "" or not pool:
@@ -260,7 +287,6 @@ async def new_pair(event):
 
 
 async def new_loan(event):
-    print("Loan Originated")
     tx = api.get_tx_from_hash(event["transactionHash"].hex(), "poly")
     try:
         address = to_checksum_address(ca.lpool)
@@ -277,39 +303,10 @@ async def new_loan(event):
         schedule2 = contract.functions.getPrincipalPaymentSchedule(
             int(event["args"]["loanID"])
         ).call()
-        schedule_list = []
-        if len(schedule1[0]) > 0 and len(schedule1[1]) > 0:
-            if len(schedule2[0]) == len(schedule1[0]) and len(schedule2[1]) == len(
-                schedule1[1]
-            ):
-                for date1, value1, value2 in zip(
-                    schedule1[0], schedule1[1], schedule2[1]
-                ):
-                    formatted_date = datetime.fromtimestamp(date1).strftime(
-                        "%Y-%m-%d %H:%M:%S"
-                    )
-                    combined_value = (value1 + value2) / 10**18
-                    sch = f"{formatted_date} - {combined_value} MATIC"
-                    schedule_list.append(sch)
-            else:
-                for date, value in zip(schedule1[0], schedule1[1]):
-                    formatted_date = datetime.fromtimestamp(date).strftime(
-                        "%Y-%m-%d %H:%M:%S"
-                    )
-                    formatted_value = value / 10**18
-                    sch = f"{formatted_date} - {formatted_value} MATIC"
-                    schedule_list.append(sch)
-        else:
-            for date, value in zip(schedule2[0], schedule2[1]):
-                formatted_date = datetime.fromtimestamp(date).strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                )
-                formatted_value = value / 10**18
-                sch = f"{formatted_date} - {formatted_value} MATIC"
-                schedule_list.append(sch)
-        schedule_str = "\n".join(schedule_list)
-    except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
-        print(f" Scan Error:{e}")
+
+        schedule_str = await format_schedule(schedule1, schedule2)
+    except Exception as e:
+        sentry_sdk.capture_exception(f"POLY Loan Error:{e}")
         schedule_str = ""
         amount = ""
     cost = int(tx["result"]["value"], 0) / 10**18
@@ -351,7 +348,6 @@ async def new_loan(event):
             ]
         ),
     )
-    print(f'Loan {event["args"]["loanID"]} sent')
 
 
 async def log_loop(
@@ -379,42 +375,23 @@ async def log_loop(
 
             await asyncio.sleep(poll_interval)
 
-        except (
-            Web3Exception,
-            Exception,
-            TimeoutError,
-            ValueError,
-            StopAsyncIteration,
-        ) as e:
-            print(f"Poly Loop Error: {e}")
-            break
+        except Exception as e:
+            sentry_sdk.capture_exception(f"POLY Loop Error:{e}")
+            restart_main()
 
 
 async def main():
     print("Scanning POLYGON Network")
-
-    pair_filter = factory.events.PairCreated.create_filter(fromBlock="latest")
-    ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
-    ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
-    ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock="latest")
-
+    
     while True:
         try:
             tasks = [
                 log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)
             ]
             await asyncio.gather(*tasks)
-        except (
-            Web3Exception,
-            Exception,
-            TimeoutError,
-            ValueError,
-            StopAsyncIteration,
-        ) as e:
-            print(f"Poly Main Error: {e}")
-            break
-
-
+        except Exception as e:
+            sentry_sdk.capture_exception(f"POLY Main Error:{e}")
+            restart_main()
 
 
 if __name__ == "__main__":
@@ -424,3 +401,4 @@ if __name__ == "__main__":
     .token(os.getenv("TELEGRAM_BOT_TOKEN_POLY"))
     .connection_pool_size(512).build()
 )
+    asyncio.run(main())
