@@ -355,6 +355,92 @@ async def buy_evenly(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
+async def channels(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_photo(
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+        caption=f"*X7 Finance Community TG Channels*\n\n{api.get_quote()}",
+        parse_mode="Markdown",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        text="Community Chat", url="https://t.me/X7m105portal"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Announcements", url="https://t.me/X7announcements"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Xchange Alerts", url="https://t.me/x7_alerts)"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Media", url="https://t.me/X7MediaChannel"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Research Notes", url="https://t.me/X7m105_Research"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Chinese Community", url="https://t.me/X7CNPortal"
+                    )
+                ],
+            ]
+        ),
+    )
+
+
+async def chart(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
+    if context is None:
+        context = ContextTypes.DEFAULT_TYPE()
+    chain = " ".join(context.args).lower()
+    chain_url = ""
+    chain_name = ""
+    chain_mappings = {
+        "eth": (url.dex_tools_eth, "(ETH)"),
+        "bsc": (url.dex_tools_bsc, "(BSC)"),
+        "bnb": (url.dex_tools_bsc, "(BSC)"),
+        "polygon": (url.dex_tools_poly, "(POLYGON)"),
+        "poly": (url.dex_tools_poly, "(POLYGON)"),
+        "optimism": (url.dex_tools_opti, "(OPTI)"),
+        "opti": (url.dex_tools_opti, "(OPTI)"),
+        "arbitrum": (url.dex_tools_arb, "(ARB)"),
+        "arb": (url.dex_tools_arb, "(ARB)"),
+    }
+    if chain in chain_mappings:
+        chain_url, chain_name = chain_mappings[chain]
+    else:
+        chain_url, chain_name = chain_mappings["eth"]
+    await update.message.reply_photo(
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+        caption=f"*X7 Finance Chart Links* {chain_name}\nUse `/chart [chain-name]` for other chains\n"
+        f"Use `/constellations` for constellations\n\n{api.get_quote()}",
+        parse_mode="Markdown",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        text="X7R - Rewards Token", url=f"{chain_url}{ca.x7r}"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="X7DAO - Governance Token",
+                        url=f"{chain_url}{ca.x7dao}",
+                    )
+                ],
+            ]
+        ),
+    )
+
+
 async def compare(update: Update, context: ContextTypes.DEFAULT_TYPE):
     token_names = {
     "x7r": {
@@ -428,7 +514,7 @@ async def compare(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text(
             (28, 36),
             f'X7 Finance Market Cap Comparison\n\n'
-            f"Token value of {context.args[0].upper()} at {context.args[1].upper()} Market Cap:n"
+            f"Token value of {context.args[0].upper()} at {context.args[1].upper()} Market Cap:\n"
             f'(${"{:,.2f}".format(token_market_cap)})\n\n'
             f'${"{:,.2f}".format(token_value)}\n'
             f'{"{:,.0f}%".format(percent)}\n'
@@ -561,92 +647,6 @@ async def contracts(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"For advanced trading and arbitrage opportunities see `/constellations`\n\n"
         f"{api.get_quote()}",
         parse_mode="Markdown",
-    )
-
-
-async def channels(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_photo(
-        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*X7 Finance Community TG Channels*\n\n{api.get_quote()}",
-        parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        text="Community Chat", url="https://t.me/X7m105portal"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="Announcements", url="https://t.me/X7announcements"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="Xchange Alerts", url="https://t.me/x7_alerts)"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="Media", url="https://t.me/X7MediaChannel"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="Research Notes", url="https://t.me/X7m105_Research"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="Chinese Community", url="https://t.me/X7CNPortal"
-                    )
-                ],
-            ]
-        ),
-    )
-
-
-async def chart(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
-    if context is None:
-        context = ContextTypes.DEFAULT_TYPE()
-    chain = " ".join(context.args).lower()
-    chain_url = ""
-    chain_name = ""
-    chain_mappings = {
-        "eth": (url.dex_tools_eth, "(ETH)"),
-        "bsc": (url.dex_tools_bsc, "(BSC)"),
-        "bnb": (url.dex_tools_bsc, "(BSC)"),
-        "polygon": (url.dex_tools_poly, "(POLYGON)"),
-        "poly": (url.dex_tools_poly, "(POLYGON)"),
-        "optimism": (url.dex_tools_opti, "(OPTI)"),
-        "opti": (url.dex_tools_opti, "(OPTI)"),
-        "arbitrum": (url.dex_tools_arb, "(ARB)"),
-        "arb": (url.dex_tools_arb, "(ARB)"),
-    }
-    if chain in chain_mappings:
-        chain_url, chain_name = chain_mappings[chain]
-    else:
-        chain_url, chain_name = chain_mappings["eth"]
-    await update.message.reply_photo(
-        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*X7 Finance Chart Links* {chain_name}\nUse `/chart [chain-name]` for other chains\n"
-        f"Use `/constellations` for constellations\n\n{api.get_quote()}",
-        parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        text="X7R - Rewards Token", url=f"{chain_url}{ca.x7r}"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="X7DAO - Governance Token",
-                        url=f"{chain_url}{ca.x7dao}",
-                    )
-                ],
-            ]
-        ),
     )
 
 
