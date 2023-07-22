@@ -3627,6 +3627,157 @@ async def voting(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
+async def wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if len(context.args) >= 2:
+        chain = context.args[1].lower()
+        wallet = context.args[0]
+    else:
+        await update.message.reply_text(
+            f"Please use `/wallet wallet_address chain_name ` to see details",
+            parse_mode="Markdown",
+        )
+        return
+    if chain in ["eth", ""]:
+        im2 = Image.open(media.eth_logo)
+        chain_moralis = "eth"
+        chain_name = "(ETH)"
+        link = url.ether_address
+        native = "eth"
+        chain = "eth"
+    elif chain == "bsc" or chain == "bnb":
+        im2 = Image.open(media.bsc_logo)
+        chain_moralis = "bsc"
+        chain_name = "(BSC)"
+        link = url.bsc_address
+        native = "bnb"
+        chain = "bsc"
+    elif chain == "polygon" or chain == "poly":
+        im2 = Image.open(media.poly_logo)
+        chain_moralis = "polygon"
+        chain_name = "(POLYGON)"
+        link = url.poly_address
+        native = "matic"
+        chain = "poly"
+    elif chain == "optimism" or chain == "opti":
+        im2 = Image.open(media.opti_logo)
+        chain_moralis = "optimism"
+        chain_name = "(OPTIMISM)"
+        link = url.opti_address
+        native = "eth"
+        chain = "opti"
+    elif chain == "arbitrum" or chain == "arb":
+        im2 = Image.open(media.arb_logo)
+        chain_moralis = "arbitrum"
+        chain_name = "(ARB)"
+        link = url.arb_address
+        native = "eth"
+        chain = "arb"
+    native_price = api.get_native_price(native)
+    eth = api.get_native_balance(wallet, chain)
+    dollar = float(eth) * float(native_price)
+    try:
+        x7r_balance = api.get_token_balance(wallet, ca.x7r, chain)
+        x7r_price = x7r_balance * api.get_price(ca.x7r, chain_moralis)
+    except Exception:
+        x7r_balance = 0
+        x7r_price = 0
+    try:
+        x7dao_balance = api.get_token_balance(wallet, ca.x7dao, chain)
+        x7dao_price = x7dao_balance * api.get_price(ca.x7dao, chain_moralis)
+    except Exception:
+        x7dao_balance = 0
+        x7dao_price = 0
+    try:
+        x7101_balance = api.get_token_balance(wallet, ca.x7101, chain)
+        x7101_price = x7101_balance * api.get_price(ca.x7101, chain_moralis)
+    except Exception:
+        x7101_balance = 0
+        x7101_price = 0
+    try:
+        x7102_balance = api.get_token_balance(wallet, ca.x7102, chain)
+        x7102_price = x7102_balance * api.get_price(ca.x7102, chain_moralis)
+    except Exception:
+        x7102_balance = 0
+        x7102_price = 0
+    try:
+        x7103_balance = api.get_token_balance(wallet, ca.x7103, chain)
+        x7103_price = x7103_balance * api.get_price(ca.x7103, chain_moralis)
+    except Exception:
+        x7103_balance = 0
+        x7103_price = 0
+    try:
+        x7104_balance = api.get_token_balance(wallet, ca.x7104, chain)
+        x7dao_price = x7104_balance * api.get_price(ca.x7104, chain_moralis)
+    except Exception:
+        x7104_balance = 0
+        x7104_price = 0
+    try:
+        x7105_balance = api.get_token_balance(wallet, ca.x7105, chain)
+        x7105_price = x7105_balance * api.get_price(ca.x7105, chain_moralis)
+    except Exception:
+        x7105_balance = 0
+        x7105_price = 0
+    try:
+        x7d_balance = api.get_token_balance(wallet, ca.x7d, chain)
+        x7d_price = x7d_balance * api.get_native_price(native)
+    except Exception:
+        x7d_balance = 0
+        x7d_price = 0
+    total = x7d_price + x7r_price + x7dao_price + x7101_price + x7102_price + x7103_price + x7104_price + x7105_price
+    im1 = Image.open((random.choice(media.blackhole)))
+    im1.paste(im2, (720, 20), im2)
+    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 24)
+    i1 = ImageDraw.Draw(im1)
+    i1.text(
+        (28, 36),
+        f"X7 Finance Wallet Info {chain_name}\n\n"
+        f"{eth[:6]} {native.upper()} (${'{:0,.0f}'.format(dollar)})\n\n"
+        f"{x7r_balance} X7R (${'{:0,.0f}'.format(x7r_price)})\n"
+        f"{x7dao_balance} X7DAO (${'{:0,.0f}'.format(x7dao_price)})\n"
+        f"{x7101_balance} X7101 (${'{:0,.0f}'.format(x7101_price)})\n"
+        f"{x7102_balance} X7102 (${'{:0,.0f}'.format(x7102_price)})\n"
+        f"{x7103_balance} X7103 (${'{:0,.0f}'.format(x7103_price)})\n"
+        f"{x7104_balance} X7104 (${'{:0,.0f}'.format(x7104_price)})\n"
+        f"{x7105_balance} X7105 (${'{:0,.0f}'.format(x7105_price)})\n"
+        f"{x7d_balance} X7D (${'{:0,.0f}'.format(x7d_price)})\n\n"
+        f"Total X7 Finance token value ${'{:0,.0f}'.format(total)}\n\n"
+        f"UTC: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}",
+        font=myfont,
+        fill=(255, 255, 255),
+    )
+
+    img_path = os.path.join("media", "blackhole.png")
+    im1.save(img_path)
+    await update.message.reply_photo(
+        photo=open(r"media/blackhole.png", "rb"),
+        caption=f"*X7 Finance Wallet Info {chain_name}*\nUse `/wallet [chain-name] [wallet_address]` for other chains\n\n"
+        f'`{wallet}`\n\n'
+        f"{eth[:6]} {native.upper()} (${'{:0,.0f}'.format(dollar)})\n\n"
+        f"{x7r_balance} X7R (${'{:0,.0f}'.format(x7r_price)})\n"
+        f"{x7dao_balance} X7DAO (${'{:0,.0f}'.format(x7dao_price)})\n"
+        f"{x7101_balance} X7101 (${'{:0,.0f}'.format(x7101_price)})\n"
+        f"{x7102_balance} X7102 (${'{:0,.0f}'.format(x7102_price)})\n"
+        f"{x7103_balance} X7103 (${'{:0,.0f}'.format(x7103_price)})\n"
+        f"{x7104_balance} X7104 (${'{:0,.0f}'.format(x7104_price)})\n"
+        f"{x7105_balance} X7105 (${'{:0,.0f}'.format(x7105_price)})\n"
+        f"{x7d_balance} X7D (${'{:0,.0f}'.format(x7d_price)})\n\n"
+        f"Total X7 Finance token value ${'{:0,.0f}'.format(total)}\n\n"
+        f"{api.get_quote()}",
+        parse_mode="Markdown",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        text="Wallet Link",
+                        url=f"{link}{wallet}",
+                    )
+                ],
+                
+            ]
+        ),
+    )
+
+
 async def website(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",

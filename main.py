@@ -204,6 +204,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler("volume", commands.volume))
     application.add_handler(CommandHandler("voting", commands.voting))
     application.add_handler(CommandHandler("wei", commands.wei))
+    application.add_handler(CommandHandler("wallet", commands.wallet))
     application.add_handler(CommandHandler(["website", "site"], commands.website))
     application.add_handler(CommandHandler(["whitepaper", "wp", "wpquote"], commands.wp))
 
