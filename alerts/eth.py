@@ -1,13 +1,13 @@
 from telegram.ext import *
 from telegram import *
-import api
+from api import index as api
 import asyncio
-import ca
-import media
+from data import ca as ca
+from media import index as media
 from PIL import Image, ImageDraw, ImageFont
 import random
 import time
-import url
+from data import url as url
 from web3 import Web3
 from web3.exceptions import Web3Exception
 from eth_utils import to_checksum_address
@@ -18,14 +18,14 @@ import sentry_sdk
 load_dotenv()
 
 
-web3_url = random.choice(url.bsc)
-web3 = Web3(Web3.HTTPProvider(web3_url))
+alchemy_keys = os.getenv("ALCHEMY_ETH")
+alchemy_eth_url = f"https://eth-mainnet.g.alchemy.com/v2/{alchemy_keys}"
+web3 = Web3(Web3.HTTPProvider(alchemy_eth_url))
 
-
-factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "bsc"))
-ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "bsc"))
-ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "bsc"))
-ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "bsc"))
+factory = web3.eth.contract(address=ca.factory, abi=api.get_abi(ca.factory, "eth"))
+ill001 = web3.eth.contract(address=ca.ill001, abi=api.get_abi(ca.ill001, "eth"))
+ill002 = web3.eth.contract(address=ca.ill002, abi=api.get_abi(ca.ill002, "eth"))
+ill003 = web3.eth.contract(address=ca.ill003, abi=api.get_abi(ca.ill003, "eth"))
 
 pair_filter = factory.events.PairCreated.create_filter(fromBlock="latest")
 ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
@@ -46,7 +46,7 @@ class FilterNotFoundError(Exception):
 
 
 async def restart_main():
-    print("Attempting Restart of BSC")
+    print("Attempting Restart of ETH")
     asyncio.create_task(main())
 
 
@@ -61,82 +61,54 @@ async def format_schedule(schedule1, schedule2):
 
 
 async def new_pair(event):
-    tx = api.get_tx_from_hash(event["transactionHash"].hex(), "bsc")
+    tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
     liq = {"reserve0": 0, "reserve1": 0}
     try:
-        liq = api.get_liquidity(event["args"]["pair"], "bsc")
+        liq = api.get_liquidity(event["args"]["pair"], "eth")
     except Exception:
         pass
-    if event["args"]["token0"] == ca.wbnb:
-        native = api.get_token_name(event["args"]["token0"], "bsc")
-        token_name = api.get_token_name(event["args"]["token1"], "bsc")
+    if event["args"]["token0"] == ca.weth:
+        native = api.get_token_name(event["args"]["token0"], "eth")
+        token_name = api.get_token_name(event["args"]["token1"], "eth")
         token_address = event["args"]["token1"]
         weth = liq["reserve0"]
         token = liq["reserve1"]
-        dollar = int(weth) * 2 * api.get_native_price("bnb") / 10**18
-    elif event["args"]["token0"] in ca.bscpairs:
-        native = api.get_token_name(event["args"]["token0"], "bsc")
-        token_name = api.get_token_name(event["args"]["token1"], "bsc")
-        token_address = event["args"]["token1"]
-        weth = liq["reserve0"]
-        token = liq["reserve1"]
-        dollar = 0
-    elif event["args"]["token1"] in ca.bscpairs:
-        native = api.get_token_name(event["args"]["token1"], "bsc")
-        token_name = api.get_token_name(event["args"]["token0"], "bsc")
-        token_address = event["args"]["token0"]
-        weth = liq["reserve1"]
-        token = liq["reserve0"]
-        dollar = 0
-    elif event["args"]["token0"] in ca.bscethpairs:
-        native = api.get_token_name(event["args"]["token0"], "bsc")
-        token_name = api.get_token_name(event["args"]["token1"], "bsc")
-        token_address = event["args"]["token1"]
-        weth = liq["reserve0"]
-        token = liq["reserve1"]
-        dollar = int(weth) * 2 * api.get_native_price("eth") / 10**18
-    elif event["args"]["token1"] in ca.bscethpairs:
-        native = api.get_token_name(event["args"]["token1"], "bsc")
-        token_name = api.get_token_name(event["args"]["token0"], "bsc")
-        token_address = event["args"]["token0"]
-        weth = liq["reserve1"]
-        token = liq["reserve0"]
         dollar = int(weth) * 2 * api.get_native_price("eth") / 10**18
     elif event["args"]["token0"] in ca.stables:
-        native = api.get_token_name(event["args"]["token0"], "bsc")
-        token_name = api.get_token_name(event["args"]["token1"], "bsc")
+        native = api.get_token_name(event["args"]["token0"], "eth")
+        token_name = api.get_token_name(event["args"]["token1"], "eth")
         token_address = event["args"]["token1"]
         weth = liq["reserve0"]
         token = liq["reserve1"]
         dollar = int(weth) * 2 / 10**18
     elif event["args"]["token1"] in ca.stables:
-        native = api.get_token_name(event["args"]["token1"], "bsc")
-        token_name = api.get_token_name(event["args"]["token0"], "bsc")
+        native = api.get_token_name(event["args"]["token1"], "eth")
+        token_name = api.get_token_name(event["args"]["token0"], "eth")
         token_address = event["args"]["token0"]
         weth = liq["reserve1"]
         token = liq["reserve0"]
         dollar = int(weth) * 2 / 10**18
     else:
-        native = api.get_token_name(event["args"]["token1"], "bsc")
-        token_name = api.get_token_name(event["args"]["token0"], "bsc")
+        native = api.get_token_name(event["args"]["token1"], "eth")
+        token_name = api.get_token_name(event["args"]["token0"], "eth")
         token_address = event["args"]["token0"]
         weth = liq["reserve1"]
         token = liq["reserve0"]
-        dollar = int(weth) * 2 * api.get_native_price("bnb") / 10**18
+        dollar = int(weth) * 2 * api.get_native_price("eth") / 10**18
     verified_check = api.get_verified(token_address, "eth")
     if dollar == 0 or dollar == "" or not dollar:
         liquidity_text = "Total Liquidity: Unavailable"
     else:
         liquidity_text = f'Total Liquidity: ${"{:0,.0f}".format(dollar)}'
-    info = api.get_token_data(token_address, "bsc")
+    info = api.get_token_data(token_address, "eth")
     if (
         info[0]["decimals"] == ""
         or info[0]["decimals"] == "0"
         or not info[0]["decimals"]
     ):
-        supply = int(api.get_supply(token_address, "bsc"))
+        supply = int(api.get_supply(token_address, "eth"))
     else:
-        supply = int(api.get_supply(token_address, "bsc")) / 10 ** int(
+        supply = int(api.get_supply(token_address, "eth")) / 10 ** int(
             info[0]["decimals"]
         )
     status = ""
@@ -148,8 +120,8 @@ async def new_pair(event):
     if verified_check == "Yes":
         try:
             contract = web3.eth.contract(
-                address=token_address, abi=api.get_abi(token_address, "bsc")
-            )
+            address=token_address, abi=api.get_abi(token_address, "eth")
+        )
             verified = "✅ Contract Verified"
         except Exception:
             verified = "⚠️ Contract Unverified"
@@ -159,14 +131,13 @@ async def new_pair(event):
                 renounced = "✅ Contract Renounced"
             else:
                 renounced = "⚠️ Contract Not Renounced"
-        except (Exception, TimeoutError, ValueError, StopAsyncIteration):
-            print("Owner Error")
+        except Exception:
             renounced = "⚠️ Contract Not Renounced"
     else:
         verified = "⚠️ Contract Unverified"
     time.sleep(10)
     try:
-        scan = api.get_scan(token_address, "bsc")
+        scan = api.get_scan(token_address, "eth")
         if scan[f"{str(token_address).lower()}"]["is_open_source"] == "1":
             try:
                 if scan[f"{str(token_address).lower()}"]["slippage_modifiable"] == "1":
@@ -196,7 +167,7 @@ async def new_pair(event):
                     tax = f"⚠️ Tax: {buy_tax}/{sell_tax} {tax_warning}"
                 else:
                     tax = f"✅️ Tax: {buy_tax}/{sell_tax} {tax_warning}"
-            except Exception as e:
+            except Exception:
                 tax = f"⚠️ Tax: Unavailable {tax_warning}"
             if "lp_holders" in scan[f"{str(token_address).lower()}"]:
                 lp_holders = scan[f"{str(token_address).lower()}"]["lp_holders"]
@@ -227,7 +198,7 @@ async def new_pair(event):
                 else:
                     lock = ""
             except Exception as e:
-                sentry_sdk.capture_exception(f"BSC LP Error:{e}")
+                sentry_sdk.capture_exception(f"ETH LP Error:{e}")
         else:
             tax = f"⚠️ Tax: Unavailable {tax_warning}"
         status = f"{verified}\n{tax}\n{renounced}\n{lock}"
@@ -237,18 +208,18 @@ async def new_pair(event):
     if pool == 0 or pool == "" or not pool:
         pool_text = "Launched Pool Amount: Unavailable"
     else:
-        pool_dollar = float(pool) * float(api.get_native_price("bnb")) / 1**18
+        pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1**18
         pool_text = (
-            f'Launched Pool Amount: {pool} BNB (${"{:0,.0f}".format(pool_dollar)})'
+            f'Launched Pool Amount: {pool} ETH (${"{:0,.0f}".format(pool_dollar)})'
         )
     im1 = Image.open((random.choice(media.blackhole)))
-    im2 = Image.open(media.bsc_logo)
+    im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
     myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
     i1 = ImageDraw.Draw(im1)
     i1.text(
         (26, 30),
-        f"New Pair Created (BSC)\n\n"
+        f"New Pair Created (ETH) \n\n"
         f"{token_name[0]} ({token_name[1]}/{native[1]})\n\n"
         f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
         f"{pool_text}\n\n"
@@ -262,36 +233,37 @@ async def new_pair(event):
     await application.bot.send_photo(
         os.getenv("ALERTS_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media/blackhole.png", "rb"),
-        caption=f"*New Pair Created (BSC)*\n\n"
+        caption=f"*New Pair Created (ETH)*\n\n"
         f"{token_name[0]} ({token_name[1]}/{native[1]})\n\n"
         f"Token Address:\n`{token_address}`\n\n"
         f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
         f"{pool_text}\n\n"
-        f"SCAN:\n"
         f"{liquidity_text}\n\n"
-        f"{status}",
+        f"SCAN:\n"
+        f"{status}\n",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton(
-                        text=f"Buy On Xchange", url=f"{url.xchange_buy_bsc}"
+                        text=f"Buy On Xchange",
+                        url=f"{url.xchange_buy_eth}{token_address}",
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Chart", url=f'{url.dex_tools_bsc}{event["args"]["pair"]}'
+                        text="Chart", url=f'{url.dex_tools_eth}{event["args"]["pair"]}'
                     )
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Token Contract", url=f"{url.bsc_address}{token_address}"
+                        text="Token Contract", url=f"{url.ether_address}{token_address}"
                     )
                 ],
                 [
                     InlineKeyboardButton(
                         text="Deployer TX",
-                        url=f'{url.bsc_tx}{event["transactionHash"].hex()}',
+                        url=f'{url.ether_tx}{event["transactionHash"].hex()}',
                     )
                 ],
             ]
@@ -300,10 +272,10 @@ async def new_pair(event):
 
 
 async def new_loan(event):
-    tx = api.get_tx_from_hash(event["transactionHash"].hex(), "arb")
+    tx = api.get_tx_from_hash(event["transactionHash"].hex(), "eth")
     try:
         address = to_checksum_address(ca.lpool)
-        contract = web3.eth.contract(address=address, abi=api.get_abi(ca.lpool, "bsc"))
+        contract = web3.eth.contract(address=address, abi=api.get_abi(ca.lpool, "eth"))
         amount = (
             contract.functions.getRemainingLiability(
                 int(event["args"]["loanID"])
@@ -316,44 +288,47 @@ async def new_loan(event):
         schedule2 = contract.functions.getPrincipalPaymentSchedule(
             int(event["args"]["loanID"])
         ).call()
+
         schedule_str = await format_schedule(schedule1, schedule2)
     except Exception as e:
-        sentry_sdk.capture_exception(f"BSC Loan Error:{e}")
+        sentry_sdk.capture_exception(f"ETH Loan Error:{e}")
         schedule_str = ""
         amount = ""
+
     cost = int(tx["result"]["value"], 0) / 10**18
     im1 = Image.open((random.choice(media.blackhole)))
-    im2 = Image.open(media.bsc_logo)
+    im2 = Image.open(media.eth_logo)
     im1.paste(im2, (720, 20), im2)
     myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
     i1 = ImageDraw.Draw(im1)
     i1.text(
         (26, 30),
-        f"New Loan Originated (BSC)\n\n"
+        f"New Loan Originated (ETH)\n\n"
         f'Loan ID: {event["args"]["loanID"]}\n'
-        f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} BNB '
-        f'(${"{:0,.0f}".format(api.get_native_price("bnb") * cost)})\n\n'
+        f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH '
+        f'(${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
         f"Payment Schedule (UTC):\n{schedule_str}\n\n"
-        f'Total: {amount} BNB (${"{:0,.0f}".format(api.get_native_price("bnb") * amount)})',
+        f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)})',
         font=myfont,
         fill=(255, 255, 255),
     )
     im1.save(r"media/blackhole.png")
+
     await application.bot.send_photo(
         os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media/blackhole.png", "rb"),
-        caption=f"*New Loan Originated (BSC)*\n\n"
+        caption=f"*New Loan Originated (ETH)*\n\n"
         f'Loan ID: {event["args"]["loanID"]}\n'
-        f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} BNB '
-        f'(${"{:0,.0f}".format(api.get_native_price("bnb") * cost)})\n\n'
+        f'Initial Cost: {cost} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
         f"Payment Schedule (UTC):\n{schedule_str}\n\n"
-        f'Total: {amount} BNB (${"{:0,.0f}".format(api.get_native_price("bnb") * amount)}',
+        f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)})',
+        parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton(
                         text=f"Loan TX",
-                        url=f'{url.bsc_tx}{event["transactionHash"].hex()}',
+                        url=f'{url.ether_tx}{event["transactionHash"].hex()}',
                     )
                 ],
             ]
@@ -364,7 +339,6 @@ async def new_loan(event):
 async def log_loop(
     pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval
 ):
-
     while True:
         try:
             for PairCreated in pair_filter.get_new_entries():
@@ -388,13 +362,13 @@ async def log_loop(
             await asyncio.sleep(poll_interval)
 
         except Exception as e:
-            sentry_sdk.capture_exception(f"BSC Loop Error:{e}")
+            sentry_sdk.capture_exception(f"ETH Loop Error:{e}")
             restart_main()
 
 
 async def main():
-    print("Scanning BSC Network")
-    
+    print("Scanning ETH Network")
+
     while True:
         try:
             tasks = [
@@ -402,14 +376,14 @@ async def main():
             ]
             await asyncio.gather(*tasks)
         except Exception as e:
-            sentry_sdk.capture_exception(f"BSC Main Error:{e}")
+            sentry_sdk.capture_exception(f"ETH Main Error:{e}")
             restart_main()
 
 
 if __name__ == "__main__":
     application = (
     ApplicationBuilder()
-    .token(os.getenv("TELEGRAM_BOT_TOKEN_BSC"))
+    .token(os.getenv("TELEGRAM_BOT_TOKEN_ETH"))
     .connection_pool_size(512)
     .build()
 )

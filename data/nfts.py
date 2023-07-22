@@ -1,6 +1,7 @@
 # NFTS
-import api
-import ca
+
+from api import index as api
+from data import ca as ca
 
 
 prices = {

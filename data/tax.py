@@ -1,6 +1,5 @@
 # TAX
 
-
 info = {
     'eth': {
         'x7r': 3,

@@ -1,24 +1,24 @@
 from telegram.ext import *
 from telegram import *
-import api
-import ca
+from api import index as api
+from data import ca as ca
 from datetime import datetime, timedelta, timezone
 from dateutil import parser
 import pytz
-import loans
-import media
-import nfts
+from data import loans as loans
+from media import index as media
+from data import nfts as nfts
 from PIL import Image, ImageDraw, ImageFont
 import random
 import requests
-import tax
-import text
+from data import tax as tax
+from data import text as text
 import textwrap
-import times
-import giveaway
+from data import times as times
+from data import giveaway as giveaway
 from translate import Translator
 import pyttsx3
-import url
+from data import url as url
 import wikipediaapi
 import re
 from web3 import Web3
@@ -26,9 +26,9 @@ from web3.exceptions import Web3Exception
 from eth_utils import to_checksum_address
 import os
 from dotenv import load_dotenv
-import dune
+from api import dune as dune
 import time as t
-from tokens import info, pairs, chains
+from tokens.index import info, pairs, chains
 import traceback
 import sentry_sdk
 load_dotenv()
@@ -118,6 +118,10 @@ async def ath(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     x7r_ath, x7r_ath_change, x7r_date = get_ath_info("x7r")
     x7dao_ath, x7dao_ath_change, x7dao_date = get_ath_info("x7dao")
+    x7dao_date_object = datetime.fromisoformat(x7dao_date.replace("Z", "+00:00"))
+    x7dao_readable_date = x7dao_date_object.strftime("%Y-%m-%d %H:%M:%S")
+    x7r_date_object = datetime.fromisoformat(x7r.replace("Z", "+00:00"))
+    x7r_readable_date = x7r_date_object.strftime("%Y-%m-%d %H:%M:%S")
     img = Image.open((random.choice(media.blackhole)))
     i1 = ImageDraw.Draw(img)
     myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 26)
@@ -125,9 +129,9 @@ async def ath(update: Update, context: ContextTypes.DEFAULT_TYPE):
         (28, 36),
         f"X7 Finance ATH Info\n\n"
         f'X7R   - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change}%\n'
-        f"{x7r_date}\n\n"
+        f"{x7r_readable_date}\n\n"
         f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change}%\n'
-        f"{x7dao_date}"
+        f"{x7dao_readable_date}"
         f"\n\n\n\n\n\n\n"
         f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
         font=myfont,
@@ -4360,7 +4364,7 @@ async def x7101(update: Update, context: ContextTypes.DEFAULT_TYPE):
             (28, 36),
             f"X7101 Info (ETH)\n\n"
             f'X7101 Price: ${price["x7101"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7101"]["usd_24h_change"]),1}%\n'
+            f'24 Hour Change: {round(price["x7101"]["usd_24h_change"]), 1}%\n'
             f'Market Cap:  ${"{:0,.0f}".format(price["x7101"]["usd"] * ca.supply)}\n'
             f'24 Hour Volume: ${"{:0,.0f}".format(price["x7101"]["usd_24h_vol"])}\n'
             f'ATH: ${x7101_ath} (${"{:0,.0f}".format(x7101_ath * ca.supply)}) {x7101_ath_change[:3]}%\n'
@@ -5047,43 +5051,6 @@ async def x7105(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 ],
             ]
         ),
-    )
-
-    coins = ["x7r", "x7dao"]
-
-    def get_ath_info(coin):
-        ath, ath_change, date = api.get_ath(coin)
-        ath_change_str = str(ath_change)
-        return ath, ath_change_str[:3], date
-
-    x7r_ath, x7r_ath_change, x7r_date = get_ath_info("x7r")
-    x7dao_ath, x7dao_ath_change, x7dao_date = get_ath_info("x7dao")
-    img = Image.open((random.choice(media.blackhole)))
-    i1 = ImageDraw.Draw(img)
-    myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 26)
-    i1.text(
-        (28, 36),
-        f"X7 Finance ATH Info\n\n"
-        f'X7R   - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change}%\n'
-        f"{x7r_date}\n\n"
-        f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change}%\n'
-        f"{x7dao_date}"
-        f"\n\n\n\n\n\n\n"
-        f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-        font=myfont,
-        fill=(255, 255, 255),
-    )
-    img.save(r"media/blackhole.png")
-    caption = (
-        f"*X7 Finance ATH Info*\n\n"
-        f'X7R - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change}%\n'
-        f"{x7r_date}\n\n"
-        f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change}%\n'
-        f"{x7dao_date}\n\n"
-        f"{api.get_quote()}"
-    )
-    await update.message.reply_photo(
-        photo=open(r"media/blackhole.png", "rb"), caption=caption, parse_mode="Markdown"
     )
 
 

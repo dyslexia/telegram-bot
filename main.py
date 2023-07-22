@@ -1,12 +1,12 @@
 from telegram.ext import *
 from telegram import *
-import api
+from api import index as api
 import commands
-import media
+from media import index as media
 import random
-import text
-import times
-import url
+from data import text as text
+from data import times as times
+from data import url as url
 from dotenv import load_dotenv
 import os
 import subprocess
@@ -72,7 +72,7 @@ async def error(update: Update, context: CallbackContext):
 
 
 def scanner_start():
-    scripts = ['bsc.py', 'eth.py','arb.py', 'poly.py', 'opti.py']
+    scripts = ['alerts/bsc.py', 'alerts/eth.py','alerts/arb.py', 'alerts/poly.py', 'alerts/opti.py']
     python_executable = sys.executable
     processes = []
     for script in scripts:

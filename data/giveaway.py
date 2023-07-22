@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 import pytz
-import api
+from api import index as api
 import random
 
 header = ("BUY THE X”7s”R CONTEST!!")
@@ -34,7 +34,7 @@ def calculate_duration(giveaway_time):
     return int(days[0]), int(hours[0]), int(minutes[0])
 
 def last5():
-    filename = 'raffle.csv'
+    filename = 'data/list.csv'
     column_index = 0
     selected_column = api.read_csv_column(filename, column_index)
     list = [entry[-5:] for entry in selected_column]

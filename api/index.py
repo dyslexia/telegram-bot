@@ -390,7 +390,7 @@ def get_token_data(token: str, chain: str) -> dict:
 
 def get_token_name(token: str, chain: str) -> Tuple[str, str]:
     result = get_token_data(token, chain)
-    return result[0]["name"], result[0]["symbol"]
+    return result[0]["name"] #, result[0]["symbol"]
 
 
 def get_tx_from_hash(tx, chain):
