@@ -28,7 +28,7 @@ import os
 from dotenv import load_dotenv
 from api import dune as dune
 import time as t
-from tokens.index import info, pairs, chains
+from tokens import chains, pairs, all_tokens_info
 import traceback
 import sentry_sdk
 load_dotenv()
@@ -2189,12 +2189,22 @@ async def pair(update: Update, context: CallbackContext):
             parse_mode="Markdown",
         )
     else:
-        token_info = info.get(token)
+        token_info = None
+        for token_instance in all_tokens_info:
+            if token_instance.name.lower() == token:
+                token_info = token_instance
+                break
+
         if not token_info:
             await update.message.reply_text(
                 f'{token.upper()} not found.\n\n'
-                f'To request a token added use /add followed by:\n`name`\n`ca`\n`pair address`\n`decimals`\n`chain` ',
-                parse_mode="Markdown")
+                f'To list a token please use the link below',
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text="List a token",
+                                      url=f"https://github.com/x7finance/telegram-bot/blob/main/tokens/README.md")],
+            ]),
+        )
             return
         if token_info.chain == "eth":
             holders = api.get_holders(token_info.ca)
