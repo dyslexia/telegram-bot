@@ -2142,151 +2142,41 @@ async def opensea(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def pair(update: Update, context: CallbackContext):
-    token = " ".join(context.args).lower()
-    if token == "":
-        await update.message.reply_photo(
-            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-            caption=f"*X7 Finance Pairs*\n\n"
-                    "`/pair count` to see the running total of pairs\n"
-                    "`/pair name` to see pair details\n\n"
-                    f"{api.get_quote()}",
-            parse_mode="Markdown",
+    networks = {
+        "ETH": f"https://eth-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ETH')}",
+        "ARB": f"https://arb-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ARB')}",
+        "BSC": "https://bsc-dataseed.binance.org/",
+        "POLY": f"https://polygon-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_POLY')}",
+        "OPTI": f"https://opt-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_OPTI')}",
+    }
+    contract_networks = {
+        "ETH": "eth",
+        "ARB": "arb",
+        "BSC": "bsc",
+        "POLY": "poly",
+        "OPTI": "opti",
+    }
+    contract_instances = {}
+    for network, web3_url in networks.items():
+        web3 = Web3(Web3.HTTPProvider(web3_url))
+        contract = web3.eth.contract(
+            address=to_checksum_address(ca.factory),
+            abi=api.get_abi(ca.factory, contract_networks[network]),
         )
-    elif token == "count":
-        networks = {
-            "ETH": f"https://eth-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ETH')}",
-            "ARB": f"https://arb-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ARB')}",
-            "BSC": "https://bsc-dataseed.binance.org/",
-            "POLY": f"https://polygon-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_POLY')}",
-            "OPTI": f"https://opt-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_OPTI')}",
-        }
-        contract_networks = {
-            "ETH": "eth",
-            "ARB": "arb",
-            "BSC": "bsc",
-            "POLY": "poly",
-            "OPTI": "opti",
-        }
-        contract_instances = {}
-        for network, web3_url in networks.items():
-            web3 = Web3(Web3.HTTPProvider(web3_url))
-            contract = web3.eth.contract(
-                address=to_checksum_address(ca.factory),
-                abi=api.get_abi(ca.factory, contract_networks[network]),
-            )
-            amount = contract.functions.allPairsLength().call()
-            contract_instances[network] = amount
-        await update.message.reply_photo(
-            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-            caption=f"*X7 Finance Pair Count*\n\n"
-                    f'`ETH:`       {contract_instances["ETH"]}\n'
-                    f'`BSC:`       {contract_instances["BSC"]}\n'
-                    f'`ARB:`       {contract_instances["ARB"]}\n'
-                    f'`POLY:`     {contract_instances["POLY"]}\n'
-                    f'`OPTI:`     {contract_instances["OPTI"]}\n\n'
-                    f"`TOTAL:`   {sum(contract_instances.values())}\n\n"
-                    f"{api.get_quote()}",
-            parse_mode="Markdown",
-        )
-    else:
-        token_info = None
-        for token_instance in all_tokens_info:
-            if token_instance.name.lower() == token:
-                token_info = token_instance
-                break
-
-        if not token_info:
-            await update.message.reply_text(
-                f'{token.upper()} not found.\n\n'
-                f'To list a token please use the link below',
-            parse_mode="Markdown",
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text="List a token",
-                                      url=f"https://github.com/x7finance/telegram-bot/blob/main/tokens/README.md")],
-            ]),
-        )
-            return
-        if token_info.chain == "eth":
-            holders = api.get_holders(token_info.ca)
-        else:
-            holders = "N/A"
-        scan = chains[token_info.chain].scan
-        dext = chains[token_info.chain].dext
-        w3 = chains[token_info.chain].w3
-        contract = w3.eth.contract(address=Web3.to_checksum_address(token_info.pair), abi=pairs)
-        token0_address = contract.functions.token0().call()
-        token1_address = contract.functions.token1().call()
-        supply = contract.functions.totalSupply().call()
-        is_reserve_token0 = token_info.ca.lower() == token0_address.lower()
-        is_reserve_token1 = token_info.ca.lower() == token1_address.lower()
-        supply = int(api.get_supply(token_info.ca, token_info.chain))
-        eth = ""
-        token_res = ""
-        if is_reserve_token0:
-            eth = contract.functions.getReserves().call()[1]
-            token_res = contract.functions.getReserves().call()[0]
-        elif is_reserve_token1:
-            eth = contract.functions.getReserves().call()[0]
-            token_res = contract.functions.getReserves().call()[1]
-        liq = int(eth) * api.get_native_price(token_info.chain) * 2
-        formatted_liq = "${:,.2f}".format(liq / (10 ** 18))
-        if token_info.decimals < 18:
-            token_price = liq / supply / (10 ** token_info.decimals)
-        else:
-            token_price = liq / supply
-        formatted_token_price = "${:.8f}".format(token_price)
-        mcap = token_price * supply
-        formatted_mcap = "${:,.0f}".format(mcap / (10 ** token_info.decimals))
-        im1 = Image.open((random.choice(media.blackhole)))
-        try:
-            img = Image.open(requests.get(token_info.logo, stream=True).raw)
-            result = img.convert("RGBA")
-            result.save(r"media/tokenlogo.png")
-            im2 = Image.open(r"media/tokenlogo.png")
-        except Exception:
-            if token_info.chain == "eth":
-                im2 = Image.open(media.eth_logo)
-            if token_info.chain == "bsc":
-                im2 = Image.open(media.bsc_logo)
-            if token_info.chain == "poly":
-                im2 = Image.open(media.poly_logo)
-            if token_info.chain == "arb":
-                im2 = Image.open(media.arb_logo)
-            if token_info.chain == "opti":
-                im2 = Image.open(media.opti_logo)
-
-        im1.paste(im2, (720, 20), im2)
-        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
-        i1 = ImageDraw.Draw(im1)
-        i1.text(
-            (26, 30),
-            f'Xchange Pair Info\n\n{token.upper()}\n\n'
-            f"Liquidity: {formatted_liq}\n"
-            f"Market Cap: {formatted_mcap}\n"
-            f"Token Price: {formatted_token_price}\n"
-            f"Holders: {holders}\n\n\n\n\n\n"
-            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-            font=myfont,
-            fill=(255, 255, 255),
-        )
-        img_path = os.path.join("media", "blackhole.png")
-        im1.save(img_path)
-        await update.message.reply_photo(
-            photo=open(r"media/blackhole.png", "rb"),
-            caption=f'*Xchange Pair Info\n\n{token.upper()}*\n\n'
-                    f'`{token_info.ca}`\n\n'
-                    f"Liquidity: {formatted_liq}\n"
-                    f"Market Cap: {formatted_mcap}\n"
-                    f"Token Price: {formatted_token_price}\n"
-                    f"Holders: {holders}\n\n"
-            f"{api.get_quote()}",
-            parse_mode="Markdown",
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(text="Chart", url=f"{dext}{token_info.pair}")],
-                [InlineKeyboardButton(text="Buy", url=f"{url.xchange}{token_info.ca}")],
-                [InlineKeyboardButton(text="Contract", url=f"{scan}{token_info.ca}")],
-            ]),
-        )
+        amount = contract.functions.allPairsLength().call()
+        contract_instances[network] = amount
+    await update.message.reply_photo(
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+        caption=f"*X7 Finance Pair Count*\n\n"
+                f'`ETH:`       {contract_instances["ETH"]}\n'
+                f'`BSC:`       {contract_instances["BSC"]}\n'
+                f'`ARB:`       {contract_instances["ARB"]}\n'
+                f'`POLY:`     {contract_instances["POLY"]}\n'
+                f'`OPTI:`     {contract_instances["OPTI"]}\n\n'
+                f"`TOTAL:`   {sum(contract_instances.values())}\n\n"
+                f"{api.get_quote()}",
+        parse_mode="Markdown",
+    )
 
 
 async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
@@ -2552,180 +2442,274 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def price(update: Update, context: ContextTypes.DEFAULT_TYPE):
     search = " ".join(context.args).lower()
-    cg_name = ""
-    price = ""
-    gas_data = ""
-    im2 = ""
-    token = api.get_cg_search(search)
-    token_id = token["coins"][0]["api_symbol"]
-    symbol = token["coins"][0]["symbol"]
-    thumb = token["coins"][0]["large"]
-    price = api.get_cg_price("x7r, x7dao")
-    x7r_change = price["x7r"]["usd_24h_change"]
-    if x7r_change is None:
-        x7r_change = 0
-    x7dao_change = price["x7dao"]["usd_24h_change"]
-    if x7dao_change is None:
-        x7dao_change = 0
-    token_price = api.get_cg_price(token_id)
-    if search == "":
-        im1 = Image.open((random.choice(media.blackhole)))
-        im2 = Image.open(r"media/logo11.png")
-        im1.paste(im2, (740, 20), im2)
-        i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
-        i1.text(
-            (28, 36),
-            f"X7 Finance Token Price Info (ETH)\n\n"
-            f'X7R:    ${price["x7r"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n\n'
-            f'X7DAO:  ${price["x7dao"]["usd"]}\n'
-            f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 0)}%\n\n\n\n\n\n'
-            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-            font=myfont,
-            fill=(255, 255, 255),
-        )
-        img_path = os.path.join("media", "blackhole.png")
-        im1.save(img_path)
-        await update.message.reply_photo(
-            photo=open(r"media/blackhole.png", "rb"),
-            caption=f"*X7 Finance Token Price Info (ETH)*\n"
-            f"Use `/x7r [chain]` or `/x7dao [chain]` for all other details\n"
-            f"Use `/constellations` for constellations\n\n"
-            f'X7R:    ${price["x7r"]["usd"]}\n'
-            f'24 Hour Change: {round(x7r_change, 1)}%\n\n'
-            f'X7DAO:  ${price["x7dao"]["usd"]}\n'
-            f'24 Hour Change: {round(x7dao_change, 0)}%\n\n'
-            f"{api.get_quote()}",
-            parse_mode="Markdown",
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            text="X7R Chart - Rewards Token",
-                            url=f"{url.dex_tools_eth}{ca.x7r_pair_eth}",
-                        )
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            text="X7DAO Chart - Governance Token",
-                            url=f"{url.dex_tools_eth}{ca.x7dao_pair_eth}",
-                        )
-                    ],
-                ]
-            ),
-        )
-        return
-    if (
-        search == "eth"
-        or search == "bnb"
-        or search == "matic"
-        or search == "poly"
-        or search == "polygon"
-    ):
-        if search == "eth":
-            cg_name = "ethereum"
-            price = api.get_cg_price("ethereum")
-            gas_data = api.get_gas("eth")
-            im2 = Image.open(requests.get(thumb, stream=True).raw)
-        if search == "bnb":
-            cg_name = "binancecoin"
-            price = api.get_cg_price("binancecoin")
-            gas_data = api.get_gas("bsc")
-            im2 = Image.open(requests.get(thumb, stream=True).raw)
-        if search == "matic" or search == "poly" or search == "polygon":
-            cg_name = "matic-network"
-            price = api.get_cg_price("matic-network")
-            gas_data = api.get_gas("poly")
-            im2 = Image.open(requests.get(thumb, stream=True).raw)
-        price_change = token_price[cg_name]["usd_24h_change"]
-        if price_change is None:
-            price_change = 0
-        im1 = Image.open((random.choice(media.blackhole)))
-        im1.paste(im2, (680, 20), im2)
-        i1 = ImageDraw.Draw(im1)
-        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
-        i1.text(
-            (28, 36),
-            f"{symbol} price\n\n"
-            f'Price: ${price[cg_name]["usd"]}\n'
-            f'24 Hour Change: {round(price_change, 1)}%\n\n'
-            f"Gas Prices:\n"
-            f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
-            f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
-            f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n\n\n'
-            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-            font=myfont,
-            fill=(255, 255, 255),
-        )
-        img_path = os.path.join("media", "blackhole.png")
-        im1.save(img_path)
-        await update.message.reply_photo(
-            photo=open(r"media/blackhole.png", "rb"),
-            caption=f"*{symbol} price*\n\n"
-            f'Price: ${price[cg_name]["usd"]}\n'
-            f'24 Hour Change: {round(price[cg_name]["usd_24h_change"], 1)}%\n\n'
-            f"Gas Prices:\n"
-            f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
-            f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
-            f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n'
-            f"{api.get_quote()}",
-            parse_mode="Markdown",
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            text="Chart",
-                            url=f"https://www.coingecko.com/en/coins/{cg_name}",
-                        )
-                    ],
-                ]
-            ),
-        )
-        return
-    else:
-        price_change = token_price[token_id]["usd_24h_change"]
-        if price_change is None:
-            price_change = 0
-        img = Image.open(requests.get(thumb, stream=True).raw)
-        result = img.convert("RGBA")
-        result.save(r"media/cgtokenlogo.png")
-        im1 = Image.open((random.choice(media.blackhole)))
-        im2 = Image.open(r"media/cgtokenlogo.png")
-        im1.paste(im2, (680, 20), im2)
-        myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
-        i1 = ImageDraw.Draw(im1)
-        i1.text(
-            (28, 36),
-            f"{symbol} price\n\n"
-            f'Price: ${float(token_price[token_id]["usd"])}\n'
-            f'24 Hour Change: {round(price_change, 1)}%\n'
-            f'Market Cap: ${"{:0,.0f}".format(token_price[token_id]["usd_market_cap"])}\n\n\n\n\n\n\n\n'
-            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-            font=myfont,
-            fill=(255, 255, 255),
-        )
-        im1.save(r"media/blackhole.png", quality=95)
-        await update.message.reply_photo(
-            photo=open(r"media/blackhole.png", "rb"),
-            caption=f"*{symbol} price*\n\n"
-            f'Price: ${float(token_price[token_id]["usd"])}\n'
-            f'24 Hour Change: {round(token_price[token_id]["usd_24h_change"], 1)}%\n'
-            f'Market Cap: ${"{:0,.0f}".format(token_price[token_id]["usd_market_cap"])}\n\n'
-            f"{api.get_quote()}",
-            parse_mode="Markdown",
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            text="Chart",
-                            url=f"https://www.coingecko.com/en/coins/{token_id}",
-                        )
-                    ],
-                ]
-            ),
-        )
+    token_info = None
+    for token_instance in all_tokens_info:
+        if token_instance.name.lower() == search:
+            token_info = token_instance
+            break
 
+    if not token_info:
+        token = api.get_cg_search(search)
+        token_id = token["coins"][0]["api_symbol"]
+        symbol = token["coins"][0]["symbol"]
+        thumb = token["coins"][0]["large"]
+        price = api.get_cg_price("x7r, x7dao")
+        x7r_change = price["x7r"]["usd_24h_change"]
+        if x7r_change is None:
+            x7r_change = 0
+        x7dao_change = price["x7dao"]["usd_24h_change"]
+        if x7dao_change is None:
+            x7dao_change = 0
+        token_price = api.get_cg_price(token_id)
+        if search == "":
+            im1 = Image.open((random.choice(media.blackhole)))
+            im2 = Image.open(r"media/logo11.png")
+            im1.paste(im2, (740, 20), im2)
+            i1 = ImageDraw.Draw(im1)
+            myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
+            i1.text(
+                (28, 36),
+                f"X7 Finance Token Price Info (ETH)\n\n"
+                f'X7R:    ${price["x7r"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7r"]["usd_24h_change"], 1)}%\n\n'
+                f'X7DAO:  ${price["x7dao"]["usd"]}\n'
+                f'24 Hour Change: {round(price["x7dao"]["usd_24h_change"], 0)}%\n\n\n\n\n\n'
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont,
+                fill=(255, 255, 255),
+            )
+            img_path = os.path.join("media", "blackhole.png")
+            im1.save(img_path)
+            await update.message.reply_photo(
+                photo=open(r"media/blackhole.png", "rb"),
+                caption=f"*X7 Finance Token Price Info (ETH)*\n"
+                f"Use `/x7r [chain]` or `/x7dao [chain]` for all other details\n"
+                f"Use `/constellations` for constellations\n\n"
+                f'X7R:    ${price["x7r"]["usd"]}\n'
+                f'24 Hour Change: {round(x7r_change, 1)}%\n\n'
+                f'X7DAO:  ${price["x7dao"]["usd"]}\n'
+                f'24 Hour Change: {round(x7dao_change, 0)}%\n\n'
+                f"{api.get_quote()}",
+                parse_mode="Markdown",
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(
+                                text="X7R Chart - Rewards Token",
+                                url=f"{url.dex_tools_eth}{ca.x7r_pair_eth}",
+                            )
+                        ],
+                        [
+                            InlineKeyboardButton(
+                                text="X7DAO Chart - Governance Token",
+                                url=f"{url.dex_tools_eth}{ca.x7dao_pair_eth}",
+                            )
+                        ],
+                    ]
+                ),
+            )
+            return
+        if (
+            search == "eth"
+            or search == "bnb"
+            or search == "matic"
+            or search == "poly"
+            or search == "polygon"
+        ):
+            if search == "eth":
+                cg_name = "ethereum"
+                price = api.get_cg_price("ethereum")
+                gas_data = api.get_gas("eth")
+                im2 = Image.open(requests.get(thumb, stream=True).raw)
+            if search == "bnb":
+                cg_name = "binancecoin"
+                price = api.get_cg_price("binancecoin")
+                gas_data = api.get_gas("bsc")
+                im2 = Image.open(requests.get(thumb, stream=True).raw)
+            if search == "matic" or search == "poly" or search == "polygon":
+                cg_name = "matic-network"
+                price = api.get_cg_price("matic-network")
+                gas_data = api.get_gas("poly")
+                im2 = Image.open(requests.get(thumb, stream=True).raw)
+            price_change = token_price[cg_name]["usd_24h_change"]
+            if price_change is None:
+                price_change = 0
+            im1 = Image.open((random.choice(media.blackhole)))
+            im1.paste(im2, (680, 20), im2)
+            i1 = ImageDraw.Draw(im1)
+            myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
+            i1.text(
+                (28, 36),
+                f"{symbol} price\n\n"
+                f'Price: ${price[cg_name]["usd"]}\n'
+                f'24 Hour Change: {round(price_change, 1)}%\n\n'
+                f"Gas Prices:\n"
+                f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
+                f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
+                f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n\n\n'
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont,
+                fill=(255, 255, 255),
+            )
+            img_path = os.path.join("media", "blackhole.png")
+            im1.save(img_path)
+            await update.message.reply_photo(
+                photo=open(r"media/blackhole.png", "rb"),
+                caption=f"*{symbol} price*\n\n"
+                f'Price: ${price[cg_name]["usd"]}\n'
+                f'24 Hour Change: {round(price[cg_name]["usd_24h_change"], 1)}%\n\n'
+                f"Gas Prices:\n"
+                f'Low: {gas_data["result"]["SafeGasPrice"]} Gwei\n'
+                f'Average: {gas_data["result"]["ProposeGasPrice"]} Gwei\n'
+                f'High: {gas_data["result"]["FastGasPrice"]} Gwei\n\n'
+                f"{api.get_quote()}",
+                parse_mode="Markdown",
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [InlineKeyboardButton(text="Chart",
+                                              url=f"https://www.coingecko.com/en/coins/{cg_name}",
+                                            )
+                        ],
+                        [InlineKeyboardButton(text="Buy", 
+                                              url=f"{url.xchange}/#/swap?outputCurrency={token_id}"
+                                            )
+                        ],
+                        [InlineKeyboardButton(text="List a token", 
+                                              url=f"https://github.com/x7finance/telegram-bot/blob/main/tokens/README.md"
+                                            )
+                        ]
+                    ]
+                ),
+            )
+            return
+        else:
+            price_change = token_price[token_id]["usd_24h_change"]
+            if price_change is None:
+                price_change = 0
+            img = Image.open(requests.get(thumb, stream=True).raw)
+            result = img.convert("RGBA")
+            result.save(r"media/cgtokenlogo.png")
+            im1 = Image.open((random.choice(media.blackhole)))
+            im2 = Image.open(r"media/cgtokenlogo.png")
+            im1.paste(im2, (680, 20), im2)
+            myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 28)
+            i1 = ImageDraw.Draw(im1)
+            i1.text(
+                (28, 36),
+                f"{symbol} price\n\n"
+                f'Price: ${"{:.8f}".format(token_price[token_id]["usd"])}\n'
+                f'24 Hour Change: {round(price_change, 1)}%\n'
+                f'Market Cap: ${"{:0,.0f}".format(token_price[token_id]["usd_market_cap"])}\n\n\n\n\n\n\n\n'
+                f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+                font=myfont,
+                fill=(255, 255, 255),
+            )
+            im1.save(r"media/blackhole.png", quality=95)
+            await update.message.reply_photo(
+                photo=open(r"media/blackhole.png", "rb"),
+                caption=f"*{symbol} price*\n\n"
+                f'Price: ${"{:.8f}".format(token_price[token_id]["usd"])}\n'
+                f'24 Hour Change: {round(token_price[token_id]["usd_24h_change"], 1)}%\n'
+                f'Market Cap: ${"{:0,.0f}".format(token_price[token_id]["usd_market_cap"])}\n\n'
+                f"{api.get_quote()}",
+                parse_mode="Markdown",
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [InlineKeyboardButton(text="Chart",
+                                              url=f"https://www.coingecko.com/en/coins/{token_id}",
+                                            )
+                        ],
+                        [InlineKeyboardButton(text="Buy", url=f"{url.xchange}/#/swap?outputCurrency={token_id}"
+                                            )
+                        ],
+                        [InlineKeyboardButton(text="List a token", 
+                                              url=f"https://github.com/x7finance/telegram-bot/blob/main/tokens/README.md")
+                        ]
+                    ]
+                ),
+            )
+    else:
+        if token_info.chain == "eth":
+            holders = api.get_holders(token_info.ca)
+        else:
+            holders = "N/A"
+        scan = chains[token_info.chain].scan
+        dext = chains[token_info.chain].dext
+        w3 = chains[token_info.chain].w3
+        contract = w3.eth.contract(address=Web3.to_checksum_address(token_info.pair), abi=pairs)
+        token0_address = contract.functions.token0().call()
+        token1_address = contract.functions.token1().call()
+        supply = contract.functions.totalSupply().call()
+        is_reserve_token0 = token_info.ca.lower() == token0_address.lower()
+        is_reserve_token1 = token_info.ca.lower() == token1_address.lower()
+        supply = int(api.get_supply(token_info.ca, token_info.chain))
+        eth = ""
+        token_res = ""
+        if is_reserve_token0:
+            eth = contract.functions.getReserves().call()[1]
+            token_res = contract.functions.getReserves().call()[0]
+        elif is_reserve_token1:
+            eth = contract.functions.getReserves().call()[0]
+            token_res = contract.functions.getReserves().call()[1]
+        liq = int(eth) * api.get_native_price(token_info.chain) * 2
+        formatted_liq = "${:,.2f}".format(liq / (10 ** 18))
+        if token_info.decimals < 18:
+            token_price = liq / supply / (10 ** token_info.decimals)
+        else:
+            token_price = liq / supply
+        formatted_token_price = "${:.8f}".format(token_price)
+        mcap = token_price * supply
+        formatted_mcap = "${:,.0f}".format(mcap / (10 ** token_info.decimals))
+        im1 = Image.open((random.choice(media.blackhole)))
+        try:
+            img = Image.open(requests.get(token_info.logo, stream=True).raw)
+            result = img.convert("RGBA")
+            result.save(r"media/tokenlogo.png")
+            im2 = Image.open(r"media/tokenlogo.png")
+        except Exception:
+            if token_info.chain == "eth":
+                im2 = Image.open(media.eth_logo)
+            if token_info.chain == "bsc":
+                im2 = Image.open(media.bsc_logo)
+            if token_info.chain == "poly":
+                im2 = Image.open(media.poly_logo)
+            if token_info.chain == "arb":
+                im2 = Image.open(media.arb_logo)
+            if token_info.chain == "opti":
+                im2 = Image.open(media.opti_logo)
+
+        im1.paste(im2, (720, 20), im2)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
+        i1 = ImageDraw.Draw(im1)
+        i1.text(
+            (26, 30),
+            f'Xchange Pair Info\n\n{search.upper()}\n\n'
+            f"Liquidity: {formatted_liq}\n"
+            f"Market Cap: {formatted_mcap}\n"
+            f"Token Price: {formatted_token_price}\n"
+            f"Holders: {holders}\n\n\n\n\n\n"
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont,
+            fill=(255, 255, 255),
+        )
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
+        await update.message.reply_photo(
+            photo=open(r"media/blackhole.png", "rb"),
+            caption=f'*Xchange Pair Info\n\n{search.upper()}*\n\n'
+                    f'`{token_info.ca}`\n\n'
+                    f"Liquidity: {formatted_liq}\n"
+                    f"Market Cap: {formatted_mcap}\n"
+                    f"Token Price: {formatted_token_price}\n"
+                    f"Holders: {holders}\n\n"
+            f"{api.get_quote()}",
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton(text="Chart", url=f"{dext}{token_info.pair}")],
+                [InlineKeyboardButton(text="Buy", url=f"{url.xchange}/#/swap?outputCurrency={token_info.ca}")],
+            ]),
+        )
+    
 
 async def proposal(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
