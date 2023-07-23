@@ -108,7 +108,7 @@ async def announcements(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def ath(update: Update, context: ContextTypes.DEFAULT_TYPE):
     def get_ath_info(coin):
         ath, ath_change, date = api.get_ath(coin)
-        ath_change_str = str(ath_change)
+        ath_change_str = f"{ath_change}"
         return ath, ath_change_str[:3], date
 
     x7r_ath, x7r_ath_change, x7r_date = get_ath_info("x7r")
@@ -664,7 +664,7 @@ async def deployer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     hours = divmod(days[1], 3600)
     minutes = divmod(hours[1], 60)
     if (
-            str(tx["result"][0]["to"]).lower()
+            f'{tx["result"][0]["to"]}'.lower()
             == "0x000000000000000000000000000000000000dead"
     ):
         message = bytes.fromhex(tx["result"][0]["input"][2:]).decode("utf-8")
@@ -781,10 +781,10 @@ async def ebb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         def get_liquidity_data(hub_address):
             hub = api.get_internal_tx(hub_address, "eth")
             hub_filter = [
-                d for d in hub["result"] if d["from"] in str(hub_address).lower()
+                d for d in hub["result"] if d["from"] in f"{hub_address}".lower()
             ]
             value_raw = int(hub_filter[0]["value"]) / 10 ** 18
-            value = str(value_raw)
+            value = f"{value_raw}"
             dollar = float(value) * float(api.get_native_price("eth")) / 1 ** 18
             time = datetime.utcfromtimestamp(int(hub_filter[0]["timeStamp"]))
             duration = now - time
@@ -2053,7 +2053,7 @@ async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def on_chain(update: Update, context: ContextTypes.DEFAULT_TYPE):
     now = datetime.utcnow()
     tx = api.get_tx(ca.deployer, "eth")
-    tx_filter = [d for d in tx["result"] if d["to"] in str(ca.dead).lower()]
+    tx_filter = [d for d in tx["result"] if d["to"] in f"{ca.dead}".lower()]
     message = bytes.fromhex(tx_filter[0]["input"][2:]).decode("utf-8")
     time = datetime.utcfromtimestamp(int(tx_filter[0]["timeStamp"]))
     duration = now - time
@@ -3897,7 +3897,7 @@ async def x7r(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="Markdown",
         )
     if chain == "" or chain == "eth":
-        x7r_ath_change = str(api.get_ath("x7r")[1])
+        x7r_ath_change = f'{api.get_ath("x7r")[1]}'
         x7r_ath = api.get_ath("x7r")[0]
         chain_name = ""
         scan_url = ""
@@ -4196,7 +4196,7 @@ async def x7dao(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="Markdown",
         )
     if chain == "" or chain == "eth":
-        x7dao_ath_change = str(api.get_ath("x7dao")[1])
+        x7dao_ath_change = f'{api.get_ath("x7dao")[1]}'
         x7dao_ath = api.get_ath("x7dao")[0]
         holders = api.get_holders(ca.x7dao)
         x7dao = api.get_liquidity(ca.x7dao_pair_eth, "eth")
@@ -4363,7 +4363,7 @@ async def x7101(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="Markdown",
         )
     if chain == "" or chain == "eth":
-        x7101_ath_change = str(api.get_ath("x7101")[1])
+        x7101_ath_change = f'{api.get_ath("x7101")[1]}'
         x7101_ath = api.get_ath("x7101")[0]
         holders = api.get_holders(ca.x7101)
         im1 = Image.open((random.choice(media.blackhole)))
@@ -4515,7 +4515,7 @@ async def x7102(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="Markdown",
         )
     if chain == "" or chain == "eth":
-        x7102_ath_change = str(api.get_ath("x7102")[1])
+        x7102_ath_change = f'{api.get_ath("x7102")[1]}'
         x7102_ath = api.get_ath("x7102")[0]
         holders = api.get_holders(ca.x7102)
         im1 = Image.open((random.choice(media.blackhole)))
@@ -4667,7 +4667,7 @@ async def x7103(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="Markdown",
         )
     if chain == "" or chain == "eth":
-        x7103_ath_change = str(api.get_ath("x7103")[1])
+        x7103_ath_change = f'{api.get_ath("x7103")[1]}'
         x7103_ath = api.get_ath("x7103")[0]
         holders = api.get_holders(ca.x7103)
         im1 = Image.open((random.choice(media.blackhole)))
@@ -4819,7 +4819,7 @@ async def x7104(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="Markdown",
         )
     if chain == "" or chain == "eth":
-        x7104_ath_change = str(api.get_ath("x7104")[1])
+        x7104_ath_change = f'{api.get_ath("x7104")[1]}'
         x7104_ath = api.get_ath("x7104")[0]
         holders = api.get_holders(ca.x7104)
         im1 = Image.open((random.choice(media.blackhole)))
@@ -4971,7 +4971,7 @@ async def x7105(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="Markdown",
         )
     if chain == "" or chain == "eth":
-        x7105_ath_change = str(api.get_ath("x7105")[1])
+        x7105_ath_change = f'{api.get_ath("x7105")[1]}'
         x7105_ath = api.get_ath("x7105")[0]
         holders = api.get_holders(ca.x7105)
         im1 = Image.open((random.choice(media.blackhole)))
@@ -5074,7 +5074,7 @@ async def count(update: Update, context: ContextTypes.DEFAULT_TYPE):
     response = api.twitter_v2.get_retweeters(tweet_id)
     status = api.twitter.get_status(tweet_id)
     retweet_count = status.retweet_count
-    rt_names = "\n".join(str(p) for p in response.data)
+    rt_names = "\n".join(f'{p}' for p in response.data)
     await update.message.reply_sticker(sticker=media.twitter_sticker)
     await update.message.reply_text(
         f"Retweeted {retweet_count} times, by the following members:\n\n{rt_names}"
@@ -5091,7 +5091,7 @@ async def draw(update: Update, context: ContextTypes.DEFAULT_TYPE):
         response = api.twitter_v2.get_retweeters(tweet_id)
         status = api.twitter.get_status(tweet_id)
         retweet_count = status.retweet_count
-        rt_names = "\n".join(str(p) for p in response.data)
+        rt_names = "\n".join(f'{p}' for p in response.data)
         await update.message.reply_sticker(sticker=media.twitter_sticker)
         await update.message.reply_text(f"{retweet_count} Entries:\n\n{rt_names}")
         await update.message.reply_text(
@@ -5131,7 +5131,7 @@ async def spaces(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="Markdown",
         )
     else:
-        data = str(response[0])
+        data = f"{response[0]}"
         start = data.index("=")
         end = data.index(" ", start)
         space_id = data[start + 1: end]
@@ -5202,7 +5202,7 @@ async def twitter(update: Update, context: ContextTypes.DEFAULT_TYPE):
             response = api.twitter_v2.get_retweeters(tweet[0].id)
             status = api.twitter.get_status(tweet[0].id)
             retweet_count = status.retweet_count
-            count = "\n".join(str(p) for p in response.data)
+            count = "\n".join(f'{p}' for p in response.data)
             await update.message.reply_sticker(sticker=media.twitter_sticker)
             await update.message.reply_text(
                 f"Latest X7 Finance Tweet\n\n{tweet[0].text}\n\n"

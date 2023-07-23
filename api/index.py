@@ -128,7 +128,7 @@ def get_native_balance(wallet, chain):
     response = requests.get(url)
     data = response.json()
     amount_raw = float(data["result"][0]["balance"])
-    amount = str(amount_raw / 10 ** 18)
+    amount = f"{amount_raw / 10 ** 18}"
 
     return amount
 
@@ -278,7 +278,7 @@ def get_random_pioneer_number():
     min_num = 1
     max_num = 4480
     number = random.randint(min_num, max_num)
-    return str(number).zfill(4)
+    return f"{number}".zfill(4)
 
 
 def get_scan(token: str, chain: str) -> dict:
@@ -357,8 +357,8 @@ def get_supply(token, chain):
 
 
 def get_today():
-    current_day = str(datetime.now().day)
-    current_month = str(datetime.now().month)
+    current_day = f"{datetime.now().day}"
+    current_month = f"{datetime.now().month}"
     url = f"http://history.muffinlabs.com/date/{current_month}/{current_day}"
     response = requests.get(url)
     data = response.json()

@@ -22,7 +22,7 @@ sentry_sdk.init(
 
 
 async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    message = str(update.effective_message.text)
+    message = f"{update.effective_message.text}"
     lower_message = message.lower()
     keyword_to_response = {
         "rob the bank": {"text": text.rob, "mode": "Markdown"},
@@ -213,7 +213,7 @@ if __name__ == "__main__":
         send_endorsement_message,
         times.endorse_time * 60 * 60,
         chat_id=os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
-        name=str("Endorsement Message"),
+        name="Endorsement Message",
         data=times.endorse_time * 60 * 60,
     )
     application.job_queue.run_repeating(
@@ -221,7 +221,7 @@ if __name__ == "__main__":
         times.referral_time * 60 * 60,
         chat_id=os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
         first=10800,
-        name=str("Referral Message"),
+        name="Referral Message",
         data=times.referral_time * 60 * 60,
     )
     scanner_start()
