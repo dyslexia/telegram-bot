@@ -12,9 +12,6 @@ from pycoingecko import CoinGeckoAPI
 
 load_dotenv()
 
-alchemy_arb = os.getenv("ALCHEMY_ARB")
-alchemy_poly = os.getenv("ALCHEMY_POLY")
-alchemy_opti = os.getenv("ALCHEMY_OPTI")
 bsc = os.getenv("BSC")
 ether = os.getenv("ETHER")
 poly = os.getenv("POLY")
@@ -24,20 +21,21 @@ COINGECKO_URL = "https://api.coingecko.com/api/v3"
 
 
 class ChainInfo:
-    def __init__(self, url: str, key: str, native: str):
+    def __init__(self, url: str, key: str):
         self.url = url
         self.key = key
-        self.native = native
 
 
 chains_info = {
-    "eth": ChainInfo("https://api.etherscan.io/api", ether, "eth"),
-    "bsc": ChainInfo("https://api.bscscan.com/api", bsc, "bnb"),
-    "arb": ChainInfo("https://api.arbiscan.io/api", arb, "eth"),
-    "opti": ChainInfo("https://api-optimistic.etherscan.io/api", opti, "eth"),
-    "poly": ChainInfo("https://api.polygonscan.com/api", poly, "matic"),
-    }
+    "eth": ChainInfo("https://api.etherscan.io/api", ether,),
+    "bsc": ChainInfo("https://api.bscscan.com/api", bsc),
+    "arb": ChainInfo("https://api.arbiscan.io/api", arb),
+    "opti": ChainInfo("https://api-optimistic.etherscan.io/api", opti),
+    "poly": ChainInfo("https://api.polygonscan.com/api", poly),
+}
 
+
+#SCAN
 
 def get_abi(contract: str, chain: str) -> str:
     if chain not in chains_info:
@@ -60,16 +58,6 @@ def get_gas(chain):
     return data
 
 
-def get_native_price(native):
-    if native not in chains_info.native:
-        raise ValueError(f"Invalid token: {native}")
-    chain_info = chains_info.native[native]
-    url = f'{chain_info.url}?module=stats&action={chain_info.native}price{chain_info.key}'
-    response = requests.get(url)
-    data = response.json()
-    return data
-
-
 def get_native_balance(wallet, chain):
     if chain not in chains_info:
         raise ValueError(f"Invalid chain: {chain}")
@@ -79,8 +67,34 @@ def get_native_balance(wallet, chain):
     data = response.json()
     amount_raw = float(data["result"][0]["balance"])
     amount = f"{amount_raw / 10 ** 18}"
-
     return amount
+
+
+def get_native_price(token):
+    tokens_info = {
+        "eth": {
+            "url": "https://api.etherscan.io/api?module=stats&action=ethprice",
+            "key": ether,
+            "field": "ethusd",
+        },
+        "bnb": {
+            "url": "https://api.bscscan.com/api?module=stats&action=bnbprice",
+            "key": bsc,
+            "field": "ethusd",
+        },
+        "matic": {
+            "url": "https://api.polygonscan.com/api?module=stats&action=maticprice",
+            "key": poly,
+            "field": "maticusd",
+        },
+    }
+    if token not in tokens_info:
+        raise ValueError(f"Invalid token: {token}")
+    url = f"{tokens_info[token]['url']}&{tokens_info[token]['key']}"
+    response = requests.get(url)
+    data = response.json()
+    value = float(data["result"][tokens_info[token]["field"]])
+    return value
 
 
 def get_pool_liq_balance(wallet, token, chain):
@@ -102,6 +116,17 @@ def get_supply(token, chain):
     data = response.json()
     result = data["result"]
     return result
+
+
+def get_token_balance(wallet, token, chain):
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=account&action=tokenbalance&contractaddress={token}&address={wallet}&tag=latest{chain_info.key}'
+    response = requests.get(url)
+    data = response.json()
+    amount = int(data["result"][:-18])
+    return amount
 
 
 def get_tx_from_hash(tx, chain):
@@ -147,17 +172,7 @@ def get_verified(contract, chain):
         return "No"
 
 
-
-
-
-
-
-
-
-
-
-
-
+#CG
 
 def get_ath(token):
     url = (
@@ -192,22 +207,14 @@ def get_cg_search(token):
     return result
 
 
-def get_fact():
-    response = requests.get("https://uselessfacts.jsph.pl/api/v2/facts/random")
-    quote = response.json()
-    return quote["text"]
-
-
-
-
-
-def get_holders(token):
-    base_url = "https://api.ethplorer.io/getTokenInfo"
-    url = f"{base_url}/{token}{os.getenv('ETHPLORER_API_KEY')}"
+def get_mcap(token):
+    url = f"https://api.coingecko.com/api/v3/simple/price?ids={token}&vs_currencies=usd&include_market_cap=true"
     response = requests.get(url)
     data = response.json()
-    return data.get("holdersCount")
+    return data[token]["usd_market_cap"]
 
+
+# MORALIS
 
 def get_liquidity(pair, chain):
     return evm_api.defi.get_pair_reserves(
@@ -216,23 +223,52 @@ def get_liquidity(pair, chain):
     )
 
 
-def get_mcap(token):
-    url = f"https://api.coingecko.com/api/v3/simple/price?ids={token}&vs_currencies=usd&include_market_cap=true"
-    response = requests.get(url)
-    data = response.json()
-    return data[token]["usd_market_cap"]
-
-
-
-
-
-
-
 def get_nft_holder_list(nft, chain):
     return evm_api.nft.get_nft_owners(
         api_key=os.getenv("MORALIS_API_KEY"),
         params={"chain": chain, "format": "decimal", "address": nft},
     )
+
+
+def get_price(token, chain):
+    api_key = os.getenv("MORALIS_API_KEY")
+    params = {
+        "address": token,
+        "chain": "eth"
+    }
+    result = evm_api.token.get_token_price(
+        api_key=api_key,
+        params=params,
+    )
+    return result["usdPrice"]
+
+
+def get_token_name(token: str, chain: str) -> Tuple[str, str]:
+    chain_names = {"poly": "polygon", "arb": "arbitrum"}
+    if chain not in {"eth", "bsc", "opti", "poly", "arb"}:
+        raise ValueError("Invalid chain name")
+    chain = chain_names.get(chain, chain)
+    result = evm_api.token.get_token_metadata(
+        api_key=os.getenv("MORALIS_API_KEY"),
+        params={"addresses": [f"{token}"], "chain": chain},
+    )
+    return result[0]["name"], result[0]["symbol"]
+
+
+# OTHER
+
+def get_fact():
+    response = requests.get("https://uselessfacts.jsph.pl/api/v2/facts/random")
+    quote = response.json()
+    return quote["text"]
+
+
+def get_holders(token):
+    base_url = "https://api.ethplorer.io/getTokenInfo"
+    url = f"{base_url}/{token}{os.getenv('ETHPLORER_API_KEY')}"
+    response = requests.get(url)
+    data = response.json()
+    return data.get("holdersCount")
 
 
 def get_nft_holder_count(nft, chain):
@@ -306,22 +342,6 @@ def get_os_nft(slug):
     url = f"https://api.opensea.io/api/v1/collection/{slug}"
     response = requests.get(url, headers={"X-API-KEY": os.getenv("OPENSEA_API_KEY")})
     return response.json()
-
-
-
-
-def get_price(token, chain):
-    api_key = os.getenv("MORALIS_API_KEY")
-    params = {
-        "address": token,
-        "chain": "eth"
-    }
-
-    result = evm_api.token.get_token_price(
-        api_key=api_key,
-        params=params,
-    )
-    return result["usdPrice"]
 
 
 def get_quote():
@@ -404,9 +424,6 @@ def get_split(eth_value):
     return distribution
 
 
-
-
-
 def get_today():
     current_day = f"{datetime.now().day}"
     current_month = f"{datetime.now().month}"
@@ -414,37 +431,6 @@ def get_today():
     response = requests.get(url)
     data = response.json()
     return data
-
-
-def get_token_balance(wallet, token, chain):
-    if chain not in chains_info:
-        raise ValueError(f"Invalid chain: {chain}")
-    chain_info = chains_info[chain]
-    url = f'{chain_info.url}?module=account&action=tokenbalance&contractaddress={token}&address={wallet}&tag=latest{chain_info.key}'
-    response = requests.get(url)
-    data = response.json()
-    amount = int(data["result"][:-18])
-    return amount
-
-
-def get_token_data(token: str, chain: str) -> dict:
-    chain_names = {"poly": "polygon", "arb": "arbitrum"}
-    if chain not in {"eth", "bsc", "opti", "poly", "arb"}:
-        raise ValueError("Invalid chain name")
-
-    chain = chain_names.get(chain, chain)
-    result = evm_api.token.get_token_metadata(
-        api_key=os.getenv("MORALIS_API_KEY"),
-        params={"addresses": [f"{token}"], "chain": chain},
-    )
-    return result
-
-
-def get_token_name(token: str, chain: str) -> Tuple[str, str]:
-    result = get_token_data(token, chain)
-    return result[0]["name"]  # , result[0]["symbol"]
-
-
 
 
 def read_csv_column(filename, column_index):
