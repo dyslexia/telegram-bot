@@ -1334,12 +1334,12 @@ async def liquidity(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain_url = ""
     if chain == "" or chain == "eth":
         x7r_price = api.get_price(ca.x7r, "eth")
-        x7dao_price = api.get_price(ca.x7r, "eth")
-        x7101_price = api.get_price(ca.x7r, "eth")
-        x7102_price = api.get_price(ca.x7r, "eth")
-        x7103_price = api.get_price(ca.x7r, "eth")
-        x7104_price = api.get_price(ca.x7r, "eth")
-        x7105_price = api.get_price(ca.x7r, "eth")
+        x7dao_price = api.get_price(ca.dao, "eth")
+        x7101_price = api.get_price(ca.x7101, "eth")
+        x7102_price = api.get_price(ca.x7102, "eth")
+        x7103_price = api.get_price(ca.x7103, "eth")
+        x7104_price = api.get_price(ca.x7104, "eth")
+        x7105_price = api.get_price(ca.x7105, "eth")
         x7r = api.get_liquidity(ca.x7r_pair_eth, "eth")
         x7dao = api.get_liquidity(ca.x7dao_pair_eth, "eth")
         x7101 = api.get_liquidity(ca.x7101_pair_eth, "eth")
