@@ -1,8 +1,7 @@
 # NFTS
 
 from api import index as api
-from data import ca as ca
-
+from data import ca
 
 prices = {
     "eth": {
@@ -42,7 +41,6 @@ prices = {
     },
 }
 
-
 counts = {
     "eth": {
         "eco": int(api.get_nft_holder_count(ca.eco, "?chain=eth-main")) or 0,
@@ -61,7 +59,7 @@ counts = {
     "opti": {
         "eco": int(api.get_nft_holder_count(ca.eco, "?chain=optimism-main")) or 0,
         "borrow": int(api.get_nft_holder_count(ca.borrow, "?chain=optimism-main")) or 0,
-        "dex" : int(api.get_nft_holder_count(ca.dex, "?chain=optimism-main")) or 0,
+        "dex": int(api.get_nft_holder_count(ca.dex, "?chain=optimism-main")) or 0,
         "liq": int(api.get_nft_holder_count(ca.liq, "?chain=optimism-main")) or 0,
         "magister": int(api.get_nft_holder_count(ca.magister, "?chain=optimism-main")) or 0
     },
@@ -80,7 +78,6 @@ counts = {
         "magister": 0
     }
 }
-
 
 discount = {
     "eco": {
