@@ -1,27 +1,28 @@
-from telegram.ext import *
-from telegram import *
-from api import index as api
-import commands
-from media import index as media
-import random
-from data import text as text
-from data import times as times
-from data import url as url
-from dotenv import load_dotenv
 import os
-import subprocess
 import sys
+import random
+import subprocess
+
 import sentry_sdk
+from telegram import *
+from telegram.ext import *
+from dotenv import load_dotenv
+
+import commands
+from api import index as api
+from media import index as media
+from data import url, text, times
+
 load_dotenv()
 
 sentry_sdk.init(
-  dsn=os.getenv("SENTRY_DSN"),
-  traces_sample_rate=1.0
+    dsn=os.getenv("SENTRY_DSN"),
+    traces_sample_rate=1.0
 )
 
 
 async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    message = str(update.effective_message.text)
+    message = f"{update.effective_message.text}"
     lower_message = message.lower()
     keyword_to_response = {
         "rob the bank": {"text": text.rob, "mode": "Markdown"},
@@ -46,7 +47,7 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if keyword in target_message:
             if "text" in response:
                 await update.message.reply_text(
-                    text = response["text"], parse_mode=response["mode"]
+                    text=response["text"], parse_mode=response["mode"]
                 )
             elif "sticker" in response:
                 await update.message.reply_sticker(sticker=response["sticker"])
@@ -72,7 +73,7 @@ async def error(update: Update, context: CallbackContext):
 
 
 def scanner_start():
-    scripts = ['alerts/bsc.py', 'alerts/eth.py','alerts/arb.py', 'alerts/poly.py', 'alerts/opti.py']
+    scripts = ['alerts/bsc.py', 'alerts/eth.py', 'alerts/arb.py', 'alerts/poly.py', 'alerts/opti.py']
     python_executable = sys.executable
     processes = []
     for script in scripts:
@@ -114,7 +115,6 @@ async def send_referral_message(context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 if __name__ == "__main__":
-
     application = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
     application.add_error_handler(error)
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), auto_replies))
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     application.add_handler(CommandHandler([f"{times.countdown_command}"], commands.countdown))
     application.add_handler(CommandHandler(["deployer", "devs"], commands.deployer))
     application.add_handler(CommandHandler(["discount", "dsc", "dac"], commands.discount))
-    application.add_handler(CommandHandler(["docs", "documents",], commands.docs))
+    application.add_handler(CommandHandler(["docs", "documents", ], commands.docs))
     application.add_handler(CommandHandler("draw", commands.draw))
     application.add_handler(CommandHandler(["ebb", "buybacks"], commands.ebb))
     application.add_handler(CommandHandler(["ecosystem", "tokens"], commands.ecosystem))
@@ -213,7 +213,7 @@ if __name__ == "__main__":
         send_endorsement_message,
         times.endorse_time * 60 * 60,
         chat_id=os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
-        name=str("Endorsement Message"),
+        name="Endorsement Message",
         data=times.endorse_time * 60 * 60,
     )
     application.job_queue.run_repeating(
@@ -221,10 +221,8 @@ if __name__ == "__main__":
         times.referral_time * 60 * 60,
         chat_id=os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
         first=10800,
-        name=str("Referral Message"),
+        name="Referral Message",
         data=times.referral_time * 60 * 60,
     )
     scanner_start()
     application.run_polling()
-    
-

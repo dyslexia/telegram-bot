@@ -1,15 +1,16 @@
-from datetime import datetime
-from moralis import evm_api
-from pycoingecko import CoinGeckoAPI
-import random
-import tweepy
-import requests
-from typing import Tuple
 import os
 import csv
-from dotenv import load_dotenv
-load_dotenv()
+import random
+from typing import Tuple
+from datetime import datetime
 
+import tweepy
+import requests
+from moralis import evm_api
+from dotenv import load_dotenv
+from pycoingecko import CoinGeckoAPI
+
+load_dotenv()
 
 alchemy_arb = os.getenv("ALCHEMY_ARB")
 alchemy_poly = os.getenv("ALCHEMY_POLY")
@@ -127,7 +128,7 @@ def get_native_balance(wallet, chain):
     response = requests.get(url)
     data = response.json()
     amount_raw = float(data["result"][0]["balance"])
-    amount = str(amount_raw / 10**18)
+    amount = f"{amount_raw / 10 ** 18}"
 
     return amount
 
@@ -277,7 +278,7 @@ def get_random_pioneer_number():
     min_num = 1
     max_num = 4480
     number = random.randint(min_num, max_num)
-    return str(number).zfill(4)
+    return f"{number}".zfill(4)
 
 
 def get_scan(token: str, chain: str) -> dict:
@@ -301,8 +302,8 @@ def get_snapshot():
     url = "https://hub.snapshot.org/graphql"
     query = {
         "query": 'query { proposals ( first: 1, skip: 0, where: { space_in: ["X7COMMUNITY.eth"]}, '
-        'orderBy: "created", orderDirection: desc ) { id title start end snapshot state choices '
-        "scores scores_total author }}"
+                 'orderBy: "created", orderDirection: desc ) { id title start end snapshot state choices '
+                 "scores scores_total author }}"
     }
     response = requests.get(url, query)
     data = response.json()
@@ -356,8 +357,8 @@ def get_supply(token, chain):
 
 
 def get_today():
-    current_day = str(datetime.now().day)
-    current_month = str(datetime.now().month)
+    current_day = f"{datetime.now().day}"
+    current_month = f"{datetime.now().month}"
     url = f"http://history.muffinlabs.com/date/{current_month}/{current_day}"
     response = requests.get(url)
     data = response.json()
@@ -390,7 +391,7 @@ def get_token_data(token: str, chain: str) -> dict:
 
 def get_token_name(token: str, chain: str) -> Tuple[str, str]:
     result = get_token_data(token, chain)
-    return result[0]["name"] #, result[0]["symbol"]
+    return result[0]["name"]  # , result[0]["symbol"]
 
 
 def get_tx_from_hash(tx, chain):
@@ -445,6 +446,7 @@ def read_csv_column(filename, column_index):
             if len(row) > column_index and row[column_index] != '':
                 column_data.append(row[column_index])
     return column_data
+
 
 # TWITTER
 auth = tweepy.OAuthHandler(os.getenv("TWITTER_API"), os.getenv("TWITTER_API_SECRET"))

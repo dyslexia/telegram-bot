@@ -1,11 +1,12 @@
-from requests import get, post
 import os
+
+from requests import get, post
 from dotenv import load_dotenv
+
 load_dotenv()
 
-
 API_KEY = os.getenv("DUNE_API_KEY")
-HEADER = {"x-dune-api-key" : API_KEY}
+HEADER = {"x-dune-api-key": API_KEY}
 BASE_URL = "https://api.dune.com/api/v1/"
 
 

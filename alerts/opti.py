@@ -1,22 +1,23 @@
-from telegram.ext import *
-from telegram import *
-from api import index as api
-import asyncio
-from data import ca as ca
-from media import index as media
-from PIL import Image, ImageDraw, ImageFont
-import random
+import os
 import time
-from data import url as url
+import random
+import asyncio
+from datetime import datetime
+
+import sentry_sdk
 from web3 import Web3
+from telegram import *
+from telegram.ext import *
+from dotenv import load_dotenv
 from web3.exceptions import Web3Exception
 from eth_utils import to_checksum_address
-from datetime import datetime
-import os
-from dotenv import load_dotenv
-import sentry_sdk
-load_dotenv()
+from PIL import Image, ImageDraw, ImageFont
 
+from data import ca, url
+from api import index as api
+from media import index as media
+
+load_dotenv()
 
 alchemy_opti = os.getenv("ALCHEMY_OPTI")
 alchemy_opti_url = f"https://opt-mainnet.g.alchemy.com/v2/{alchemy_opti}"
@@ -33,8 +34,8 @@ ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
 ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock="latest")
 
 sentry_sdk.init(
-  dsn=os.getenv("SENTRY_DSN"),
-  traces_sample_rate=1.0
+    dsn=os.getenv("SENTRY_DSN"),
+    traces_sample_rate=1.0
 )
 
 
@@ -42,6 +43,7 @@ class FilterNotFoundError(Exception):
     def __init__(self, message="filter not found"):
         self.message = message
         super().__init__(self.message)
+
 
 async def restart_main():
     print("Attempting Restart of OPTI")
@@ -52,7 +54,7 @@ async def format_schedule(schedule1, schedule2):
     schedule_list = []
     for date, value1, value2 in zip(schedule1[0], schedule1[1], schedule2[1]):
         formatted_date = datetime.fromtimestamp(date).strftime("%Y-%m-%d %H:%M:%S")
-        combined_value = (value1 + value2) / 10**18
+        combined_value = (value1 + value2) / 10 ** 18
         sch = f"{formatted_date} - {combined_value} ETH"
         schedule_list.append(sch)
     return "\n".join(schedule_list)
@@ -96,9 +98,9 @@ async def new_pair(event):
     #        liquidity_text = f'Total Liquidity: ${"{:0,.0f}".format(dollar)}'
     info = api.get_token_data(token_address, "opti")
     if (
-        info[0]["decimals"] == ""
-        or info[0]["decimals"] == "0"
-        or not info[0]["decimals"]
+            info[0]["decimals"] == ""
+            or info[0]["decimals"] == "0"
+            or not info[0]["decimals"]
     ):
         supply = int(api.get_supply(token_address, "opti"))
     else:
@@ -117,7 +119,7 @@ async def new_pair(event):
                 address=token_address, abi=api.get_abi(token_address, "opti")
             )
             verified = "✅ Contract Verified"
-        except Exception :
+        except Exception:
             verified = "⚠️ Contract Unverified"
         try:
             owner = contract.functions.owner().call()
@@ -147,15 +149,15 @@ async def new_pair(event):
         if scan[f"{str(token_address).lower()}"]["is_in_dex"] == "1":
             try:
                 if (
-                    scan[f"{str(token_address).lower()}"]["sell_tax"] == "1"
-                    or scan[f"{str(token_address).lower()}"]["buy_tax"] == "1"
+                        scan[f"{str(token_address).lower()}"]["sell_tax"] == "1"
+                        or scan[f"{str(token_address).lower()}"]["buy_tax"] == "1"
                 ):
                     return
                 buy_tax_raw = (
-                    float(scan[f"{str(token_address).lower()}"]["buy_tax"]) * 100
+                        float(scan[f"{str(token_address).lower()}"]["buy_tax"]) * 100
                 )
                 sell_tax_raw = (
-                    float(scan[f"{str(token_address).lower()}"]["sell_tax"]) * 100
+                        float(scan[f"{str(token_address).lower()}"]["sell_tax"]) * 100
                 )
                 buy_tax = int(buy_tax_raw)
                 sell_tax = int(sell_tax_raw)
@@ -173,8 +175,8 @@ async def new_pair(event):
                         lp
                         for lp in scan[f"{str(token_address).lower()}"]["lp_holders"]
                         if lp["is_locked"] == 1
-                        and lp["address"]
-                        != "0x0000000000000000000000000000000000000000"
+                           and lp["address"]
+                           != "0x0000000000000000000000000000000000000000"
                     ]
                     if locked_lp_list:
                         lp_with_locked_detail = [
@@ -201,11 +203,11 @@ async def new_pair(event):
     except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
         print(f"Scan Error: {e}")
         status = "⚠️ Scan Unavailable"
-    pool = int(tx["result"]["value"], 0) / 10**18
+    pool = int(tx["result"]["value"], 0) / 10 ** 18
     if pool == 0 or pool == "" or not pool:
         pool_text = "Launched Pool Amount: Unavailable"
     else:
-        pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1**18
+        pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1 ** 18
         pool_text = (
             f'Launched Pool Amount: {pool} ETH (${"{:0,.0f}".format(pool_dollar)})'
         )
@@ -230,12 +232,12 @@ async def new_pair(event):
         os.getenv("ALERTS_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media/blackhole.png", "rb"),
         caption=f"*New Pair Created (OPTIMISM)*\n\n"
-        f"{token_name[0]} ({token_name[1]}/{native[1]})\n\n"
-        f"Token Address:\n`{token_address}`\n\n"
-        f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
-        f"{pool_text}\n\n\n"
+                f"{token_name[0]} ({token_name[1]}/{native[1]})\n\n"
+                f"Token Address:\n`{token_address}`\n\n"
+                f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
+                f"{pool_text}\n\n\n"
         #                f'{liquidity_text}\n\n'
-        f"SCAN:\n" f"{status}\n",
+                f"SCAN:\n" f"{status}\n",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
@@ -272,10 +274,10 @@ async def new_loan(event):
         address = to_checksum_address(ca.lpool)
         contract = web3.eth.contract(address=address, abi=api.get_abi(ca.lpool, "opti"))
         amount = (
-            contract.functions.getRemainingLiability(
-                int(event["args"]["loanID"])
-            ).call()
-            / 10**18
+                contract.functions.getRemainingLiability(
+                    int(event["args"]["loanID"])
+                ).call()
+                / 10 ** 18
         )
         schedule1 = contract.functions.getPremiumPaymentSchedule(
             int(event["args"]["loanID"])
@@ -289,7 +291,7 @@ async def new_loan(event):
         sentry_sdk.capture_exception(f"OPTI Loan Error:{e}")
         schedule_str = ""
         amount = ""
-    cost = int(tx["result"]["value"], 0) / 10**18
+    cost = int(tx["result"]["value"], 0) / 10 ** 18
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.opti_logo)
     im1.paste(im2, (720, 20), im2)
@@ -311,11 +313,11 @@ async def new_loan(event):
         os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media/blackhole.png", "rb"),
         caption=f"*New Loan Originated (OPTIMISM)*\n\n"
-        f'Loan ID: {event["args"]["loanID"]}\n'
-        f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH '
-        f'(${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
-        f"Payment Schedule (UTC):\n{schedule_str}\n\n"
-        f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)})',
+                f'Loan ID: {event["args"]["loanID"]}\n'
+                f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH '
+                f'(${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
+                f"Payment Schedule (UTC):\n{schedule_str}\n\n"
+                f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)})',
         reply_markup=InlineKeyboardMarkup(
             [
                 [
@@ -330,7 +332,7 @@ async def new_loan(event):
 
 
 async def log_loop(
-    pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval
+        pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval
 ):
     while True:
         try:
@@ -361,7 +363,7 @@ async def main():
     while True:
         try:
             tasks = [log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)
-            ]
+                     ]
             await asyncio.gather(*tasks)
         except Exception as e:
             sentry_sdk.capture_exception(f"OPTI Main Error:{e}")

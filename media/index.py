@@ -32,7 +32,6 @@ opti_logo = os.path.join("media", "optimism.png")
 eth_logo = os.path.join("media", "ethereum.png")
 raffle_logo = os.path.join("media", "raffle.jpg")
 
-
 # STICKERS
 gm = "CAACAgQAAxkBAAEGsh9jjfZUfCKtJjaLGZbNFuzVgb9VOQAC6g4AAsII4FH2AAFleY-pPhorBA"
 chain = "CAACAgQAAxkBAAEHmZ5j3-6c-UmyaBeo8WoJWxVIdYhdpQACVw8AAjplAAFTpVrzzHehGDwuBA"
