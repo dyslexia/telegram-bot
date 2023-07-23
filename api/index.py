@@ -24,18 +24,19 @@ COINGECKO_URL = "https://api.coingecko.com/api/v3"
 
 
 class ChainInfo:
-    def __init__(self, url: str, key: str):
+    def __init__(self, url: str, key: str, native: str):
         self.url = url
         self.key = key
+        self.native = native
 
 
 chains_info = {
-    "eth": ChainInfo("https://api.etherscan.io/api", ether),
-    "bsc": ChainInfo("https://api.bscscan.com/api", bsc),
-    "arb": ChainInfo("https://api.arbiscan.io/api", arb),
-    "opti": ChainInfo("https://api-optimistic.etherscan.io/api", opti),
-    "poly": ChainInfo("https://api.polygonscan.com/api", poly),
-}
+    "eth": ChainInfo("https://api.etherscan.io/api", ether, "eth"),
+    "bsc": ChainInfo("https://api.bscscan.com/api", bsc, "bnb"),
+    "arb": ChainInfo("https://api.arbiscan.io/api", arb, "eth"),
+    "opti": ChainInfo("https://api-optimistic.etherscan.io/api", opti, "eth"),
+    "poly": ChainInfo("https://api.polygonscan.com/api", poly, "matic"),
+    }
 
 
 def get_abi(contract: str, chain: str) -> str:
@@ -47,6 +48,115 @@ def get_abi(contract: str, chain: str) -> str:
     data = response.json()
     result = data["result"][0]["ABI"]
     return result
+
+
+def get_gas(chain):
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=gastracker&action=gasoracle{chain_info.key}'
+    response = requests.get(url)
+    data = response.json()
+    return data
+
+
+def get_native_price(native):
+    if native not in chains_info.native:
+        raise ValueError(f"Invalid token: {native}")
+    chain_info = chains_info.native[native]
+    url = f'{chain_info.url}?module=stats&action={chain_info.native}price{chain_info.key}'
+    response = requests.get(url)
+    data = response.json()
+    return data
+
+
+def get_native_balance(wallet, chain):
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=account&action=balancemulti&address={wallet}&tag=latest{chain_info.key}'
+    response = requests.get(url)
+    data = response.json()
+    amount_raw = float(data["result"][0]["balance"])
+    amount = f"{amount_raw / 10 ** 18}"
+
+    return amount
+
+
+def get_pool_liq_balance(wallet, token, chain):
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+    chain_info = chains_info[chain]
+    url = f"{chain_info.url}?module=account&action=tokenbalance&contractaddress={token}&address={wallet}&tag=latest{chain_info.key}"
+    response = requests.Session().get(url)
+    data = response.json()
+    return int(data["result"] or 0)
+
+
+def get_supply(token, chain):
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=stats&action=tokensupply&contractaddress={token}{chain_info.key}'
+    response = requests.get(url)
+    data = response.json()
+    result = data["result"]
+    return result
+
+
+def get_tx_from_hash(tx, chain):
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=proxy&action=eth_getTransactionByHash&txhash={tx}{chain_info.key}'
+    response = requests.get(url)
+    data = response.json()
+    return data
+
+
+def get_tx(address, chain):
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=account&action=txlist&sort=desc&address={address}{chain_info.key}'
+    response = requests.get(url)
+    data = response.json()
+    return data
+
+
+def get_internal_tx(address, chain):
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=account&action=txlistinternal&sort=desc&address={address}{chain_info.key}'
+    response = requests.get(url)
+    data = response.json()
+    return data
+
+
+def get_verified(contract, chain):
+    if chain not in chains_info:
+        raise ValueError(f"Invalid chain: {chain}")
+    chain_info = chains_info[chain]
+    url = f'{chain_info.url}?module=contract&action=getsourcecode&address={contract}{chain_info.key}'
+    response = requests.get(url)
+    data = response.json()
+    if "SourceCode" in data["result"][0]:
+        return "Yes"
+    else:
+        return "No"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def get_ath(token):
@@ -88,14 +198,7 @@ def get_fact():
     return quote["text"]
 
 
-def get_gas(chain):
-    if chain not in chains_info:
-        raise ValueError(f"Invalid chain: {chain}")
-    chain_info = chains_info[chain]
-    url = f'{chain_info.url}?module=gastracker&action=gasoracle{chain_info.key}'
-    response = requests.get(url)
-    data = response.json()
-    return data
+
 
 
 def get_holders(token):
@@ -120,47 +223,9 @@ def get_mcap(token):
     return data[token]["usd_market_cap"]
 
 
-def get_native_balance(wallet, chain):
-    if chain not in chains_info:
-        raise ValueError(f"Invalid chain: {chain}")
-    chain_info = chains_info[chain]
-    url = f'{chain_info.url}?module=account&action=balancemulti&address={wallet}&tag=latest{chain_info.key}'
-    response = requests.get(url)
-    data = response.json()
-    amount_raw = float(data["result"][0]["balance"])
-    amount = f"{amount_raw / 10 ** 18}"
-
-    return amount
 
 
-def get_native_price(token):
-    tokens_info = {
-        "eth": {
-            "url": "https://api.etherscan.io/api?module=stats&action=ethprice",
-            "key": ether,
-            "field": "ethusd",
-        },
-        "bnb": {
-            "url": "https://api.bscscan.com/api?module=stats&action=bnbprice",
-            "key": bsc,
-            "field": "ethusd",
-        },
-        "matic": {
-            "url": "https://api.polygonscan.com/api?module=stats&action=maticprice",
-            "key": poly,
-            "field": "maticusd",
-        },
-    }
 
-    if token not in tokens_info:
-        raise ValueError(f"Invalid token: {token}")
-
-    url = f"{tokens_info[token]['url']}&{tokens_info[token]['key']}"
-    response = requests.get(url)
-    data = response.json()
-    value = float(data["result"][tokens_info[token]["field"]])
-
-    return value
 
 
 def get_nft_holder_list(nft, chain):
@@ -243,12 +308,6 @@ def get_os_nft(slug):
     return response.json()
 
 
-def get_pool_liq_balance(wallet, token, chain):
-    chain_info = chains_info[chain]
-    url = f"{chain_info.url}?module=account&action=tokenbalance&contractaddress={token}&address={wallet}&tag=latest{chain_info.key}"
-    response = requests.Session().get(url)
-    data = response.json()
-    return int(data["result"] or 0)
 
 
 def get_price(token, chain):
@@ -345,15 +404,7 @@ def get_split(eth_value):
     return distribution
 
 
-def get_supply(token, chain):
-    if chain not in chains_info:
-        raise ValueError(f"Invalid chain: {chain}")
-    chain_info = chains_info[chain]
-    url = f'{chain_info.url}?module=stats&action=tokensupply&contractaddress={token}{chain_info.key}'
-    response = requests.get(url)
-    data = response.json()
-    result = data["result"]
-    return result
+
 
 
 def get_today():
@@ -394,47 +445,6 @@ def get_token_name(token: str, chain: str) -> Tuple[str, str]:
     return result[0]["name"]  # , result[0]["symbol"]
 
 
-def get_tx_from_hash(tx, chain):
-    if chain not in chains_info:
-        raise ValueError(f"Invalid chain: {chain}")
-    chain_info = chains_info[chain]
-    url = f'{chain_info.url}?module=proxy&action=eth_getTransactionByHash&txhash={tx}{chain_info.key}'
-    response = requests.get(url)
-    data = response.json()
-    return data
-
-
-def get_tx(address, chain):
-    if chain not in chains_info:
-        raise ValueError(f"Invalid chain: {chain}")
-    chain_info = chains_info[chain]
-    url = f'{chain_info.url}?module=account&action=txlist&sort=desc&address={address}{chain_info.key}'
-    response = requests.get(url)
-    data = response.json()
-    return data
-
-
-def get_internal_tx(address, chain):
-    if chain not in chains_info:
-        raise ValueError(f"Invalid chain: {chain}")
-    chain_info = chains_info[chain]
-    url = f'{chain_info.url}?module=account&action=txlistinternal&sort=desc&address={address}{chain_info.key}'
-    response = requests.get(url)
-    data = response.json()
-    return data
-
-
-def get_verified(contract, chain):
-    if chain not in chains_info:
-        raise ValueError(f"Invalid chain: {chain}")
-    chain_info = chains_info[chain]
-    url = f'{chain_info.url}?module=contract&action=getsourcecode&address={contract}{chain_info.key}'
-    response = requests.get(url)
-    data = response.json()
-    if "SourceCode" in data["result"][0]:
-        return "Yes"
-    else:
-        return "No"
 
 
 def read_csv_column(filename, column_index):
