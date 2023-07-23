@@ -70,6 +70,7 @@ twitter = "https://twitter.com/x7_finance/"
 website = "https://x7.finance/"
 wp_link = "https://x7.finance/whitepaper"
 youtube = "https://www.youtube.com/@X7Finance"
+list_token = "https://github.com/x7finance/telegram-bot/blob/main/tokens/README.md"
 
 # OPENSEA
 os_eco = "https://opensea.io/collection/x7-ecosystem-maxi"
