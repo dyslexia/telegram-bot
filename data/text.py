@@ -56,6 +56,7 @@ alumni = (
     "@Zaratustra  - Defi extraordinaire and protocol prophet\n\n"
 )
 
+
 commands = (
     "/about - Welcome to X7 Finance\n"
     "/ecosystem - Token Overview\n"

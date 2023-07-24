@@ -61,6 +61,8 @@ async def error(update: Update, context: CallbackContext):
             return
         if isinstance(context.error, AttributeError):
             return
+        if 'chain' in context and context['chain'] == 'skip_error':
+            return
 
         message: Message = update.message
         if message is not None and message.text is not None:
