@@ -200,6 +200,15 @@ def get_mcap(token):
 # MORALIS
 
 def get_liquidity(pair, chain):
+    chain_mappings = {
+        "eth": "eth",
+        "arb": "arbitrum",
+        "poly": "polygon",
+        "bsc": "bsc",
+        "opti": "optimism", 
+    }
+    if chain in chain_mappings:
+        chain = chain_mappings[chain]
     return evm_api.defi.get_pair_reserves(
         api_key=os.getenv("MORALIS_API_KEY"),
         params={"chain": chain, "pair_address": pair},
@@ -207,6 +216,15 @@ def get_liquidity(pair, chain):
 
 
 def get_nft_holder_list(nft, chain):
+    chain_mappings = {
+        "eth": "eth",
+        "arb": "arbitrum",
+        "poly": "polygon",
+        "bsc": "bsc",
+        "opti": "optimism", 
+    }
+    if chain in chain_mappings:
+        chain = chain_mappings[chain]
     return evm_api.nft.get_nft_owners(
         api_key=os.getenv("MORALIS_API_KEY"),
         params={"chain": chain, "format": "decimal", "address": nft},
@@ -233,10 +251,15 @@ def get_price(token, chain):
 
 
 def get_token_name(token: str, chain: str) -> Tuple[str, str]:
-    chain_names = {"poly": "polygon", "arb": "arbitrum"}
-    if chain not in {"eth", "bsc", "opti", "poly", "arb"}:
-        raise ValueError("Invalid chain name")
-    chain = chain_names.get(chain, chain)
+    chain_mappings = {
+        "eth": "eth",
+        "arb": "arbitrum",
+        "poly": "polygon",
+        "bsc": "bsc",
+        "opti": "optimism", 
+    }
+    if chain in chain_mappings:
+        chain = chain_mappings[chain]
     result = evm_api.token.get_token_metadata(
         api_key=os.getenv("MORALIS_API_KEY"),
         params={"addresses": [f"{token}"], "chain": chain},

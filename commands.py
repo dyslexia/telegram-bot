@@ -2178,50 +2178,50 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
 
 async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    eth_lpool_reserve = api.get_native_balance(ca.lpool_reserve, "eth")
-    eth_lpool_reserve_dollar = (
-            float(eth_lpool_reserve) * float(api.get_native_price("eth")) / 1 ** 18
-    )
-    eth_lpool = api.get_native_balance(ca.lpool, "eth")
-    eth_lpool_dollar = float(eth_lpool) * float(api.get_native_price("eth")) / 1 ** 18
-    eth_pool = round(float(eth_lpool_reserve) + float(eth_lpool), 2)
-    eth_dollar = eth_lpool_reserve_dollar + eth_lpool_dollar
-    bsc_lpool_reserve = api.get_native_balance(ca.lpool_reserve, "bsc")
-    bsc_lpool_reserve_dollar = (
-            float(bsc_lpool_reserve) * float(api.get_native_price("bnb")) / 1 ** 18
-    )
-    bsc_lpool = api.get_native_balance(ca.lpool, "bsc")
-    bsc_lpool_dollar = float(bsc_lpool) * float(api.get_native_price("bnb")) / 1 ** 18
-    bsc_pool = round(float(bsc_lpool_reserve) + float(bsc_lpool), 2)
-    bsc_dollar = bsc_lpool_reserve_dollar + bsc_lpool_dollar
-    poly_lpool_reserve = api.get_native_balance(ca.lpool_reserve, "poly")
-    poly_lpool_reserve_dollar = (
-            float(poly_lpool_reserve) * float(api.get_native_price("matic")) / 1 ** 18
-    )
-    poly_lpool = api.get_native_balance(ca.lpool, "poly")
-    poly_lpool_dollar = (
-            float(poly_lpool) * float(api.get_native_price("matic")) / 1 ** 18
-    )
-    poly_pool = round(float(poly_lpool_reserve) + float(poly_lpool), 2)
-    poly_dollar = poly_lpool_reserve_dollar + poly_lpool_dollar
-    arb_lpool_reserve = api.get_native_balance(ca.lpool_reserve, "arb")
-    arb_lpool_reserve_dollar = (
-            float(arb_lpool_reserve) * float(api.get_native_price("eth")) / 1 ** 18
-    )
-    arb_lpool = api.get_native_balance(ca.lpool, "arb")
-    arb_lpool_dollar = float(arb_lpool) * float(api.get_native_price("eth")) / 1 ** 18
-    arb_pool = round(float(arb_lpool_reserve) + float(arb_lpool), 2)
-    arb_dollar = arb_lpool_reserve_dollar + arb_lpool_dollar
-    opti_lpool_reserve = api.get_native_balance(ca.lpool_reserve, "opti")
-    opti_lpool_reserve_dollar = (
-            float(opti_lpool_reserve) * float(api.get_native_price("eth")) / 1 ** 18
-    )
-    opti_lpool = api.get_native_balance(ca.lpool, "opti")
-    opti_lpool_dollar = float(opti_lpool) * float(api.get_native_price("eth")) / 1 ** 18
-    opti_pool = round(float(opti_lpool_reserve) + float(opti_lpool), 2)
-    opti_dollar = opti_lpool_reserve_dollar + opti_lpool_dollar
-    total_dollar = poly_dollar + bsc_dollar + opti_dollar + arb_dollar + eth_dollar
     if chain == "":
+        eth_lpool_reserve = api.get_native_balance(ca.lpool_reserve, "eth")
+        eth_lpool_reserve_dollar = (
+                float(eth_lpool_reserve) * float(api.get_native_price("eth")) / 1 ** 18
+        )
+        eth_lpool = api.get_native_balance(ca.lpool, "eth")
+        eth_lpool_dollar = float(eth_lpool) * float(api.get_native_price("eth")) / 1 ** 18
+        eth_pool = round(float(eth_lpool_reserve) + float(eth_lpool), 2)
+        eth_dollar = eth_lpool_reserve_dollar + eth_lpool_dollar
+        bsc_lpool_reserve = api.get_native_balance(ca.lpool_reserve, "bsc")
+        bsc_lpool_reserve_dollar = (
+                float(bsc_lpool_reserve) * float(api.get_native_price("bnb")) / 1 ** 18
+        )
+        bsc_lpool = api.get_native_balance(ca.lpool, "bsc")
+        bsc_lpool_dollar = float(bsc_lpool) * float(api.get_native_price("bnb")) / 1 ** 18
+        bsc_pool = round(float(bsc_lpool_reserve) + float(bsc_lpool), 2)
+        bsc_dollar = bsc_lpool_reserve_dollar + bsc_lpool_dollar
+        poly_lpool_reserve = api.get_native_balance(ca.lpool_reserve, "poly")
+        poly_lpool_reserve_dollar = (
+                float(poly_lpool_reserve) * float(api.get_native_price("matic")) / 1 ** 18
+        )
+        poly_lpool = api.get_native_balance(ca.lpool, "poly")
+        poly_lpool_dollar = (
+                float(poly_lpool) * float(api.get_native_price("matic")) / 1 ** 18
+        )
+        poly_pool = round(float(poly_lpool_reserve) + float(poly_lpool), 2)
+        poly_dollar = poly_lpool_reserve_dollar + poly_lpool_dollar
+        arb_lpool_reserve = api.get_native_balance(ca.lpool_reserve, "arb")
+        arb_lpool_reserve_dollar = (
+                float(arb_lpool_reserve) * float(api.get_native_price("eth")) / 1 ** 18
+        )
+        arb_lpool = api.get_native_balance(ca.lpool, "arb")
+        arb_lpool_dollar = float(arb_lpool) * float(api.get_native_price("eth")) / 1 ** 18
+        arb_pool = round(float(arb_lpool_reserve) + float(arb_lpool), 2)
+        arb_dollar = arb_lpool_reserve_dollar + arb_lpool_dollar
+        opti_lpool_reserve = api.get_native_balance(ca.lpool_reserve, "opti")
+        opti_lpool_reserve_dollar = (
+                float(opti_lpool_reserve) * float(api.get_native_price("eth")) / 1 ** 18
+        )
+        opti_lpool = api.get_native_balance(ca.lpool, "opti")
+        opti_lpool_dollar = float(opti_lpool) * float(api.get_native_price("eth")) / 1 ** 18
+        opti_pool = round(float(opti_lpool_reserve) + float(opti_lpool), 2)
+        opti_dollar = opti_lpool_reserve_dollar + opti_lpool_dollar
+        total_dollar = poly_dollar + bsc_dollar + opti_dollar + arb_dollar + eth_dollar
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7d_logo)
         im1.paste(im2, (720, 20), im2)
@@ -2232,7 +2232,7 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"X7 Finance Lending Pool Info\n\n"
             f'ETH:   {eth_pool} ETH (${"{:0,.0f}".format(eth_dollar)})\n'
             f'ARB:   {arb_pool} ETH (${"{:0,.0f}".format(arb_dollar)})\n'
-            f'OPTI: {opti_pool} ETH (${"{:0,.0f}".format(opti_dollar)})\n'
+            f'OPTI:  {opti_pool} ETH (${"{:0,.0f}".format(opti_dollar)})\n'
             f'BSC:   {bsc_pool} BNB (${"{:0,.0f}".format(bsc_dollar)})\n'
             f'POLY:  {poly_pool} MATIC (${"{:0,.0f}".format(poly_dollar)})\n\n'
             f'TOTAL: ${"{:0,.0f}".format(total_dollar)}\n\n\n\n'
@@ -2254,73 +2254,59 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f"{api.get_quote()}",
             parse_mode="Markdown",
         )
-        return
-    if chain == "eth":
-        chain_name = "(ETH)"
-        chain_token = "ETH"
-        pool = eth_pool[:4]
-        chain_url = url.ether_address
-        pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1 ** 18
-        im2 = Image.open(media.eth_logo)
-    if chain == "bsc" or chain == "bnb":
-        chain_name = "(BSC)"
-        chain_token = "BNB"
-        pool = bsc_pool
-        chain_url = url.bsc_address
-        pool_dollar = float(pool) * float(api.get_native_price("bnb")) / 1 ** 18
-        im2 = Image.open(media.bsc_logo)
-    if chain == "arbitrum" or chain == "arb":
-        chain_name = "(ARB)"
-        chain_token = "ETH"
-        pool = arb_pool
-        chain_url = url.arb_address
-        pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1 ** 18
-        im2 = Image.open(media.arb_logo)
-    if chain == "optimism" or chain == "opti":
-        chain_name = "(OPTI)"
-        chain_token = "ETH"
-        pool = opti_pool
-        chain_url = url.opti_address
-        pool_dollar = float(pool) * float(api.get_native_price("eth")) / 1 ** 18
-        im2 = Image.open(media.opti_logo)
-    if chain == "polygon" or chain == "poly":
-        chain_name = "(POLYGON)"
-        chain_token = "MATIC"
-        pool = poly_pool
-        chain_url = url.poly_address
-        pool_dollar = float(pool) * float(api.get_native_price("matic")) / 1 ** 18
-        im2 = Image.open(media.poly_logo)
-    im1 = Image.open((random.choice(media.blackhole)))
-    im1.paste(im2, (720, 20), im2)
-    i1 = ImageDraw.Draw(im1)
-    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 28)
-    i1.text(
-        (28, 36),
-        f"X7 Finance Lending Pool Info {chain_name}\n\n"
-        f'{pool} {chain_token} (${"{:0,.0f}".format(pool_dollar)})\n\n\n\n\n\n\n\n\n\n'
-        f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-        font=myfont,
-        fill=(255, 255, 255),
-    )
-    img_path = os.path.join("media", "blackhole.png")
-    im1.save(img_path)
-    await update.message.reply_photo(
-        photo=open(r"media/blackhole.png", "rb"),
-        caption=f"*X7 Finance Lending Pool Info {chain_name}*\nUse `/pool [chain-name]` for other chains\n\n"
-                f'{pool} {chain_token} (${"{:0,.0f}".format(pool_dollar)})\n\n'
-                f"{api.get_quote()}",
-        parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(
-            [
+    else:
+        chain_mappings = {
+            "eth": ("(ETH)", url.ether_address, "eth", media.eth_logo),
+            "bsc": ("(BSC)", url.bsc_address, "bnb", media.bsc_logo),
+            "poly": ("(POLYGON)", url.poly_address, "matic", media.poly_logo),
+            "opti": ("(OPTIMISM)", url.opti_address, "eth", media.opti_logo),
+            "arb": ("(ARB)", url.arb_address, "eth", media.eth_logo),
+        }
+        if chain in chain_mappings:
+            chain_name, chain_url, chain_native, chain_logo = chain_mappings[chain]
+            lpool_reserve = api.get_native_balance(ca.lpool_reserve, chain)
+            lpool_reserve_dollar = (
+                float(lpool_reserve) * float(api.get_native_price(chain_native)) / 1 ** 18
+        )
+            lpool = api.get_native_balance(ca.lpool, chain)
+            lpool_dollar = float(lpool) * float(api.get_native_price(chain_native)) / 1 ** 18
+            pool = round(float(lpool_reserve) + float(lpool), 2)
+            dollar = lpool_reserve_dollar + lpool_dollar
+
+        else:
+            await update.message.reply_text(f"{text.chain_error}")
+        im2 = Image.open(chain_logo)
+        im1 = Image.open((random.choice(media.blackhole)))
+        im1.paste(im2, (720, 20), im2)
+        i1 = ImageDraw.Draw(im1)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 28)
+        i1.text(
+            (28, 36),
+            f"X7 Finance Lending Pool Info {chain_name}\n\n"
+            f'{pool} {chain_native} (${"{:0,.0f}".format(dollar)})\n\n\n\n\n\n\n\n\n\n'
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont,
+            fill=(255, 255, 255),
+        )
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
+        await update.message.reply_photo(
+            photo=open(r"media/blackhole.png", "rb"),
+            caption=f"*X7 Finance Lending Pool Info {chain_name}*\nUse `/pool [chain-name]` for other chains\n\n"
+                    f'{pool} {chain_native} (${"{:0,.0f}".format(dollar)})\n\n'
+                    f"{api.get_quote()}",
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup(
                 [
-                    InlineKeyboardButton(
-                        text="Lending Pool Contract",
-                        url=f"{chain_url}{ca.lpool}",
-                    )
-                ],
-            ]
-        ),
-    )
+                    [
+                        InlineKeyboardButton(
+                            text="Lending Pool Contract",
+                            url=f"{chain_url}{ca.lpool}",
+                        )
+                    ],
+                ]
+            ),
+        )
 
 
 async def price(update: Update, context: ContextTypes.DEFAULT_TYPE):
