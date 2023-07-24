@@ -11,10 +11,10 @@ alchemy_arb = os.getenv("ALCHEMY_ARB")
 alchemy_poly = os.getenv("ALCHEMY_POLY")
 alchemy_opti = os.getenv("ALCHEMY_OPTI")
 key_bsc = os.getenv("BSC")
-key_ether = os.getenv("ETHER")
+key_arb = os.getenv("ARB")
 key_poly = os.getenv("POLY")
 key_opti = os.getenv("OPTI")
-key_arb = os.getenv("ARB")
+key_ether = os.getenv("ETHER")
 
 
 class TokensInfo:
@@ -82,5 +82,5 @@ file_names = [file[:-3] for file in os.listdir(os.path.dirname(__file__)) if
 all_tokens_info = []
 for file_name in file_names:
     module = importlib.import_module(f".{file_name}", package="tokens")
-    token_info = getattr(module, f"info")
+    token_info = getattr(module, "info")
     all_tokens_info.append(token_info)

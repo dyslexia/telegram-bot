@@ -35,7 +35,7 @@ chains_info = {
 }
 
 
-#SCAN
+# SCAN
 
 def get_abi(contract: str, chain: str) -> str:
     if chain not in chains_info:
@@ -44,8 +44,7 @@ def get_abi(contract: str, chain: str) -> str:
     url = f"{chain_info.url}?module=contract&action=getsourcecode&address={contract}{chain_info.key}"
     response = requests.get(url)
     data = response.json()
-    result = data["result"][0]["ABI"]
-    return result
+    return data["result"][0]["ABI"]
 
 
 def get_gas(chain):
@@ -54,8 +53,7 @@ def get_gas(chain):
     chain_info = chains_info[chain]
     url = f'{chain_info.url}?module=gastracker&action=gasoracle{chain_info.key}'
     response = requests.get(url)
-    data = response.json()
-    return data
+    return response.json()
 
 
 def get_native_balance(wallet, chain):
@@ -66,8 +64,7 @@ def get_native_balance(wallet, chain):
     response = requests.get(url)
     data = response.json()
     amount_raw = float(data["result"][0]["balance"])
-    amount = f"{amount_raw / 10 ** 18}"
-    return amount
+    return f"{amount_raw / 10 ** 18}"
 
 
 def get_native_price(token):
@@ -93,8 +90,7 @@ def get_native_price(token):
     url = f"{tokens_info[token]['url']}&{tokens_info[token]['key']}"
     response = requests.get(url)
     data = response.json()
-    value = float(data["result"][tokens_info[token]["field"]])
-    return value
+    return float(data["result"][tokens_info[token]["field"]])
 
 
 def get_pool_liq_balance(wallet, token, chain):
@@ -114,8 +110,7 @@ def get_supply(token, chain):
     url = f'{chain_info.url}?module=stats&action=tokensupply&contractaddress={token}{chain_info.key}'
     response = requests.get(url)
     data = response.json()
-    result = data["result"]
-    return result
+    return data["result"]
 
 
 def get_token_balance(wallet, token, chain):
@@ -125,8 +120,7 @@ def get_token_balance(wallet, token, chain):
     url = f'{chain_info.url}?module=account&action=tokenbalance&contractaddress={token}&address={wallet}&tag=latest{chain_info.key}'
     response = requests.get(url)
     data = response.json()
-    amount = int(data["result"][:-18])
-    return amount
+    return int(data["result"][:-18])
 
 
 def get_tx_from_hash(tx, chain):
@@ -135,8 +129,7 @@ def get_tx_from_hash(tx, chain):
     chain_info = chains_info[chain]
     url = f'{chain_info.url}?module=proxy&action=eth_getTransactionByHash&txhash={tx}{chain_info.key}'
     response = requests.get(url)
-    data = response.json()
-    return data
+    return response.json()
 
 
 def get_tx(address, chain):
@@ -145,8 +138,7 @@ def get_tx(address, chain):
     chain_info = chains_info[chain]
     url = f'{chain_info.url}?module=account&action=txlist&sort=desc&address={address}{chain_info.key}'
     response = requests.get(url)
-    data = response.json()
-    return data
+    return response.json()
 
 
 def get_internal_tx(address, chain):
@@ -155,8 +147,7 @@ def get_internal_tx(address, chain):
     chain_info = chains_info[chain]
     url = f'{chain_info.url}?module=account&action=txlistinternal&sort=desc&address={address}{chain_info.key}'
     response = requests.get(url)
-    data = response.json()
-    return data
+    return response.json()
 
 
 def get_verified(contract, chain):
@@ -166,13 +157,10 @@ def get_verified(contract, chain):
     url = f'{chain_info.url}?module=contract&action=getsourcecode&address={contract}{chain_info.key}'
     response = requests.get(url)
     data = response.json()
-    if "SourceCode" in data["result"][0]:
-        return "Yes"
-    else:
-        return "No"
+    return "Yes" if "SourceCode" in data["result"][0] else "No"
 
 
-#CG
+# CG
 
 def get_ath(token):
     url = (
@@ -182,29 +170,24 @@ def get_ath(token):
     response = requests.get(url)
     data = response.json()
     value = data["market_data"]
-    ath = value["ath"]["usd"]
-    change = value["ath_change_percentage"]["usd"]
-    date = value["ath_date"]["usd"]
-    return ath, change, date
+    return value["ath"]["usd"], value["ath_change_percentage"]["usd"], value["ath_date"]["usd"]
 
 
 def get_cg_price(token):
     coingecko = CoinGeckoAPI()
-    cg = coingecko.get_price(
+    return coingecko.get_price(
         ids=token,
         vs_currencies="usd",
         include_24hr_change="true",
         include_24hr_vol="true",
         include_market_cap="true",
     )
-    return cg
 
 
 def get_cg_search(token):
     url = "https://api.coingecko.com/api/v3/search?query=" + token
     response = requests.get(url)
-    result = response.json()
-    return result
+    return response.json()
 
 
 def get_mcap(token):
@@ -232,13 +215,9 @@ def get_nft_holder_list(nft, chain):
 
 def get_price(token, chain):
     api_key = os.getenv("MORALIS_API_KEY")
-    params = {
-        "address": token,
-        "chain": "eth"
-    }
     result = evm_api.token.get_token_price(
         api_key=api_key,
-        params=params,
+        params={"address": token, "chain": "eth"},
     )
     return result["usdPrice"]
 
@@ -348,16 +327,11 @@ def get_quote():
     response = requests.get("https://type.fit/api/quotes")
     data = response.json()
     quote_raw = random.choice(data)
-    quote = quote_raw["text"] + quote_raw["author"]
-    quote = f'`"{quote_raw["text"]}"\n\n-{quote_raw["author"]}`'
-    return quote
+    return f'`"{quote_raw["text"]}"\n\n-{quote_raw["author"]}`'
 
 
 def get_random_pioneer_number():
-    min_num = 1
-    max_num = 4480
-    number = random.randint(min_num, max_num)
-    return f"{number}".zfill(4)
+    return f"{random.randint(1, 4480)}".zfill(4)
 
 
 def get_scan(token: str, chain: str) -> dict:
@@ -373,8 +347,7 @@ def get_scan(token: str, chain: str) -> dict:
 def get_signers(wallet):
     url = f"https://safe-transaction-mainnet.safe.global/api/v1/safes/{wallet}/"
     response = requests.get(url)
-    result = response.json()
-    return result
+    return response.json()
 
 
 def get_snapshot():
@@ -385,8 +358,7 @@ def get_snapshot():
                  "scores scores_total author }}"
     }
     response = requests.get(url, query)
-    data = response.json()
-    return data
+    return response.json()
 
 
 def get_split(eth_value):
@@ -409,7 +381,7 @@ def get_split(eth_value):
     x7_constellations_share = eth_value * x7_constellations_percentage
     lending_pool_share = eth_value * lending_pool_percentage
 
-    distribution = {
+    return {
         "X7R": x7r_share,
         "X7DAO": x7dao_share,
         "X7 Constellations": x7_constellations_share,
@@ -421,16 +393,12 @@ def get_split(eth_value):
         "Developers Multi Sig": developers_multisig_share
     }
 
-    return distribution
-
 
 def get_today():
-    current_day = f"{datetime.now().day}"
-    current_month = f"{datetime.now().month}"
-    url = f"http://history.muffinlabs.com/date/{current_month}/{current_day}"
+    now = datetime.now()
+    url = f"http://history.muffinlabs.com/date/{now.month}/{now.day}"
     response = requests.get(url)
-    data = response.json()
-    return data
+    return response.json()
 
 
 def read_csv_column(filename, column_index):
