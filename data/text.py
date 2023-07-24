@@ -51,9 +51,10 @@ airdrop = (
 )
 
 alumni = (
-    "@Callmelandlord - The Godfather of the X7 Finance community, the OG, the creator - X7 God"
+    "@Callmelandlord - The Godfather of the X7 Finance community, the OG, the creator - X7 God\n\n"
     "@WoxieX - Creator of the OG dashboard -  x7community.space\n\n"
-    "@Zaratustra  - Defi extraordinaire and protocol prophet\n\n")
+    "@Zaratustra  - Defi extraordinaire and protocol prophet\n\n"
+)
 
 commands = (
     "/about - Welcome to X7 Finance\n"
@@ -153,7 +154,8 @@ discount = (
     "The time based discount is imposing an opportunity cost of lent funds - and incentivizing taking out the "
     "shortest loan possible.\n"
     "The amount based discount is recognizing that a loan origination now is more valuable than a possible loan "
-    "origination later.\n\nThese sliding scales can be modified to ensure they have optimal market fit.")
+    "origination later.\n\nThese sliding scales can be modified to ensure they have optimal market fit."
+)
 
 ecosystem = (
     "*X7 Finance Ecosystem*\n\n• *X7R*\nX7's original launched token. Hodl as a percentage of all "
@@ -211,13 +213,9 @@ mods = (
     "Tech Team\n@Adz1DoubleD\n@MikeMurpher\n@cryptod0c\n@CryptoA7"
 )
 
-mods_only = (
-    "You do not have permission to do this. #TrustNoOne"
-)
+mods_only = "You do not have permission to do this. #TrustNoOne"
 
-patience = (
-    "`Patience is bitter, but its fruit is sweet.\n\n- Aristotle`"
-)
+patience = "`Patience is bitter, but its fruit is sweet.\n\n- Aristotle`"
 
 proposals = (
     "*Listing proposal:*\n"
@@ -268,9 +266,7 @@ referral = (
     "DM `@gazuga` `@cryptod0c` `@robthebank44` to get started\n"
 )
 
-rob = (
-    "`Rob The Bank (an outstanding community member and marketer)`\n\n`-X7 DAO founders`"
-)
+rob = "`Rob The Bank (an outstanding community member and marketer)`\n\n`-X7 DAO founders`"
 
 quotes = [
     "Ethos\n\nX7’s founding team believes that capital should be available to those with great ideas and that the "
