@@ -61,9 +61,6 @@ async def error(update: Update, context: CallbackContext):
             return
         if isinstance(context.error, AttributeError):
             return
-        if 'chain' in context.args and context.args['chain'] == 'skip_error':
-            return
-
         message: Message = update.message
         if message is not None and message.text is not None:
             await update.message.reply_text("Error while loading data, please try again")

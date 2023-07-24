@@ -115,14 +115,14 @@ async def ath(update: Update, context: ContextTypes.DEFAULT_TYPE):
     x7dao_ath, x7dao_ath_change, x7dao_date = get_ath_info("x7dao")
     x7dao_date_object = datetime.fromisoformat(x7dao_date.replace("Z", "+00:00"))
     x7dao_readable_date = x7dao_date_object.strftime("%Y-%m-%d %H:%M:%S")
-    x7r_date_object = datetime.fromisoformat(x7r.replace("Z", "+00:00"))
+    x7r_date_object = datetime.fromisoformat(x7r_date.replace("Z", "+00:00"))
     x7r_readable_date = x7r_date_object.strftime("%Y-%m-%d %H:%M:%S")
     img = Image.open((random.choice(media.blackhole)))
     i1 = ImageDraw.Draw(img)
     myfont = ImageFont.truetype(R"media/FreeMonoBold.ttf", 26)
     i1.text(
         (28, 36),
-        f"X7 Finance ATH Info\n\n"
+        f"X7 Finance ATH Info (ETH)\n\n"
         f'X7R   - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change}%\n'
         f"{x7r_readable_date}\n\n"
         f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change}%\n'
@@ -136,9 +136,9 @@ async def ath(update: Update, context: ContextTypes.DEFAULT_TYPE):
     caption = (
         f"*X7 Finance ATH Info*\n\n"
         f'X7R - ${x7r_ath} (${"{:0,.0f}".format(x7r_ath * ca.supply)}) {x7r_ath_change}%\n'
-        f"{x7r_date}\n\n"
+        f"{x7r_readable_date}\n\n"
         f'X7DAO - ${x7dao_ath} (${"{:0,.0f}".format(x7dao_ath * ca.supply)}) {x7dao_ath_change}%\n'
-        f"{x7dao_date}\n\n"
+        f"{x7dao_readable_date}\n\n"
         f"{api.get_quote()}"
     )
     await update.message.reply_photo(
@@ -2304,6 +2304,12 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             url=f"{chain_url}{ca.lpool}",
                         )
                     ],
+                    [
+                        InlineKeyboardButton(
+                            text="Lending Pool Reserve Contract",
+                            url=f"{chain_url}{ca.lpool_reserve}",
+                        )
+                    ],
                 ]
             ),
         )
@@ -2822,14 +2828,9 @@ async def smart(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
         chain = "eth"
     chain_mappings = {
         "eth": ("(ETH)", url.ether_address),
-        "arbitrum": ("(ARB)", url.arb_address),
         "arb": ("(ARB)", url.arb_address),
         "poly": ("(POLYGON)", url.poly_address),
-        "polygon": ("(POLYGON)", url.poly_address),
         "bsc": ("(BSC)", url.bsc_address),
-        "bnb": ("(BSC)", url.bsc_address),
-        "op": ("(OP)", url.opti_address),
-        "optimism": ("(OP)", url.opti_address),
         "opti": ("(OP)", url.opti_address),
     }
     if chain in chain_mappings:
@@ -3001,80 +3002,26 @@ async def snapshot(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def splitters(update: Update, context):
     chain_mappings = {
-        "eth": {
-            "chain_name": "(ETH)",
-            "link": url.ether_address,
-            "native": "eth",
-            "chain": "eth"
-        },
-        "bsc": {
-            "chain_name": "(BSC)",
-            "link": url.bsc_address,
-            "native": "bnb",
-            "chain": "bsc"
-        },
-        "bnb": {
-            "chain_name": "(BSC)",
-            "link": url.bsc_address,
-            "native": "bnb",
-            "chain": "bsc"
-        },
-        "polygon": {
-            "chain_name": "(POLYGON)",
-            "link": url.poly_address,
-            "native": "matic",
-            "chain": "poly"
-        },
-        "poly": {
-            "chain_name": "(POLYGON)",
-            "link": url.poly_address,
-            "native": "matic",
-            "chain": "poly"
-        },
-        "optimism": {
-            "chain_name": "(OPTIMISM)",
-            "link": url.opti_address,
-            "native": "eth",
-            "chain": "opti"
-        },
-        "opti": {
-            "chain_name": "(OPTIMISM)",
-            "link": url.opti_address,
-            "native": "eth",
-            "chain": "opti"
-        },
-        "arbitrum": {
-            "chain_name": "(ARB)",
-            "link": url.arb_address,
-            "native": "eth",
-            "chain": "arb"
-        },
-        "arb": {
-            "chain_name": "(ARB)",
-            "link": url.arb_address,
-            "native": "eth",
-            "chain": "arb"
-        }
+        "eth": ("(ETH)", url.ether_address, "eth"),
+        "arb": ("(ARB)", url.arb_address, "eth"),
+        "poly": ("(POLYGON)", url.poly_address, "matic"),
+        "bsc": ("(BSC)", url.bsc_address, "bnb"),
+        "opti": ("(OP)", url.opti_address, "eth"),
     }
     if len(context.args) > 1:
         eth_value = float(context.args[1])
         chain = context.args[0].lower()
         if chain in chain_mappings:
-            mapping = chain_mappings[chain]
-            chain_name = mapping["chain_name"]
-            link = mapping["link"]
-            native = mapping["native"]
-            chain = mapping["chain"]
+            chain_name, chain_url, chain_native = chain_mappings[chain]
         else:
             await update.message.reply_text({text.chain_error})
-            return
         distribution = api.get_split(eth_value)
-        message = f"*X7 Finance Ecosystem Splitters {chain_name}* \n\n{eth_value} {native.upper()}\n\n"
+        message = f"*X7 Finance Ecosystem Splitters {chain_name}* \n\n{eth_value} {chain_native.upper()}\n\n"
         for location, share in distribution.items():
             if location == "Treasury":
-                message += f"\n{location}: {share:.2f} {native.upper()}:\n"
+                message += f"\n{location}: {share:.2f} {chain_native.upper()}:\n"
             else:
-                message += f"{location}: {share:.2f} {native.upper()}\n"
+                message += f"{location}: {share:.2f} {chain_native.upper()}\n"
 
         await update.message.reply_photo(
             photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
@@ -3082,73 +3029,61 @@ async def splitters(update: Update, context):
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup(
                 [
-                    [InlineKeyboardButton(text="Ecosystem Splitter", url=f"{link}{ca.eco_splitter}")],
-                    [InlineKeyboardButton(text="Treasury Splitter", url=f"{link}{ca.treasury_splitter}")],
+                    [InlineKeyboardButton(text="Ecosystem Splitter", url=f"{chain_url}{ca.eco_splitter}")],
+                    [InlineKeyboardButton(text="Treasury Splitter", url=f"{chain_url}{ca.treasury_splitter}")],
                 ]
             ),
         )
     elif len(context.args) == 1:
         chain = context.args[0].lower()
-
         if chain in chain_mappings:
-            mapping = chain_mappings[chain]
-            chain_name = mapping["chain_name"]
-            link = mapping["link"]
-            native = mapping["native"]
-            chain = mapping["chain"]
+            chain_name, chain_url, chain_native = chain_mappings[chain]
             treasury_eth = api.get_native_balance(ca.treasury_splitter, chain)
             eco_eth = api.get_native_balance(ca.eco_splitter, chain)
-            native_price = api.get_native_price(native)
+            native_price = api.get_native_price(chain_native)
             eco_dollar = float(eco_eth) * float(native_price)
             treasury_dollar = float(treasury_eth) * float(native_price)
             await update.message.reply_photo(
                 photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
                 caption=
                 f"*X7 Finance Ecosystem Splitters {chain_name}*\n\n"
-                f"Ecosystem Splitter: {eco_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(eco_dollar)})\n"
-                f"Treasury Splitter: {treasury_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(treasury_dollar)})\n\n"
+                f"Ecosystem Splitter: {eco_eth[:6]} {chain_native.upper()} (${'{:0,.0f}'.format(eco_dollar)})\n"
+                f"Treasury Splitter: {treasury_eth[:6]} {chain_native.upper()} (${'{:0,.0f}'.format(treasury_dollar)})\n\n"
                 f"For example of splitter allocation use\n`/splitter [chain-name] [amount]`\n\n{api.get_quote()}",
                 parse_mode="Markdown",
                 reply_markup=InlineKeyboardMarkup(
                     [
-                        [InlineKeyboardButton(text="Ecosystem Splitter", url=f"{link}{ca.eco_splitter}")],
-                        [InlineKeyboardButton(text="Treasury Splitter", url=f"{link}{ca.treasury_splitter}")],
+                        [InlineKeyboardButton(text="Ecosystem Splitter", url=f"{chain_url}{ca.eco_splitter}")],
+                        [InlineKeyboardButton(text="Treasury Splitter", url=f"{chain_url}{ca.treasury_splitter}")],
                     ]
                 ),
             )
         else:
-            await update.message.reply_text("Invalid chain. Please provide a valid chain name.")
+            await update.message.reply_text(f"For example of splitter allocation use\n`/splitter [chain-name] [amount]`", parse_mode="Markdown")
     else:
-        chain = "eth"  # Assuming eth as the default chain
-
+        chain = "eth"
         if chain in chain_mappings:
-            mapping = chain_mappings[chain]
-            chain_name = mapping["chain_name"]
-            link = mapping["link"]
-            native = mapping["native"]
-            chain = mapping["chain"]
+            chain_name, chain_url, chain_native = chain_mappings[chain]
             treasury_eth = api.get_native_balance(ca.treasury_splitter, chain)
             eco_eth = api.get_native_balance(ca.eco_splitter, chain)
-            native_price = api.get_native_price(native)
+            native_price = api.get_native_price(chain_native)
             eco_dollar = float(eco_eth) * float(native_price)
             treasury_dollar = float(treasury_eth) * float(native_price)
             await update.message.reply_photo(
                 photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
                 caption=
                 f"*X7 Finance Ecosystem Splitters {chain_name}*\n\n"
-                f"Ecosystem Splitter: {eco_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(eco_dollar)})\n"
-                f"Treasury Splitter: {treasury_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(treasury_dollar)})\n\n"
+                f"Ecosystem Splitter: {eco_eth[:6]} {chain_native.upper()} (${'{:0,.0f}'.format(eco_dollar)})\n"
+                f"Treasury Splitter: {treasury_eth[:6]} {chain_native.upper()} (${'{:0,.0f}'.format(treasury_dollar)})\n\n"
                 f"For example of splitter allocation use\n`/splitter [chain-name] [amount]`\n\n{api.get_quote()}",
                 parse_mode="Markdown",
                 reply_markup=InlineKeyboardMarkup(
                     [
-                        [InlineKeyboardButton(text="Ecosystem Splitter", url=f"{link}{ca.eco_splitter}")],
-                        [InlineKeyboardButton(text="Treasury Splitter", url=f"{link}{ca.treasury_splitter}")],
+                        [InlineKeyboardButton(text="Ecosystem Splitter", url=f"{chain_url}{ca.eco_splitter}")],
+                        [InlineKeyboardButton(text="Treasury Splitter", url=f"{chain_url}{ca.treasury_splitter}")],
                     ]
                 ),
             )
-        else:
-            await update.message.reply_text("Invalid chain. Please provide a valid chain name or amount.")
 
 
 async def supply(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -3688,10 +3623,6 @@ async def x7r(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "" or chain == "eth":
         x7r_ath_change = f'{api.get_ath("x7r")[1]}'
         x7r_ath = api.get_ath("x7r")[0]
-        chain_name = ""
-        scan_url = ""
-        chart_url = ""
-        scan_name = ""
         holders = api.get_holders(ca.x7r)
         burn = api.get_token_balance(ca.dead, ca.x7r, "eth")
         percent = round(((burn / ca.supply) * 100), 6)
@@ -3805,58 +3736,26 @@ async def x7r(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    supply = ""
-    holders = ""
-    dollar = ""
-    chain_name = ""
-    chain_url = ""
-    if chain == "" or chain == "eth":
-        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "eth")
-        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("eth")) / 1 ** 18)
-        lpool = api.get_native_balance(ca.lpool, "eth")
-        lpool_dollar = float(lpool) * float(api.get_native_price("eth")) / 1 ** 18
+    if chain == "":
+        chain = "eth"
+    chain_mappings = {
+        "eth": ("(ETH)", url.ether_address, "eth" ),
+        "arb": ("(ARB)", url.arb_address, "eth" ),
+        "poly": ("(POLYGON)", url.poly_address, "matic" ),
+        "bsc": ("(BSC)", url.bsc_address, "bnb" ),
+        "opti": ("(OP)", url.opti_address, "eth" ),
+    }
+    if chain in chain_mappings:
+        chain_name, chain_url, chain_native = chain_mappings[chain]
+        lpool_reserve = api.get_native_balance(ca.lpool_reserve, chain)
+        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price(chain_native)) / 1 ** 18)
+        lpool = api.get_native_balance(ca.lpool, chain)
+        lpool_dollar = float(lpool) * float(api.get_native_price(chain_native)) / 1 ** 18
         dollar = lpool_reserve_dollar + lpool_dollar
         supply = round(float(lpool_reserve) + float(lpool), 2)
         holders = api.get_holders(ca.x7d)
-        chain_name = "(ETH)"
-        chain_url = url.ether_address
-    if chain == "bsc" or chain == "bnb":
-        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "bsc")
-        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("bnb")) / 1 ** 18)
-        lpool = api.get_native_balance(ca.lpool, "bsc")
-        lpool_dollar = float(lpool) * float(api.get_native_price("bnb")) / 1 ** 18
-        dollar = lpool_reserve_dollar + lpool_dollar
-        supply = round(float(lpool_reserve) + float(lpool), 2)
-        chain_name = "(BSC)"
-        chain_url = url.bsc_address
-    if chain == "polygon" or chain == "poly":
-        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "poly")
-        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("matic")) / 1 ** 18)
-        lpool = api.get_native_balance(ca.lpool, "poly")
-        lpool_dollar = float(lpool) * float(api.get_native_price("matic")) / 1 ** 18
-        dollar = lpool_reserve_dollar + lpool_dollar
-        supply = round(float(lpool_reserve) + float(lpool), 2)
-        chain_name = "(POLYGON)"
-        chain_url = url.poly_address
-    if chain == "optimism" or chain == "opti":
-        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "opit")
-        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("eth")) / 1 ** 18)
-        lpool = api.get_native_balance(ca.lpool, "opti")
-        lpool_dollar = float(lpool) * float(api.get_native_price("eth")) / 1 ** 18
-        dollar = lpool_reserve_dollar + lpool_dollar
-        supply = round(float(lpool_reserve) + float(lpool), 2)
-        chain_name = "(OPTIMISM)"
-        chain_url = url.opti_address
-    if chain == "arbitrum" or chain == "arb":
-        lpool_reserve = api.get_native_balance(ca.lpool_reserve, "arb")
-        lpool_reserve_dollar = (float(lpool_reserve) * float(api.get_native_price("eth")) / 1 ** 18)
-        lpool = api.get_native_balance(ca.lpool, "arb")
-        lpool_dollar = float(lpool) * float(api.get_native_price("eth")) / 1 ** 18
-        dollar = lpool_reserve_dollar + lpool_dollar
-        supply = round(float(lpool_reserve) + float(lpool), 2)
-        chain_name = "(ARB)"
-        chain_url = url.arb_address
-
+    else:
+        await update.message.reply_text(f"{text.chain_error}")
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.x7d_logo)
     im1.paste(im2, (720, 20), im2)
