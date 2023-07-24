@@ -53,7 +53,12 @@ airdrop = (
 alumni = (
     "@Callmelandlord - The Godfather of the X7 Finance community, the OG, the creator - X7 God"
     "@WoxieX - Creator of the OG dashboard -  x7community.space\n\n"
-    "@Zaratustra  - Defi extraordinaire and protocol prophet\n\n")
+    "@Zaratustra  - Defi extraordinaire and protocol prophet\n\n"
+)
+
+chain_error = (
+    f'Chain not recognised, please use "eth", "arb", "bsc", "poly" or "opti"' 
+)
 
 commands = (
     "/about - Welcome to X7 Finance\n"

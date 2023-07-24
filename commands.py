@@ -169,53 +169,24 @@ async def bot(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def burn(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    chain_url = ""
-    chain_name = ""
-    burn = ""
-    im2 = ""
-    burn_dollar = ""
-    percent = ""
-    native = ""
-    if chain == "" or chain == "eth":
-        chain_name = "(ETH)"
-        chain_url = url.ether_token
-        burn = api.get_token_balance(ca.dead, ca.x7r, "eth")
+    if chain == "":
+        chain = "eth"
+    chain_mappings = {
+        "eth": ("(ETH)", url.ether_token, "eth", media.eth_logo),
+        "bsc": ("(BSC)", url.bsc_token, "bnb", media.bsc_logo),
+        "poly": ("(POLYGON)", url.poly_token, "matic",media.poly_logo),
+        "opti": ("(OPTIMISM)", url.opti_token, "eth", media.opti_logo),
+        "arb": ("(ARB)", url.arb_token, "eth", media.arb_logo),
+    }
+    if chain in chain_mappings:
+        chain_name, chain_url, chain_native, chain_logo = chain_mappings[chain]
+        burn = api.get_token_balance(ca.dead, ca.x7r, chain)
         percent = round(burn / ca.supply * 100, 2)
-        burn_dollar = api.get_price(ca.x7r, "eth") * float(burn)
-        im2 = Image.open(media.eth_logo)
-        native = f'{str(burn_dollar / api.get_native_price("eth"))[:5]} ETH'
-    if chain == "bsc" or chain == "bnb":
-        chain_name = "(BSC)"
-        chain_url = url.bsc_token
-        burn = api.get_token_balance(ca.dead, ca.x7r, "bsc")
-        percent = round(burn / ca.supply * 100, 2)
-        burn_dollar = api.get_price(ca.x7r, "bsc") * float(burn)
-        im2 = Image.open(media.bsc_logo)
-        native = f'{str(burn_dollar / api.get_native_price("bnb"))[:7]} BNB'
-    if chain == "polygon" or chain == "poly":
-        chain_name = "(POLYGON)"
-        chain_url = url.poly_token
-        burn = api.get_token_balance(ca.dead, ca.x7r, "poly")
-        burn_dollar = api.get_price(ca.x7r, "polygon") * float(burn)
-        percent = round(burn / ca.supply * 100, 2)
-        im2 = Image.open(media.poly_logo)
-        native = f'{str(burn_dollar / api.get_native_price("matic"))[:7]} MATIC'
-    if chain == "arbitrum" or chain == "arb":
-        chain_name = "(ARB)"
-        chain_url = url.arb_token
-        burn = api.get_token_balance(ca.dead, ca.x7r, "arb")
-        percent = round(burn / ca.supply * 100, 2)
-        burn_dollar = api.get_price(ca.x7r, "arbitrum") * float(burn)
-        im2 = Image.open(media.arb_logo)
-        native = f'{str(burn_dollar / api.get_native_price("eth"))[:5]} ETH'
-    if chain == "optimism" or chain == "arb":
-        chain_name = "(OPTIMISM)"
-        chain_url = url.opti_token
-        burn = api.get_token_balance(ca.dead, ca.x7r, "opti")
-        burn_dollar = api.get_price(ca.x7r, "optimism") * float(burn)
-        percent = round(burn / ca.supply * 100, 2)
-        im2 = Image.open(media.opti_logo)
-        native = f'{str(burn_dollar / api.get_native_price("eth"))[:5]} ETH'
+        burn_dollar = api.get_price(ca.x7r, chain) * float(burn)
+        im2 = Image.open(chain_logo)
+        native = f'{str(burn_dollar / api.get_native_price(chain_native))[:5]} {chain_native.upper()}'
+    else:
+        await update.message.reply_text(f"{text.chain_error}")
     im1 = Image.open((random.choice(media.blackhole)))
     im1.paste(im2, (720, 20), im2)
     i1 = ImageDraw.Draw(im1)
@@ -251,26 +222,20 @@ async def burn(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if context is None:
-        context = ContextTypes.DEFAULT_TYPE()
     chain = " ".join(context.args).lower()
-    chain_url = ""
-    chain_name = ""
+    if chain == "":
+        chain = "eth"
     chain_mappings = {
         "eth": ("(ETH)", url.xchange_buy_eth),
         "bsc": ("(BSC)", url.xchange_buy_bsc),
-        "bnb": ("(BSC)", url.xchange_buy_bsc),
-        "polygon": ("(POLYGON)", url.xchange_buy_poly),
         "poly": ("(POLYGON)", url.xchange_buy_poly),
-        "optimism": ("(OPTIMISM)", url.xchange_buy_opti),
         "opti": ("(OPTIMISM)", url.xchange_buy_opti),
-        "arbitrum": ("(ARB)", url.xchange_buy_arb),
         "arb": ("(ARB)", url.xchange_buy_arb),
     }
     if chain in chain_mappings:
         chain_name, chain_url = chain_mappings[chain]
     else:
-        chain_name, chain_url = chain_mappings["eth"]
+        await update.message.reply_text(f"{text.chain_error}")
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Buy Links {chain_name}*\nUse `/buy [chain-name]` for other chains\n"
@@ -402,26 +367,21 @@ async def channels(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def chart(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
-    if context is None:
-        context = ContextTypes.DEFAULT_TYPE()
     chain = " ".join(context.args).lower()
-    chain_url = ""
-    chain_name = ""
+    if chain == "":
+        chain = "eth"
     chain_mappings = {
+        "": (url.dex_tools_eth, "(ETH)"),
         "eth": (url.dex_tools_eth, "(ETH)"),
         "bsc": (url.dex_tools_bsc, "(BSC)"),
-        "bnb": (url.dex_tools_bsc, "(BSC)"),
-        "polygon": (url.dex_tools_poly, "(POLYGON)"),
         "poly": (url.dex_tools_poly, "(POLYGON)"),
-        "optimism": (url.dex_tools_opti, "(OPTI)"),
         "opti": (url.dex_tools_opti, "(OPTI)"),
-        "arbitrum": (url.dex_tools_arb, "(ARB)"),
         "arb": (url.dex_tools_arb, "(ARB)"),
     }
     if chain in chain_mappings:
         chain_url, chain_name = chain_mappings[chain]
     else:
-        chain_url, chain_name = chain_mappings["eth"]
+        await update.message.reply_text(f"{text.chain_error}")
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Chart Links* {chain_name}\nUse `/chart [chain-name]` for other chains\n"
@@ -773,84 +733,94 @@ async def docs(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def ebb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    if chain == "eth" or chain == "":
-        chain_name = "(ETH)"
-        chain_url = url.ether_address
+    if chain == "":
+        chain = "eth"
+    chain_mappings = {
+        "eth": ("(ETH)", url.ether_address, "eth", media.eth_logo),
+        "bsc": ("(BSC)", url.bsc_address, "bnb", media.bsc_logo),
+        "poly": ("(POLYGON)", url.poly_address, "matic",media.poly_logo),
+        "opti": ("(OPTIMISM)", url.opti_address, "eth", media.opti_logo),
+        "arb": ("(ARB)", url.arb_address, "eth", media.arb_logo),
+    }
+    if chain in chain_mappings:
+        chain_name, chain_url, chain_native, chain_logo = chain_mappings[chain]
         now = datetime.utcnow()
+    else:
+        await update.message.reply_text(f"{text.chain_error}")
 
-        def get_liquidity_data(hub_address):
-            hub = api.get_internal_tx(hub_address, "eth")
-            hub_filter = [
-                d for d in hub["result"] if d["from"] in f"{hub_address}".lower()
-            ]
-            value_raw = int(hub_filter[0]["value"]) / 10 ** 18
-            value = f"{value_raw}"
-            dollar = float(value) * float(api.get_native_price("eth")) / 1 ** 18
-            time = datetime.utcfromtimestamp(int(hub_filter[0]["timeStamp"]))
-            duration = now - time
-            duration_in_s = duration.total_seconds()
-            days = divmod(duration_in_s, 86400)
-            hours = divmod(days[1], 3600)
-            minutes = divmod(hours[1], 60)
-            return value, dollar, time, int(days[0]), int(hours[0]), int(minutes[0])
+    def get_liquidity_data(hub_address):
+        hub = api.get_internal_tx(hub_address, chain)
+        hub_filter = [
+            d for d in hub["result"] if d["from"] in f"{hub_address}".lower()
+        ]
+        value_raw = int(hub_filter[0]["value"]) / 10 ** 18
+        value = f"{value_raw}"
+        dollar = float(value) * float(api.get_native_price(chain_native)) / 1 ** 18
+        time = datetime.utcfromtimestamp(int(hub_filter[0]["timeStamp"]))
+        duration = now - time
+        duration_in_s = duration.total_seconds()
+        days = divmod(duration_in_s, 86400)
+        hours = divmod(days[1], 3600)
+        minutes = divmod(hours[1], 60)
+        return value, dollar, time, int(days[0]), int(hours[0]), int(minutes[0])
 
-        (
-            x7r_value,
-            x7r_dollar,
-            x7r_time,
-            x7r_days,
-            x7r_hours,
-            x7r_minutes,
-        ) = get_liquidity_data(ca.x7r_liq_hub)
-        (
-            x7dao_value,
-            x7dao_dollar,
-            x7dao_time,
-            x7dao_days,
-            x7dao_hours,
-            x7dao_minutes,
-        ) = get_liquidity_data(ca.x7dao_liq_hub)
-        (
-            x7100_value,
-            x7100_dollar,
-            x7100_time,
-            x7100_days,
-            x7100_hours,
-            x7100_minutes,
-        ) = get_liquidity_data(ca.x7100_liq_hub)
-        await update.message.reply_photo(
-            photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-            caption=f"*X7 Finance Liquidity Hubs {chain_name}*\nUse `/ebb [chain-name]` for other chains\n\n"
-                    f'Last X7R Buy Back: {x7r_time}\n{x7r_value[:5]} ETH (${"{:0,.0f}".format(x7r_dollar)})\n'
-                    f"{x7r_days} days, {x7r_hours} hours and {x7r_minutes} minutes ago\n\n"
-                    f'Last X7DAO Buy Back: {x7dao_time}\n{x7dao_value[:5]} ETH (${"{:0,.0f}".format(x7dao_dollar)})\n'
-                    f"{x7dao_days} days, {x7dao_hours} hours and {x7dao_minutes} minutes ago\n\n"
-                    f'Last X7100 Buy Back: {x7100_time}\n{x7100_value[:5]} ETH (${"{:0,.0f}".format(x7100_dollar)})\n'
-                    f"{x7100_days} days, {x7100_hours} hours and {x7100_minutes} minutes ago\n\n"
-                    f"{api.get_quote()}",
-            parse_mode="Markdown",
-            reply_markup=InlineKeyboardMarkup(
+    (
+        x7r_value,
+        x7r_dollar,
+        x7r_time,
+        x7r_days,
+        x7r_hours,
+        x7r_minutes,
+    ) = get_liquidity_data(ca.x7r_liq_hub)
+    (
+        x7dao_value,
+        x7dao_dollar,
+        x7dao_time,
+        x7dao_days,
+        x7dao_hours,
+        x7dao_minutes,
+    ) = get_liquidity_data(ca.x7dao_liq_hub)
+    (
+        x7100_value,
+        x7100_dollar,
+        x7100_time,
+        x7100_days,
+        x7100_hours,
+        x7100_minutes,
+    ) = get_liquidity_data(ca.x7100_liq_hub)
+    await update.message.reply_photo(
+        photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
+        caption=f"*X7 Finance Liquidity Hubs {chain_name}*\nUse `/ebb [chain-name]` for other chains\n\n"
+                f'Last X7R Buy Back: {x7r_time}\n{x7r_value[:5]} {chain_native.upper()} (${"{:0,.0f}".format(x7r_dollar)})\n'
+                f"{x7r_days} days, {x7r_hours} hours and {x7r_minutes} minutes ago\n\n"
+                f'Last X7DAO Buy Back: {x7dao_time}\n{x7dao_value[:5]} {chain_native.upper()} (${"{:0,.0f}".format(x7dao_dollar)})\n'
+                f"{x7dao_days} days, {x7dao_hours} hours and {x7dao_minutes} minutes ago\n\n"
+                f'Last X7100 Buy Back: {x7100_time}\n{x7100_value[:5]} {chain_native.upper()} (${"{:0,.0f}".format(x7100_dollar)})\n'
+                f"{x7100_days} days, {x7100_hours} hours and {x7100_minutes} minutes ago\n\n"
+                f"{api.get_quote()}",
+        parse_mode="Markdown",
+        reply_markup=InlineKeyboardMarkup(
+            [
                 [
-                    [
-                        InlineKeyboardButton(
-                            text="X7R Liquidity Hub", url=f"{chain_url}{ca.x7r_liq_hub}"
-                        )
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            text="X7DAO Liquidity Hub",
-                            url=f"{chain_url}{ca.x7dao_liq_hub}",
-                        )
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            text="X7100 Liquidity Hub",
-                            url=f"{chain_url}{ca.x7100_liq_hub}",
-                        )
-                    ],
-                ]
-            ),
-        )
+                    InlineKeyboardButton(
+                        text="X7R Liquidity Hub", url=f"{chain_url}{ca.x7r_liq_hub}"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="X7DAO Liquidity Hub",
+                        url=f"{chain_url}{ca.x7dao_liq_hub}",
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="X7100 Liquidity Hub",
+                        url=f"{chain_url}{ca.x7100_liq_hub}",
+                    )
+                ],
+            ]
+        ),
+    )
 
 
 async def ecosystem(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1036,32 +1006,19 @@ async def fg(update, context):
 
 async def gas(update, context):
     chain = " ".join(context.args).lower()
-    chain_name = ""
-    chain_url = ""
-    gas_data = ""
-    im2 = None
-    if chain == "" or chain == "eth":
+    if chain == "":
         chain = "eth"
+    chain_mappings = {
+        "eth": ("(ETH)", "https://etherscan.io/gastracker", media.eth_logo),
+        "bsc": ("(BSC)", "https://bscscan.com/gastracker", media.bsc_logo),
+        "poly": ("(POLYGON)", "https://polygon.com/gastracker", media.poly_logo),
+    }
+    if chain in chain_mappings:
+        chain_name, chain_url, chain_logo = chain_mappings[chain]
         gas_data = api.get_gas(chain)
-        im2 = Image.open(media.eth_logo)
-        chain_name = "(ETH)"
-        chain_url = "https://etherscan.io/gastracker"
-    elif chain == "bsc":
-        gas_data = api.get_gas(chain)
-        im2 = Image.open(media.bsc_logo)
-        chain_name = "(BSC)"
-        chain_url = "https://bscscan.com/gastracker"
-    elif chain == "polygon" or chain == "poly":
-        chain = "poly"
-        gas_data = api.get_gas(chain)
-        im2 = Image.open(media.poly_logo)
-        chain_name = "(POLYGON)"
-        chain_url = "https://polygon.com/gastracker"
-    if im2 is None:
-        await update.message.reply_text(
-            "Invalid chain. Please provide a valid chain name.", parse_mode="Markdown"
-        )
-        return
+        im2 = Image.open(chain_logo)
+    else:
+        await update.message.reply_text(f"{text.chain_error}")
     im1 = Image.open(random.choice(media.blackhole))
     im1.paste(im2, (720, 20), im2)
     myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
@@ -1271,24 +1228,18 @@ async def links(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def liquidate(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    if chain == "eth" or chain == "":
-        web3 = Web3(Web3.HTTPProvider(f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}", ))
-        link = url.ether_address
+    if chain == "":
         chain = "eth"
-    elif chain == "arb":
-        web3 = Web3(Web3.HTTPProvider(f"https://arb-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ARB')}", ))
-        link = url.arb_address
-    elif chain == "bsc":
-        web3 = Web3(Web3.HTTPProvider("https://bsc-dataseed.binance.org/", ))
-        link = url.bsc_address
-    elif chain == "opti":
-        web3 = Web3(Web3.HTTPProvider(f"https://opt-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_OPTI')}", ))
-        link = url.opti_address
-    elif chain == "poly":
-        web3 = Web3(Web3.HTTPProvider(f"https://polygon-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_POLY')}", ))
-        link = url.poly_address
-
-    contract = web3.eth.contract(address=Web3.to_checksum_address(ca.lpool), abi=api.get_abi(ca.lpool, chain))
+    chain_mappings = {
+        "eth": ("(ETH)", url.ether_address, Web3(Web3.HTTPProvider(f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}", ))),
+        "bsc": ("(BSC)", url.bsc_address, Web3(Web3.HTTPProvider("https://bsc-dataseed.binance.org/", ))),
+        "poly": ("(POLYGON)", url.poly_address, Web3(Web3.HTTPProvider(f"https://polygon-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_POLY')}", ))),
+        "opti": ("(OPTIMISM)", url.opti_address, Web3(Web3.HTTPProvider(f"https://opt-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_OPTI')}", ))),
+        "arb": ("(ARB)", url.arb_address, Web3(Web3.HTTPProvider(f"https://arb-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ARB')}", ))),
+    }
+    if chain in chain_mappings:
+        chain_name, chain_url, chain_web3 = chain_mappings[chain]
+    contract = chain_web3.eth.contract(address=Web3.to_checksum_address(ca.lpool), abi=api.get_abi(ca.lpool, chain))
     num_loans = contract.functions.nextLoanID().call()
     liquidatable_loans = 0
     results = []
@@ -1305,11 +1256,11 @@ async def liquidate(update: Update, context: ContextTypes.DEFAULT_TYPE):
     output = "\n".join([liquidatable_loans_text] + results)
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*X7 Finance Loan Liquidations ({chain.upper()})*\nfor other chains use `/liquidate [chain-name]`\n\n{output}\n\n{api.get_quote()}",
+        caption=f"*X7 Finance Loan Liquidations({chain_name}*\nfor other chains use `/liquidate [chain-name]`\n\n{output}\n\n{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton(text="Lending Pool Contract", url=f"{link}{ca.lpool}#writeContract")],
+                [InlineKeyboardButton(text="Lending Pool Contract", url=f"{chain_url}{ca.lpool}#writeContract")],
             ]
         ),
     )
@@ -1532,13 +1483,6 @@ async def liquidity(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    loan_id = ""
-    chain = ""
-    web_url = ""
-    token = ""
-    scan_address = ""
-    scan_token = ""
-    price = ""
     if len(context.args) >= 2:
         chain = context.args[0].lower()
         loan_id = context.args[1]
@@ -1548,43 +1492,30 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="Markdown",
         )
         return
-    if chain == "eth":
-        web_url = f"https://eth-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ETH')}"
-        token = "ETH"
-        scan_address = url.ether_address
-        scan_token = url.ether_token
-        price = api.get_native_price("eth")
-    elif chain == "arb":
-        web_url = f"https://arb-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ARB')}"
-        token = "ETH"
-        scan_address = url.arb_address
-        scan_token = url.arb_token
-        price = api.get_native_price("eth")
-    elif chain == "bsc":
-        web_url = "https://bsc-dataseed.binance.org/"
-        token = "BNB"
-        scan_address = url.bsc_address
-        scan_token = url.bsc_token
-        price = api.get_native_price("bnb")
-    elif chain == "poly":
-        web_url = f"https://polygon-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_POLY')}"
-        token = "MATIC"
-        scan_address = url.poly_address
-        scan_token = url.poly_token
-        price = api.get_native_price("matic")
-    elif chain == "opti":
-        web_url = f"https://opt-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_OPTI')}"
-        token = "ETH"
-        scan_address = url.opti_address
-        scan_token = url.opti_token
-        price = api.get_native_price("eth")
+    if chain == "":
+        chain = "eth"
+    chain_mappings = {
+        "eth": ("(ETH)", url.ether_address, url.ether_token, "eth",
+                f"https://mainnet.infura.io/v3/{os.getenv('INFURA_API_KEY')}", ),
+        "bsc": ("(BSC)", url.bsc_address, url.bsc_token, "bnb",
+                f"https://bsc-dataseed.binance.org/", ),
+        "poly": ("(POLYGON)", url.poly_address, url.poly_token, "matic",
+                 f"https://polygon-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_POLY')}", ),
+        "opti": ("(OPTIMISM)", url.opti_address, url.opti_token, "eth",
+                 f"https://opt-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_OPTI')}", ),
+        "arb": ("(ARB)", url.arb_address, url.arb_token, "eth",
+                f"https://arb-mainnet.g.alchemy.com/v2/{os.getenv('ALCHEMY_ARB')}"),
+    }
+    if chain in chain_mappings:
+        chain_name, chain_scan_url, chain_address_url, chain_native, chain_web3 = chain_mappings[chain]
+        price = api.get_native_price(chain_native)
     else:
         await update.message.reply_text(
             f"Please use `/loan chain_name loan_id` to see details",
             parse_mode="Markdown",
         )
         return
-    web3 = Web3(Web3.HTTPProvider(web_url))
+    web3 = Web3(Web3.HTTPProvider(chain_web3))
     address = to_checksum_address(ca.lpool)
     contract = web3.eth.contract(address=address, abi=api.get_abi(ca.lpool, chain))
     liquidation_status = ""
@@ -1594,14 +1525,14 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reward = contract.functions.liquidationReward().call() / 10 ** 18
             liquidation_status = (
                 f"\n\n*Eligible For Liquidation*\n"
-                f"Cost: {liquidation / 10 ** 18} {token} "
+                f"Cost: {liquidation / 10 ** 18} {chain_native.upper()} "
                 f'(${"{:0,.0f}".format(price * liquidation / 10 ** 18)})\n'
-                f'Reward: {reward} {token} (${"{:0,.0f}".format(price * reward)})'
+                f'Reward: {reward} {chain_native} (${"{:0,.0f}".format(price * reward)})'
             )
     except (Exception, TimeoutError, ValueError, StopAsyncIteration) as e:
         pass
     liability = contract.functions.getRemainingLiability(int(loan_id)).call() / 10 ** 18
-    remaining = f'Remaining Liability {liability} {token} (${"{:0,.0f}".format(price * liability)})'
+    remaining = f'Remaining Liability {liability} {chain_native.upper()} (${"{:0,.0f}".format(price * liability)})'
     schedule1 = contract.functions.getPremiumPaymentSchedule(int(loan_id)).call()
     schedule2 = contract.functions.getPrincipalPaymentSchedule(int(loan_id)).call()
     schedule_list = []
@@ -1614,7 +1545,7 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     "%Y-%m-%d %H:%M:%S"
                 )
                 combined_value = (value1 + value2) / 10 ** 18
-                sch = f"{formatted_date} - {combined_value} {token}"
+                sch = f"{formatted_date} - {combined_value} {chain_native.upper()}"
                 schedule_list.append(sch)
         else:
             for date, value in zip(schedule1[0], schedule1[1]):
@@ -1622,18 +1553,18 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     "%Y-%m-%d %H:%M:%S"
                 )
                 formatted_value = value / 10 ** 18
-                sch = f"{formatted_date} - {formatted_value} {token}"
+                sch = f"{formatted_date} - {formatted_value} {chain_native.upper()}"
                 schedule_list.append(sch)
     else:
         for date, value in zip(schedule2[0], schedule2[1]):
             formatted_date = datetime.fromtimestamp(date).strftime("%Y-%m-%d %H:%M:%S")
             formatted_value = value / 10 ** 18
-            sch = f"{formatted_date} - {formatted_value} {token}"
+            sch = f"{formatted_date} - {formatted_value} {chain_native.upper()}"
             schedule_list.append(sch)
     schedule_str = "\n".join(schedule_list)
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*X7 Finance Initial Liquidity Loan - {loan_id} ({chain.upper()})*\n\n"
+        caption=f"*X7 Finance Initial Liquidity Loan - {loan_id} {chain_name}*\n\n"
                 f"Payment Schedule (UTC):\n{schedule_str}\n\n"
                 f"{remaining}"
                 f"{liquidation_status}\n\n{api.get_quote()}",
@@ -1643,19 +1574,19 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [
                     InlineKeyboardButton(
                         text=f"Token Contract",
-                        url=f"{scan_token}{contract.functions.loanToken(int(loan_id)).call()}",
+                        url=f"{chain_scan_url}{contract.functions.loanToken(int(loan_id)).call()}",
                     )
                 ],
                 [
                     InlineKeyboardButton(
                         text=f"Borrower",
-                        url=f"{scan_address}{contract.functions.loanBorrower(int(loan_id)).call()}",
+                        url=f"{chain_scan_url}{contract.functions.loanBorrower(int(loan_id)).call()}",
                     )
                 ],
                 [
                     InlineKeyboardButton(
                         text=f"X7 Lending Pool Contract",
-                        url=f"{scan_address}{ca.lpool}#code",
+                        url=f"{chain_address_url}{ca.lpool}#code",
                     )
                 ],
             ]
@@ -1665,9 +1596,6 @@ async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     loan_type = " ".join(context.args).lower()
-    loan_name = ""
-    loan_terms = ""
-    loan_ca = ""
     if loan_type == "":
         await update.message.reply_text(
             f"{loans.overview}\n\n{api.get_quote()}",
@@ -1765,36 +1693,20 @@ async def loans_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def magisters(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    chain_name = ""
-    chain_url = ""
-    holders = ""
-    if chain in ["eth", ""]:
+    if chain == "":
         chain = "eth"
-        chain_name = "(ETH)"
-        chain_url = url.ether_token
-        holders = api.get_nft_holder_count(ca.magister, "?chain=eth-main")
-    elif chain == "bsc" or chain == "bnb":
-        chain = "bsc"
-        chain_name = "(BSC)"
-        chain_url = url.bsc_token
-    elif chain == "polygon" or chain == "poly":
-        chain = "polygon"
-        chain_name = "(POLYGON)"
-        chain_url = url.poly_token
-        holders = api.get_nft_holder_count(ca.magister, "?chain=poly-main")
-    elif chain == "optimism" or chain == "opti":
-        chain = "optimism"
-        chain_name = "(OPTIMISM)"
-        chain_url = url.opti_token
-        holders = api.get_nft_holder_count(ca.magister, "?chain=optimism-main")
-    elif chain == "arbitrum" or chain == "arb":
-        chain = "arbitrum"
-        chain_name = "(ARB)"
-        chain_url = url.arb_token
-        holders = api.get_nft_holder_count(ca.magister, "?chain=arbitrum-main")
+    chain_mappings = {
+        "eth": ("(ETH)", url.ether_token, "?chain=eth-main"),
+        "bsc": ("(BSC)", url.bsc_token, ""),
+        "poly": ("(POLYGON)", url.poly_token, "?chain=poly-main"),
+        "opti": ("(OPTIMISM)", url.opti_token, "?chain=optimism-main"),
+        "arb": ("(ARB)", url.arb_token, "?chain=arbitrum-main"),
+    }
+    if chain in chain_mappings:
+        chain_name, chain_url, chain_holders = chain_mappings[chain]
+        holders = api.get_nft_holder_count(ca.magister, chain_holders)
     else:
-        await update.message.reply_text("Invalid chain. Please specify a valid chain.")
-        return
+        await update.message.reply_text(f"{text.chain_error}")
     response = api.get_nft_holder_list(ca.magister, chain)
     magisters = [holder["owner_of"] for holder in response["result"]]
     address = "\n\n".join(map(str, magisters))
@@ -1820,21 +1732,17 @@ async def magisters(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def mcap(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    if chain in ["eth", ""]:
+    if chain == "":
         chain = "eth"
-        chain_name = "(ETH)"
-    elif chain == "bsc" or chain == "bnb":
-        chain = "bsc"
-        chain_name = "(BSC)"
-    elif chain == "polygon" or chain == "poly":
-        chain = "polygon"
-        chain_name = "(POLYGON)"
-    elif chain == "optimism" or chain == "opti":
-        chain = "optimism"
-        chain_name = "(OPTIMISM)"
-    elif chain == "arbitrum" or chain == "arb":
-        chain = "arbitrum"
-        chain_name = "(ARB)"
+    chain_mappings = {
+        "eth": ("(ETH)", url.ether_token, "?chain=eth-main"),
+        "bsc": ("(BSC)", url.bsc_token, ""),
+        "poly": ("(POLYGON)", url.poly_token, "?chain=poly-main"),
+        "opti": ("(OPTIMISM)", url.opti_token, "?chain=optimism-main"),
+        "arb": ("(ARB)", url.arb_token, "?chain=arbitrum-main"),
+    }
+    if chain in chain_mappings:
+        chain_name, chain_url, chain_holders = chain_mappings[chain]
     price = {}
     token_names = {
         ca.x7r: "X7R",
@@ -1957,41 +1865,22 @@ async def media_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chain = " ".join(context.args).lower().strip()
-    if chain == "" or chain == "eth":
+    chain = " ".join(context.args).lower()
+    if chain == "":
         chain = "eth"
-    elif chain == "poly" or chain == "polygon":
-        chain = "poly"
-    elif chain == "arb" or chain == "arbitrum":
-        chain = "arb"
-    elif chain == "opti" or chain == "optimism":
-        chain = "opti"
-    elif chain == "bsc" or chain == "binance" or chain == "binance smart chain":
-        chain = "bsc"
+    chain_mappings = {
+        "eth": ("(ETH)"),
+        "bsc": ("(BSC)"),
+        "poly": ("(POLYGON)"),
+        "opti": ("(OPTIMISM)"),
+        "arb": ("(ARB)"),
+    }
+    if chain in chain_mappings:
+        chain_name = chain_mappings[chain]
     else:
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id, text="Invalid chain. Please provide a valid chain name."
-        )
-        return
-
+        await update.message.reply_text(f"{text.chain_error}")
     chain_prices = nfts.prices.get(chain)
     chain_counts = nfts.counts.get(chain)
-
-    if chain_prices is None or chain_counts is None:
-        if chain == "eth":
-            await context.bot.send_message(
-                chat_id=update.effective_chat.id, text="Chain information not found."
-            )
-            return
-        else:
-            chain_prices = nfts.prices.get("eth")
-            chain_counts = nfts.counts.get("eth")
-
-            if chain_prices is None or chain_counts is None:
-                await context.bot.send_message(
-                    chat_id=update.effective_chat.id, text="Chain information not found."
-                )
-                return
 
     eco_price = chain_prices.get("eco")
     liq_price = chain_prices.get("liq")
@@ -2020,7 +1909,7 @@ async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
-        caption=f"*NFT Info ({chain.upper()})*\nUse `/nft [chain-name]` for other chains\n\n"
+        caption=f"*NFT Info {chain_name}*\nUse `/nft [chain-name]` for other chains\n\n"
                 f"*Ecosystem Maxi*\n{eco_price}\n"
                 f"Available - {500 - eco_count}\n"
                 f"{eco_discount_text}\n\n"
@@ -2086,23 +1975,19 @@ async def on_chain(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def opensea(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    chain_url = ""
-    chain_name = ""
-    if chain == "" or chain == "eth":
-        chain_name = "(ETH)"
-        chain_url = ""
-    if chain == "arb" or chain == "arbitrum":
-        chain_name = "(ARB)"
-        chain_url = "-arbitrum"
-    if chain == "optimism" or chain == "opti":
-        chain_name = "(OPTI)"
-        chain_url = "-optimism"
-    if chain == "bnb" or chain == "bsc" or chain == "binance":
-        chain_name = "(BSC)"
-        chain_url = "-binance"
-    if chain == "poly" or chain == "polygon":
-        chain_name = "(POLYGON)"
-        chain_url = "-polygon"
+    if chain == "":
+        chain = "eth"
+    chain_mappings = {
+        "eth": ("(ETH)", ""),
+        "bsc": ("(BSC)","-binance"),
+        "poly": ("(POLYGON)","-polygon"),
+        "opti": ("(OPTIMISM)","-optimism"),
+        "arb": ("(ARB)", "-arbitrum"),
+    }
+    if chain in chain_mappings:
+        chain_name, chain_url = chain_mappings[chain]
+    else:
+        await update.message.reply_text(f"{text.chain_error}")
     await update.message.reply_photo(
         photo=open(media.opensea_logo, "rb"),
         caption=f"*X7 Finance Opensea Links {chain_name}*\nUse `/nft [chain-name]` "
@@ -2900,43 +2785,21 @@ async def search(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def signers(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    chain_name = ""
-    chain_url = ""
-    dev_response = None
-    com_response = None
-    if chain in ["eth", ""]:
+    if chain == "":
         chain = "eth"
-        dev_response = api.get_signers(ca.dev_multi_eth)
-        com_response = api.get_signers(ca.com_multi_eth)
-        chain_name = "(ETH)"
-        chain_url = url.ether_address
-    elif chain in ["poly", "polygon"]:
-        chain = "polygon"
-        dev_response = api.get_signers(ca.dev_multi_poly)
-        com_response = api.get_signers(ca.com_multi_poly)
-        chain_name = "(POLYGON)"
-        chain_url = url.poly_address
-    elif chain in ["bsc", "bnb"]:
-        chain = "bsc"
-        dev_response = api.get_signers(ca.dev_multi_bsc)
-        com_response = api.get_signers(ca.com_multi_bsc)
-        chain_name = "(BSC)"
-        chain_url = url.poly_address
-    elif chain in ["arb", "arbitrum"]:
-        chain = "arbitrum"
-        dev_response = api.get_signers(ca.dev_multi_arb)
-        com_response = api.get_signers(ca.com_multi_arb)
-        chain_name = "(ARB)"
-        chain_url = url.arb_address
-    elif chain in ["opti", "optimism"]:
-        chain = "optimism"
-        dev_response = api.get_signers(ca.dev_multi_opti)
-        com_response = api.get_signers(ca.com_multi_opti)
-        chain_name = "(OPTIMISM)"
-        chain_url = url.opti_address
+    chain_mappings = {
+        "eth": ("(ETH)", url.ether_address, ca.com_multi_eth, ca.dev_multi_eth),
+        "bsc": ("(BSC)", url.bsc_address, ca.com_multi_bsc, ca.dev_multi_bsc),
+        "poly": ("(POLYGON)", url.poly_address, ca.com_multi_poly, ca.dev_multi_poly),
+        "opti": ("(OPTIMISM)",url.opti_address, ca.com_multi_opti, ca.dev_multi_opti),
+        "arb": ("(ARB)", url.arb_address, ca.com_multi_arb, ca.dev_multi_arb),
+    }
+    if chain in chain_mappings:
+        chain_name, chain_url, com_wallet, dev_wallet = chain_mappings[chain]
     else:
-        await update.message.reply_text("Invalid chain. Please specify a valid chain.")
-        return
+        await update.message.reply_text(f"{text.chain_error}")
+    dev_response = api.get_signers(dev_wallet)
+    com_response = api.get_signers(com_wallet)
     dev_list = dev_response["owners"]
     dev_address = "\n\n".join(map(str, dev_list))
     com_list = com_response["owners"]
@@ -2968,11 +2831,9 @@ async def signers(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def smart(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
-    if context is None:
-        context = ContextTypes.DEFAULT_TYPE()
     chain = " ".join(context.args).lower()
-    chain_name = ""
-    chain_url = ""
+    if chain == "":
+        chain = "eth"
     chain_mappings = {
         "eth": ("(ETH)", url.ether_address),
         "arbitrum": ("(ARB)", url.arb_address),
@@ -2988,7 +2849,7 @@ async def smart(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
     if chain in chain_mappings:
         chain_name, chain_url = chain_mappings[chain]
     else:
-        chain_name, chain_url = chain_mappings["eth"]
+        await update.message.reply_text(f"{text.chain_error}")
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Smart Contracts {chain_name}*\nUse `/smart [chain-name]` or other chains\n\n"
@@ -3219,7 +3080,7 @@ async def splitters(update: Update, context):
             native = mapping["native"]
             chain = mapping["chain"]
         else:
-            await update.message.reply_text("Invalid chain. Please provide a valid chain name.")
+            await update.message.reply_text({text.chain_error})
             return
         distribution = api.get_split(eth_value)
         message = f"*X7 Finance Ecosystem Splitters {chain_name}* \n\n{eth_value} {native.upper()}\n\n"
@@ -3462,54 +3323,22 @@ async def today(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    if chain in ["eth", ""]:
-        im2 = Image.open(media.eth_logo)
-        chain_moralis = "eth"
-        chain_name = "(ETH)"
-        link = url.ether_address
-        native = "eth"
+    if chain == "":
         chain = "eth"
-        com_multi = ca.com_multi_eth
-        dev_multi = ca.dev_multi_eth
-    elif chain == "bsc" or chain == "bnb":
-        im2 = Image.open(media.bsc_logo)
-        chain_moralis = "bsc"
-        chain_name = "(BSC)"
-        link = url.bsc_address
-        native = "bnb"
-        chain = "bsc"
-        com_multi = ca.com_multi_bsc
-        dev_multi = ca.dev_multi_bsc
-    elif chain == "polygon" or chain == "poly":
-        im2 = Image.open(media.poly_logo)
-        chain_moralis = "polygon"
-        chain_name = "(POLYGON)"
-        link = url.poly_address
-        native = "matic"
-        chain = "poly"
-        com_multi = ca.com_multi_poly
-        dev_multi = ca.dev_multi_poly
-    elif chain == "optimism" or chain == "opti":
-        im2 = Image.open(media.opti_logo)
-        chain_moralis = "optimism"
-        chain_name = "(OPTIMISM)"
-        link = url.opti_address
-        native = "eth"
-        chain = "opti"
-        com_multi = ca.com_multi_opti
-        dev_multi = ca.dev_multi_opti
-    elif chain == "arbitrum" or chain == "arb":
-        im2 = Image.open(media.arb_logo)
-        chain_moralis = "arbitrum"
-        chain_name = "(ARB)"
-        link = url.arb_address
-        native = "eth"
-        chain = "arb"
-        com_multi = ca.com_multi_arb
-        dev_multi = ca.dev_multi_arb
-    native_price = api.get_native_price(native)
-    dev_eth = api.get_native_balance(dev_multi, chain)
-    com_eth = api.get_native_balance(com_multi, chain)
+    chain_mappings = {
+        "eth": ("(ETH)", url.ether_address, media.eth_logo, "eth", ca.com_multi_eth, ca.dev_multi_eth, "eth" ),
+        "arb": ("(ARB)", url.arb_address, media.bsc_logo, "arbitrum", ca.com_multi_arb, ca.dev_multi_arb, "eth" ),
+        "poly": ("(POLYGON)", url.poly_address, media.poly_logo, "polygon", ca.com_multi_poly, ca.dev_multi_poly, "matic" ),
+        "bsc": ("(BSC)", url.bsc_address, media.bsc_logo, "bsc", ca.com_multi_bsc ,ca.dev_multi_bsc, "bnb" ),
+        "opti": ("(OP)", url.opti_address, media.opti_logo, "optimism", ca.com_multi_opti ,ca.dev_multi_opti, "eth" ),
+    }
+    if chain in chain_mappings:
+        chain_name, chain_url, chain_logo, chain_moralis, chain_com_multi, chain_dev_multi, chain_native = chain_mappings[chain]
+    else:
+        await update.message.reply_text(f"{text.chain_error}")
+    native_price = api.get_native_price(chain_native)
+    dev_eth = api.get_native_balance(chain_dev_multi, chain)
+    com_eth = api.get_native_balance(chain_com_multi, chain)
     dev_dollar = float(dev_eth) * float(native_price)
     com_dollar = float(com_eth) * float(native_price)
     treasury_eth = api.get_native_balance(ca.treasury_splitter, chain)
@@ -3517,24 +3346,25 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
     eco_dollar = float(eco_eth) * float(native_price)
     treasury_dollar = float(treasury_eth) * float(native_price)
     try:
-        com_x7r_balance = api.get_token_balance(com_multi, ca.x7r, chain)
+        com_x7r_balance = api.get_token_balance(chain_com_multi, ca.x7r, chain)
         com_x7r_price = com_x7r_balance * api.get_price(ca.x7r, chain_moralis)
     except Exception:
         com_x7r_balance = 0
         com_x7r_price = 0
     try:
-        com_x7dao_balance = api.get_token_balance(com_multi, ca.x7dao, chain)
+        com_x7dao_balance = api.get_token_balance(chain_com_multi, ca.x7dao, chain)
         com_x7dao_price = com_x7dao_balance * api.get_price(ca.x7dao, chain_moralis)
     except Exception:
         com_x7dao_balance = 0
         com_x7dao_price = 0
     try:
-        com_x7d_balance = api.get_token_balance(com_multi, ca.x7d, chain)
-        com_x7d_price = com_x7d_balance * api.get_native_price(native)
+        com_x7d_balance = api.get_token_balance(chain_com_multi, ca.x7d, chain)
+        com_x7d_price = com_x7d_balance * api.get_native_price(chain_native)
     except Exception:
         com_x7d_balance = 0
         com_x7d_price = 0
     com_total = com_x7r_price + com_dollar + com_x7d_price + com_x7dao_price
+    im2 = Image.open(chain_logo)
     im1 = Image.open((random.choice(media.blackhole)))
     im1.paste(im2, (720, 20), im2)
     myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 24)
@@ -3542,14 +3372,14 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
     i1.text(
         (28, 36),
         f"X7 Finance Treasury {chain_name}\n\n"
-        f"Developer Wallet:\n{dev_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(dev_dollar)})\n\n"
-        f"Community Wallet:\n{com_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(com_dollar)})\n"
+        f"Developer Wallet:\n{dev_eth[:6]} {chain_native.upper()} (${'{:0,.0f}'.format(dev_dollar)})\n\n"
+        f"Community Wallet:\n{com_eth[:6]} {chain_native.upper()} (${'{:0,.0f}'.format(com_dollar)})\n"
         f"{com_x7d_balance} X7D (${'{:0,.0f}'.format(com_x7d_price)})\n"
         f"{com_x7r_balance} X7R (${'{:0,.0f}'.format(com_x7r_price)})\n"
         f"{com_x7dao_balance} X7DAO (${'{:0,.0f}'.format(com_x7dao_price)})\n"
         f"Total: (${'{:0,.0f}'.format(com_total)})\n\n"
-        f"Ecosystem Splitter: {eco_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(eco_dollar)})\n"
-        f"Treasury Splitter: {treasury_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(treasury_dollar)})\n\n"
+        f"Ecosystem Splitter: {eco_eth[:6]} {chain_native.upper()} (${'{:0,.0f}'.format(eco_dollar)})\n"
+        f"Treasury Splitter: {treasury_eth[:6]} {chain_native.upper()} (${'{:0,.0f}'.format(treasury_dollar)})\n\n"
         f"UTC: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}",
         font=myfont,
         fill=(255, 255, 255),
@@ -3560,14 +3390,14 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_photo(
         photo=open(r"media/blackhole.png", "rb"),
         caption=f"*X7 Finance Treasury {chain_name}*\nUse `/treasury [chain-name]` for other chains\n\n"
-                f'Developer Wallet:\n{dev_eth[:6]} {native.upper()} (${"{:0,.0f}".format(dev_dollar)})\n\n'
-                f'Community Wallet:\n{com_eth[:6]} {native.upper()} (${"{:0,.0f}".format(com_dollar)})\n'
+                f'Developer Wallet:\n{dev_eth[:6]} {chain_native.upper()} (${"{:0,.0f}".format(dev_dollar)})\n\n'
+                f'Community Wallet:\n{com_eth[:6]} {chain_native.upper()} (${"{:0,.0f}".format(com_dollar)})\n'
                 f'{com_x7d_balance} X7D (${"{:0,.0f}".format(com_x7d_price)})\n'
                 f'{"{:0,.0f}".format(com_x7r_balance)} X7R (${"{:0,.0f}".format(com_x7r_price)})\n'
                 f'{"{:0,.0f}".format(com_x7dao_balance)} X7DAO (${"{:0,.0f}".format(com_x7dao_price)})\n'
                 f'Total: (${"{:0,.0f}".format(com_total)})\n\n'
-                f"Ecosystem Splitter: {eco_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(eco_dollar)})\n"
-                f"Treasury Splitter: {treasury_eth[:6]} {native.upper()} (${'{:0,.0f}'.format(treasury_dollar)})\n\n"
+                f"Ecosystem Splitter: {eco_eth[:6]} {chain_native.upper()} (${'{:0,.0f}'.format(eco_dollar)})\n"
+                f"Treasury Splitter: {treasury_eth[:6]} {chain_native.upper()} (${'{:0,.0f}'.format(treasury_dollar)})\n\n"
                 f"{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
@@ -3575,25 +3405,25 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [
                     InlineKeyboardButton(
                         text="Developer Multi-sig Wallet",
-                        url=f"{link}{dev_multi}",
+                        url=f"{chain_url}{chain_dev_multi}",
                     )
                 ],
                 [
                     InlineKeyboardButton(
                         text="Community Multi-sig Wallet",
-                        url=f"{link}{com_multi}",
+                        url=f"{chain_url}{chain_com_multi}",
                     )
                 ],
                 [
                     InlineKeyboardButton(
                         text="Ecosystem Splitter Contract",
-                        url=f"{link}{ca.eco_splitter}",
+                        url=f"{chain_url}{ca.eco_splitter}",
                     )
                 ],
                 [
                     InlineKeyboardButton(
                         text="Treasury Splitter Contract",
-                        url=f"{link}{ca.treasury_splitter}",
+                        url=f"{chain_url}{ca.treasury_splitter}",
                     )
                 ],
 
@@ -3646,48 +3476,20 @@ async def wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if len(context.args) >= 2:
         chain = context.args[1].lower()
         wallet = context.args[0]
-    else:
-        await update.message.reply_text(
-            f"Please use `/wallet wallet_address chain_name ` to see details",
-            parse_mode="Markdown",
-        )
-        return
-    if chain in ["eth", ""]:
-        im2 = Image.open(media.eth_logo)
-        chain_moralis = "eth"
-        chain_name = "(ETH)"
-        link = url.ether_address
-        native = "eth"
+    if chain == "":
         chain = "eth"
-    elif chain == "bsc" or chain == "bnb":
-        im2 = Image.open(media.bsc_logo)
-        chain_moralis = "bsc"
-        chain_name = "(BSC)"
-        link = url.bsc_address
-        native = "bnb"
-        chain = "bsc"
-    elif chain == "polygon" or chain == "poly":
-        im2 = Image.open(media.poly_logo)
-        chain_moralis = "polygon"
-        chain_name = "(POLYGON)"
-        link = url.poly_address
-        native = "matic"
-        chain = "poly"
-    elif chain == "optimism" or chain == "opti":
-        im2 = Image.open(media.opti_logo)
-        chain_moralis = "optimism"
-        chain_name = "(OPTIMISM)"
-        link = url.opti_address
-        native = "eth"
-        chain = "opti"
-    elif chain == "arbitrum" or chain == "arb":
-        im2 = Image.open(media.arb_logo)
-        chain_moralis = "arbitrum"
-        chain_name = "(ARB)"
-        link = url.arb_address
-        native = "eth"
-        chain = "arb"
-    native_price = api.get_native_price(native)
+    chain_mappings = {
+        "eth": ("(ETH)", url.ether_address, media.eth_logo, "eth", "eth" ),
+        "arb": ("(ARB)", url.arb_address, media.bsc_logo, "arbitrum", "eth" ),
+        "poly": ("(POLYGON)", url.poly_address, media.poly_logo, "polygon", "matic" ),
+        "bsc": ("(BSC)", url.bsc_address, media.bsc_logo, "bsc", "bnb" ),
+        "opti": ("(OP)", url.opti_address, media.opti_logo, "optimism", "eth" ),
+    }
+    if chain in chain_mappings:
+        chain_name, chain_url, chain_logo,chain_moralis, chain_native = chain_mappings[chain]
+    else:
+        await update.message.reply_text(f"{text.chain_error}")
+    native_price = api.get_native_price(chain_native)
     eth = api.get_native_balance(wallet, chain)
     dollar = float(eth) * float(native_price)
     try:
@@ -3734,19 +3536,20 @@ async def wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
         x7105_price = 0
     try:
         x7d_balance = api.get_token_balance(wallet, ca.x7d, chain)
-        x7d_price = x7d_balance * api.get_native_price(native)
+        x7d_price = x7d_balance * api.get_native_price(chain_native)
     except Exception:
         x7d_balance = 0
         x7d_price = 0
     total = x7d_price + x7r_price + x7dao_price + x7101_price + x7102_price + x7103_price + x7104_price + x7105_price
     im1 = Image.open((random.choice(media.blackhole)))
+    im2 = Image.open(chain_logo)
     im1.paste(im2, (720, 20), im2)
     myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 24)
     i1 = ImageDraw.Draw(im1)
     i1.text(
         (28, 36),
         f"X7 Finance Wallet Info {chain_name}\n\n"
-        f"{eth[:6]} {native.upper()} (${'{:0,.0f}'.format(dollar)})\n\n"
+        f"{eth[:6]} {chain_native.upper()} (${'{:0,.0f}'.format(dollar)})\n\n"
         f"{x7r_balance} X7R (${'{:0,.0f}'.format(x7r_price)})\n"
         f"{x7dao_balance} X7DAO (${'{:0,.0f}'.format(x7dao_price)})\n"
         f"{x7101_balance} X7101 (${'{:0,.0f}'.format(x7101_price)})\n"
@@ -3767,7 +3570,7 @@ async def wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
         photo=open(r"media/blackhole.png", "rb"),
         caption=f"*X7 Finance Wallet Info {chain_name}*\nUse `/wallet [chain-name] [wallet_address]` for other chains\n\n"
                 f'`{wallet}`\n\n'
-                f"{eth[:6]} {native.upper()} (${'{:0,.0f}'.format(dollar)})\n\n"
+                f"{eth[:6]} {chain_native.upper()} (${'{:0,.0f}'.format(dollar)})\n\n"
                 f"{x7r_balance} X7R (${'{:0,.0f}'.format(x7r_price)})\n"
                 f"{x7dao_balance} X7DAO (${'{:0,.0f}'.format(x7dao_price)})\n"
                 f"{x7101_balance} X7101 (${'{:0,.0f}'.format(x7101_price)})\n"
@@ -3784,7 +3587,7 @@ async def wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [
                     InlineKeyboardButton(
                         text="Wallet Link",
-                        url=f"{link}{wallet}",
+                        url=f"{chain_url}{wallet}",
                     )
                 ],
 
