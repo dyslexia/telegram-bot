@@ -213,11 +213,21 @@ def get_nft_holder_list(nft, chain):
     )
 
 
+
 def get_price(token, chain):
+    chain_mappings = {
+        "eth": "eth",
+        "arb": "arbitrum",
+        "poly": "polygon",
+        "bsc": "bsc",
+        "opti": "optimism", 
+    }
+    if chain in chain_mappings:
+        chain = chain_mappings[chain]
     api_key = os.getenv("MORALIS_API_KEY")
     result = evm_api.token.get_token_price(
         api_key=api_key,
-        params={"address": token, "chain": "eth"},
+        params={"address": token, "chain": chain},
     )
     return result["usdPrice"]
 

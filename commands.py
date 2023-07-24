@@ -3326,14 +3326,14 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "":
         chain = "eth"
     chain_mappings = {
-        "eth": ("(ETH)", url.ether_address, media.eth_logo, "eth", ca.com_multi_eth, ca.dev_multi_eth, "eth" ),
-        "arb": ("(ARB)", url.arb_address, media.bsc_logo, "arbitrum", ca.com_multi_arb, ca.dev_multi_arb, "eth" ),
-        "poly": ("(POLYGON)", url.poly_address, media.poly_logo, "polygon", ca.com_multi_poly, ca.dev_multi_poly, "matic" ),
-        "bsc": ("(BSC)", url.bsc_address, media.bsc_logo, "bsc", ca.com_multi_bsc ,ca.dev_multi_bsc, "bnb" ),
-        "opti": ("(OP)", url.opti_address, media.opti_logo, "optimism", ca.com_multi_opti ,ca.dev_multi_opti, "eth" ),
+        "eth": ("(ETH)", url.ether_address, media.eth_logo, ca.com_multi_eth, ca.dev_multi_eth, "eth" ),
+        "arb": ("(ARB)", url.arb_address, media.bsc_logo, ca.com_multi_arb, ca.dev_multi_arb, "eth" ),
+        "poly": ("(POLYGON)", url.poly_address, media.poly_logo, ca.com_multi_poly, ca.dev_multi_poly, "matic" ),
+        "bsc": ("(BSC)", url.bsc_address, media.bsc_logo, ca.com_multi_bsc ,ca.dev_multi_bsc, "bnb" ),
+        "opti": ("(OP)", url.opti_address, media.opti_logo, ca.com_multi_opti ,ca.dev_multi_opti, "eth" ),
     }
     if chain in chain_mappings:
-        chain_name, chain_url, chain_logo, chain_moralis, chain_com_multi, chain_dev_multi, chain_native = chain_mappings[chain]
+        chain_name, chain_url, chain_logo, chain_com_multi, chain_dev_multi, chain_native = chain_mappings[chain]
     else:
         await update.message.reply_text(f"{text.chain_error}")
     native_price = api.get_native_price(chain_native)
@@ -3347,13 +3347,13 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
     treasury_dollar = float(treasury_eth) * float(native_price)
     try:
         com_x7r_balance = api.get_token_balance(chain_com_multi, ca.x7r, chain)
-        com_x7r_price = com_x7r_balance * api.get_price(ca.x7r, chain_moralis)
+        com_x7r_price = com_x7r_balance * api.get_price(ca.x7r, chain)
     except Exception:
         com_x7r_balance = 0
         com_x7r_price = 0
     try:
         com_x7dao_balance = api.get_token_balance(chain_com_multi, ca.x7dao, chain)
-        com_x7dao_price = com_x7dao_balance * api.get_price(ca.x7dao, chain_moralis)
+        com_x7dao_price = com_x7dao_balance * api.get_price(ca.x7dao, chain)
     except Exception:
         com_x7dao_balance = 0
         com_x7dao_price = 0
@@ -3479,14 +3479,14 @@ async def wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "":
         chain = "eth"
     chain_mappings = {
-        "eth": ("(ETH)", url.ether_address, media.eth_logo, "eth", "eth" ),
-        "arb": ("(ARB)", url.arb_address, media.bsc_logo, "arbitrum", "eth" ),
-        "poly": ("(POLYGON)", url.poly_address, media.poly_logo, "polygon", "matic" ),
-        "bsc": ("(BSC)", url.bsc_address, media.bsc_logo, "bsc", "bnb" ),
-        "opti": ("(OP)", url.opti_address, media.opti_logo, "optimism", "eth" ),
+        "eth": ("(ETH)", url.ether_address, media.eth_logo, "eth" ),
+        "arb": ("(ARB)", url.arb_address, media.bsc_logo, "eth" ),
+        "poly": ("(POLYGON)", url.poly_address, media.poly_logo, "matic" ),
+        "bsc": ("(BSC)", url.bsc_address, media.bsc_logo, "bnb" ),
+        "opti": ("(OP)", url.opti_address, media.opti_logo, "eth" ),
     }
     if chain in chain_mappings:
-        chain_name, chain_url, chain_logo,chain_moralis, chain_native = chain_mappings[chain]
+        chain_name, chain_url, chain_logo, chain_native = chain_mappings[chain]
     else:
         await update.message.reply_text(f"{text.chain_error}")
     native_price = api.get_native_price(chain_native)
@@ -3494,43 +3494,43 @@ async def wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
     dollar = float(eth) * float(native_price)
     try:
         x7r_balance = api.get_token_balance(wallet, ca.x7r, chain)
-        x7r_price = x7r_balance * api.get_price(ca.x7r, chain_moralis)
+        x7r_price = x7r_balance * api.get_price(ca.x7r, chain)
     except Exception:
         x7r_balance = 0
         x7r_price = 0
     try:
         x7dao_balance = api.get_token_balance(wallet, ca.x7dao, chain)
-        x7dao_price = x7dao_balance * api.get_price(ca.x7dao, chain_moralis)
+        x7dao_price = x7dao_balance * api.get_price(ca.x7dao, chain)
     except Exception:
         x7dao_balance = 0
         x7dao_price = 0
     try:
         x7101_balance = api.get_token_balance(wallet, ca.x7101, chain)
-        x7101_price = x7101_balance * api.get_price(ca.x7101, chain_moralis)
+        x7101_price = x7101_balance * api.get_price(ca.x7101, chain)
     except Exception:
         x7101_balance = 0
         x7101_price = 0
     try:
         x7102_balance = api.get_token_balance(wallet, ca.x7102, chain)
-        x7102_price = x7102_balance * api.get_price(ca.x7102, chain_moralis)
+        x7102_price = x7102_balance * api.get_price(ca.x7102, chain)
     except Exception:
         x7102_balance = 0
         x7102_price = 0
     try:
         x7103_balance = api.get_token_balance(wallet, ca.x7103, chain)
-        x7103_price = x7103_balance * api.get_price(ca.x7103, chain_moralis)
+        x7103_price = x7103_balance * api.get_price(ca.x7103, chain)
     except Exception:
         x7103_balance = 0
         x7103_price = 0
     try:
         x7104_balance = api.get_token_balance(wallet, ca.x7104, chain)
-        x7dao_price = x7104_balance * api.get_price(ca.x7104, chain_moralis)
+        x7dao_price = x7104_balance * api.get_price(ca.x7104, chain)
     except Exception:
         x7104_balance = 0
         x7104_price = 0
     try:
         x7105_balance = api.get_token_balance(wallet, ca.x7105, chain)
-        x7105_price = x7105_balance * api.get_price(ca.x7105, chain_moralis)
+        x7105_price = x7105_balance * api.get_price(ca.x7105, chain)
     except Exception:
         x7105_balance = 0
         x7105_price = 0
