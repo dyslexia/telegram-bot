@@ -185,8 +185,6 @@ async def burn(update: Update, context: ContextTypes.DEFAULT_TYPE):
         burn_dollar = api.get_price(ca.x7r, chain) * float(burn)
         im2 = Image.open(chain_logo)
         native = f'{str(burn_dollar / api.get_native_price(chain_native))[:5]} {chain_native.upper()}'
-    else:
-        await update.message.reply_text(f"{text.chain_error}")
     im1 = Image.open((random.choice(media.blackhole)))
     im1.paste(im2, (720, 20), im2)
     i1 = ImageDraw.Draw(im1)
@@ -234,8 +232,6 @@ async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
     if chain in chain_mappings:
         chain_name, chain_url = chain_mappings[chain]
-    else:
-        await update.message.reply_text(f"{text.chain_error}")
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Buy Links {chain_name}*\nUse `/buy [chain-name]` for other chains\n"
@@ -380,8 +376,6 @@ async def chart(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
     }
     if chain in chain_mappings:
         chain_url, chain_name = chain_mappings[chain]
-    else:
-        await update.message.reply_text(f"{text.chain_error}")
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Chart Links* {chain_name}\nUse `/chart [chain-name]` for other chains\n"
@@ -745,8 +739,6 @@ async def ebb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain in chain_mappings:
         chain_name, chain_url, chain_native, chain_logo = chain_mappings[chain]
         now = datetime.utcnow()
-    else:
-        await update.message.reply_text(f"{text.chain_error}")
 
     def get_liquidity_data(hub_address):
         hub = api.get_internal_tx(hub_address, chain)
@@ -1017,8 +1009,6 @@ async def gas(update, context):
         chain_name, chain_url, chain_logo = chain_mappings[chain]
         gas_data = api.get_gas(chain)
         im2 = Image.open(chain_logo)
-    else:
-        await update.message.reply_text(f"{text.chain_error}")
     im1 = Image.open(random.choice(media.blackhole))
     im1.paste(im2, (720, 20), im2)
     myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
@@ -1705,8 +1695,6 @@ async def magisters(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain in chain_mappings:
         chain_name, chain_url, chain_holders = chain_mappings[chain]
         holders = api.get_nft_holder_count(ca.magister, chain_holders)
-    else:
-        await update.message.reply_text(f"{text.chain_error}")
     response = api.get_nft_holder_list(ca.magister, chain)
     magisters = [holder["owner_of"] for holder in response["result"]]
     address = "\n\n".join(map(str, magisters))
@@ -1877,8 +1865,6 @@ async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
     if chain in chain_mappings:
         chain_name = chain_mappings[chain]
-    else:
-        await update.message.reply_text(f"{text.chain_error}")
     chain_prices = nfts.prices.get(chain)
     chain_counts = nfts.counts.get(chain)
 
@@ -1986,8 +1972,6 @@ async def opensea(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
     if chain in chain_mappings:
         chain_name, chain_url = chain_mappings[chain]
-    else:
-        await update.message.reply_text(f"{text.chain_error}")
     await update.message.reply_photo(
         photo=open(media.opensea_logo, "rb"),
         caption=f"*X7 Finance Opensea Links {chain_name}*\nUse `/nft [chain-name]` "
@@ -2272,9 +2256,6 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
             lpool_dollar = float(lpool) * float(api.get_native_price(chain_native)) / 1 ** 18
             pool = round(float(lpool_reserve) + float(lpool), 2)
             dollar = lpool_reserve_dollar + lpool_dollar
-
-        else:
-            await update.message.reply_text(f"{text.chain_error}")
         im2 = Image.open(chain_logo)
         im1 = Image.open((random.choice(media.blackhole)))
         im1.paste(im2, (720, 20), im2)
@@ -2788,8 +2769,6 @@ async def signers(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
     if chain in chain_mappings:
         chain_name, chain_url, com_wallet, dev_wallet = chain_mappings[chain]
-    else:
-        await update.message.reply_text(f"{text.chain_error}")
     dev_response = api.get_signers(dev_wallet)
     com_response = api.get_signers(com_wallet)
     dev_list = dev_response["owners"]
@@ -2835,8 +2814,6 @@ async def smart(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
     }
     if chain in chain_mappings:
         chain_name, chain_url = chain_mappings[chain]
-    else:
-        await update.message.reply_text(f"{text.chain_error}")
     await update.message.reply_photo(
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*X7 Finance Smart Contracts {chain_name}*\nUse `/smart [chain-name]` or other chains\n\n"
@@ -3013,8 +2990,6 @@ async def splitters(update: Update, context):
         chain = context.args[0].lower()
         if chain in chain_mappings:
             chain_name, chain_url, chain_native = chain_mappings[chain]
-        else:
-            await update.message.reply_text({text.chain_error})
         distribution = api.get_split(eth_value)
         message = f"*X7 Finance Ecosystem Splitters {chain_name}* \n\n{eth_value} {chain_native.upper()}\n\n"
         for location, share in distribution.items():
@@ -3255,8 +3230,6 @@ async def treasury(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
     if chain in chain_mappings:
         chain_name, chain_url, chain_logo, chain_com_multi, chain_dev_multi, chain_native = chain_mappings[chain]
-    else:
-        await update.message.reply_text(f"{text.chain_error}")
     native_price = api.get_native_price(chain_native)
     dev_eth = api.get_native_balance(chain_dev_multi, chain)
     com_eth = api.get_native_balance(chain_com_multi, chain)
@@ -3408,8 +3381,6 @@ async def wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
     if chain in chain_mappings:
         chain_name, chain_url, chain_logo, chain_native = chain_mappings[chain]
-    else:
-        await update.message.reply_text(f"{text.chain_error}")
     native_price = api.get_native_price(chain_native)
     eth = api.get_native_balance(wallet, chain)
     dollar = float(eth) * float(native_price)
@@ -3754,8 +3725,6 @@ async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
         dollar = lpool_reserve_dollar + lpool_dollar
         supply = round(float(lpool_reserve) + float(lpool), 2)
         holders = api.get_holders(ca.x7d)
-    else:
-        await update.message.reply_text(f"{text.chain_error}")
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.x7d_logo)
     im1.paste(im2, (720, 20), im2)

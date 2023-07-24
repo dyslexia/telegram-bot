@@ -61,12 +61,16 @@ async def error(update: Update, context: CallbackContext):
             return
         if isinstance(context.error, AttributeError):
             return
-        message: Message = update.message
-        if message is not None and message.text is not None:
-            await update.message.reply_text("Error while loading data, please try again")
-            sentry_sdk.capture_exception(Exception(f"{message.text} caused error: {context.error}"))
+        if isinstance(context.error, ValueError) or isinstance(context.error, Exception):
+            await update.message.reply_text("Error while loading data please try again")
         else:
-            sentry_sdk.capture_exception(Exception(f"Error occurred without a valid message: {context.error}"))
+            message: Message = update.message
+            if message is not None and message.text is not None:
+                await update.message.reply_text("Error while loading data, please try again")
+                sentry_sdk.capture_exception(Exception(f"{message.text} caused error: {context.error}"))
+            else:
+                sentry_sdk.capture_exception(Exception(f"Error occurred without a valid message: {context.error}"))
+
     except Exception as e:
         sentry_sdk.capture_exception(e)
 
