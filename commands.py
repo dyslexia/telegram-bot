@@ -36,8 +36,7 @@ sentry_sdk.init(
 
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    tx = api.get_tx(ca.deployer, "eth")
-    print(tx)
+    return
 
 
 # COMMANDS
