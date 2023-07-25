@@ -2248,7 +2248,7 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'`POLY:`  {poly_pool} MATIC (${"{:0,.0f}".format(poly_dollar)})\n\n'
                     f'System Owned: ${"{:0,.0f}".format(total_lpool_dollar)}\n'
                     f'External Deposits: ${"{:0,.0f}".format(total_lpool_reserve_dollar)}\n'
-                    f'Tortal: ${"{:0,.0f}".format(total_dollar)}\n\n'
+                    f'Total: ${"{:0,.0f}".format(total_dollar)}\n\n'
                     f"{api.get_quote()}",
             parse_mode="Markdown",
         )
@@ -2258,7 +2258,7 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "bsc": ("(BSC)", url.bsc_address, "bnb", media.bsc_logo),
             "poly": ("(POLYGON)", url.poly_address, "matic", media.poly_logo),
             "opti": ("(OPTIMISM)", url.opti_address, "eth", media.opti_logo),
-            "arb": ("(ARB)", url.arb_address, "eth", media.eth_logo),
+            "arb": ("(ARB)", url.arb_address, "eth", media.arb_logo),
         }
         if chain in chain_mappings:
             chain_name, chain_url, chain_native, chain_logo = chain_mappings[chain]
