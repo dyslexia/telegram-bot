@@ -20,7 +20,7 @@ def execute_query(query_id, engine="small"):
         headers=HEADER,
         params={"performance": engine}
     )
-    return response.json()['execution_id']
+    return response.json()["execution_id"]
 
 
 def get_query_status(execution_id):

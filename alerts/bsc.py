@@ -279,7 +279,7 @@ async def new_pair(event):
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Chart", url=f'{url.dex_tools_bsc}{event["args"]["pair"]}'
+                        text="Chart", url=f"{url.dex_tools_bsc}{event['args']['pair']}"
                     )
                 ],
                 [
@@ -290,7 +290,7 @@ async def new_pair(event):
                 [
                     InlineKeyboardButton(
                         text="Deployer TX",
-                        url=f'{url.bsc_tx}{event["transactionHash"].hex()}',
+                        url=f"{url.bsc_tx}{event['transactionHash'].hex()}",
                     )
                 ],
             ]
@@ -329,8 +329,8 @@ async def new_loan(event):
     i1.text(
         (26, 30),
         f"New Loan Originated (BSC)\n\n"
-        f'Loan ID: {event["args"]["loanID"]}\n'
-        f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} BNB '
+        f"Loan ID: {event['args']['loanID']}\n"
+        f"Initial Cost: {int(tx['result']['value'], 0) / 10 ** 18} BNB "
         f'(${"{:0,.0f}".format(api.get_native_price("bnb") * cost)})\n\n'
         f"Payment Schedule (UTC):\n{schedule_str}\n\n"
         f'Total: {amount} BNB (${"{:0,.0f}".format(api.get_native_price("bnb") * amount)})',
@@ -342,8 +342,8 @@ async def new_loan(event):
         os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media/blackhole.png", "rb"),
         caption=f"*New Loan Originated (BSC)*\n\n"
-                f'Loan ID: {event["args"]["loanID"]}\n'
-                f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} BNB '
+                f"Loan ID: {event['args']['loanID']}\n"
+                f"Initial Cost: {int(tx['result']['value'], 0) / 10 ** 18} BNB "
                 f'(${"{:0,.0f}".format(api.get_native_price("bnb") * cost)})\n\n'
                 f"Payment Schedule (UTC):\n{schedule_str}\n\n"
                 f'Total: {amount} BNB (${"{:0,.0f}".format(api.get_native_price("bnb") * amount)}',
@@ -352,7 +352,7 @@ async def new_loan(event):
                 [
                     InlineKeyboardButton(
                         text=f"Loan TX",
-                        url=f'{url.bsc_tx}{event["transactionHash"].hex()}',
+                        url=f"{url.bsc_tx}{event['transactionHash'].hex()}",
                     )
                 ],
             ]
