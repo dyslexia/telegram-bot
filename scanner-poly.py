@@ -3,7 +3,6 @@ import sys
 import time
 import random
 import asyncio
-import subprocess
 from datetime import datetime
 
 import sentry_sdk
@@ -50,7 +49,7 @@ class FilterNotFoundError(Exception):
 async def restart_script():
     python = sys.executable  
     script = os.path.abspath(__file__)  
-    subprocess.Popen([python, script])
+    os.execl(python, python, script)
 
 
 async def format_schedule(schedule1, schedule2):
@@ -389,7 +388,7 @@ async def main():
                 log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)
             ]
             await asyncio.gather(*tasks)
-            
+
         except Exception as e:
             sentry_sdk.capture_exception(f"POLY Main Error:{e}")
             await restart_script()
