@@ -1,7 +1,9 @@
 import os
+import sys
 import time
 import random
 import asyncio
+import subprocess
 from datetime import datetime
 
 import sentry_sdk
@@ -45,9 +47,10 @@ class FilterNotFoundError(Exception):
         super().__init__(self.message)
 
 
-async def restart_main():
-    print("Attempting Restart of ARB")
-    asyncio.create_task(main())
+async def restart_script():
+    python = sys.executable  
+    script = os.path.abspath(__file__)  
+    subprocess.Popen([python, script])
 
 
 async def format_schedule(schedule1, schedule2):
@@ -360,12 +363,11 @@ async def log_loop(
             await asyncio.sleep(poll_interval)
 
         except Exception as e:
-            sentry_sdk.capture_exception(f"ARB Loop Error:{e}")
-            await restart_main()
+            sentry_sdk.capture_exception(f"ARB Loop Error: {e}")
+            await restart_script()
 
 
 async def main():
-    print("Scanning ARB Network")
 
     while True:
         try:
@@ -373,10 +375,10 @@ async def main():
                 log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)
             ]
             await asyncio.gather(*tasks)
+        
         except Exception as e:
-            sentry_sdk.capture_exception(f"ARB Main Error:{e}")
-            await restart_main()
-
+            sentry_sdk.capture_exception(f"ARB Main Error: {e}")
+            await restart_script()
 
 if __name__ == "__main__":
     application = (

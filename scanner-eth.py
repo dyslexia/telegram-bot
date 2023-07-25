@@ -1,7 +1,9 @@
 import os
+import sys
 import time
 import random
 import asyncio
+import subprocess
 from datetime import datetime
 
 import sentry_sdk
@@ -45,10 +47,10 @@ class FilterNotFoundError(Exception):
         super().__init__(self.message)
 
 
-async def restart_main():
-    print("Attempting Restart of ETH")
-    asyncio.create_task(main())
-
+async def restart_script():
+    python = sys.executable  
+    script = os.path.abspath(__file__)  
+    subprocess.Popen([python, script])
 
 async def format_schedule(schedule1, schedule2):
     schedule_list = []
@@ -361,11 +363,10 @@ async def log_loop(
 
         except Exception as e:
             sentry_sdk.capture_exception(f"ETH Loop Error:{e}")
-            await restart_main()
+            await restart_script()
 
 
 async def main():
-    print("Scanning ETH Network")
 
     while True:
         try:
@@ -373,9 +374,10 @@ async def main():
                 log_loop(pair_filter, ill001_filter, ill002_filter, ill003_filter, 2)
             ]
             await asyncio.gather(*tasks)
+            
         except Exception as e:
             sentry_sdk.capture_exception(f"ETH Main Error:{e}")
-            await restart_main()
+            await restart_script()
 
 
 if __name__ == "__main__":
