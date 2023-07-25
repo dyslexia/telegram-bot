@@ -204,9 +204,7 @@ async def new_pair(event):
                     locked_lp_list = [
                         lp
                         for lp in scan[f"{str(token_address).lower()}"]["lp_holders"]
-                        if lp["is_locked"] == 1
-                           and lp["address"]
-                           != "0x0000000000000000000000000000000000000000"
+                        if lp["is_locked"] == 1 and lp["address"] != "0x0000000000000000000000000000000000000000"
                     ]
                     if locked_lp_list:
                         lp_with_locked_detail = [
