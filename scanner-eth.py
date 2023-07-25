@@ -13,9 +13,9 @@ from web3.exceptions import Web3Exception
 from eth_utils import to_checksum_address
 from PIL import Image, ImageDraw, ImageFont
 
-from ..data import ca, url
-from ..api import index as api
-from ..media import index as media
+from data import ca, url
+from api import index as api
+from media import index as media
 
 load_dotenv()
 

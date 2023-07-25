@@ -76,7 +76,7 @@ async def error(update: Update, context: CallbackContext):
 
 
 def scanner_start():
-    scripts = ["alerts/bsc.py", "alerts/eth.py", "alerts/arb.py", "alerts/poly.py", "alerts/opti.py"]
+    scripts = ["scanner-bsc.py", "scanner-eth.py", "scanner-arb.py", "scanner-poly.py", "scanner-opti.py"]
     python_executable = sys.executable
     processes = []
     for script in scripts:
