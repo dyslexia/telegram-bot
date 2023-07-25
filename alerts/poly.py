@@ -375,7 +375,7 @@ async def log_loop(
 
         except Exception as e:
             sentry_sdk.capture_exception(f"POLY Loop Error:{e}")
-            restart_main()
+            await restart_main()
 
 
 async def main():
@@ -389,7 +389,7 @@ async def main():
             await asyncio.gather(*tasks)
         except Exception as e:
             sentry_sdk.capture_exception(f"POLY Main Error:{e}")
-            restart_main()
+            await restart_main()
 
 
 if __name__ == "__main__":
