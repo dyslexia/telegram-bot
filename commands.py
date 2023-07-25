@@ -1861,11 +1861,11 @@ async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "":
         chain = "eth"
     chain_mappings = {
-        "eth": ("(ETH)"),
-        "bsc": ("(BSC)"),
-        "poly": ("(POLYGON)"),
-        "opti": ("(OPTIMISM)"),
-        "arb": ("(ARB)"),
+        "eth": "(ETH)",
+        "bsc": "(BSC)",
+        "poly": "(POLYGON)",
+        "opti": "(OPTIMISM)",
+        "arb": "(ARB)",
     }
     if chain in chain_mappings:
         chain_name = chain_mappings[chain]
