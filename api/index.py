@@ -359,8 +359,13 @@ def get_os_nft(slug):
 def get_quote():
     response = requests.get("https://type.fit/api/quotes")
     data = response.json()
-    quote_raw = random.choice(data)
-    return f'`"{quote_raw["text"]}"\n\n-{quote_raw["author"]}`'
+    quote = random.choice(data)
+    quote_text = quote["text"]
+    quote_author = quote["author"]
+    if quote_author.endswith(", type.fit"):
+        quote_author = quote_author[:-10].strip()
+
+    return f'`"{quote_text}"\n\n-{quote_author}`'
 
 
 def get_random_pioneer_number():
