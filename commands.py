@@ -21,6 +21,7 @@ from eth_utils import to_checksum_address
 from web3.exceptions import Web3Exception
 from PIL import Image, ImageDraw, ImageFont
 
+
 from api import dune
 from api import index as api
 from media import index as media
@@ -2207,7 +2208,13 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
         opti_lpool = api.get_native_balance(ca.lpool, "opti")
         opti_lpool_dollar = float(opti_lpool) * float(api.get_native_price("eth")) / 1 ** 18
         opti_pool = round(float(opti_lpool_reserve) + float(opti_lpool), 2)
+
         opti_dollar = opti_lpool_reserve_dollar + opti_lpool_dollar
+        total_lpool_reserve_dollar = (eth_lpool_reserve_dollar + arb_lpool_reserve_dollar + 
+                               + poly_lpool_reserve_dollar + bsc_lpool_reserve_dollar
+                               + opti_lpool_reserve_dollar)
+        total_lpool_dollar = (eth_lpool_dollar + arb_lpool_dollar + poly_lpool_dollar
+                              + bsc_lpool_dollar + opti_lpool_dollar)
         total_dollar = poly_dollar + bsc_dollar + opti_dollar + arb_dollar + eth_dollar
         im1 = Image.open((random.choice(media.blackhole)))
         im2 = Image.open(media.x7d_logo)
@@ -2215,14 +2222,16 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 28)
         i1.text(
-            (28, 36),
+            (28, 28),
             f"X7 Finance Lending Pool Info\n\n"
             f'ETH:   {eth_pool} ETH (${"{:0,.0f}".format(eth_dollar)})\n'
             f'ARB:   {arb_pool} ETH (${"{:0,.0f}".format(arb_dollar)})\n'
             f'OPTI:  {opti_pool} ETH (${"{:0,.0f}".format(opti_dollar)})\n'
             f'BSC:   {bsc_pool} BNB (${"{:0,.0f}".format(bsc_dollar)})\n'
             f'POLY:  {poly_pool} MATIC (${"{:0,.0f}".format(poly_dollar)})\n\n'
-            f'TOTAL: ${"{:0,.0f}".format(total_dollar)}\n\n\n\n'
+            f'System Owned: ${"{:0,.0f}".format(total_lpool_dollar)}\n'
+            f'External Deposits: ${"{:0,.0f}".format(total_lpool_reserve_dollar)}\n'
+            f'Total: ${"{:0,.0f}".format(total_dollar)}\n\n\n'
             f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
             font=myfont,
             fill=(255, 255, 255),
@@ -2237,7 +2246,9 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f'`OPTI:` {opti_pool} ETH (${"{:0,.0f}".format(opti_dollar)})\n'
                     f'`BSC:`   {bsc_pool} BNB (${"{:0,.0f}".format(bsc_dollar)})\n'
                     f'`POLY:`  {poly_pool} MATIC (${"{:0,.0f}".format(poly_dollar)})\n\n'
-                    f'TOTAL: ${"{:0,.0f}".format(total_dollar)}\n\n'
+                    f'System Owned: ${"{:0,.0f}".format(total_lpool_dollar)}\n'
+                    f'External Deposits: ${"{:0,.0f}".format(total_lpool_reserve_dollar)}\n'
+                    f'Tortal: ${"{:0,.0f}".format(total_dollar)}\n\n'
                     f"{api.get_quote()}",
             parse_mode="Markdown",
         )
@@ -2259,6 +2270,8 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
             lpool_dollar = float(lpool) * float(api.get_native_price(chain_native)) / 1 ** 18
             pool = round(float(lpool_reserve) + float(lpool), 2)
             dollar = lpool_reserve_dollar + lpool_dollar
+            lpool_reserve = round(float(lpool_reserve), 2)
+            lpool = round(float(lpool), 2)
         im2 = Image.open(chain_logo)
         im1 = Image.open((random.choice(media.blackhole)))
         im1.paste(im2, (720, 20), im2)
@@ -2267,7 +2280,12 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
         i1.text(
             (28, 36),
             f"X7 Finance Lending Pool Info {chain_name}\n\n"
-            f'{pool} {chain_native} (${"{:0,.0f}".format(dollar)})\n\n\n\n\n\n\n\n\n\n'
+            f'System Owned\n'
+            f'{lpool} {chain_native.upper()} (${"{:0,.0f}".format(lpool_dollar)})\n\n'
+            f'External Deposits\n'
+            f'{lpool_reserve} {chain_native.upper()} (${"{:0,.0f}".format(lpool_reserve_dollar)})\n\n'
+            f'Total\n'
+            f'{pool} {chain_native.upper()} (${"{:0,.0f}".format(dollar)})\n\n\n'
             f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
             font=myfont,
             fill=(255, 255, 255),
@@ -2277,7 +2295,12 @@ async def pool(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_photo(
             photo=open(r"media/blackhole.png", "rb"),
             caption=f"*X7 Finance Lending Pool Info {chain_name}*\nUse `/pool [chain-name]` for other chains\n\n"
-                    f'{pool} {chain_native} (${"{:0,.0f}".format(dollar)})\n\n'
+                    f'System Owned\n'
+                    f'{lpool} {chain_native.upper()} (${"{:0,.0f}".format(lpool_dollar)})\n\n'
+                    f'External Deposits\n'
+                    f'{lpool_reserve} {chain_native.upper()} (${"{:0,.0f}".format(lpool_reserve_dollar)})\n\n'
+                    f'Total\n'
+                    f'{pool} {chain_native.upper()} (${"{:0,.0f}".format(dollar)})\n\n'
                     f"{api.get_quote()}",
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup(
