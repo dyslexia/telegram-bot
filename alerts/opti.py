@@ -93,7 +93,7 @@ async def new_pair(event):
     #        dollar = int(weth) * 2 * api.get_native_price("eth") / 10 ** 18
     verified_check = api.get_verified(token_address, "opti")
     #    if dollar == 0 or dollar == "" or not dollar:
-    #        liquidity_text = 'Total Liquidity: Unavailable'
+    #        liquidity_text = "Total Liquidity: Unavailable"
     #    else:
     #        liquidity_text = f'Total Liquidity: ${"{:0,.0f}".format(dollar)}'
     info = api.get_token_data(token_address, "opti")
@@ -174,9 +174,7 @@ async def new_pair(event):
                     locked_lp_list = [
                         lp
                         for lp in scan[f"{str(token_address).lower()}"]["lp_holders"]
-                        if lp["is_locked"] == 1
-                           and lp["address"]
-                           != "0x0000000000000000000000000000000000000000"
+                        if lp["is_locked"] == 1 and lp["address"] != "0x0000000000000000000000000000000000000000"
                     ]
                     if locked_lp_list:
                         lp_with_locked_detail = [
@@ -222,7 +220,7 @@ async def new_pair(event):
         f"{token_name[0]} ({token_name[1]}/{native[1]})\n\n"
         f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
         f"{pool_text}\n\n\n"
-        #            f'{liquidity_text}\n\n'
+        #            f"{liquidity_text}\n\n"
         f"SCAN:\n" f"{status}\n",
         font=myfont,
         fill=(255, 255, 255),
@@ -236,7 +234,7 @@ async def new_pair(event):
                 f"Token Address:\n`{token_address}`\n\n"
                 f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
                 f"{pool_text}\n\n\n"
-        #                f'{liquidity_text}\n\n'
+        #                f"{liquidity_text}\n\n"
                 f"SCAN:\n" f"{status}\n",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
@@ -249,7 +247,7 @@ async def new_pair(event):
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Chart", url=f'{url.dex_tools_opti}{event["args"]["pair"]}'
+                        text="Chart", url=f"{url.dex_tools_opti}{event['args']['pair']}"
                     )
                 ],
                 [
@@ -260,7 +258,7 @@ async def new_pair(event):
                 [
                     InlineKeyboardButton(
                         text="Deployer TX",
-                        url=f'{url.opti_tx}{event["transactionHash"].hex()}',
+                        url=f"{url.opti_tx}{event['transactionHash'].hex()}",
                     )
                 ],
             ]
@@ -300,8 +298,8 @@ async def new_loan(event):
     i1.text(
         (26, 30),
         f"*New Loan Originated (OPTIMISM)*\n\n"
-        f'Loan ID: {event["args"]["loanID"]}\n'
-        f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH '
+        f"Loan ID: {event['args']['loanID']}\n"
+        f"Initial Cost: {int(tx['result']['value'], 0) / 10 ** 18} ETH "
         f'(${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
         f"Payment Schedule (UTC):\n{schedule_str}\n\n"
         f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)}',
@@ -313,8 +311,8 @@ async def new_loan(event):
         os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media/blackhole.png", "rb"),
         caption=f"*New Loan Originated (OPTIMISM)*\n\n"
-                f'Loan ID: {event["args"]["loanID"]}\n'
-                f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} ETH '
+                f"Loan ID: {event['args']['loanID']}\n"
+                f"Initial Cost: {int(tx['result']['value'], 0) / 10 ** 18} ETH "
                 f'(${"{:0,.0f}".format(api.get_native_price("eth") * cost)})\n\n'
                 f"Payment Schedule (UTC):\n{schedule_str}\n\n"
                 f'Total: {amount} ETH (${"{:0,.0f}".format(api.get_native_price("eth") * amount)})',
@@ -323,7 +321,7 @@ async def new_loan(event):
                 [
                     InlineKeyboardButton(
                         text=f"Loan TX",
-                        url=f'{url.opti_tx}{event["transactionHash"].hex()}',
+                        url=f"{url.opti_tx}{event['transactionHash'].hex()}",
                     )
                 ],
             ]
@@ -354,7 +352,7 @@ async def log_loop(
             await asyncio.sleep(poll_interval)
         except Exception as e:
             sentry_sdk.capture_exception(f"OPTI Loop Error:{e}")
-            restart_main()
+            await restart_main()
 
 
 async def main():
@@ -367,7 +365,7 @@ async def main():
             await asyncio.gather(*tasks)
         except Exception as e:
             sentry_sdk.capture_exception(f"OPTI Main Error:{e}")
-            restart_main()
+            await restart_main()
 
 
 if __name__ == "__main__":

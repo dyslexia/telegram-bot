@@ -204,9 +204,7 @@ async def new_pair(event):
                     locked_lp_list = [
                         lp
                         for lp in scan[f"{str(token_address).lower()}"]["lp_holders"]
-                        if lp["is_locked"] == 1
-                           and lp["address"]
-                           != "0x0000000000000000000000000000000000000000"
+                        if lp["is_locked"] == 1 and lp["address"] != "0x0000000000000000000000000000000000000000"
                     ]
                     if locked_lp_list:
                         lp_with_locked_detail = [
@@ -279,7 +277,7 @@ async def new_pair(event):
                 ],
                 [
                     InlineKeyboardButton(
-                        text="Chart", url=f'{url.dex_tools_bsc}{event["args"]["pair"]}'
+                        text="Chart", url=f"{url.dex_tools_bsc}{event['args']['pair']}"
                     )
                 ],
                 [
@@ -290,7 +288,7 @@ async def new_pair(event):
                 [
                     InlineKeyboardButton(
                         text="Deployer TX",
-                        url=f'{url.bsc_tx}{event["transactionHash"].hex()}',
+                        url=f"{url.bsc_tx}{event['transactionHash'].hex()}",
                     )
                 ],
             ]
@@ -329,8 +327,8 @@ async def new_loan(event):
     i1.text(
         (26, 30),
         f"New Loan Originated (BSC)\n\n"
-        f'Loan ID: {event["args"]["loanID"]}\n'
-        f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} BNB '
+        f"Loan ID: {event['args']['loanID']}\n"
+        f"Initial Cost: {int(tx['result']['value'], 0) / 10 ** 18} BNB "
         f'(${"{:0,.0f}".format(api.get_native_price("bnb") * cost)})\n\n'
         f"Payment Schedule (UTC):\n{schedule_str}\n\n"
         f'Total: {amount} BNB (${"{:0,.0f}".format(api.get_native_price("bnb") * amount)})',
@@ -342,8 +340,8 @@ async def new_loan(event):
         os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media/blackhole.png", "rb"),
         caption=f"*New Loan Originated (BSC)*\n\n"
-                f'Loan ID: {event["args"]["loanID"]}\n'
-                f'Initial Cost: {int(tx["result"]["value"], 0) / 10 ** 18} BNB '
+                f"Loan ID: {event['args']['loanID']}\n"
+                f"Initial Cost: {int(tx['result']['value'], 0) / 10 ** 18} BNB "
                 f'(${"{:0,.0f}".format(api.get_native_price("bnb") * cost)})\n\n'
                 f"Payment Schedule (UTC):\n{schedule_str}\n\n"
                 f'Total: {amount} BNB (${"{:0,.0f}".format(api.get_native_price("bnb") * amount)}',
@@ -352,7 +350,7 @@ async def new_loan(event):
                 [
                     InlineKeyboardButton(
                         text=f"Loan TX",
-                        url=f'{url.bsc_tx}{event["transactionHash"].hex()}',
+                        url=f"{url.bsc_tx}{event['transactionHash'].hex()}",
                     )
                 ],
             ]
@@ -387,7 +385,7 @@ async def log_loop(
 
         except Exception as e:
             sentry_sdk.capture_exception(f"BSC Loop Error:{e}")
-            restart_main()
+            await restart_main()
 
 
 async def main():
@@ -401,7 +399,7 @@ async def main():
             await asyncio.gather(*tasks)
         except Exception as e:
             sentry_sdk.capture_exception(f"BSC Main Error:{e}")
-            restart_main()
+            await restart_main()
 
 
 if __name__ == "__main__":
