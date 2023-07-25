@@ -36,7 +36,8 @@ sentry_sdk.init(
 
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    return
+    tx = api.get_tx(ca.deployer, "eth")
+    print(tx)
 
 
 # COMMANDS
@@ -644,11 +645,14 @@ async def deployer(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ),
         )
     else:
+        name = tx["result"][0]["functionName"]
+        if name == "":
+            name = f'Transfer to:\n{tx["result"][0]["to"]}'
         await update.message.reply_photo(
             photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
             caption=f"*Deployer Wallet last TX*\n\n{time} (UTC)\n"
                     f"{int(days[0])} days, {int(hours[0])} hours and {int(minutes[0])} minutes ago:\n\n"
-                    f'*{tx["result"][0]["functionName"]}*\n\n'
+                    f'`{name}`\n\n'
                     f"This command will pull last TX on the X7 Finance deployer wallet."
                     f" To view last on chain use `/on_chain`\n\n"
                     f"{api.get_quote()}",
