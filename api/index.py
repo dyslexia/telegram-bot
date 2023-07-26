@@ -231,7 +231,6 @@ def get_nft_holder_list(nft, chain):
     )
 
 
-
 def get_price(token, chain):
     chain_mappings = {
         "eth": "eth",
@@ -295,7 +294,7 @@ def get_nft_floor(nft, chain):
     chain_mappings = {
         "eth": ("eth-main", "ETH"),
         "arb": ("arbitrum-main", "ETH"),
-        "poly": ("poly-main", "MATTIC"),
+        "poly": ("poly-main", "MATIC"),
         "bsc": ("bsc-main", "BNB"),
         "opti": ("optimism-main", "ETH",) 
     }
