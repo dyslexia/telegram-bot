@@ -1861,22 +1861,29 @@ async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if chain == "":
         chain = "eth"
     chain_mappings = {
-        "eth": "(ETH)",
-        "bsc": "(BSC)",
-        "poly": "(POLYGON)",
-        "opti": "(OPTIMISM)",
-        "arb": "(ARB)",
+        "eth": ("(ETH)", "", "ETH"),
+        "bsc": ("(BSC)", "-binance", "BNB"),
+        "poly": ("(POLYGON)", "-polygon", "MATIC"),
+        "opti": ("(OPTIMISM)","-optimism", "ETH"),
+        "arb": ("(ARB)", "-arbitrum", "ETH"),
     }
     if chain in chain_mappings:
-        chain_name = chain_mappings[chain]
+        chain_name, chain_os, chain_native = chain_mappings[chain]
     chain_prices = nfts.prices.get(chain)
     chain_counts = nfts.counts.get(chain)
+    chain_floors = nfts.floors.get(chain)
 
     eco_price = chain_prices.get("eco")
     liq_price = chain_prices.get("liq")
     dex_price = chain_prices.get("dex")
     borrow_price = chain_prices.get("borrow")
     magister_price = chain_prices.get("magister")
+
+    eco_floor = chain_floors.get("eco", 0)
+    liq_floor = chain_floors.get("liq", 0)
+    dex_floor = chain_floors.get("dex", 0)
+    borrow_floor = chain_floors.get("borrow", 0)
+    magister_floor = chain_floors.get("magister", 0)
 
     eco_count = chain_counts.get("eco", 0)
     liq_count = chain_counts.get("liq", 0)
@@ -1901,19 +1908,19 @@ async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
         photo=f"{url.pioneers}{api.get_random_pioneer_number()}.png",
         caption=f"*NFT Info {chain_name}*\nUse `/nft [chain-name]` for other chains\n\n"
                 f"*Ecosystem Maxi*\n{eco_price}\n"
-                f"Available - {500 - eco_count}\n"
+                f"Available - {500 - eco_count}\nFloor price - {eco_floor} {chain_native}\n"
                 f"{eco_discount_text}\n\n"
                 f"*Liquidity Maxi*\n{liq_price}\n"
-                f"Available - {250 - liq_count}\n"
+                f"Available - {250 - liq_count}\nFloor price - {liq_floor} {chain_native}\n"
                 f"{liq_discount_text}\n\n"
                 f"*Dex Maxi*\n{dex_price}\n"
-                f"Available - {150 - dex_count}\n"
+                f"Available - {150 - dex_count}\nFloor price - {dex_floor} {chain_native}\n"
                 f"{dex_discount_text}\n\n"
                 f"*Borrow Maxi*\n{borrow_price}\n"
-                f"Available - {100 - borrow_count}\n"
+                f"Available - {100 - borrow_count}\nFloor price - {borrow_floor} {chain_native}\n"
                 f"{borrow_discount_text}\n\n"
                 f"*Magister*\n{magister_price}\n"
-                f"Available - {49 - magister_count}\n"
+                f"Available - {49 - magister_count}\nFloor price - {magister_floor} {chain_native}\n"
                 f"{magister_discount_text}\n",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
@@ -1922,6 +1929,30 @@ async def nft(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     InlineKeyboardButton(
                         text="Mint Here",
                         url=f'https://x7.finance/x/nft/mint',
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="OS - Ecosystem Maxi", url=f"{url.os_eco}{chain_os}"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="OS - Liquidity Maxi", url=f"{url.os_liq}{chain_os}"
+                    )
+                ],
+                [InlineKeyboardButton(
+                    text="OS - DEX Maxi", url=f"{url.os_dex}{chain_os}"
+                )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="OS - Borrowing Maxi", url=f"{url.os_borrow}{chain_os}"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="OS - Magister", url=f"{url.os_magister}{chain_os}"
                     )
                 ],
             ]
@@ -1956,55 +1987,6 @@ async def on_chain(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [
                     InlineKeyboardButton(
                         text="View all on chains", url=f"{url.dashboard}docs/onchains"
-                    )
-                ],
-            ]
-        ),
-    )
-
-
-async def opensea(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chain = " ".join(context.args).lower()
-    if chain == "":
-        chain = "eth"
-    chain_mappings = {
-        "eth": ("(ETH)", ""),
-        "bsc": ("(BSC)","-binance"),
-        "poly": ("(POLYGON)","-polygon"),
-        "opti": ("(OPTIMISM)","-optimism"),
-        "arb": ("(ARB)", "-arbitrum"),
-    }
-    if chain in chain_mappings:
-        chain_name, chain_url = chain_mappings[chain]
-    await update.message.reply_photo(
-        photo=open(media.opensea_logo, "rb"),
-        caption=f"*X7 Finance Opensea Links {chain_name}*\nUse `/nft [chain-name]` "
-                f"for other chains\n\n{api.get_quote()}",
-        parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        text="Ecosystem Maxi", url=f"{url.os_eco}{chain_url}"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="Liquidity Maxi", url=f"{url.os_liq}{chain_url}"
-                    )
-                ],
-                [InlineKeyboardButton(
-                    text="DEX Maxi", url=f"{url.os_dex}{chain_url}"
-                )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="Borrowing Maxi", url=f"{url.os_borrow}{chain_url}"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="Magister", url=f"{url.os_magister}{chain_url}"
                     )
                 ],
             ]
@@ -2053,11 +2035,10 @@ async def pair(update: Update, context: CallbackContext):
 async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
     pioneer_id = " ".join(context.args)
     data = api.get_os_nft("/x7-pioneer")
-    floor = api.get_nft_floor(ca.pioneer, "?chain=eth-main")
+    floor = api.get_nft_floor(ca.pioneer, "eth")
+    floor_round = round(floor, 2)
     floor_dollar = floor * float(api.get_native_price("eth")) / 1 ** 18
     traits = data["collection"]["traits"]["Transfer Lock Status"]["unlocked"]
-    cap = round(data["collection"]["stats"]["market_cap"], 2)
-    cap_dollar = cap * float(api.get_native_price("eth")) / 1 ** 18
     sales = data["collection"]["stats"]["total_sales"]
     owners = data["collection"]["stats"]["num_owners"]
     price = round(data["collection"]["stats"]["average_price"], 2)
@@ -2073,9 +2054,8 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
         i1.text(
             (28, 36),
             f"X7 Pioneer NFT Info\n\n"
-            f"LooksRare Floor Price: {floor} ETH (${'{:0,.0f}'.format(floor_dollar)})\n"
+            f"Floor Price: {floor_round} ETH (${'{:0,.0f}'.format(floor_dollar)})\n"
             f"Average Price: {price} ETH (${'{:0,.0f}'.format(price_dollar)})\n"
-            f"Market Cap: {cap} ETH (${'{:0,.0f}'.format(cap_dollar)})\n"
             f"Total Volume: {volume} ETH (${'{:0,.0f}'.format(volume_dollar)})\n"
             f"Total Sales: {sales}\n"
             f"Number of Owners: {owners}\n"
@@ -2089,9 +2069,8 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
         await update.message.reply_photo(
             photo=open(r"media/blackhole.png", "rb"),
             caption=f"*X7 Pioneer NFT Info*\n\n"
-                    f"LooksRare Floor Price: {floor} ETH (${'{:0,.0f}'.format(floor_dollar)})\n"
+                    f"Floor Price: {floor_round} ETH (${'{:0,.0f}'.format(floor_dollar)})\n"
                     f"Average Price: {price} ETH (${'{:0,.0f}'.format(price_dollar)})\n"
-                    f"Market Cap: {cap} ETH (${'{:0,.0f}'.format(cap_dollar)})\n"
                     f"Total Volume: {volume} ETH (${'{:0,.0f}'.format(volume_dollar)})\n"
                     f"Number of Owners: {owners}\n"
                     f"Pioneers Unlocked: {traits}\n\n"
@@ -2108,18 +2087,8 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
                     ],
                     [
                         InlineKeyboardButton(
-                            text="LooksRare",
-                            url=f"{url.lr_pioneer}"
-                                "?filters=%7B%22attributes"
-                                f"%22%3A%5B%7B%22traitType%22%3A%22Transfer+Lock+Status%22%2C%22values"
-                                f"%22%3A%5B%22Unlocked%22%5D%7D%5D%7D",
-                        )
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            text="Blur.io",
-                            url=f"{url.blur_pioneer}"
-                                "?traits=%7B%22Transfer%20Lock%20Status%22%3A%5B%22Unlocked%22%5D%7D",
+                            text="Opensea",
+                            url=f"{url.os_pioneer}",
                         )
                     ],
                 ]
@@ -2136,7 +2105,7 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
         await update.message.reply_text(
             f"*X7 Pioneer {pioneer_id} NFT Info*\n\n"
             f"Transfer Lock Status: {status}\n\n"
-            f"{url.lr_pioneer}/{pioneer_id}\n\n"
+            f"https://looksrare.org/collections/{ca.pioneer}/{pioneer_id}\n\n"
             f"{api.get_quote()}",
             parse_mode="markdown",
             reply_markup=InlineKeyboardMarkup(
@@ -2149,14 +2118,8 @@ async def pioneer(update: Update, context: ContextTypes.DEFAULT_TYPE = None):
                     ],
                     [
                         InlineKeyboardButton(
-                            text="LooksRare",
-                            url=f"https://looksrare.org/collections/{ca.pioneer}/{pioneer_id}",
-                        )
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            text="Blur.io",
-                            url=f"https://blur.io/asset/{ca.pioneer}/{pioneer_id}",
+                            text="Opensea",
+                            url=f"https://pro.opensea.io/nft/{ca.pioneer}/{pioneer_id}",
                         )
                     ],
                 ]

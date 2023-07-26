@@ -267,6 +267,61 @@ def get_token_name(token: str, chain: str) -> Tuple[str, str]:
     return result[0]["name"], result[0]["symbol"]
 
 
+# BLOCKSPAN
+
+def get_nft_holder_count(nft, chain):
+    chain_mappings = {
+        "eth": "eth-main",
+        "arb": "arbitrum-main",
+        "poly": "poly-main",
+        "bsc": "bsc-main",
+        "opti": "optimism-main", 
+    }
+    if chain in chain_mappings:
+        chain = chain_mappings[chain]
+    url = f"https://api.blockspan.com/v1/collections/contract/{nft}?chain={chain}"
+    response = requests.get(
+        url,
+        headers={
+            "accept": "application/json",
+            "X-API-KEY": os.getenv("BLOCKSPAN_API_KEY"),
+        },
+    )
+    data = response.json()
+    return data.get("total_tokens", "0")
+
+
+def get_nft_floor(nft, chain):
+    chain_mappings = {
+        "eth": ("eth-main", "ETH"),
+        "arb": ("arbitrum-main", "ETH"),
+        "poly": ("poly-main", "MATTIC"),
+        "bsc": ("bsc-main", "BNB"),
+        "opti": ("optimism-main", "ETH",) 
+    }
+    if chain in chain_mappings:
+        chain, chain_native = chain_mappings[chain]
+    url = f"https://api.blockspan.com/v1/collections/contract/{nft}?chain={chain}"
+    response = requests.get(
+        url,
+        headers={
+            "accept": "application/json",
+            "X-API-KEY": os.getenv("BLOCKSPAN_API_KEY"),
+        },
+    )
+    data = response.json()
+    exchange_data = data.get("exchange_data")
+    if exchange_data is not None:
+        for item in exchange_data:
+            stats = item.get("stats")
+            if stats is not None:
+                floor_price = stats.get("floor_price")
+                if floor_price is not None:
+                    return floor_price
+        return "N/A"
+    else:
+        return "N/A"
+
 # OTHER
 
 def get_fact():
@@ -281,32 +336,6 @@ def get_holders(token):
     response = requests.get(url)
     data = response.json()
     return data.get("holdersCount")
-
-
-def get_nft_holder_count(nft, chain):
-    url = f"https://api.blockspan.com/v1/collections/contract/{nft}{chain}"
-    response = requests.get(
-        url,
-        headers={
-            "accept": "application/json",
-            "X-API-KEY": os.getenv("BLOCKSPAN_API_KEY"),
-        },
-    )
-    data = response.json()
-    return data.get("total_tokens", "0")
-
-
-def get_nft_floor(nft, chain):
-    url = f"https://api.blockspan.com/v1/collections/contract/{nft}{chain}"
-    response = requests.get(
-        url,
-        headers={
-            "accept": "application/json",
-            "X-API-KEY": os.getenv("BLOCKSPAN_API_KEY"),
-        },
-    )
-    data = response.json()
-    return data["exchange_data"][0]["stats"].get("floor_price")
 
 
 def get_nft_prices(nft):

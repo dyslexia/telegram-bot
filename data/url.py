@@ -66,15 +66,12 @@ youtube = "https://www.youtube.com/@X7Finance"
 list_token = "https://github.com/x7finance/telegram-bot/blob/main/tokens/README.md"
 
 # OPENSEA
-os_eco = "https://opensea.io/collection/x7-ecosystem-maxi"
-os_liq = "https://opensea.io/collection/x7-liquidity-maxi"
-os_dex = "https://opensea.io/collection/x7-dex-maxi"
-os_borrow = "https://opensea.io/collection/x7-borrowing-maxi"
-os_magister = "https://opensea.io/collection/x7-magister"
-os_pioneer = "https://opensea.io/collection/x7-pioneer"
-
-lr_pioneer = "https://looksrare.org/collections/0x70000299ee8910ccacd97b1bb560e34f49c9e4f7"
-blur_pioneer = "https://blur.io/collection/x7-pioneer"
+os_eco = "https://pro.opensea.io/collection/x7-ecosystem-maxi"
+os_liq = "https://pro.opensea.io/collection/x7-liquidity-maxi"
+os_dex = "https://pro.opensea.io/collection/x7-dex-maxi"
+os_borrow = "https://pro.opensea.io/collection/x7-borrowing-maxi"
+os_magister = "https://pro.opensea.io/collection/x7-magister"
+os_pioneer = "https://pro.opensea.io/collection/x7-pioneer"
 
 bsc = [
     "https://bsc-dataseed.binance.org/",
