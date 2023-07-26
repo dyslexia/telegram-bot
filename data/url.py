@@ -7,6 +7,7 @@ xchange_buy_bsc = "https://app.x7.finance/#/swap?outputCurrency="
 xchange_buy_poly = "https://app.x7.finance/#/swap?outputCurrency="
 xchange_buy_arb = "https://app.x7.finance/#/swap?outputCurrency="
 xchange_buy_opti = "https://app.x7.finance/#/swap?outputCurrency="
+xchange_fund = "https://app.x7.finance/#/fund"
 
 # TG
 tg_main = "t.me/x7m105portal"

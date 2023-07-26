@@ -3666,6 +3666,8 @@ async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
         lpool_dollar = float(lpool) * float(api.get_native_price(chain_native)) / 1 ** 18
         dollar = lpool_reserve_dollar + lpool_dollar
         supply = round(float(lpool_reserve) + float(lpool), 2)
+        lpool_rounded = round(float(lpool), 2)
+        lpool_reserve_rounded = round(float(lpool_reserve), 2)
         holders = api.get_holders(ca.x7d)
     im1 = Image.open((random.choice(media.blackhole)))
     im2 = Image.open(media.x7d_logo)
@@ -3673,10 +3675,12 @@ async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
     i1 = ImageDraw.Draw(im1)
     myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 28)
     i1.text(
-        (28, 36),
-        f"X7D {chain_name} Info\n\n"
-        f'Supply: {supply} X7D (${"{:0,.0f}".format(dollar)})\n'
-        f"Holders: {holders}\n\n\n\n\n\n\n\n\n"
+        (28, 28),
+        f'X7D {chain_name} Info\n\n'
+        f'Holders: {holders}\n\n'
+        f'System Owned:\n{lpool_rounded} X7D (${"{:0,.0f}".format(lpool_dollar)})\n\n'
+        f'External Deposits:\n{lpool_reserve_rounded} X7D (${"{:0,.0f}".format(lpool_reserve_dollar)})\n\n'
+        f'Total Supply:\n{supply} X7D (${"{:0,.0f}".format(dollar)})\n\n'
         f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
         font=myfont,
         fill=(255, 255, 255),
@@ -3685,28 +3689,26 @@ async def x7d(update: Update, context: ContextTypes.DEFAULT_TYPE):
     im1.save(img_path)
     await update.message.reply_photo(
         photo=open(r"media/blackhole.png", "rb"),
-        caption=f"*X7D {chain_name} Info*\n"
-                f"For other chains use `/x7d [chain-name]`\n\n"
-                f'Supply: {supply} X7D (${"{:0,.0f}".format(dollar)})\n'
-                f"Holders: {holders}\n\n"
+        caption=f'*X7D {chain_name} Info*\n'
+                f'For other chains use `/x7d [chain-name]`\n\n'
+                f'Holders: {holders}\n\n'
+                f'System Owned:\n{lpool_rounded} (${"{:0,.0f}".format(lpool_dollar)})\n\n'
+                f'External Deposits:\n{lpool_reserve_rounded} (${"{:0,.0f}".format(lpool_reserve_dollar)})\n\n'
+                f'Total Supply:\n{supply} X7D (${"{:0,.0f}".format(dollar)})\n\n'
                 f"{api.get_quote()}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        text="X7D Funding Dashboard",
-                        url="https://app.x7.finance/#/fund",
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="X7 Deposit Contract", url=f"{chain_url}{ca.x7d}#code"
-                    )
-                ],
-            ]
-        ),
-    )
+                    [
+                        [
+                            InlineKeyboardButton(
+                                text="X7D Funding Dashboard",
+                                url=f"{url.xchange_fund}",
+                            )
+                        ],
+                    ]
+                ),
+            )
+
 
 
 async def x7dao(update: Update, context: ContextTypes.DEFAULT_TYPE):
