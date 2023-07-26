@@ -1262,101 +1262,81 @@ async def liquidate(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def liquidity(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chain = " ".join(context.args).lower()
-    chain_name = ""
-    chain_token_api = ""
-    chain_token_name = ""
-    chain_title = ""
-    im2 = ""
-    x7r_amount = ""
-    x7dao_amount = ""
-    cons_amount = ""
-    x7dao_dollar = ""
-    x7r_dollar = ""
-    cons_dollar = ""
-    chain_url = ""
-    if chain == "" or chain == "eth":
-        x7r_price = api.get_price(ca.x7r, "eth")
-        x7dao_price = api.get_price(ca.x7dao, "eth")
-        x7101_price = api.get_price(ca.x7101, "eth")
-        x7102_price = api.get_price(ca.x7102, "eth")
-        x7103_price = api.get_price(ca.x7103, "eth")
-        x7104_price = api.get_price(ca.x7104, "eth")
-        x7105_price = api.get_price(ca.x7105, "eth")
-        x7r = api.get_liquidity(ca.x7r_pair_eth, "eth")
-        x7dao = api.get_liquidity(ca.x7dao_pair_eth, "eth")
-        x7101 = api.get_liquidity(ca.x7101_pair_eth, "eth")
-        x7102 = api.get_liquidity(ca.x7102_pair_eth, "eth")
-        x7103 = api.get_liquidity(ca.x7103_pair_eth, "eth")
-        x7104 = api.get_liquidity(ca.x7104_pair_eth, "eth")
-        x7105 = api.get_liquidity(ca.x7105_pair_eth, "eth")
-        x7r_token = float(x7r["reserve0"])
-        x7r_weth = float(x7r["reserve1"]) / 10 ** 18
-        x7r_weth_dollar = float(x7r_weth) * float(api.get_native_price("eth"))
-        x7r_token_dollar = float(x7r_price) * float(x7r_token) / 10 ** 18
-        x7dao_token = float(x7dao["reserve0"])
-        x7dao_weth = float(x7dao["reserve1"]) / 10 ** 18
-        x7dao_weth_dollar = float(x7dao_weth) * float(api.get_native_price("eth"))
-        x7dao_token_dollar = float(x7dao_price) * float(x7dao_token) / 10 ** 18
-        x7101_token = float(x7101["reserve0"])
-        x7101_weth = float(x7101["reserve1"]) / 10 ** 18
-        x7101_weth_dollar = float(x7101_weth) * float(api.get_native_price("eth"))
-        x7101_token_dollar = float(x7101_price) * float(x7101_token) / 10 ** 18
-        x7102_token = float(x7102["reserve0"])
-        x7102_weth = float(x7102["reserve1"]) / 10 ** 18
-        x7102_weth_dollar = float(x7102_weth) * float(api.get_native_price("eth"))
-        x7102_token_dollar = float(x7102_price) * float(x7102_token) / 10 ** 18
-        x7103_token = float(x7103["reserve0"])
-        x7103_weth = float(x7103["reserve1"]) / 10 ** 18
-        x7103_weth_dollar = float(x7103_weth) * float(api.get_native_price("eth"))
-        x7103_token_dollar = float(x7103_price) * float(x7103_token) / 10 ** 18
-        x7104_token = float(x7104["reserve0"])
-        x7104_weth = float(x7104["reserve1"]) / 10 ** 18
-        x7104_weth_dollar = float(x7104_weth) * float(api.get_native_price("eth"))
-        x7104_token_dollar = float(x7104_price) * float(x7104_token) / 10 ** 18
-        x7105_token = float(x7105["reserve0"])
-        x7105_weth = float(x7105["reserve1"]) / 10 ** 18
-        x7105_weth_dollar = float(x7105_weth) * float(api.get_native_price("eth"))
-        x7105_token_dollar = float(x7105_price) * float(x7105_token) / 10 ** 18
-        constellations_tokens = (
-                x7101_token + x7102_token + x7103_token + x7104_token + x7105_token
-        )
-        constellations_weth = (
-                x7101_weth + x7102_weth + x7103_weth + x7104_weth + x7105_weth
-        )
-        constellations_weth_dollar = (
-                x7101_weth_dollar
-                + x7102_weth_dollar
-                + x7103_weth_dollar
-                + x7104_weth_dollar
-                + x7105_weth_dollar
-        )
-        constellations_token_dollar = (
-                x7101_token_dollar
-                + x7102_token_dollar
-                + x7103_token_dollar
-                + x7104_token_dollar
-                + x7105_token_dollar
-        )
+    if chain == "":
+        chain = "eth"
+    chain_mappings = {
+        "eth": ("(ETH)", url.ether_token, "eth", media.eth_logo,
+                ca.x7dao_pair_eth, ca.x7r_pair_eth, ca.x7101_pair_eth, ca.x7102_pair_eth,
+                ca.x7103_pair_eth, ca.x7104_pair_eth, ca.x7105_pair_eth),
+        "bsc": ("(BSC)", url.bsc_token, "bnb", media.bsc_logo,
+                ca.x7dao_pair_bsc, ca.x7r_pair_bsc, ca.x7101_pair_bsc, ca.x7102_pair_bsc,
+                ca.x7103_pair_bsc, ca.x7104_pair_bsc, ca.x7105_pair_bsc),
+        "poly": ("(POLYGON)", url.poly_token, "matic", media.poly_logo,
+                ca.x7dao_pair_poly, ca.x7r_pair_poly, ca.x7101_pair_poly, ca.x7102_pair_poly,
+                ca.x7103_pair_poly, ca.x7104_pair_poly, ca.x7105_pair_poly),
+        "opti": ("(OPTIMISM)", url.opti_token, "eth", media.opti_logo,
+                ca.x7dao_pair_opti, ca.x7r_pair_opti, ca.x7101_pair_opti, ca.x7102_pair_opti,
+                ca.x7103_pair_opti, ca.x7104_pair_opti, ca.x7105_pair_opti),
+        "arb": ("(ARB)", url.arb_token, "eth", media.arb_logo,
+                ca.x7dao_pair_arb, ca.x7r_pair_arb, ca.x7101_pair_arb, ca.x7102_pair_arb,
+                ca.x7103_pair_arb, ca.x7104_pair_arb, ca.x7105_pair_arb),
+    }
+    if chain in chain_mappings:
+        chain_name, chain_url, chain_native, chain_logo, *pair_addresses = chain_mappings[chain]
+        im2 = Image.open(chain_logo)
+    if chain == "eth": # REMOVE LINE AFTER MIGRATION
+        token_liquidity = []
+        weth_liquidity = []
+        token_dollars = []
+        weth_dollars = []
+
+        for pair in pair_addresses:
+            token_price = api.get_price(pair, chain)
+            liquidity_data = api.get_liquidity(pair, chain)
+            token_liq = float(liquidity_data["reserve0"])
+            weth_liq = float(liquidity_data["reserve1"]) / 10 ** 18
+            weth_dollar = weth_liq * float(api.get_native_price(chain_native))
+            token_dollar = token_price * (token_liq / 10 ** 18)
+
+            token_liquidity.append(token_liq)
+            weth_liquidity.append(weth_liq)
+            token_dollars.append(token_dollar)
+            weth_dollars.append(weth_dollar)
+
+        constellations_tokens_liq = sum(token_liquidity[2:])  
+        constellations_weth_liq = sum(weth_liquidity[2:])
+        constellations_weth_dollar = sum(weth_dollars[2:]) 
+        constellations_token_dollar = sum(token_dollars[2:])
+
+        x7r_token_liq = token_liquidity[0]
+        x7r_weth_liq = weth_liquidity[0]
+        x7r_token_dollar = token_dollars[0]
+        x7r_weth_dollar = weth_dollars[0]
+
+        x7dao_token_liq = token_liquidity[1]
+        x7dao_weth_liq = weth_liquidity[1]
+        x7dao_token_dollar = token_dollars[1]
+        x7dao_weth_dollar = weth_dollars[1]
+
         im1 = Image.open((random.choice(media.blackhole)))
-        im2 = Image.open(media.eth_logo)
         im1.paste(im2, (720, 20), im2)
         i1 = ImageDraw.Draw(im1)
         myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 20)
         i1.text(
             (28, 36),
-            f"X7 Finance Token Liquidity (ETH)\n\n"
+            f"X7 Finance Token Liquidity {chain_name}\n\n"
             f"X7R\n"
-            f'{"{:0,.0f}".format(x7r_token)[:4]}M X7R (${"{:0,.0f}".format(x7r_token_dollar)})\n'
-            f'{"{:0,.0f}".format(x7r_weth)} WETH (${"{:0,.0f}".format(x7r_weth_dollar)})\n'
+            f'{"{:0,.0f}".format(x7r_token_liq)[:4]}M X7R (${"{:0,.0f}".format(x7r_token_dollar)})\n'
+            f'{"{:0,.0f}".format(x7r_weth_liq)} WETH (${"{:0,.0f}".format(x7r_weth_dollar)})\n'
             f'Total Liquidity ${"{:0,.0f}".format(x7r_weth_dollar + x7r_token_dollar)}\n\n'
             f"X7DAO\n"
-            f'{"{:0,.0f}".format(x7dao_token)[:4]}M X7DAO (${"{:0,.0f}".format(x7dao_token_dollar)})\n'
-            f'{"{:0,.0f}".format(x7dao_weth)} WETH (${"{:0,.0f}".format(x7dao_weth_dollar)})\n'
+            f'{"{:0,.0f}".format(x7dao_token_liq)[:4]}M X7DAO (${"{:0,.0f}".format(x7dao_token_dollar)})\n'
+            f'{"{:0,.0f}".format(x7dao_weth_liq)} WETH (${"{:0,.0f}".format(x7dao_weth_dollar)})\n'
             f'Total Liquidity ${"{:0,.0f}".format(x7dao_weth_dollar + x7dao_token_dollar)}\n\n'
             f"Constellations\n"
-            f'{"{:0,.0f}".format(constellations_tokens)[:4]}M X7100 '
+            f'{"{:0,.0f}".format(constellations_tokens_liq)[:4]}M X7100 '
             f'(${"{:0,.0f}".format(constellations_token_dollar)})\n'
-            f'{"{:0,.0f}".format(constellations_weth)} WETH '
+            f'{"{:0,.0f}".format(constellations_weth_liq)} WETH '
             f'(${"{:0,.0f}".format(constellations_weth_dollar)})\n'
             f'Total Liquidity ${"{:0,.0f}".format(constellations_weth_dollar + constellations_token_dollar)}\n'
             f'\nUTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
@@ -1371,109 +1351,82 @@ async def liquidity(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f"To show initial liquidity for other chains, Use `/liquidity "
                     f"[chain-name]`\n\n"
                     f"*X7R*\n"
-                    f'{"{:0,.0f}".format(x7r_token)[:4]}M X7R (${"{:0,.0f}".format(x7r_token_dollar)})\n'
-                    f'{"{:0,.0f}".format(x7r_weth)} WETH (${"{:0,.0f}".format(x7r_weth_dollar)})\n'
+                    f'{"{:0,.0f}".format(x7r_token_liq)[:4]}M X7R (${"{:0,.0f}".format(x7r_token_dollar)})\n'
+                    f'{"{:0,.0f}".format(x7r_weth_liq)} WETH (${"{:0,.0f}".format(x7r_weth_dollar)})\n'
                     f'Total Liquidity ${"{:0,.0f}".format(x7r_weth_dollar + x7r_token_dollar)}\n\n'
                     f"*X7DAO*\n"
-                    f'{"{:0,.0f}".format(x7dao_token)[:4]}M X7DAO (${"{:0,.0f}".format(x7dao_token_dollar)})\n'
-                    f'{"{:0,.0f}".format(x7dao_weth)} WETH (${"{:0,.0f}".format(x7dao_weth_dollar)})\n'
+                    f'{"{:0,.0f}".format(x7dao_token_liq)[:4]}M X7DAO (${"{:0,.0f}".format(x7dao_token_dollar)})\n'
+                    f'{"{:0,.0f}".format(x7dao_weth_liq)} WETH (${"{:0,.0f}".format(x7dao_weth_dollar)})\n'
                     f'Total Liquidity ${"{:0,.0f}".format(x7dao_weth_dollar + x7dao_token_dollar)}\n\n'
                     f"*Constellations*\n"
-                    f'{"{:0,.0f}".format(constellations_tokens)[:4]}M X7100 '
+                    f'{"{:0,.0f}".format(constellations_tokens_liq)[:4]}M X7100 '
                     f'(${"{:0,.0f}".format(constellations_token_dollar)})\n'
-                    f'{"{:0,.0f}".format(constellations_weth)} WETH '
+                    f'{"{:0,.0f}".format(constellations_weth_liq)} WETH '
                     f'(${"{:0,.0f}".format(constellations_weth_dollar)})\n'
                     f'Total Liquidity ${"{:0,.0f}".format(constellations_weth_dollar + constellations_token_dollar)}\n\n'
                     f"{api.get_quote()}",
             parse_mode="Markdown",
         )
-        return
-    if chain == "bsc" or chain == "bnb":
-        chain_name = "bsc"
-        chain_token_api = "bnb"
-        chain_token_name = "BNB"
-        chain_title = "(BSC)"
-        chain_url = url.bsc_address
-        im2 = Image.open(media.bsc_logo)
-    if chain == "arbitrum" or chain == "arb":
-        chain_name = "arb"
-        chain_token_api = "eth"
-        chain_token_name = "ETH"
-        chain_title = "(ARB)"
-        chain_url = url.arb_address
-        im2 = Image.open(media.arb_logo)
-    if chain == "optimism" or chain == "opti":
-        chain_name = "opti"
-        chain_token_api = "eth"
-        chain_token_name = "ETH"
-        chain_title = "(OPTI)"
-        chain_url = url.opti_address
-        im2 = Image.open(media.opti_logo)
-    if chain == "polygon" or chain == "poly":
-        chain_name = "poly"
-        chain_token_api = "matic"
-        chain_token_name = "MATIC"
-        chain_title = "(POLYGON)"
-        im2 = Image.open(media.poly_logo)
-        chain_url = url.poly_address
-    x7r_amount = api.get_native_balance(ca.x7r_liq_lock, chain_name)
-    x7dao_amount = api.get_native_balance(ca.x7dao_liq_lock, chain_name)
-    cons_amount = api.get_native_balance(ca.cons_liq_lock, chain_name)
-    x7dao_dollar = (
-            float(x7dao_amount) * float(api.get_native_price(chain_token_api)) / 1 ** 18
-    )
-    x7r_dollar = (
-            float(x7r_amount) * float(api.get_native_price(chain_token_api)) / 1 ** 18
-    )
-    cons_dollar = (
-            float(cons_amount) * float(api.get_native_price(chain_token_api)) / 1 ** 18
-    )
-    im1 = Image.open((random.choice(media.blackhole)))
-    im1.paste(im2, (720, 20), im2)
-    i1 = ImageDraw.Draw(im1)
-    myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
-    i1.text(
-        (28, 36),
-        f"X7 Finance Initial Liquidity {chain_title}\n\n"
-        f'X7R:\n{x7r_amount} {chain_token_name} (${"{:0,.0f}".format(x7r_dollar)})\n\n'
-        f'X7DAO:\n{x7dao_amount} {chain_token_name} (${"{:0,.0f}".format(x7dao_dollar)})\n\n'
-        f'X7100:\n{cons_amount} {chain_token_name} (${"{:0,.0f}".format(cons_dollar)})\n\n\n\n'
-        f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
-        font=myfont,
-        fill=(255, 255, 255),
-    )
-    img_path = os.path.join("media", "blackhole.png")
-    im1.save(img_path)
-    await update.message.reply_photo(
-        photo=open(r"media/blackhole.png", "rb"),
-        caption=f"*X7 Finance Initial Liquidity {chain_title}*\nUse `/liquidity [chain-name]` for other chains\n\n"
-                f'X7R:\n{x7r_amount} {chain_token_name} (${"{:0,.0f}".format(x7r_dollar)})\n\n'
-                f'X7DAO:\n{x7dao_amount} {chain_token_name} (${"{:0,.0f}".format(x7dao_dollar)})\n\n'
-                f'X7100:\n{cons_amount} {chain_token_name} (${"{:0,.0f}".format(cons_dollar)})\n\n{api.get_quote()}',
-        parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(
-            [
+    # REMOVE AFTER MIGRATION
+    else:
+        x7r_amount = api.get_native_balance(ca.x7r_liq_lock, chain)
+        x7dao_amount = api.get_native_balance(ca.x7dao_liq_lock, chain)
+        cons_amount = api.get_native_balance(ca.cons_liq_lock, chain)
+        x7dao_dollar = (
+                float(x7dao_amount) * float(api.get_native_price(chain_native)) / 1 ** 18
+        )
+        x7r_dollar = (
+                float(x7r_amount) * float(api.get_native_price(chain_native)) / 1 ** 18
+        )
+        cons_dollar = (
+                float(cons_amount) * float(api.get_native_price(chain_native)) / 1 ** 18
+        )
+        im1 = Image.open((random.choice(media.blackhole)))
+        im1.paste(im2, (720, 20), im2)
+        i1 = ImageDraw.Draw(im1)
+        myfont = ImageFont.truetype(r"media/FreeMonoBold.ttf", 26)
+        i1.text(
+            (28, 36),
+            f"X7 Finance Initial Liquidity {chain_name}\n\n"
+            f'X7R:\n{x7r_amount} {chain_native.upper()} (${"{:0,.0f}".format(x7r_dollar)})\n\n'
+            f'X7DAO:\n{x7dao_amount} {chain_native.upper()} (${"{:0,.0f}".format(x7dao_dollar)})\n\n'
+            f'X7100:\n{cons_amount} {chain_native.upper()} (${"{:0,.0f}".format(cons_dollar)})\n\n\n\n'
+            f'UTC: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}',
+            font=myfont,
+            fill=(255, 255, 255),
+        )
+        img_path = os.path.join("media", "blackhole.png")
+        im1.save(img_path)
+        await update.message.reply_photo(
+            photo=open(r"media/blackhole.png", "rb"),
+            caption=f"*X7 Finance Initial Liquidity {chain_name}*\nUse `/liquidity [chain-name]` for other chains\n\n"
+                    f'X7R:\n{x7r_amount} {chain_native.upper()} (${"{:0,.0f}".format(x7r_dollar)})\n\n'
+                    f'X7DAO:\n{x7dao_amount} {chain_native.upper()} (${"{:0,.0f}".format(x7dao_dollar)})\n\n'
+                    f'X7100:\n{cons_amount} {chain_native.upper()} (${"{:0,.0f}".format(cons_dollar)})\n\n{api.get_quote()}',
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup(
                 [
-                    InlineKeyboardButton(
-                        text="X7R Initial Liquidity",
-                        url=f"{chain_url}{ca.x7r_liq_lock}",
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="X7DAO Initial Liquidity",
-                        url=f"{chain_url}{ca.x7dao_liq_lock}",
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        text="X7100 Initial Liquidity",
-                        url=f"{chain_url}{ca.cons_liq_lock}",
-                    )
-                ],
-            ]
-        ),
-    )
+                    [
+                        InlineKeyboardButton(
+                            text="X7R Initial Liquidity",
+                            url=f"{chain_url}{ca.x7r_liq_lock}",
+                        )
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            text="X7DAO Initial Liquidity",
+                            url=f"{chain_url}{ca.x7dao_liq_lock}",
+                        )
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            text="X7100 Initial Liquidity",
+                            url=f"{chain_url}{ca.cons_liq_lock}",
+                        )
+                    ],
+                ]
+            ),
+        )
 
 
 async def loan(update: Update, context: ContextTypes.DEFAULT_TYPE):
