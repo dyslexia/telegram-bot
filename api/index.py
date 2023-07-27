@@ -249,6 +249,23 @@ def get_price(token, chain):
     return result["usdPrice"]
 
 
+def get_token_data(token: str, chain: str) -> dict:
+    chain_mappings = {
+        "eth": "eth",
+        "arb": "arbitrum",
+        "poly": "polygon",
+        "bsc": "bsc",
+        "opti": "optimism", 
+    }
+    if chain in chain_mappings:
+        chain = chain_mappings[chain]
+    result = evm_api.token.get_token_metadata(
+        api_key=os.getenv("MORALIS_API_KEY"),
+        params={"addresses": [f"{token}"], "chain": chain},
+    )
+    return result
+
+
 def get_token_name(token: str, chain: str) -> Tuple[str, str]:
     chain_mappings = {
         "eth": "eth",
