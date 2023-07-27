@@ -33,10 +33,7 @@ ill001_filter = ill001.events.LoanOriginated.create_filter(fromBlock="latest")
 ill002_filter = ill002.events.LoanOriginated.create_filter(fromBlock="latest")
 ill003_filter = ill003.events.LoanOriginated.create_filter(fromBlock="latest")
 
-sentry_sdk.init(
-    dsn=os.getenv("SENTRY_DSN"),
-    traces_sample_rate=1.0
-)
+sentry_sdk.init(dsn=os.getenv("SENTRY_DSN"), traces_sample_rate=1.0)
 
 
 class FilterNotFoundError(Exception):
@@ -46,8 +43,8 @@ class FilterNotFoundError(Exception):
 
 
 async def restart_script():
-    python = sys.executable  
-    script = os.path.abspath(__file__)  
+    python = sys.executable
+    script = os.path.abspath(__file__)
     os.execl(python, python, script)
 
 
@@ -131,9 +128,9 @@ async def new_pair(event):
         liquidity_text = f'Total Liquidity: ${"{:0,.0f}".format(dollar)}'
     info = api.get_token_data(token_address, "bsc")
     if (
-            info[0]["decimals"] == ""
-            or info[0]["decimals"] == "0"
-            or not info[0]["decimals"]
+        info[0]["decimals"] == ""
+        or info[0]["decimals"] == "0"
+        or not info[0]["decimals"]
     ):
         supply = int(api.get_supply(token_address, "bsc"))
     else:
@@ -181,15 +178,15 @@ async def new_pair(event):
         if scan[f"{str(token_address).lower()}"]["is_in_dex"] == "1":
             try:
                 if (
-                        scan[f"{str(token_address).lower()}"]["sell_tax"] == "1"
-                        or scan[f"{str(token_address).lower()}"]["buy_tax"] == "1"
+                    scan[f"{str(token_address).lower()}"]["sell_tax"] == "1"
+                    or scan[f"{str(token_address).lower()}"]["buy_tax"] == "1"
                 ):
                     return
                 buy_tax_raw = (
-                        float(scan[f"{str(token_address).lower()}"]["buy_tax"]) * 100
+                    float(scan[f"{str(token_address).lower()}"]["buy_tax"]) * 100
                 )
                 sell_tax_raw = (
-                        float(scan[f"{str(token_address).lower()}"]["sell_tax"]) * 100
+                    float(scan[f"{str(token_address).lower()}"]["sell_tax"]) * 100
                 )
                 buy_tax = int(buy_tax_raw)
                 sell_tax = int(sell_tax_raw)
@@ -206,7 +203,9 @@ async def new_pair(event):
                     locked_lp_list = [
                         lp
                         for lp in scan[f"{str(token_address).lower()}"]["lp_holders"]
-                        if lp["is_locked"] == 1 and lp["address"] != "0x0000000000000000000000000000000000000000"
+                        if lp["is_locked"] == 1
+                        and lp["address"]
+                        != "0x0000000000000000000000000000000000000000"
                     ]
                     if locked_lp_list:
                         lp_with_locked_detail = [
@@ -262,13 +261,13 @@ async def new_pair(event):
         os.getenv("ALERTS_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media/blackhole.png", "rb"),
         caption=f"*New Pair Created (BSC)*\n\n"
-                f"{token_name[0]} ({token_name[1]}/{native[1]})\n\n"
-                f"Token Address:\n`{token_address}`\n\n"
-                f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
-                f"{pool_text}\n\n"
-                f"SCAN:\n"
-                f"{liquidity_text}\n\n"
-                f"{status}",
+        f"{token_name[0]} ({token_name[1]}/{native[1]})\n\n"
+        f"Token Address:\n`{token_address}`\n\n"
+        f'Supply: {"{:0,.0f}".format(supply)} ({info[0]["decimals"]} Decimals)\n\n'
+        f"{pool_text}\n\n"
+        f"SCAN:\n"
+        f"{liquidity_text}\n\n"
+        f"{status}",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(
             [
@@ -304,10 +303,10 @@ async def new_loan(event):
         address = to_checksum_address(ca.lpool)
         contract = web3.eth.contract(address=address, abi=api.get_abi(ca.lpool, "bsc"))
         amount = (
-                contract.functions.getRemainingLiability(
-                    int(event["args"]["loanID"])
-                ).call()
-                / 10 ** 18
+            contract.functions.getRemainingLiability(
+                int(event["args"]["loanID"])
+            ).call()
+            / 10 ** 18
         )
         schedule1 = contract.functions.getPremiumPaymentSchedule(
             int(event["args"]["loanID"])
@@ -342,11 +341,11 @@ async def new_loan(event):
         os.getenv("MAIN_TELEGRAM_CHANNEL_ID"),
         photo=open(r"media/blackhole.png", "rb"),
         caption=f"*New Loan Originated (BSC)*\n\n"
-                f"Loan ID: {event['args']['loanID']}\n"
-                f"Initial Cost: {int(tx['result']['value'], 0) / 10 ** 18} BNB "
-                f'(${"{:0,.0f}".format(api.get_native_price("bnb") * cost)})\n\n'
-                f"Payment Schedule (UTC):\n{schedule_str}\n\n"
-                f'Total: {amount} BNB (${"{:0,.0f}".format(api.get_native_price("bnb") * amount)}',
+        f"Loan ID: {event['args']['loanID']}\n"
+        f"Initial Cost: {int(tx['result']['value'], 0) / 10 ** 18} BNB "
+        f'(${"{:0,.0f}".format(api.get_native_price("bnb") * cost)})\n\n'
+        f"Payment Schedule (UTC):\n{schedule_str}\n\n"
+        f'Total: {amount} BNB (${"{:0,.0f}".format(api.get_native_price("bnb") * amount)}',
         reply_markup=InlineKeyboardMarkup(
             [
                 [
@@ -361,7 +360,7 @@ async def new_loan(event):
 
 
 async def log_loop(
-        pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval
+    pair_filter, ill001_filter, ill002_filter, ill003_filter, poll_interval
 ):
     while True:
         try:
